@@ -116,6 +116,7 @@ class _CretaExSliderState extends State<CretaExSlider> {
                           _value = _reverseValue(int.parse(value).toDouble(), widget.valueType);
                           widget.onChannged(_value);
                         });
+                        widget.onChanngeComplete?.call(_value);
                       }),
                     )
                   : CretaTextField.double(
@@ -130,6 +131,7 @@ class _CretaExSliderState extends State<CretaExSlider> {
                           _value = double.parse(value);
                           widget.onChannged(_value);
                         });
+                        widget.onChanngeComplete?.call(_value);
                       }),
                     ),
               widget.postfix != null

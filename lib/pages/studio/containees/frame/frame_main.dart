@@ -112,7 +112,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     logger.fine('model.width=${widget.bookModel.width.value}, realWidth=${widget.pageWidth}');
     //applyScaleH = widget.bookModel.height.value / StudioVariables.availHeight;
 
-    //print('parentPage= ${widget.pageModel.name.value}, =${widget.pageModel.mid}');
+    logger.fine('parentPage= ${widget.pageModel.name.value}, =${widget.pageModel.mid}');
     setFrameManager(null);
 
     return StreamBuilder<AbsExModel>(

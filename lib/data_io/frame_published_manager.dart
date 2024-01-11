@@ -58,7 +58,7 @@ class FramePublishedManager extends CretaManager {
       }
     }
     for (var entry in oldNewMap.entries) {
-      ContentsManager contentsManager = frameManager!.findContentsManager(entry.key);
+      ContentsManager contentsManager = frameManager!.findOrCreateContentsManager(entry.key);
       // if (contentsManager == null) {
       //   continue;
       // }

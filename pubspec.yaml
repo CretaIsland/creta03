@@ -37,7 +37,7 @@ dependencies:
   flutter_riverpod: ^1.0.4
   flutter_speed_dial: ^6.1.0+1
   routemaster: ^1.0.1
-  hycop: ^0.3.39
+  hycop: ^0.4.11
   outline_search_bar: ^2.3.0
   custom_radio_grouped_button: 2.2.1
   # elegant_radio_button_group: ^0.0.1
@@ -153,6 +153,7 @@ dependencies:
   avatar_glow: ^3.0.1
   flutter_glow: ^0.3.0
   quoter: ^0.0.1
+  carousel_slider: ^4.2.1
   
 
 dev_dependencies:
@@ -245,8 +246,6 @@ flutter:
 
     - assets/social/
     - assets/giphy_official_logo.png
-    - assets/offline_quote.jpg
-    - assets/quote_BG.jpg
     
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

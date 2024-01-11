@@ -17,7 +17,7 @@ import '../model/frame_model.dart';
 import '../model/page_model.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
-import '../pages/studio/containees/page/page_main.dart';
+//import '../pages/studio/containees/page/page_main.dart';
 import '../pages/studio/left_menu/left_menu_page.dart';
 import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_variables.dart';
@@ -33,11 +33,16 @@ class PageManager extends CretaManager {
   Map<String, GlobalObjectKey> thumbKeyMap = {};
   final bool isPublishedMode;
 
+  final Function? onGotoPrevBook;
+  final Function? onGotoNextBook;
+
   static Map<String, String> oldNewMap = {}; // linkCopy 시에 필요하다.
 
   PageManager({
     String tableName = 'creta_page',
     this.isPublishedMode = false,
+    this.onGotoPrevBook,
+    this.onGotoNextBook,
   }) : super(tableName, null) {
     saveManagerHolder?.registerManager('page', this);
   }
@@ -269,18 +274,17 @@ class PageManager extends CretaManager {
   bool _movePage(String? mid) {
     if (mid != null) {
       //DraggableStickers.isFrontBackHover = false;
-      PageMainState.transitionIndicator = 0.1;
       notify();
       if (StudioVariables.isPreview == true) {
         // 프리뷰 모드에서만, pageTransition 이 동작한다.
-        PageModel? model = getModelByMid(mid) as PageModel?;
-        if (model != null &&
-            (model.transitionEffect.value > 0 || model.transitionEffect2.value > 0)) {
-          Future.delayed(model.getPageDuration(), () {
-            setSelectedMid(mid);
-          });
-          return true;
-        }
+        // PageModel? model = getModelByMid(mid) as PageModel?;
+        // if (model != null &&
+        //     (model.transitionEffect.value > 0 || model.transitionEffect2.value > 0)) {
+        //   Future.delayed(model.getPageDuration(), () {
+        //     setSelectedMid(mid);
+        //   });
+        //   return true;
+        // }
       }
       setSelectedMid(mid);
       return true;
@@ -317,6 +321,10 @@ class PageManager extends CretaManager {
       return retval;
     }
     // 처음부터 다시 시작한다.
+    if (onGotoNextBook != null) {
+      onGotoNextBook?.call();
+      return null;
+    }
     return _getNextMid(-1, true);
   }
 
@@ -366,6 +374,11 @@ class PageManager extends CretaManager {
     String? retval = _getPrevMid(selectedOrder, false);
     if (retval != null) {
       return retval;
+    }
+    // 마지막으로 돌아간다
+    if (onGotoPrevBook != null) {
+      onGotoPrevBook?.call();
+      return null;
     }
     return _getPrevMid(-1, true);
   }
@@ -629,7 +642,6 @@ class PageManager extends CretaManager {
     // await createToDB(newModel);
     // insert(newModel, postion: getLength());
     // selectedMid = newModel.mid;
-
     return newModel;
   }
 

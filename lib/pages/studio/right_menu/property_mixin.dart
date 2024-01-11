@@ -303,6 +303,7 @@ mixin PropertyMixin {
     required Function(Color) onColor1Changed,
     required Function cardOpenPressed,
   }) {
+
     return Column(
       children: [
         //_gradationButton(),

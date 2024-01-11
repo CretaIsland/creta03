@@ -586,7 +586,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
     logger.fine('_drawLines()--------------------------------------------');
     List<LinkModel> linkList = [];
     manager.listIterator((frameModel) {
-      ContentsManager contentsManager = manager.findContentsManager(frameModel as FrameModel);
+      ContentsManager contentsManager = manager.findOrCreateContentsManager(frameModel as FrameModel);
       // if (contentsManager == null) {
       //   return null;
       // }

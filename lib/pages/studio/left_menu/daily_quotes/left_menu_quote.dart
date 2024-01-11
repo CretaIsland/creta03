@@ -91,7 +91,6 @@ class _LeftMenuQuoteState extends State<LeftMenuQuote> {
       type: frameType,
     );
     frameCount++;
-    print('frameCount $frameCount + x = $x + y = $y');
     mychangeStack.endTrans();
   }
 }

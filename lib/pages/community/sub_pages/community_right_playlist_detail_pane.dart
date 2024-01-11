@@ -164,6 +164,13 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
     dummyManagerHolder.setState(DBState.idle);
   }
 
+  void _removeBookInPlaylist(int index) {
+    setState(() {
+      _currentPlaylistModel!.bookIdList.removeAt(index);
+      playlistManagerHolder.setToDB(_currentPlaylistModel!);
+    });
+  }
+
   Widget _getItemPane() {
     if (_currentPlaylistModel == null) {
       return SizedBox.shrink();
@@ -200,6 +207,7 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
             bookModel: bModel,
             width: widget.cretaLayoutRect.childWidth,
             index: index,
+            removeBook: _removeBookInPlaylist,
           );
         },
       ),

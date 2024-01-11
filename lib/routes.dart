@@ -156,15 +156,21 @@ final routesLoggedOut = RouteMap(
         logger.info('routeData path=${routeData.path}');
         logger.info('routeData parameters=${routeData.queryParameters.toString()}');
 
-        if (StudioVariables.selectedBookMid.isEmpty) {
-          logger.severe('selectedMid is empty');
-          String? uid = routeData.queryParameters['book'];
-          if (uid != null) {
-            StudioVariables.selectedBookMid = 'book=$uid';
-          } else {
-            logger.severe('StudioVariables.selectedBookMid and routeData is null !!!!');
+        // if (StudioVariables.selectedBookMid.isEmpty) {
+        //   logger.severe('selectedMid is empty');
+        //   String? uid = routeData.queryParameters['book'];
+        //   if (uid != null) {
+        //     StudioVariables.selectedBookMid = 'book=$uid';
+        //   } else {
+        //     logger.severe('StudioVariables.selectedBookMid and routeData is null !!!!');
+        //   }
+        // }
+        Map<String, String> paramMap = routeData.queryParameters;
+        paramMap.forEach((key, value) {
+          if (key == 'book') {
+            StudioVariables.selectedBookMid = '$key=$value';
           }
-        }
+        });
 
         return TransitionPage(
             child:
@@ -182,11 +188,20 @@ final routesLoggedOut = RouteMap(
       logger.finest('selectedMid=${StudioVariables.selectedBookMid}');
 
       Map<String, String> paramMap = routeData.queryParameters;
-      String mode = paramMap['mode'] ?? '';
+      // String mode = paramMap['mode'] ?? '';
       bool? isPublishedMode;
-      if (mode.compareTo('preview') == 0) {
-        isPublishedMode = true;
-      }
+      // if (mode.compareTo('preview') == 0) {
+      //   isPublishedMode = true;
+      // }
+
+      paramMap.forEach((key, value) {
+        if (key == 'book') {
+          StudioVariables.selectedBookMid = '$key=$value';
+        }
+        else if (key == 'mode' && value == 'preview') {
+          isPublishedMode = true;
+        }
+      });
 
       return TransitionPage(
         child: BookMainPage(
@@ -291,6 +306,7 @@ final routesLoggedOut = RouteMap(
             CommunityRightBookPane.playlistId = '$key=$value';
           }
         });
+        StudioVariables.selectedBookMid = CommunityRightBookPane.bookId;
         return TransitionPage(
           child: CommunityPage(
             key: GlobalObjectKey(CommunityRightBookPane.bookId.isNotEmpty ? CommunityRightBookPane.bookId : 'NoBookMid'),

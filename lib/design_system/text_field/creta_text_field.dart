@@ -694,7 +694,6 @@ class CretaTextFieldState extends State<CretaTextField> {
           widget.onChanged?.call(value);
         },
         onTap: () {
-          logger.fine('onTapped');
           //setLastClicked();
           //setState(() {
           _clicked = true;

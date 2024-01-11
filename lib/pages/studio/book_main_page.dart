@@ -100,6 +100,9 @@ class BookMainPage extends StatefulWidget {
   final bool? isPublishedMode;
   final Function? toggleFullscreen;
 
+  final Function? onGotoPrevBook;
+  final Function? onGotoNextBook;
+
   static bool outSideClick = false;
   static GlobalKey leftMenuKey = GlobalObjectKey('LeftMenu');
   static GlobalKey rightMenuKey = GlobalObjectKey('RightMenu');
@@ -139,6 +142,8 @@ class BookMainPage extends StatefulWidget {
     this.size,
     this.isPublishedMode,
     this.toggleFullscreen,
+    this.onGotoPrevBook,
+    this.onGotoNextBook,
   }) : super(key: bookKey) {
     StudioVariables.isPreview = isPreviewX;
   }
@@ -229,7 +234,11 @@ class _BookMainPageState extends State<BookMainPage> {
     BookMainPage.bookManagerHolder!.clearAll();
     BookMainPage.pageManagerHolder = (widget.isPublishedMode ?? false)
         ? PageManager(
-            tableName: 'creta_page_published', isPublishedMode: widget.isPublishedMode ?? false)
+            tableName: 'creta_page_published',
+            isPublishedMode: widget.isPublishedMode ?? false,
+            onGotoPrevBook: widget.onGotoPrevBook,
+            onGotoNextBook: widget.onGotoNextBook,
+          )
         : PageManager();
     // BookMainPage.polygonFrameManagerHolder = FrameTemplateManager(frameType: FrameType.polygon);
     // BookMainPage.animationFrameManagerHolder = FrameTemplateManager(frameType: FrameType.animation);
@@ -246,13 +255,14 @@ class _BookMainPageState extends State<BookMainPage> {
     logger.info("url=$url-------------------------------");
     logger.info("query=$query-------------------------------");
 
-    int pos = query.indexOf('&');
-    String mid = pos > 0 ? query.substring(0, pos) : query;
-    logger.info("mid=$mid-------------------------------");
-
-    if (mid.isEmpty) {
-      mid = StudioVariables.selectedBookMid;
-    }
+    // int pos = query.indexOf('&');
+    // String mid = pos > 0 ? query.substring(0, pos) : query;
+    // logger.info("mid=$mid-------------------------------");
+    //
+    // if (mid.isEmpty) {
+    //   mid = StudioVariables.selectedBookMid;
+    // }
+    String mid = StudioVariables.selectedBookMid;
 
     if (mid.isNotEmpty) {
       logger.fine("1) --_BookMainPageState-----------------------------------------");
@@ -331,6 +341,7 @@ class _BookMainPageState extends State<BookMainPage> {
     if (StudioVariables.isPreview == false) {
       StudioVariables.stopNextContents = false;
       StudioVariables.stopPaging = false;
+      StudioVariables.hideMouse = false;
     }
 
     logger.info("end ---_BookMainPageState-----------------------------------------");
@@ -514,11 +525,15 @@ class _BookMainPageState extends State<BookMainPage> {
 
   @override
   void dispose() {
-    logger.info('BookMainPage.dispose');
+    logger.severe('BookMainPage.dispose');
 
     if (BookMainPage.backGroundMusic != null) {
       FrameManager.stopBackgroundMusic(BookMainPage.backGroundMusic!);
     }
+
+    // 아직 save  되지 않은 Queue 를 모두 save 한다.
+    saveManagerHolder?.stopTimer();
+    saveManagerHolder?.saveForce(notify: false);
 
     //_mouseMovetimer?.cancel();
     //_stopConnectedUserTimer();
@@ -607,42 +622,14 @@ class _BookMainPageState extends State<BookMainPage> {
   Widget _bookMain(DateTime lastEventTime) {
     return StudioVariables.isPreview
         ? Scaffold(
-            body: 
-            // MouseRegion(
-            //     cursor:
-            //         StudioVariables.hideMouse ? SystemMouseCursors.none : SystemMouseCursors.click,
-            //     onExit: (event) {
-            //       //print('mouse exit');
-            //       setState(() {
-            //         StudioVariables.hideMouse = true;
-            //       });
-            //     },
-            //     onEnter: (event) {
-            //       // 처음 떳을 때이다.
-            //       //print('mouse enter');
-            //       setState(() {
-            //         StudioVariables.hideMouse = true;
-            //       });
-            //       // // 마우스가 위젯에 진입할 때 커서를 숨김
-            //       // StudioVariables.hideMouse = true;
-            //       // SystemChannels.mouseCursor.invokeMethod('mouseCursor', 'none');
-            //       // _mouseMoveCount = 0;
-            //     },
-            //     onHover: (pointerEvent) {
-            //       _mouseMoveCount++;
-            //       _lastMouseMoveTime = DateTime.now();
-            //       if (_mouseMoveCount > 30) {
-            //         //print('mouse hover');
-            //         //SystemChannels.mouseCursor.invokeMethod('mouseCursor', 'auto');
-            //         setState(() {
-            //           StudioVariables.hideMouse = false;
-            //         });
-            //         _mouseMoveCount = 0;
-            //       }
-            //     },
-              MouseHider(fromPriviewToMain: _fromPriviewToMain,
-                child: _waitBook()),
-                )
+            body: MouseHider(
+              fromPriviewToMain: _fromPriviewToMain,
+              child: _waitBook(),
+              onMouseHideChanged: () {
+                BookMainPage.pageManagerHolder?.notify();
+              },
+            ),
+          )
         : Snippet.CretaScaffold(
             title: Snippet.logo('studio', route: () {
               Routemaster.of(context).push(AppRoutes.studioBookGridPage);
@@ -1421,7 +1408,11 @@ class _BookMainPageState extends State<BookMainPage> {
           SizedBox(width: padding),
           BTN.floating_l(
             icon: Icons.smart_display_outlined,
-            onPressed: () {
+            onPressed: () async {
+              // 가기전에 모든것을 save 한다.
+              saveManagerHolder?.stopTimer();
+              await saveManagerHolder?.saveForce(notify: false);
+
               // PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
               // if (pageModel == null) {
               //   return;
