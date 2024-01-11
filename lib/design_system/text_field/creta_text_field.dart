@@ -705,7 +705,14 @@ class CretaTextFieldState extends State<CretaTextField> {
 
   void _onSubmitted(String value) {
     if (isNumeric()) {
-      double num = double.parse(value);
+      double num = 0;
+      if (value.isNotEmpty) {
+        num = double.parse(value);
+      } else {
+        setState(() {
+          _controller.text = '0';
+        });
+      }
       if (widget.maxNumber != null && num > widget.maxNumber!) {
         setState(() {
           _controller.text = '${widget.maxNumber!}';
