@@ -255,9 +255,20 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
     dummyManagerHolder.setState(DBState.idle);
   }
 
-  void _popupMenu(PlaylistModel model) {
+  void _editPlaylistProperty(PlaylistModel model) {
     setState(() {
       playlistManagerHolder.modifyPlaylist(context, model);
+    });
+  }
+
+  void _deletePlaylist(PlaylistModel model) {
+    setState(() {
+      playlistManagerHolder.removeToDB(model.getMid);
+      for(var plModel in _playlistModelList) {
+        if (plModel.getMid != model.getMid) continue;
+        _playlistModelList.remove(plModel);
+        break;
+      }
     });
   }
 
@@ -283,7 +294,8 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
             playlistModel: plModel,
             width: widget.cretaLayoutRect.childWidth,
             bookMap: _cretaBookMap,
-            popupMenu: _popupMenu,
+            editPopupMenu: _editPlaylistProperty,
+            deletePopupMenu: _deletePlaylist,
           );
         },
       ),

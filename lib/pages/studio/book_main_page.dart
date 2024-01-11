@@ -100,6 +100,9 @@ class BookMainPage extends StatefulWidget {
   final bool? isPublishedMode;
   final Function? toggleFullscreen;
 
+  final Function? onGotoPrevBook;
+  final Function? onGotoNextBook;
+
   static bool outSideClick = false;
   static GlobalKey leftMenuKey = GlobalObjectKey('LeftMenu');
   static GlobalKey rightMenuKey = GlobalObjectKey('RightMenu');
@@ -139,6 +142,8 @@ class BookMainPage extends StatefulWidget {
     this.size,
     this.isPublishedMode,
     this.toggleFullscreen,
+    this.onGotoPrevBook,
+    this.onGotoNextBook,
   }) : super(key: bookKey) {
     StudioVariables.isPreview = isPreviewX;
   }
@@ -229,7 +234,11 @@ class _BookMainPageState extends State<BookMainPage> {
     BookMainPage.bookManagerHolder!.clearAll();
     BookMainPage.pageManagerHolder = (widget.isPublishedMode ?? false)
         ? PageManager(
-            tableName: 'creta_page_published', isPublishedMode: widget.isPublishedMode ?? false)
+            tableName: 'creta_page_published',
+            isPublishedMode: widget.isPublishedMode ?? false,
+            onGotoPrevBook: widget.onGotoPrevBook,
+            onGotoNextBook: widget.onGotoNextBook,
+          )
         : PageManager();
     // BookMainPage.polygonFrameManagerHolder = FrameTemplateManager(frameType: FrameType.polygon);
     // BookMainPage.animationFrameManagerHolder = FrameTemplateManager(frameType: FrameType.animation);

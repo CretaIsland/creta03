@@ -33,11 +33,16 @@ class PageManager extends CretaManager {
   Map<String, GlobalObjectKey> thumbKeyMap = {};
   final bool isPublishedMode;
 
+  final Function? onGotoPrevBook;
+  final Function? onGotoNextBook;
+
   static Map<String, String> oldNewMap = {}; // linkCopy 시에 필요하다.
 
   PageManager({
     String tableName = 'creta_page',
     this.isPublishedMode = false,
+    this.onGotoPrevBook,
+    this.onGotoNextBook,
   }) : super(tableName, null) {
     saveManagerHolder?.registerManager('page', this);
   }
@@ -316,6 +321,10 @@ class PageManager extends CretaManager {
       return retval;
     }
     // 처음부터 다시 시작한다.
+    if (onGotoNextBook != null) {
+      onGotoNextBook?.call();
+      return null;
+    }
     return _getNextMid(-1, true);
   }
 
@@ -365,6 +374,11 @@ class PageManager extends CretaManager {
     String? retval = _getPrevMid(selectedOrder, false);
     if (retval != null) {
       return retval;
+    }
+    // 마지막으로 돌아간다
+    if (onGotoPrevBook != null) {
+      onGotoPrevBook?.call();
+      return null;
     }
     return _getPrevMid(-1, true);
   }

@@ -224,17 +224,20 @@ class BTN {
     );
   }
 
-  static CretaButton fill_gray_i_m(
-      {required IconData icon,
-      required Function onPressed,
-      double buttonSize = 32,
-      String? tooltip,
-      Color? tooltipFg,
-      Color? tooltipBg,
-      double iconSize = 16,
-      Color? iconColor,
-      CretaButtonColor buttonColor = CretaButtonColor.white}) {
+  static CretaButton fill_gray_i_m({
+    required IconData icon,
+    required Function onPressed,
+    double buttonSize = 32,
+    String? tooltip,
+    Color? tooltipFg,
+    Color? tooltipBg,
+    double iconSize = 16,
+    Color? iconColor,
+    CretaButtonColor buttonColor = CretaButtonColor.white,
+    Key? key,
+  }) {
     return CretaButton(
+      key: key,
       tooltip: tooltip,
       tooltipFg: tooltipFg,
       tooltipBg: tooltipBg,

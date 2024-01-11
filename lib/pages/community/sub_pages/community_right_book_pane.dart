@@ -127,6 +127,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   bool _isEditableBook = false;
 
   PlaylistModel? _playlistModelOnRightPane;
+  int _selectedPlaylistIndex = -1;
   bool _showPlaylist = true;
   bool _showAllPlaylistItems = false;
   int _hoverPlaylistIndex = -1;
@@ -483,6 +484,16 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
       _playlistChannelMap.forEach((channelId, channelModel) {
         channelModel.getModelFromMaps(_userPropertyMap, _teamMap);
       });
+      //
+      if (_playlistModelOnRightPane != null) {
+        for (int idx = 0; idx < _playlistModelOnRightPane!.bookIdList.length; idx++) {
+          String bookId = _playlistModelOnRightPane!.bookIdList[idx];
+          if (bookId == _currentBookModel!.getMid) {
+            _selectedPlaylistIndex = idx;
+            break;
+          }
+        }
+      }
     }
     dummyManagerHolder.setState(DBState.idle);
   }
@@ -738,14 +749,42 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   }
 
   void _toggleFullscreen() {
-    setState(() {
+    //setState(() {
       StudioVariables.isFullscreen = !StudioVariables.isFullscreen;
       if (StudioVariables.isFullscreen) {
         document.documentElement?.requestFullscreen();
       } else {
         document.exitFullscreen();
       }
-    });
+    //});
+  }
+
+  void _onGotoPrevBook() {
+    if (_selectedPlaylistIndex < 0) return;
+    if (_playlistModelOnRightPane == null) return;
+    if (_playlistModelOnRightPane!.bookIdList.length == 1) return;
+    int prevIdx = _selectedPlaylistIndex - 1;
+    if (prevIdx < 0) {
+      // 맨앞이면 마지막으로 이동 금지?
+      return;
+    }
+    String bookId = _playlistModelOnRightPane!.bookIdList[prevIdx];
+    String linkUrl = '${AppRoutes.communityBook}?$bookId&${_playlistModelOnRightPane?.getMid}';
+    Routemaster.of(context).push(linkUrl);
+  }
+
+  void _onGotoNextBook() {
+    if (_selectedPlaylistIndex < 0) return;
+    if (_playlistModelOnRightPane == null) return;
+    if (_playlistModelOnRightPane!.bookIdList.length == 1) return;
+    int nextIdx = _selectedPlaylistIndex + 1;
+    if (nextIdx >= _playlistModelOnRightPane!.bookIdList.length) {
+      // 맨뒤면 처음으로 이동 금지?
+      return;
+    }
+    String bookId = _playlistModelOnRightPane!.bookIdList[nextIdx];
+    String linkUrl = '${AppRoutes.communityBook}?$bookId&${_playlistModelOnRightPane?.getMid}';
+    Routemaster.of(context).push(linkUrl);
   }
 
   Widget _getBookPreview(Size size, { GlobalKey? bookKey, GlobalKey? parentKey }) {
@@ -761,6 +800,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
             size: size,
             isPublishedMode: true,
             toggleFullscreen: _toggleFullscreen,
+            onGotoPrevBook: CommunityRightBookPane.playlistId.isEmpty ? null : _onGotoPrevBook,
+            onGotoNextBook: CommunityRightBookPane.playlistId.isEmpty ? null : _onGotoNextBook,
           ),
         ),
       );

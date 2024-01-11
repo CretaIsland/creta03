@@ -1498,6 +1498,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   }
 
   Widget _getTitlePane(Size size) {
+    final String playDetailLinkUrl = ((_currentPlaylistModel?.bookIdList ?? []).isEmpty)
+        ? ''
+        : '${AppRoutes.communityBook}?${_currentPlaylistModel!.bookIdList[0]}&${_currentPlaylistModel!.getMid}';
     switch (widget.subPageUrl) {
       case AppRoutes.channel:
         return _getChannelTitlePane(size);
@@ -1581,11 +1584,20 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                             style: CretaFont.buttonMedium,
                           ),
                           Expanded(child: Container()),
-                          BTN.fill_blue_t_m(
-                            text: '재생하기',
-                            width: null,
-                            onPressed: () {},
-                            textStyle: CretaFont.buttonLarge.copyWith(color: Colors.white),
+                          Link(
+                            uri: Uri.parse(playDetailLinkUrl),
+                            builder: (context, function) {
+                              return BTN.fill_blue_t_m(
+                                width: null,
+                                text: '재생하기',
+                                textStyle: CretaFont.buttonLarge.copyWith(color: Colors.white),
+                                onPressed: () {
+                                  if (playDetailLinkUrl.isNotEmpty) {
+                                    Routemaster.of(context).push(playDetailLinkUrl);
+                                  }
+                                },
+                              );
+                            },
                           ),
                           SizedBox(width: 6),
                           BTN.fill_gray_i_m(icon: Icons.menu, onPressed: () {}),

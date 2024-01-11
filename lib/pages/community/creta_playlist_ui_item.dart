@@ -3,6 +3,7 @@
 //import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 //import 'dart:async';
+import 'package:url_launcher/link.dart';
 //import 'package:flutter/gestures.dart';
 //import 'package:hycop/hycop.dart';
 //import 'package:hycop/common/util/logger.dart';
@@ -13,7 +14,7 @@ import '../../design_system/creta_font.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 //import '../../design_system/component/snippet.dart';
 //import '../../design_system/menu/creta_drop_down.dart';
-//import '../../design_system/menu/creta_popup_menu.dart';
+import '../../design_system/menu/creta_popup_menu.dart';
 //import '../../design_system/text_field/creta_search_bar.dart';
 //import '../design_system/creta_color.dart';
 //import 'package:image_network/image_network.dart';
@@ -55,34 +56,77 @@ class CretaPlaylistItem extends StatefulWidget {
     required this.width,
     //required this.height,
     required this.bookMap,
-    required this.popupMenu,
+    required this.editPopupMenu,
+    required this.deletePopupMenu,
   });
   final PlaylistModel playlistModel;
   final double width;
   final Map<String, BookModel> bookMap;
   //final double height;
-  final Function(PlaylistModel) popupMenu;
+  final Function(PlaylistModel) editPopupMenu;
+  final Function(PlaylistModel) deletePopupMenu;
 
   @override
   CretaPlaylistItemState createState() => CretaPlaylistItemState();
 }
 
 class CretaPlaylistItemState extends State<CretaPlaylistItem> {
-  bool mouseOver = false;
-  bool popmenuOpen = false;
+  //bool _mouseOver = false;
+  //bool _popmenuOpen = false;
 
   final ScrollController _controller = ScrollController();
+  late final GlobalKey _popupMenuKey;
+  late List<CretaMenuItem> _popupMenuList;
 
   @override
   void initState() {
     super.initState();
+
+    _popupMenuKey = GlobalObjectKey('CretaPlaylistItemState.${widget.playlistModel.getMid}.popmenu');
+    _popupMenuList = [
+      CretaMenuItem(
+        caption: '재생목록 수정',
+        onPressed: _editPlaylistProperty,
+      ),
+      CretaMenuItem(
+        caption: '재생목록 삭제',
+        onPressed: _deletePlaylist,
+      ),
+    ];
+  }
+
+  void _editPlaylistProperty() {
+    widget.editPopupMenu.call(widget.playlistModel);
+  }
+
+  void _deletePlaylist() {
+    widget.deletePopupMenu.call(widget.playlistModel);
   }
 
   void setPopmenuOpen() {
-    popmenuOpen = true;
+    //_popmenuOpen = true;
+  }
+
+  void _openPopupMenu() {
+    CretaPopupMenu.showMenu(
+      xOffset: 35,
+      context: context,
+      globalKey: _popupMenuKey,
+      popupMenu: _popupMenuList,
+      initFunc: setPopmenuOpen,
+    ).then((value) {
+      // logger.finest('팝업메뉴 닫기');
+      // setState(() {
+      //   _popmenuOpen = false;
+      // });
+    });
   }
 
   Widget _leftInfoPane() {
+    final String showDetailLinkUrl = '${AppRoutes.playlistDetail}?${widget.playlistModel.mid}';
+    final String playDetailLinkUrl = (widget.playlistModel.bookIdList.isEmpty)
+        ? ''
+        : '${AppRoutes.communityBook}?${widget.playlistModel.bookIdList[0]}&${widget.playlistModel.getMid}';
     return Container(
       width: 395,
       padding: EdgeInsets.fromLTRB(_rightViewLeftPane, 0, _rightViewRightPane, 0),
@@ -115,7 +159,7 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
               ),
               SizedBox(height: 48),
               Text(
-                CretaAccountManager.getUserProperty?.nickname ?? '',//widget.playlistModel.userId,
+                CretaAccountManager.getUserProperty?.nickname ?? '', //widget.playlistModel.userId,
                 style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[500]),
               ),
               SizedBox(height: 10),
@@ -141,32 +185,42 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
             children: [
               SizedBox(height: 24),
               BTN.fill_gray_i_m(
+                key: _popupMenuKey,
                 icon: Icons.menu,
                 onPressed: () {
-                  widget.popupMenu.call(widget.playlistModel);
+                  //widget.popupMenu.call(widget.playlistModel);
+                  _openPopupMenu();
                 },
               ),
               SizedBox(height: 23),
-              BTN.fill_gray_t_m(
-                text: '전체보기',
-                width: 77,
-                height: 32,
-                onPressed: () {
-                  CommunityRightPlaylistDetailPane.playlistId = widget.playlistModel.mid;
-                  String linkUrl = '${AppRoutes.playlistDetail}?${widget.playlistModel.mid}';
-                  Routemaster.of(context).push(linkUrl);
+              Link(
+                uri: Uri.parse(showDetailLinkUrl),
+                builder: (context, function) {
+                  return BTN.fill_gray_t_m(
+                    text: '전체보기',
+                    width: 77,
+                    height: 32,
+                    onPressed: () {
+                      CommunityRightPlaylistDetailPane.playlistId = widget.playlistModel.mid;
+                      Routemaster.of(context).push(showDetailLinkUrl);
+                    },
+                  );
                 },
               ),
               SizedBox(height: 8),
-              BTN.fill_blue_t_m(
-                text: '재생하기',
-                width: 77,
-                height: 32,
-                onPressed: () {
-                  if (widget.playlistModel.bookIdList.isNotEmpty) {
-                    String linkUrl = '${AppRoutes.communityBook}?${widget.playlistModel.bookIdList[0]}&${widget.playlistModel.getMid}';
-                    Routemaster.of(context).push(linkUrl);
-                  }
+              Link(
+                uri: Uri.parse(playDetailLinkUrl),
+                builder: (context, function) {
+                  return BTN.fill_blue_t_m(
+                    width: 77,
+                    height: 32,
+                    text: '재생하기',
+                    onPressed: () {
+                      if (playDetailLinkUrl.isNotEmpty) {
+                        Routemaster.of(context).push(playDetailLinkUrl);
+                      }
+                    },
+                  );
                 },
               ),
             ],
@@ -228,12 +282,12 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
     return MouseRegion(
       onEnter: (value) {
         setState(() {
-          mouseOver = true;
+          //_mouseOver = true;
         });
       },
       onExit: (value) {
         setState(() {
-          mouseOver = false;
+          //_mouseOver = false;
         });
       },
       child: Container(
