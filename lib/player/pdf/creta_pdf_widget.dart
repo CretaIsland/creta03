@@ -28,6 +28,10 @@ class CretaPdfPlayerWidgetState extends State<CretaPdfWidget> {
     super.initState();
     //widget.player.afterBuild();
   }
+  void invalidate() {
+    setState(() {});
+  }
+
 
   @override
   void dispose() {

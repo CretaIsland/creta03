@@ -334,7 +334,7 @@ class CretaPlayTimer extends ChangeNotifier {
   }
 
   CretaAbsPlayer createPlayer(ContentsModel model) {
-    final String key = contentsManager.keyMangler(model.mid);
+    final String key = contentsManager.keyMangler(model);
     CretaAbsPlayer? player = contentsManager.getPlayer(key);
     if (player != null) {
       _currentPlayer = player;
@@ -410,18 +410,18 @@ class CretaPlayTimer extends ChangeNotifier {
     switch (model.contentsType) {
       case ContentsType.video:
         return CretaVideoWidget(
-          key: GlobalObjectKey(player.keyString),
+          key: contentsManager.keyGen(player.keyString, model.contentsType),
           player: player,
         );
       case ContentsType.image:
         return CretaImagerWidget(
-          key: GlobalObjectKey(player.keyString),
+          key: contentsManager.keyGen(player.keyString, model.contentsType),
           player: player,
         );
       case ContentsType.text:
         //print('createWidget');
         return CretaTextWidget(
-          key: GlobalObjectKey(player.keyString),
+          key: contentsManager.keyGen(player.keyString, model.contentsType),
           player: player,
         );
       case ContentsType.document:
@@ -431,24 +431,24 @@ class CretaPlayTimer extends ChangeNotifier {
         // );
         //print('-------------createWidget${model.name}, ${model.contentsType})------------');
         return CretaDocWidget(
-          key: GlobalObjectKey(player.keyString),
+          key: contentsManager.keyGen(player.keyString, model.contentsType),
           player: player,
           frameManager: frameManager,
         );
       case ContentsType.music:
         // print('-------------createMusicWidget${model.name}, ${model.contentsType})------------');
         return CretaMusicWidget(
-          key: GlobalObjectKey(player.keyString),
+          key: contentsManager.keyGen(player.keyString, model.contentsType),
           player: player,
         );
       case ContentsType.pdf:
         return CretaPdfWidget(
-          key: GlobalObjectKey(player.keyString),
+          key: contentsManager.keyGen(player.keyString, model.contentsType),
           player: player,
         );
       default:
         return CretaEmptyPlayerWidget(
-          key: GlobalObjectKey(player.keyString),
+          key: contentsManager.keyGen(player.keyString, model.contentsType),
           player: player,
         );
     }

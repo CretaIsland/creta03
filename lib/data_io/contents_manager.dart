@@ -28,18 +28,132 @@ import '../pages/studio/studio_snippet.dart';
 import '../pages/studio/studio_variables.dart';
 import '../player/creta_abs_player.dart';
 import '../player/creta_play_timer.dart';
+import '../player/doc/creta_doc_widget.dart';
+import '../player/image/creta_image_widget.dart';
+import '../player/music/creta_music_widget.dart';
+import '../player/pdf/creta_pdf_widget.dart';
+import '../player/text/creta_text_widget.dart';
 import '../player/video/creta_video_player.dart';
+import '../player/video/creta_video_widget.dart';
 import 'creta_manager.dart';
 //import 'depot_manager.dart';
 import 'depot_manager.dart';
 import 'book_manager.dart';
 import 'frame_manager.dart';
+import 'key_handler.dart';
 import 'link_manager.dart';
 
 class ContentsManager extends CretaManager {
   final PageModel pageModel;
   final FrameModel frameModel;
   final bool isPublishedMode;
+
+  // for text widget only start
+
+  KeyHandler textKeyHandler = KeyHandler();
+  KeyHandler imageKeyHandler = KeyHandler();
+  KeyHandler videoKeyHandler = KeyHandler();
+  KeyHandler docKeyHandler = KeyHandler();
+  KeyHandler musicKeyHandler = KeyHandler();
+  KeyHandler pdfKeyHandler = KeyHandler();
+  KeyHandler defaultKeyHandler = KeyHandler();
+
+  GlobalObjectKey<State<StatefulWidget>> keyGen(String keyString, ContentsType cType) {
+    switch (cType) {
+      case ContentsType.video:
+        return videoKeyHandler.keyGen(keyString);
+      case ContentsType.image:
+        return imageKeyHandler.keyGen(keyString);
+      case ContentsType.text:
+        return textKeyHandler.keyGen(keyString);
+      case ContentsType.document:
+        return docKeyHandler.keyGen(keyString);
+      case ContentsType.music:
+        return musicKeyHandler.keyGen(keyString);
+      case ContentsType.pdf:
+        return pdfKeyHandler.keyGen(keyString);
+
+      default:
+        return defaultKeyHandler.keyGen(keyString);
+    }
+  }
+
+  bool invalidateVideo(ContentsModel model) {
+    CretaVideoPlayerWidgetState? state =
+        videoKeyHandler.getStateObject(keyMangler(model)) as CretaVideoPlayerWidgetState?;
+    if (state != null) {
+      state.invalidate();
+      return true;
+    }
+    logger.severe('TextPlayerWidget key not found ${model.mid}');
+    return false;
+  }
+
+  bool invalidateImage(ContentsModel model) {
+    CretaImagePlayerWidgetState? state =
+        imageKeyHandler.getStateObject(keyMangler(model)) as CretaImagePlayerWidgetState?;
+    if (state != null) {
+      state.invalidate();
+      return true;
+    }
+    logger.severe('TextPlayerWidget key not found ${model.mid}');
+    return false;
+  }
+
+  bool invalidateText(ContentsModel model) {
+    CretaTextPlayerWidgetState? state =
+        textKeyHandler.getStateObject(keyMangler(model)) as CretaTextPlayerWidgetState?;
+    if (state != null) {
+      state.invalidate();
+      return true;
+    }
+    logger.severe('TextPlayerWidget key not found ${model.mid}');
+    return false;
+  }
+
+  bool invalidateDoc(ContentsModel model) {
+    CretaDocPlayerWidgetState? state =
+        docKeyHandler.getStateObject(keyMangler(model)) as CretaDocPlayerWidgetState?;
+    if (state != null) {
+      state.invalidate();
+      return true;
+    }
+    logger.severe('DocPlayerWidget key not found ${model.mid}');
+    return false;
+  }
+
+  bool invalidateMusic(ContentsModel model) {
+    CretaMusicPlayerWidgetState? state =
+        musicKeyHandler.getStateObject(keyMangler(model)) as CretaMusicPlayerWidgetState?;
+    if (state != null) {
+      state.invalidate();
+      return true;
+    }
+    logger.severe('MusicPlayerWidget key not found ${model.mid}');
+    return false;
+  }
+
+  bool invalidatePdf(ContentsModel model) {
+    CretaPdfPlayerWidgetState? state =
+        pdfKeyHandler.getStateObject(keyMangler(model)) as CretaPdfPlayerWidgetState?;
+    if (state != null) {
+      state.invalidate();
+      return true;
+    }
+    logger.severe('PdfPlayerWidget key not found ${model.mid}');
+    return false;
+  }
+
+  // bool invalidateText(ContentsModel model) {
+  //   GlobalObjectKey<State<StatefulWidget>>? key = findKeyText(model);
+  //   if (key != null) {
+  //     key.currentState!.invalidate();
+  //     return true;
+  //   }
+  //   logger.severe('TextPlayerWidget key not found ${model.mid}');
+  //   return false;
+  // }
+  // for text widget only end
 
   ContentsEventController? sendEvent;
 
@@ -112,8 +226,8 @@ class ContentsManager extends CretaManager {
     playTimer = p;
   }
 
-  String keyMangler(String contentsMid) {
-    return 'contents-${pageModel.mid}-${frameModel.mid}-$contentsMid';
+  String keyMangler(ContentsModel contents) {
+    return 'contents-${pageModel.mid}-${frameModel.mid}-${contents.mid}';
   }
 
   bool hasContents() {

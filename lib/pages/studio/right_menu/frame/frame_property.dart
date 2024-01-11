@@ -1256,7 +1256,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   }
 
   Widget _pageTransition() {
-    logger.severe('pageTransition=${widget.model.transitionEffect.value}');
+    //logger.severe('pageTransition=${widget.model.transitionEffect.value}');
     List<AnimationType> animations =
         AnimationType.toAniListFromInt(widget.model.transitionEffect.value);
     String trails = '';

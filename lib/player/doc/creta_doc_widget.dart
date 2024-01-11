@@ -83,6 +83,11 @@ class CretaDocPlayerWidgetState extends State<CretaDocWidget> with CretaDocMixin
     if (mounted) super.setState(fn);
   }
 
+  void invalidate() {
+    setState(() {});
+  }
+
+
   @override
   void initState() {
     super.initState();

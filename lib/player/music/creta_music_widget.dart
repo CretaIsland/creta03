@@ -27,6 +27,11 @@ class CretaMusicPlayerWidgetState extends State<CretaMusicWidget> with CretaMusi
     if (mounted) super.setState(fn);
   }
 
+  void invalidate() {
+    setState(() {});
+  }
+
+
   @override
   void initState() {
     // print('++++++++++++++++++++++++++++++++++++++++++ creta_music_widget');
