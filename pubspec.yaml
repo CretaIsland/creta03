@@ -152,6 +152,8 @@ dependencies:
   glowy_borders: ^1.0.2
   avatar_glow: ^3.0.1
   flutter_glow: ^0.3.0
+
+  carousel_slider: ^4.2.1
   
 
 dev_dependencies:
@@ -244,6 +246,29 @@ flutter:
 
     - assets/social/
     - assets/giphy_official_logo.png
+
+    - assets/landing_page/image/arrow_1.png
+    - assets/landing_page/image/arrow_2.png
+    - assets/landing_page/image/arrow_3.png
+    - assets/landing_page/image/creta_animation_logo.png
+    - assets/landing_page/image/guide_1.png
+    - assets/landing_page/image/guide_2.png
+    - assets/landing_page/image/guide_3.png
+    - assets/landing_page/image/guide_4.png
+    - assets/landing_page/image/promotion_1.png
+    - assets/landing_page/image/promotion_2.png
+    - assets/landing_page/image/promotion_3.png
+    - assets/landing_page/image/promotion_4.png
+    - assets/landing_page/image/text_effect_1.png
+    - assets/landing_page/image/text_effect_2.png
+    - assets/landing_page/image/text_effect_3.png
+    - assets/landing_page/image/text_effect_4.png
+
+    - assets/landing_page/video/community_animation.mp4
+    - assets/landing_page/video/presentation_animation.mp4
+    - assets/landing_page/video/signage_animation.mp4
+    - assets/landing_page/video/quick_start_animation.mp4
+
     
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
