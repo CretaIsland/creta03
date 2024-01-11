@@ -23,8 +23,8 @@ class LeftMenuQuote extends StatefulWidget {
 }
 
 class _LeftMenuQuoteState extends State<LeftMenuQuote> {
-  double x = 150;
-  double y = 150;
+  double x = 0;
+  double y = 0;
   int frameCount = 0;
 
   @override
@@ -71,11 +71,10 @@ class _LeftMenuQuoteState extends State<LeftMenuQuote> {
     if (pageModel == null) return;
 
     //페이지폭의 50% 로 만든다. 세로는 가로의 1/6 이다.
-    double width = pageModel.width.value * 0.6;
-    double height = pageModel.height.value * 0.6;
+    double width = pageModel.width.value * 0.4;
+    double height = pageModel.height.value;
 
     x += 40.0 * frameCount;
-    y += 40.0 * frameCount;
 
     FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
     if (frameManager == null) {
