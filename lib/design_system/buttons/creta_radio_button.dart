@@ -66,8 +66,8 @@ class _CretaRadioButtonState extends State<CretaRadioButton> {
             width: MediaQuery.of(context).size.width,
             //height: 250,
             child: RadioGroup<dynamic>.builder(
-              itemPadding: 5.0,
-              iconPadding: 15.0,
+              // itemPadding: 5.0,
+              // iconPadding: 15.0,
               items: widget.valueMap.keys.toList(),
               textStyle: CretaFont.bodySmall.copyWith(color: CretaColor.text[700]!),
               // spacebetween: widget.spacebetween,

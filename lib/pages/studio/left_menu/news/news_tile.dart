@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-
 import '../../../../model/frame_model.dart';
 import '../../studio_constant.dart';
-
-// import 'article_view.dart';
 
 class NewsTile extends StatefulWidget {
   final String? imgUrl, title, desc, content, posturl;
@@ -36,8 +33,7 @@ class _NewsTileState extends State<NewsTile> {
   }
 
   Widget newsTileFull(BuildContext context) {
-    return 
-    Container(
+    return Container(
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       alignment: Alignment.bottomCenter,

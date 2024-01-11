@@ -190,57 +190,6 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
       gifUrl: getGif,
       width: 90.0,
       height: 90.0,
-      // onPressed: _onPressedCreateSelectedGif,
     );
   }
-
-  // void _onPressedCreateSelectedGif(String selectedUrl) async {
-  //   await _createGiphyFrame(selectedUrl);
-  //   BookMainPage.pageManagerHolder!.notify();
-  // }
-
-  // Future<void> _createGiphyFrame(String selectedGif) async {
-  //   PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
-  //   if (pageModel == null) return;
-  //   int frameCounter = 1;
-
-  //   double width = pageModel.width.value * 0.2;
-  //   double height = pageModel.height.value * 0.3;
-
-  //   x += frameCounter * 40.0;
-  //   y += frameCounter * 40.0;
-
-  //   FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
-  //   if (frameManager == null) {
-  //     return;
-  //   }
-
-  //   mychangeStack.startTrans();
-  //   FrameModel frameModel = await frameManager.createNextFrame(
-  //     doNotify: false,
-  //     size: Size(width, height),
-  //     pos: Offset(x, y),
-  //     bgColor1: Colors.transparent,
-  //   );
-
-  //   ContentsModel model = await _giphyContent(
-  //     selectedGif,
-  //     frameModel.mid,
-  //     frameModel.realTimeKey,
-  //   );
-  //   await ContentsManager.createContents(frameManager, [model], frameModel, pageModel);
-
-  //   frameCounter++;
-  //   mychangeStack.endTrans();
-  // }
-
-  // Future<ContentsModel> _giphyContent(String url, String frameMid, String bookMid) async {
-  //   ContentsModel retval = ContentsModel.withFrame(parent: frameMid, bookMid: bookMid);
-
-  //   retval.contentsType = ContentsType.image;
-  //   retval.name = 'name.gif';
-  //   retval.autoSizeType.set(AutoSizeType.autoFrameSize, save: false);
-  //   retval.remoteUrl = url;
-  //   return retval;
-  // }
 }

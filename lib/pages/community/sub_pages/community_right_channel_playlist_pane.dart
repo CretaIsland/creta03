@@ -282,7 +282,21 @@ class _CommunityRightChannelPlaylistPaneState extends State<CommunityRightChanne
     dummyManagerHolder.setState(DBState.idle);
   }
 
-  void _popupMenu(PlaylistModel model) {
+  void _editPlaylistProperty(PlaylistModel model) {
+    // setState(() {
+    //   playlistManagerHolder.modifyPlaylist(context, model);
+    // });
+  }
+
+  void _deletePlaylist(PlaylistModel model) {
+    // setState(() {
+    //   playlistManagerHolder.remove(model);
+    //   for(var plModel in _playlistModelList) {
+    //     if (plModel.getMid != model.getMid) continue;
+    //     _playlistModelList.remove(plModel);
+    //     break;
+    //   }
+    // });
   }
 
   Widget _getItemPane() {
@@ -319,7 +333,8 @@ class _CommunityRightChannelPlaylistPaneState extends State<CommunityRightChanne
             playlistModel: plModel,
             width: widget.cretaLayoutRect.childWidth,
             bookMap: _playlistsBooksMap,
-            popupMenu: _popupMenu,
+            editPopupMenu: _editPlaylistProperty,
+            deletePopupMenu: _deletePlaylist,
           );
         },
       ),

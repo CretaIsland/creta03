@@ -15,7 +15,16 @@ import 'article_model.dart';
 import 'news_api.dart';
 
 class LeftMenuNews extends StatefulWidget {
-  const LeftMenuNews({Key? key}) : super(key: key);
+  final String title;
+  final TextStyle titleStyle;
+  final TextStyle dataStyle;
+
+  const LeftMenuNews({
+    super.key,
+    required this.title,
+    required this.titleStyle,
+    required this.dataStyle,
+  });
 
   @override
   State<LeftMenuNews> createState() => _LeftMenuNewsState();
@@ -63,31 +72,40 @@ class _LeftMenuNewsState extends State<LeftMenuNews> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Future.wait([_categoriesFuture, _newsFuture]),
-      builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return SizedBox(
-            height: 350.0,
-            child: Center(
-              child: Snippet.showWaitSign(),
-            ),
-          );
-        } else if (snapshot.hasError) {
-          return Center(
-            child: Text('Error loading data: ${snapshot.error}'),
-          );
-        } else {
-          List<CategoryModel> categories = snapshot.data![0] as List<CategoryModel>;
-          // List<Article> newslist = snapshot.data![1] as List<Article>;
-          return Column(
-            children: [
-              newsCategories(categories),
-              // newsArticle(newslist),
-            ],
-          );
-        }
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 12.0, bottom: 12.0, left: 24.0),
+          child: Text(widget.title, style: widget.dataStyle),
+        ),
+        FutureBuilder(
+          future: Future.wait([_categoriesFuture, _newsFuture]),
+          builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return SizedBox(
+                height: 350.0,
+                child: Center(
+                  child: Snippet.showWaitSign(),
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('Error loading data: ${snapshot.error}'),
+              );
+            } else {
+              List<CategoryModel> categories = snapshot.data![0] as List<CategoryModel>;
+              // List<Article> newslist = snapshot.data![1] as List<Article>;
+              return Column(
+                children: [
+                  newsCategories(categories),
+                  // newsArticle(newslist),
+                ],
+              );
+            }
+          },
+        ),
+      ],
     );
   }
 
@@ -237,13 +255,18 @@ class CategoryCard extends StatelessWidget {
           fit: BoxFit.cover,
         ),
         Container(
+          height: 80,
+          width: 160,
+          color: Colors.black54,
+        ),
+        Container(
           alignment: Alignment.center,
           height: 80,
           width: 160,
           child: Text(
             categoryName!,
             textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+            style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
           ),
         )
       ],

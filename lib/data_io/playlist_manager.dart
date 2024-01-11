@@ -111,7 +111,7 @@ class PlaylistManager extends CretaManager {
     Function(String, String, bool)? onModifyPlaylistDone,
   }) {
     final TextEditingController textController = TextEditingController();
-    _isPublic = true;
+    _isPublic = modifyMode ? modifyIsPublic : true;
     return CretaDialog(
       width: 364.0,
       height: 243.0,

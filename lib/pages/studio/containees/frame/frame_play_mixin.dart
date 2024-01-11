@@ -11,6 +11,8 @@
 
 import 'package:creta03/pages/studio/containees/frame/sticker/mini_menu.dart';
 import 'package:creta03/pages/studio/left_menu/clock/count_down_timer.dart';
+import 'package:creta03/pages/studio/left_menu/currency_exchange/rate_result.dart';
+import 'package:creta03/pages/studio/left_menu/daily_quotes/quote_page.dart';
 import 'package:creta03/pages/studio/left_menu/date_time/date_time_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_weather_bg_null_safety/bg/weather_bg.dart';
@@ -109,6 +111,12 @@ mixin FramePlayMixin {
       return false;
     }
     if (model.isNewsType()) {
+      return false;
+    }
+    if (model.isCurrencyXchangeType()) {
+      return false;
+    }
+    if (model.isQuoteType()) {
       return false;
     }
     if (contentsManager.getShowLength() > 0) {
@@ -351,6 +359,52 @@ mixin FramePlayMixin {
       width: width,
       frameModel: frameModel,
       selectedCategory: getCategory(frameModel.subType),
+    );
+  }
+
+  XchangeEle getCurrencyCard(int subType) {
+    // if (subType >= 0 && subType < rateList.length) {
+    //   return XchangeEle(
+    //     baseCurrency: rateList[subType],
+    //     finalCurrency: rateList[subType],
+    //     conversion: rateList[subType],
+    //   );
+    // } else {
+    //   return XchangeEle(
+    //     baseCurrency: 'USD',
+    //     finalCurrency: 'KRW',
+    //     conversion: '123.00',
+    //   );
+    // }
+    return XchangeEle(
+      baseCurrency: 'USD',
+      finalCurrency: 'KRW',
+      conversion: '123.00',
+    );
+  }
+
+  Widget currencyXchangeFrame({
+    required double width,
+    required double height,
+    required FrameModel frameModel,
+  }) {
+    return RateResult(
+      height: height,
+      width: width,
+      frameModel: frameModel,
+      xChangeEle: getCurrencyCard(frameModel.subType),
+    );
+  }
+
+  Widget dailyQuoteFrame({
+    required double width,
+    required double height,
+    required FrameModel frameModel,
+  }) {
+    return QuotePage(
+      height: height,
+      width: width,
+      frameModel: frameModel,
     );
   }
 

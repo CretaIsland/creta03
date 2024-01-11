@@ -152,6 +152,8 @@ dependencies:
   glowy_borders: ^1.0.2
   avatar_glow: ^3.0.1
   flutter_glow: ^0.3.0
+  quoter: ^0.0.1
+  carousel_slider: ^4.2.1
   
 
 dev_dependencies:

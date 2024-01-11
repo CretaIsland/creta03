@@ -607,6 +607,22 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
       );
     }
 
+    if (model.isCurrencyXchangeType()) {
+      return currencyXchangeFrame(
+        frameModel: model,
+        width: widget.width,
+        height: widget.height,
+      );
+    }
+
+    if (model.isQuoteType()) {
+      return dailyQuoteFrame(
+        frameModel: model,
+        width: widget.width,
+        height: widget.height,
+      );
+    }
+
     //print('ClipRect');
     return _childContents(model);
     // child: Image.asset(
