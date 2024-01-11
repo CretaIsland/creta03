@@ -75,7 +75,6 @@ class _LeftMenuQuoteState extends State<LeftMenuQuote> {
     double height = pageModel.height.value;
 
     x += 40.0 * frameCount;
-    y += 40.0 * frameCount;
 
     FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
     if (frameManager == null) {
