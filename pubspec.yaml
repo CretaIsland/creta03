@@ -152,6 +152,7 @@ dependencies:
   glowy_borders: ^1.0.2
   avatar_glow: ^3.0.1
   flutter_glow: ^0.3.0
+  quoter: ^0.0.1
   
 
 dev_dependencies:
@@ -244,6 +245,8 @@ flutter:
 
     - assets/social/
     - assets/giphy_official_logo.png
+    - assets/offline_quote.jpg
+    - assets/quote_BG.jpg
     
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
