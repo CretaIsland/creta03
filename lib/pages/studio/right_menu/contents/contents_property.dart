@@ -808,9 +808,11 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
               // _sendEvent!.sendEvent(widget.model);
             },
             onChanngeComplete: (value) {
+              print('opacity = $value');
               widget.model.opacity.set(value);
               //widget.model.save();
               logger.fine('opacity=${widget.model.opacity.value}');
+              //_contentsManager!.invalidatePlayerWidget(widget.model);
               _sendEvent!.sendEvent(widget.model);
             },
             postfix: '%',
@@ -834,7 +836,8 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                         }
                         idx++;
                       }
-                      _sendEvent!.sendEvent(widget.model);
+                      _contentsManager!.invalidatePlayerWidget(widget.model);
+                      //_sendEvent!.sendEvent(widget.model);
                     },
                     width: 75,
                     height: 24,
@@ -862,7 +865,8 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                 defaultValue: widget.model.isFlip.value,
                 onSelected: (value) {
                   widget.model.isFlip.set(value);
-                  _sendEvent!.sendEvent(widget.model);
+                  _contentsManager!.invalidatePlayerWidget(widget.model);
+                  //_sendEvent!.sendEvent(widget.model);
                   setState(() {});
                 },
               );
@@ -881,12 +885,14 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                   max: 360,
                   onChanngeComplete: (val) {
                     widget.model.angle.set(val);
-                    _sendEvent!.sendEvent(widget.model);
+                    _contentsManager!.invalidatePlayerWidget(widget.model);
+                    //_sendEvent!.sendEvent(widget.model);
                     setState(() {});
                   },
                   onChannged: (val) {
                     widget.model.angle.set(val);
-                    _sendEvent!.sendEvent(widget.model);
+                    _contentsManager!.invalidatePlayerWidget(widget.model);
+                    //_sendEvent!.sendEvent(widget.model);
                     setState(() {});
                   },
                 ),
@@ -903,7 +909,8 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                 defaultValue: widget.model.imageAniType.value == ImageAniType.move ? true : false,
                 onSelected: (value) {
                   widget.model.imageAniType.set(value ? ImageAniType.move : ImageAniType.none);
-                  _sendEvent!.sendEvent(widget.model);
+                  _contentsManager!.invalidatePlayerWidget(widget.model);
+                  //_sendEvent!.sendEvent(widget.model);
                   setState(() {});
                 },
               ),

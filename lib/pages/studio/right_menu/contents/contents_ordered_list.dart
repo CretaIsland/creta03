@@ -280,14 +280,15 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                 onLongPressDown: (detail) {
                   if (_selectedIndex != index && model.isShow.value == true) {
                     logger.fine('ContentsOrderedList $_selectedIndex $index');
-                    widget.contentsManager.playTimer?.releasePause();
+                    widget.contentsManager.playTimer?.releasePause(); // 내부에서 비디오일때만 동작하도록 되어있음.
                     widget.contentsManager.goto(model.order.value).then((v) {
-                      widget.contentsManager.setSelectedMid(model.mid);
+                      widget.contentsManager.setSelectedMid(model.mid, doNotify: false);
+                      widget.contentsManager.invalidatePlayerWidget(model);
                     });
                     setState(() {
                       _selectedIndex = index;
                       logger.fine('ContentsOrderedList $_selectedIndex $index');
-                      widget.contentsManager.selectMusic(model, index);
+                      widget.contentsManager.selectMusic(model, index); // 내부에서 뮤직일떄만 동작하도록 되어 있음
                     });
                   }
                 },
@@ -955,7 +956,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
           //widget.contentsManager.notify();
           //if (model.textType == TextType.clock) {
-          widget.contentsManager.invalidateText(model);
+          widget.contentsManager.invalidatePlayerWidget(model);
 
           //widget.frameManager!.refreshFrame(model.mid, deep: true);
           //_sendEvent!.sendEvent(_frameModel);
@@ -990,7 +991,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
           //widget.contentsManager.notify();
           //if (model.textType == TextType.clock) {
-          widget.contentsManager.invalidateText(model);
+          widget.contentsManager.invalidatePlayerWidget(model);
 
           //_sendEvent!.sendEvent(_frameModel);
           //} else {
@@ -1025,7 +1026,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           // widget.contentsManager.notify();
           //if (model.textType == TextType.clock) {
           //print('ddddddddddddddddddddd');
-          widget.contentsManager.invalidateText(model);
+          widget.contentsManager.invalidatePlayerWidget(model);
 
           //_sendEvent!.sendEvent(_frameModel);
           //} else {

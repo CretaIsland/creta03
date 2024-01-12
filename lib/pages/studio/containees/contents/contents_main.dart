@@ -182,7 +182,7 @@ class ContentsMainState extends State<ContentsMain> {
 
   Widget _mainBuild(ContentsModel model, CretaPlayTimer playTimer) {
     //print('_mainBuild(${model.name}, ${model.contentsType})-------------------------');
-    if (model.opacity.value > 0.01) {
+    if (model.opacity.value < 1) {
       return Opacity(
         opacity: model.opacity.value,
         child: playTimer.createWidget(model),

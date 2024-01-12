@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../model/app_enums.dart';
+import '../../data_io/key_handler.dart';
 import '../../pages/studio/studio_variables.dart';
 import '../creta_abs_media_widget.dart';
 import 'creta_pdf_player.dart';
@@ -17,7 +18,7 @@ class CretaPdfWidget extends CretaAbsPlayerWidget {
   CretaPdfPlayerWidgetState createState() => CretaPdfPlayerWidgetState();
 }
 
-class CretaPdfPlayerWidgetState extends State<CretaPdfWidget> {
+class CretaPdfPlayerWidgetState extends CretaState<CretaPdfWidget> {
   @override
   void setState(VoidCallback fn) {
     if (mounted) super.setState(fn);
@@ -28,11 +29,7 @@ class CretaPdfPlayerWidgetState extends State<CretaPdfWidget> {
     super.initState();
     //widget.player.afterBuild();
   }
-  void invalidate() {
-    setState(() {});
-  }
-
-
+ 
   @override
   void dispose() {
     super.dispose();

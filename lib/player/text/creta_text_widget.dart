@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 
+import '../../data_io/key_handler.dart';
 import '../../model/contents_model.dart';
 import '../../pages/studio/studio_getx_controller.dart';
 import '../creta_abs_media_widget.dart';
@@ -20,16 +21,12 @@ class CretaTextWidget extends CretaAbsPlayerWidget {
   CretaTextPlayerWidgetState createState() => CretaTextPlayerWidgetState();
 }
 
-class CretaTextPlayerWidgetState extends State<CretaTextWidget> with CretaTextMixin {
+class CretaTextPlayerWidgetState extends CretaState<CretaTextWidget> with CretaTextMixin {
   ContentsEventController? _receiveEvent;
 
   @override
   void setState(VoidCallback fn) {
     if (mounted) super.setState(fn);
-  }
-
-  void invalidate() {
-    setState(() {});
   }
 
   @override

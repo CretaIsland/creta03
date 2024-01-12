@@ -78,6 +78,9 @@ class _CretaExSliderState extends State<CretaExSlider> {
           height: widget.height,
           width: widget.sliderWidth,
           child: ExpandableSlider.adaptive(
+            expandsOnLongPress: false,
+            expandsOnScale: false,
+            expandsOnDoubleTap: true,
             value: _makeValue(_value, widget.valueType),
             onChangeEnd: (val) {
               // setState(() {

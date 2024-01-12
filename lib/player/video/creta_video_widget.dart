@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../data_io/key_handler.dart';
 import '../../common/creta_utils.dart';
 import '../../design_system/component/snippet.dart';
 import '../../model/contents_model.dart';
@@ -21,16 +22,12 @@ class CretaVideoWidget extends CretaAbsPlayerWidget {
   State<CretaVideoWidget> createState() => CretaVideoPlayerWidgetState();
 }
 
-class CretaVideoPlayerWidgetState extends State<CretaVideoWidget> {
+class CretaVideoPlayerWidgetState extends CretaState<CretaVideoWidget> {
   bool isMute = false;
 
   @override
   void setState(VoidCallback fn) {
     if (mounted) super.setState(fn);
-  }
-
-  void invalidate() {
-    setState(() {});
   }
 
   @override

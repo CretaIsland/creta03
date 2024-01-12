@@ -22,6 +22,7 @@ import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../../studio_snippet.dart';
 import '../containee_mixin.dart';
+import '../../../../data_io/key_handler.dart';
 
 class PageThumbnail extends StatefulWidget {
   final BookModel bookModel;
@@ -47,7 +48,7 @@ class PageThumbnail extends StatefulWidget {
   State<PageThumbnail> createState() => PageThumbnailState();
 }
 
-class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
+class PageThumbnailState extends CretaState<PageThumbnail> with ContaineeMixin {
   FrameManager? _frameManager;
   bool _onceDBGetComplete = false;
   FrameEventController? _receiveEventFromProperty;
