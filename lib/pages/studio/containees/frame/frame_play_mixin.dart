@@ -56,14 +56,15 @@ import '../../studio_variables.dart';
 // import 'sticker/draggable_stickers.dart';
 
 mixin FramePlayMixin {
-  FrameManager? frameManager;
+  FrameManager? _frameManager;
+  FrameManager? get frameManager => _frameManager;
 
-  void setFrameManager(FrameModel? frameModel) {
-    if (frameModel == null) {
-      frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
-    } else {
-      frameManager = BookMainPage.pageManagerHolder!.findFrameManager(frameModel.parentMid.value);
-    }
+  void setFrameManager(FrameManager framManager) {
+    _frameManager = framManager;
+  }
+
+  void resetFrameManager(String pageMid) {
+    _frameManager = BookMainPage.pageManagerHolder!.findFrameManager(pageMid);
   }
 
   Future<ContentsManager?> createNewFrameAndContents(
@@ -74,11 +75,11 @@ mixin FramePlayMixin {
     if (frameModel == null) {
       mychangeStack.startTrans();
     }
-    frameModel ??= await frameManager!.createNextFrame(doNotify: false);
+    frameModel ??= await _frameManager!.createNextFrame(doNotify: false);
     // 코텐츠를 play 하고 DB 에 Create 하고 업로드까지 한다.
     logger.fine('frameCreated(${frameModel.mid}');
     ContentsManager? manager =
-        await ContentsManager.createContents(frameManager, modelList, frameModel, pageModel);
+        await ContentsManager.createContents(_frameManager, modelList, frameModel, pageModel);
 
     mychangeStack.endTrans();
     return manager;
@@ -213,16 +214,16 @@ mixin FramePlayMixin {
         contentsModel = contentsManager.getFirstModel();
       }
       if (contentsModel == null) {
-        if (frameManager != null) {
-          contentsModel = frameManager!.getFirstContents(model.mid);
+        if (_frameManager != null) {
+          contentsModel = _frameManager!.getFirstContents(model.mid);
         }
         if (contentsModel == null) {
           // overlay 경우일 가능성이 크다.
           //print('sdfdfsdfsdfsdfdfdffs');
           if (model.isOverlay.value == true) {
             //print('-------------------------------');
-            frameManager = BookMainPage.pageManagerHolder!.findFrameManager(model.parentMid.value);
-            contentsModel = frameManager!.getFirstContents(model.mid);
+            _frameManager = BookMainPage.pageManagerHolder!.findFrameManager(model.parentMid.value);
+            contentsModel = _frameManager!.getFirstContents(model.mid);
           }
         }
       }
@@ -332,7 +333,7 @@ mixin FramePlayMixin {
   }) {
     return DateTimeType(
       dateTimeFormat: getDateTimeVal(frameModel.subType),
-      frameManager: frameManager,
+      frameManager: _frameManager,
       frameMid: frameMid,
       child: child,
     );
@@ -469,7 +470,7 @@ mixin FramePlayMixin {
     double y = (pageModel.height.value - height) / 2;
 
     mychangeStack.startTrans();
-    FrameModel frameModel = await frameManager!.createNextFrame(
+    FrameModel frameModel = await _frameManager!.createNextFrame(
       doNotify: false,
       size: Size(width, height),
       pos: Offset(x, y),
@@ -521,7 +522,7 @@ mixin FramePlayMixin {
     //print('position in page= (${pos.dx}, ${pos.dy})');
 
     mychangeStack.startTrans();
-    FrameModel frameModel = await frameManager!.createNextFrame(
+    FrameModel frameModel = await _frameManager!.createNextFrame(
       doNotify: false,
       size: Size(width, height),
       pos: pos,

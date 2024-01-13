@@ -83,6 +83,14 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     if (mounted) super.setState(fn);
   }
 
+  void _notifyToMain(ContentsModel model) {
+    widget.contentsManager.invalidatePlayerWidget(model);
+  }
+
+  void _notifyToThumbnail() {
+    BookMainPage.pageManagerHolder?.invalidatThumbnail(widget.contentsManager.pageModel);
+  }
+
   @override
   Widget build(BuildContext context) {
     // 이곳에 도착하는 이벤트는  Consumer<ContaineeNotifier> 이다.
@@ -283,7 +291,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                     widget.contentsManager.playTimer?.releasePause(); // 내부에서 비디오일때만 동작하도록 되어있음.
                     widget.contentsManager.goto(model.order.value).then((v) {
                       widget.contentsManager.setSelectedMid(model.mid, doNotify: false);
-                      widget.contentsManager.invalidatePlayerWidget(model);
+                      _notifyToMain(model);
                     });
                     setState(() {
                       _selectedIndex = index;
@@ -371,20 +379,22 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   }
 
   Widget _title(ContentsModel model) {
-    return Tooltip(
-      message: model.name,
-      child: SizedBox(
-          width: 130,
-          child: Text(
-            ' ${model.name}',
-            maxLines: 1,
-            style: model.isShow.value
-                ? CretaFont.bodySmall
-                : CretaFont.bodySmall.copyWith(color: CretaColor.text[300]!),
-            textAlign: TextAlign.left,
-            overflow: TextOverflow.ellipsis,
-          )),
-    );
+    return // Tooltip(
+        //message: model.name,
+        //child:
+        SizedBox(
+            width: 130,
+            child: Text(
+              ' ${model.name}',
+              maxLines: 1,
+              style: model.isShow.value
+                  ? CretaFont.bodySmall
+                  : CretaFont.bodySmall.copyWith(color: CretaColor.text[300]!),
+              textAlign: TextAlign.left,
+              overflow: TextOverflow.ellipsis,
+            )
+            //),
+            );
   }
 
   void _allMute(bool mute, List<CretaModel> items) {
@@ -782,7 +792,9 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
             onEditComplete: (value) {
               model.remoteUrl = value;
               widget.contentsManager.setToDB(model);
-              widget.contentsManager.notify();
+              //widget.contentsManager.notify();
+              _sendEvent!.sendEvent(model);
+              _notifyToThumbnail();
             },
             onChanged: (value) {
               model.remoteUrl = value;
@@ -942,13 +954,13 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               _sendEvent!.sendEvent(_frameModel);
             }
           }
+          _notifyToThumbnail();
           //widget.contentsManager.notify();
           //if (model.textType == TextType.clock) {
 
           //} else {
           //  widget.frameManager?.notify();
           //}
-          //_sendEvent!.sendEvent(model);
           //});
         },
         onChannged: (val) {
@@ -956,8 +968,12 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
           //widget.contentsManager.notify();
           //if (model.textType == TextType.clock) {
-          widget.contentsManager.invalidatePlayerWidget(model);
-
+          _notifyToMain(model);
+          if (model.isAutoFrameOrSide()) {
+            // widget.frameManager?.updateModel(_frameModel);
+            // widget.frameManager?.refreshFrame(_frameModel.mid, deep: true);
+            _sendEvent!.sendEvent(model);
+          }
           //widget.frameManager!.refreshFrame(model.mid, deep: true);
           //_sendEvent!.sendEvent(_frameModel);
           //} else {
@@ -979,6 +995,10 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         min: -10,
         max: 10,
         onChanngeComplete: (val) {
+          _notifyToThumbnail();
+          if (model.isAutoFrameOrSide()) {
+            _sendEvent!.sendEvent(model);
+          }
           // //setState(() {
           // model.letterSpacing.set(val);
           // //});
@@ -991,8 +1011,10 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
           //widget.contentsManager.notify();
           //if (model.textType == TextType.clock) {
-          widget.contentsManager.invalidatePlayerWidget(model);
-
+          _notifyToMain(model);
+          if (model.isAutoFrameOrSide()) {
+            _sendEvent!.sendEvent(model);
+          }
           //_sendEvent!.sendEvent(_frameModel);
           //} else {
           //widget.frameManager?.notify();
@@ -1013,6 +1035,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         min: 0,
         max: 100,
         onChanngeComplete: (val) {
+          _notifyToThumbnail();
           // //setState(() {
           // model.lineHeight.set(val);
           // //});
@@ -1026,8 +1049,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           // widget.contentsManager.notify();
           //if (model.textType == TextType.clock) {
           //print('ddddddddddddddddddddd');
-          widget.contentsManager.invalidatePlayerWidget(model);
-
+          _notifyToMain(model);
+          _sendEvent!.sendEvent(model);
           //_sendEvent!.sendEvent(_frameModel);
           //} else {
           //widget.frameManager?.notify();

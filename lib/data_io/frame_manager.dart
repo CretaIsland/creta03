@@ -150,9 +150,11 @@ class FrameManager extends CretaManager {
   String stickerKeyMangler(String pageMid, String frameMid) {
     return '$pageMid/$frameMid';
   }
- String frameKeyMangler(String pageMid, String frameMid) {
+
+  String frameKeyMangler(String pageMid, String frameMid) {
     return 'FrameEach$pageMid/$frameMid';
   }
+
   GlobalKey<StickerState> stickerKeyGen(String pageMid, String frameMid) {
     String keyStr = stickerKeyMangler(pageMid, frameMid);
     GlobalKey<StickerState>? stickerKey = _stickerKeyMap[keyStr];
@@ -505,8 +507,6 @@ class FrameManager extends CretaManager {
   }
 
   ContentsManager newContentsManager(FrameModel frameModel) {
-    logger.fine('newContentsManager(${pageModel.width.value}, ${pageModel.height.value})*******');
-
     // ContentsManager? retval = contentsManagerMap[frameModel.mid];
     // if (retval == null) {
     ContentsManager retval = ContentsManager(
@@ -516,15 +516,20 @@ class FrameManager extends CretaManager {
       isPublishedMode: isPublishedMode,
     );
 
+    //print('newContentsManager(${pageModel.mid}, ${frameModel.mid})*******');
+
     contentsManagerMap[frameModel.mid] = retval;
+    //print(
+    //    'newContentsManager(${pageModel.mid}, ${frameModel.mid})*******${contentsManagerMap.length}');
     retval.setFrameManager(this);
     //}
     return retval;
   }
 
   ContentsManager? findContentsManagerByMid(String frameModelMid) {
-    logger.fine(
-        'findContentsManagerByMid(${pageModel.width.value}, ${pageModel.height.value})*******');
+    //print(
+    //    'findContentsManagerByMid(${pageModel.mid}, $frameModelMid*******${contentsManagerMap.length}');
+
     return contentsManagerMap[frameModelMid];
   }
 
@@ -552,7 +557,7 @@ class FrameManager extends CretaManager {
       retval = findContentsManagerByMid(frameModel.mid);
       if (retval == null) {
         // 여기서 ContentsManagerMap  에 등록된다.
-        logger.info('contentsManager not founded !!! new ContentsManager created');
+        logger.info('contentsManager not found !!! new ContentsManager created');
         retval = newContentsManager(frameModel);
         retval.clearAll();
       }
@@ -913,6 +918,7 @@ class FrameManager extends CretaManager {
     }
     ContentsManager? contentsManager = getContentsManager(frameMid);
     if (contentsManager == null) {
+      logger.severe('get contents manager failed($frameMid)');
       return null;
     }
     return contentsManager.getFirstModel();

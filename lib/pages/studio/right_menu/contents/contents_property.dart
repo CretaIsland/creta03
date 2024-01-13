@@ -808,7 +808,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
               // _sendEvent!.sendEvent(widget.model);
             },
             onChanngeComplete: (value) {
-              print('opacity = $value');
+              //print('opacity = $value');
               widget.model.opacity.set(value);
               //widget.model.save();
               logger.fine('opacity=${widget.model.opacity.value}');

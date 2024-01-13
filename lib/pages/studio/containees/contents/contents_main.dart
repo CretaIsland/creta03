@@ -181,7 +181,7 @@ class ContentsMainState extends State<ContentsMain> {
   }
 
   Widget _mainBuild(ContentsModel model, CretaPlayTimer playTimer) {
-    //print('_mainBuild(${model.name}, ${model.contentsType})-------------------------');
+    logger.fine('_mainBuild(${model.remoteUrl}, ${model.contentsType})-------------------------');
     if (model.opacity.value < 1) {
       return Opacity(
         opacity: model.opacity.value,

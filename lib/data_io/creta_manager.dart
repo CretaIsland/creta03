@@ -1033,6 +1033,21 @@ abstract class CretaManager extends AbsExModelManager {
         break;
       }
     }
+    if (retval == false) {
+      // 매치되는 것이 없다. 새로 만들어진 것일 수 있으므로 parent 를 비교한다.
+      for (var ele in modelList) {
+        CretaModel model = ele as CretaModel;
+        if (model.parentMid.value == newModel.parentMid.value) {
+          //print('=========================newModel ${newModel.mid}');
+          retval = true;
+          break;
+        }
+      }
+      if (retval == true) {
+        modelList.add(newModel);
+        reOrdering();
+      }
+    }
     unlock();
     return retval;
   }

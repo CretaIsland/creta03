@@ -90,10 +90,7 @@ class CretaTextPlayerWidgetState extends CretaState<CretaTextWidget> with CretaT
             logger.fine('model updated ${model.name}, ${model.font.value}');
           }
           logger.fine('Text StreamBuilder<AbsExModel>');
-
-          //print(
-          //    'playText invoked   -----${player.acc.frameModel.height.value}---------------------');
-          return playText(context, player, player.model!, player.acc.getRealSize());
+          return playText(context, player, player.getModel(), player.acc.getRealSize());
 
           // if (StudioVariables.isAutoPlay) {
           //   //player.model!.setPlayState(PlayState.start);

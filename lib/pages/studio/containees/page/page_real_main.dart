@@ -58,6 +58,7 @@ class PageRealMain extends StatefulWidget {
 
 class PageRealMainState extends State<PageRealMain> with ContaineeMixin {
   bool _onceDBGetComplete = false;
+  late PageModel _pageModel;
 
   void invalidate() {
     setState(() {});
@@ -67,6 +68,7 @@ class PageRealMainState extends State<PageRealMain> with ContaineeMixin {
   void initState() {
     super.initState();
     _onceDBGetComplete = widget.onceDBGetComplete;
+    _pageModel = widget.pageModel;
   }
 
   @override
@@ -75,13 +77,16 @@ class PageRealMainState extends State<PageRealMain> with ContaineeMixin {
     if (oldWidget.onceDBGetComplete != widget.onceDBGetComplete) {
       _onceDBGetComplete = widget.onceDBGetComplete;
     }
+    if (oldWidget.pageModel.mid != widget.pageModel.mid) {
+      _pageModel = widget.pageModel;
+    }
   }
 
   @override
   void dispose() {
     // logger.severe('dispose');
     // frameManager?.removeRealTimeListen();
-    // saveManagerHolder?.unregisterManager('frame', postfix: widget.pageModel.mid);
+    // saveManagerHolder?.unregisterManager('frame', postfix: _pageModel.mid);
     super.dispose();
   }
 
@@ -173,9 +178,9 @@ class PageRealMainState extends State<PageRealMain> with ContaineeMixin {
   }
 
   Widget _pageEffect() {
-    if (widget.pageModel.effect.value != EffectType.none) {
+    if (_pageModel.effect.value != EffectType.none) {
       return Stack(alignment: Alignment.center, children: [
-        effectWidget(widget.pageModel),
+        effectWidget(_pageModel),
         _drawFrames(),
         //_pageController(),
       ]);
@@ -192,7 +197,7 @@ class PageRealMainState extends State<PageRealMain> with ContaineeMixin {
       //         frameMainKey: GlobalKey(),
       //         pageWidth: widget.pageWidth,
       //         pageHeight: widget.pageHeight,
-      //         pageModel: widget.pageModel,
+      //         pageModel: _pageModel,
       //         bookModel: widget.bookModel,
       //       ),
       //       _drawLinks(manager),
@@ -200,10 +205,10 @@ class PageRealMainState extends State<PageRealMain> with ContaineeMixin {
       //   );
       // }
       return FrameMain(
-        frameMainKey: GlobalObjectKey('FrameMain${widget.pageModel.mid}'),
+        frameMainKey: GlobalObjectKey('FrameMain${_pageModel.mid}'),
         pageWidth: widget.pageWidth,
         pageHeight: widget.pageHeight,
-        pageModel: widget.pageModel,
+        pageModel: _pageModel,
         bookModel: widget.bookModel,
       );
     });
@@ -263,7 +268,7 @@ class PageRealMainState extends State<PageRealMain> with ContaineeMixin {
         ...linkList,
         ...linkManager.orderMapIterator((ele) {
           LinkModel model = ele as LinkModel;
-          model.stickerKey = manager.findStickerKey(widget.pageModel.mid, model.connectedMid);
+          model.stickerKey = manager.findStickerKey(_pageModel.mid, model.connectedMid);
           return model;
         }).toList()
       ];

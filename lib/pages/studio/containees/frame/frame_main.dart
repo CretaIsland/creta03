@@ -15,6 +15,7 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import '../../../../common/creta_constant.dart';
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
+import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/component/creta_popup.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/book_model.dart';
@@ -66,8 +67,17 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
   FrameEachEventController? _showOrderSendEvent;
 
   String _mainFrameCandiator = ''; // frame 중에 콘텐츠가 있으면서, order 가 가장 높은것.  즉, mainFrame 의 1번 후보자.
+  late PageModel _pageModel;
 
   //final Offset _pageOffset = Offset.zero;
+  @override
+  void didUpdateWidget(FrameMain oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.pageModel.mid != widget.pageModel.mid) {
+      _pageModel = widget.pageModel;
+      //setState(() {});
+    }
+  }
 
   @override
   void initState() {
@@ -85,7 +95,7 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
 
     // final OffsetEventController linkReceiveEvent = Get.find(tag: 'frame-each-to-on-link');
     // _linkReceiveEvent = linkReceiveEvent;
-
+    _pageModel = widget.pageModel;
     afterBuild();
   }
 
@@ -107,20 +117,27 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
     //applyScale = StudioVariables.scale / StudioVariables.fitScale;
     // print('FrameMain build');
     //applyScale = widget.bookModel.width.value / StudioVariables.availWidth;
+
     applyScale = widget.pageWidth / widget.bookModel.width.value;
     StudioVariables.applyScale = applyScale;
     logger.fine('model.width=${widget.bookModel.width.value}, realWidth=${widget.pageWidth}');
     //applyScaleH = widget.bookModel.height.value / StudioVariables.availHeight;
 
-    logger.fine('parentPage= ${widget.pageModel.name.value}, =${widget.pageModel.mid}');
-    setFrameManager(null);
+    logger.fine('parentPage= ${_pageModel.name.value}, =${_pageModel.mid}');
+    FrameManager? founded = BookMainPage.pageManagerHolder!.findFrameManager(_pageModel.mid);
+    if (founded != null) {
+      setFrameManager(founded);
+    } else {
+      logger.severe('something wiered, frameManager not found !!!');
+      resetFrameManager(_pageModel.mid);
+    }
 
     return StreamBuilder<AbsExModel>(
         stream: _receiveEvent!.eventStream.stream,
         builder: (context, snapshot) {
           if (snapshot.data != null && snapshot.data is FrameModel) {
             FrameModel model = snapshot.data! as FrameModel;
-            //setFrameManager(model);
+            //findFrameManager(model);
             frameManager!.updateModel(model);
           }
           //return CretaManager.waitReorder(manager: frameManager!, child: showFrame());
@@ -133,6 +150,7 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
 
     BookMainPage.containeeNotifier!.set(ContaineeEnum.Page, doNoti: true);
     _sendEvent?.sendEvent(model);
+    BookMainPage.pageManagerHolder?.invalidatThumbnail(_pageModel);
     setState(() {});
     LeftMenuPage.initTreeNodes();
     LeftMenuPage.treeInvalidate();
@@ -143,9 +161,9 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
     //logger.fine('showFrame $applyScale  ${StudioVariables.applyScale}');
     //print('showFrame----------------------------------');
     return StickerView(
-      //key: ValueKey('StickerView-${widget.pageModel.mid}'),
+      //key: ValueKey('StickerView-${_pageModel.mid}'),
       book: widget.bookModel,
-      page: widget.pageModel,
+      page: _pageModel,
       width: widget.pageWidth,
       height: widget.pageHeight,
       frameManager: frameManager,
@@ -310,9 +328,13 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
 
         if (model.mid == mid) {
           //print('2FrameMain onComplete----------------------------------------------');
-          model.save();
-          //print('onComplete');
+          frameManager?.setToDB(model); // save()로 저장하게되면, 나중에 백그라운드 저장되면서 느려진다.
+          //model.save();
+          print('onComplete');
           _sendEvent?.sendEvent(model);
+          if (false == BookMainPage.pageManagerHolder?.invalidatThumbnail(_pageModel)) {
+            logger.severe('notify to thumbnail failed');
+          }
 
           BookMainPage.miniMenuNotifier!.set(true);
           //BookMainPage.miniMenuContentsNotifier!.isShow = true;
@@ -353,7 +375,7 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
       },
       onDropPage: (modelList) async {
         logger.fine('onDropPage(${modelList.length})');
-        await createNewFrameAndContents(modelList, widget.pageModel);
+        await createNewFrameAndContents(modelList, _pageModel);
       },
 
       stickerList: _getStickerList(),
@@ -398,7 +420,6 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
   // }
 
   List<Sticker> _getStickerList() {
-    //print('getStickerList()');
     //frameManager!.stickerKeyMap.clear();
 
     frameManager!.eliminateOverlay();
@@ -425,7 +446,7 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
   //   List<Sticker> retval = stickerList;
   //   for (FrameModel model in BookMainPage.overlayList()) {
   //     // overlay 중에 원본 overlay 는 이미 스티커가 만들어져 있으므로 만들지 않는다.
-  //     if (model.parentMid.value != widget.pageModel.mid) {
+  //     if (model.parentMid.value != _pageModel.mid) {
   //       retval.add(_createSticker(model));
   //       frameManager!.modelList.add(model);
   //     }
@@ -443,7 +464,7 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
 
     GlobalKey<StickerState>? stickerKey;
     if (widget.isPrevious == false) {
-      stickerKey = frameManager!.stickerKeyGen(widget.pageModel.mid, model.mid);
+      stickerKey = frameManager!.stickerKeyGen(_pageModel.mid, model.mid);
     } else {
       stickerKey = GlobalKey<StickerState>();
     }
@@ -485,14 +506,14 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
     }
 
     String frameKeyStr =
-        //'FrameEach${model.width.value}${frameManager!.stickerKeyMangler(widget.pageModel.mid, model.mid)}';
-        frameManager!.frameKeyMangler(widget.pageModel.mid, model.mid);
+        //'FrameEach${model.width.value}${frameManager!.stickerKeyMangler(_pageModel.mid, model.mid)}';
+        frameManager!.frameKeyMangler(_pageModel.mid, model.mid);
     GlobalKey<FrameEachState> frameKey = GlobalObjectKey<FrameEachState>(frameKeyStr);
 
     Widget eachFrame = FrameEach(
       key: frameKey,
       model: model,
-      pageModel: widget.pageModel,
+      pageModel: _pageModel,
       frameManager: frameManager!,
       applyScale: applyScale,
       width: frameWidth,
@@ -507,7 +528,7 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
       frameKey: frameKey,
       isOverlay: model.isOverlay.value,
       model: model,
-      pageMid: widget.pageModel.mid,
+      pageMid: _pageModel.mid,
       //id: model.mid,
       position: Offset(posX, posY),
       angle: model.angle.value * (pi / 180),

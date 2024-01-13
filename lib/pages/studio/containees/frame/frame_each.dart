@@ -107,25 +107,15 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
   }
 
   Future<bool> initChildren() async {
-    //logger.fine('==========================FrameEach initialized================');
-    frameManager = widget.frameManager;
+    setFrameManager(widget.frameManager);
     if (frameManager == null) {
       logger.severe('frame manager is null');
       return false;
     }
-    //print('pageModel=${widget.pageModel.mid}');
-    //print('model.par=${widget.model.parentMid.value}');
-    //print('model.isO=${widget.model.isOverlay.value}');
     _contentsManager = frameManager!.findOrCreateContentsManager(widget.model);
-    // if (_contentsManager == null) {
-    //   //logger.fine('new ContentsManager created (${widget.model.mid})');
-    //   _contentsManager = frameManager!.newContentsManager(widget.model);
-    //   _contentsManager!.clearAll();
-    // } else {
-    //   //logger.fine('old ContentsManager used (${widget.model.mid})');
-    // }
+
     if (_playTimer == null) {
-      _playTimer = CretaPlayTimer(_contentsManager!, widget.frameManager);
+      _playTimer = CretaPlayTimer(_contentsManager!, frameManager!);
       _contentsManager!.setPlayerHandler(_playTimer!);
     }
     if (_contentsManager!.onceDBGetComplete == false) {
@@ -608,7 +598,7 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
       return dateTimeFrame(
         frameModel: model,
         child: _childContents(model),
-        frameManager: widget.frameManager,
+        frameManager: frameManager!,
         frameMid: model.mid,
       );
     }

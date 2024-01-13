@@ -337,6 +337,7 @@ class CretaPlayTimer extends ChangeNotifier {
     final String key = contentsManager.keyMangler(model);
     CretaAbsPlayer? player = contentsManager.getPlayer(key);
     if (player != null) {
+      player.model!.updateFrom(model); // 모델을 달라졌을수 있다.
       _currentPlayer = player;
       return player;
     }
@@ -406,7 +407,6 @@ class CretaPlayTimer extends ChangeNotifier {
 
   CretaAbsPlayerWidget createWidget(ContentsModel model) {
     CretaAbsPlayer player = createPlayer(model);
-    //print('createWidget${model.name}, ${model.contentsType})------------');
     switch (model.contentsType) {
       case ContentsType.video:
         return CretaVideoWidget(

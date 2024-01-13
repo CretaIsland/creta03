@@ -198,19 +198,23 @@ class InstantEditorState extends State<InstantEditor> {
 
   @override
   Widget build(BuildContext context) {
-    // _contentsManager ??= widget.frameManager!.getContentsManager(widget.frameModel.mid);
-    // if (_contentsManager == null) {
-    //   return const SizedBox.shrink();
-    // }
-    // ContentsModel? model = _contentsManager!.getFirstModel();
+    _contentsManager ??= widget.frameManager!.getContentsManager(widget.frameModel.mid);
+    if (_contentsManager == null) {
+      logger.severe('find contentsManager failed for ${widget.frameModel.mid}');
+      return const SizedBox.shrink();
+    }
+    ContentsModel? model = _contentsManager!.getFirstModel();
+
+    if (model == null) {
+      logger.severe('find first contents failed for ${widget.frameModel.mid}');
+      return const SizedBox.shrink();
+    }
+  
+
+    //ContentsModel? model = widget.frameManager!.getFirstContents(widget.frameModel.mid);
     // if (model == null) {
     //   return const SizedBox.shrink();
     // }
-
-    ContentsModel? model = widget.frameManager!.getFirstContents(widget.frameModel.mid);
-    if (model == null) {
-      return const SizedBox.shrink();
-    }
 
     // if (model.isAutoFontSize()) {
     //   //print('AutoSizeType.autoFontSize _fontSize=$fontSize');
@@ -672,6 +676,8 @@ class InstantEditorState extends State<InstantEditor> {
     }
     model.save();
     _contentsManager?.notify();
+    //_contentsManager?.invalidatePlayerWidget(model);
+
     widget.onEditComplete();
   }
 }

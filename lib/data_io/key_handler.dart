@@ -75,6 +75,7 @@ class KeyHandler {
         return true;
       }
     }
+    logger.severe('invalidate failed');
     return false;
   }
 }
