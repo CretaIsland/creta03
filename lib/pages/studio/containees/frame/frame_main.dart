@@ -330,7 +330,6 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
           //print('2FrameMain onComplete----------------------------------------------');
           frameManager?.setToDB(model); // save()로 저장하게되면, 나중에 백그라운드 저장되면서 느려진다.
           //model.save();
-          print('onComplete');
           _sendEvent?.sendEvent(model);
           if (false == BookMainPage.pageManagerHolder?.invalidatThumbnail(_pageModel)) {
             logger.severe('notify to thumbnail failed');
