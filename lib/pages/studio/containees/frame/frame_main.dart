@@ -469,6 +469,7 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
     }
 
     // Text Type 의 경우 사이즈 계산을 위해서
+    //print('7 : ${model.name.value}');
     ContentsModel? contentsModel = frameManager!.getFirstContents(model.mid);
     if (contentsModel != null && contentsModel.isText()) {
       if (contentsModel.isAutoFrameOrSide()) {

@@ -78,18 +78,16 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
 
   Future<void> initChildren() async {
     //saveManagerHolder!.addBookChildren('frame=');
-    //frameManager = BookMainPage.pageManagerHolder!.findFrameManager(widget.pageModel.mid);
+    resetFrameManager(widget.pageModel.mid);
     // frame 을 init 하는 것은, bookMain 에서 하는 것으로 바뀌었다.
     // 여기서 frameManager 는 사실상 null 일수 가 없다. ( 신규로 frame 을 만드는 경우를 빼고)
     if (frameManager == null) {
+      logger.severe('_frameManager not found, something wierd');
       setFrameManager(BookMainPage.pageManagerHolder!.newFrameManager(
         widget.bookModel,
         widget.pageModel,
       ));
-      // frameManager = BookMainPage.pageManagerHolder!.newFrameManager(
-      //   widget.bookModel,
-      //   widget.pageModel,
-      // );
+
       await BookMainPage.pageManagerHolder!.initFrameManager(frameManager!, widget.pageModel.mid);
     }
     _onceDBGetComplete = true;
@@ -323,7 +321,6 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
     //   frameManager: frameManager!,
     //   onceDBGetComplete: _onceDBGetComplete,
     // );
-
 
     // return AnimatedSwitcher(
     //   duration: const Duration(seconds: 1),

@@ -274,6 +274,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
     bool isHorizontalResiable = true;
     FrameModel? frameModel = widget.frameManager!.getModel(sticker.id) as FrameModel?;
     if (frameModel != null && frameModel.isTextType()) {
+      //print('3 : ${frameModel.name.value}');
       ContentsModel? contentsModel = widget.frameManager!.getFirstContents(frameModel.mid);
       if (contentsModel != null) {
         if (contentsModel.isAutoFrameHeight()) {
@@ -402,6 +403,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
         FrameModel? frameModel = widget.frameManager!.getModel(sticker.id) as FrameModel?;
         if (frameModel != null && frameModel.isTextType()) {
+          //print('4 : ${frameModel.name.value}');
           ContentsModel? contentsModel = widget.frameManager!.getFirstContents(frameModel.mid);
           if (contentsModel != null && contentsModel.isText() && contentsModel.isAutoFontSize()) {
             // 마우스를 끌기 시작하여, fontSize 가 변하기 시작한다는 사실을 알림.
@@ -577,7 +579,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
     bool isFullScreen = frameModel.isFullScreenTest(widget.book);
 
     double menuWidth = 291;
-
+   
     ContentsModel? contentsModel = widget.frameManager!.getFirstContents(frameModel.mid);
     ContentsManager? contentsManager = widget.frameManager!.getContentsManager(frameModel.mid);
 

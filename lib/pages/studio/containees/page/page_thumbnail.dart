@@ -84,7 +84,7 @@ class PageThumbnailState extends CretaState<PageThumbnail> with ContaineeMixin {
   Future<void> initChildren() async {
     //saveManagerHolder!.addBookChildren('frame=');
     _frameManager = BookMainPage.pageManagerHolder!.findFrameManager(widget.pageModel.mid);
-    logger.fine('thumbnail initChilren frameManager=${widget.pageModel.mid}');
+    //print('thumbnail initChilren frameManager=${widget.pageModel.mid}');
     // frame 을 init 하는 것은, bookMain 에서 하는 것으로 바뀌었다.
     // 여기서 frameManager 는 사실상 null 일수 가 없다. ( 신규로 frame 을 만드는 경우를 빼고)
     if (_frameManager == null) {
@@ -189,10 +189,11 @@ class PageThumbnailState extends CretaState<PageThumbnail> with ContaineeMixin {
 
   Widget _waitFrame() {
     if (_onceDBGetComplete && _frameManager!.initFrameComplete) {
-      logger.fine('already _onceDBGetComplete page thumbnailr');
+      //print('already _onceDBGetComplete page thumbnailr');
       return _consumerFunc();
     }
     //var retval = CretaModelSnippet.waitData(
+    //print('waitDatum here');
     var retval = CretaModelSnippet.waitDatum(
       managerList: [_frameManager!],
       //userId: AccountManager.currentLoginUser.email,

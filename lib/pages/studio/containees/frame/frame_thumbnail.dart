@@ -102,6 +102,7 @@ class FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fra
       //썸네일에서는 가져오지 말아야 한다. 같은 COntentsManager를 쓰기때문이다.
 
       // 1.1 초를 쉬어서, FrameMain  에서   contents 를 가져올 시간을 벌어준다.
+      //print('wait _contentsManager');
       await Future.delayed(const Duration(milliseconds: 1100));
       _contentsManager = frameManager!.findContentsManager(widget.model);
       // await _contentsManager!.getContents();

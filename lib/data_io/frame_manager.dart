@@ -232,6 +232,7 @@ class FrameManager extends CretaManager {
       this.isPublishedMode = false})
       : super(tableName, pageModel.mid) {
     saveManagerHolder?.registerManager('frame', this, postfix: pageModel.mid);
+    //print('FrameManager created');
   }
 
   @override

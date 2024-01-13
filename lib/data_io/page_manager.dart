@@ -174,6 +174,7 @@ class PageManager extends CretaManager {
   }
 
   FrameManager newFrameManager(BookModel bookModel, PageModel pageModel) {
+    //print('newFrameManager');
     FrameManager retval = FrameManager(
       bookModel: bookModel,
       pageModel: pageModel,
