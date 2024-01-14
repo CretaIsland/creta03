@@ -347,9 +347,8 @@ class FrameManager extends CretaManager {
   void mergeOverlay() {
     for (var ele in BookMainPage.overlayList()) {
       // 모델리스트에 없으면 modelList 에 넣는다.
-      print('overlay ${ele.name.value} before merged');
       if (getModel(ele.mid) == null) {
-        print('overlay ${ele.name.value} merged');
+        logger.info('overlay ${ele.name.value} merged');
         modelList.add(ele);
       }
     }
@@ -378,7 +377,6 @@ class FrameManager extends CretaManager {
       }
     }
     for (FrameModel ele in removeTargetList) {
-      print('remove overlay ${ele.name.value}');
       modelList.remove(ele);
     }
     reOrdering();

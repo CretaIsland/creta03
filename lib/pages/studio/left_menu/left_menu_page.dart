@@ -803,7 +803,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     //   thumbKey = GlobalObjectKey('Thumb$pageIndex${pageModel.mid}');
     //   _pageManager!.thumbKeyMap[pageModel.mid] = thumbKey;
     // }
-    print('PageThumbnail---------${pageModel.name.value}----------------------------------------');
+    //print('PageThumbnail---------${pageModel.name.value}----------------------------------------');
     return PageThumbnail(
       key: BookMainPage.pageManagerHolder!.registerPageThumbnail(pageModel.mid),
       pageIndex: pageIndex,

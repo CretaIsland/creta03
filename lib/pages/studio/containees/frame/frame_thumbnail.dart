@@ -361,8 +361,9 @@ class FrameThumbnailState extends CretaState<FrameThumbnail> with ContaineeMixin
           ? ClipRect(
               clipBehavior: Clip.hardEdge,
               child: ContentsThumbnail(
-                key: GlobalObjectKey<ContentsThumbnailState>(
-                    'ContentsThumbnail${widget.pageModel.mid}/${model.mid}'),
+                // key: GlobalObjectKey<ContentsThumbnailState>(
+                //     'ContentsThumbnail${widget.pageModel.mid}/${model.mid}'),
+                key: _contentsManager!.registerContentsThumbKey(widget.pageModel.mid, model.mid),
                 frameModel: model,
                 pageModel: widget.pageModel,
                 frameManager: frameManager!,

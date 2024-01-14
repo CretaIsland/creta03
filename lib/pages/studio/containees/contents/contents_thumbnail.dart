@@ -15,6 +15,7 @@ import 'package:hycop/common/util/logger.dart';
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
+import '../../../../data_io/key_handler.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../lang/creta_studio_lang.dart';
@@ -53,7 +54,7 @@ class ContentsThumbnail extends StatefulWidget {
   State<ContentsThumbnail> createState() => ContentsThumbnailState();
 }
 
-class ContentsThumbnailState extends State<ContentsThumbnail>
+class ContentsThumbnailState extends CretaState<ContentsThumbnail>
     with CretaTextMixin, CretaDocMixin, CretaMusicMixin {
   //ContentsManager? _contentsManager;
   //CretaPlayTimer? _playerHandler;

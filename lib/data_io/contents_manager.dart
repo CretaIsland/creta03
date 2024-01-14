@@ -92,6 +92,20 @@ class ContentsManager extends CretaManager {
     }
   }
 
+  KeyHandler contentsThumbKeyHandler = KeyHandler();
+  String contentsThumbKeyMangler(String pageMid, String frameMid) {
+    return 'ContentsThumbnail$pageMid/$frameMid';
+  }
+
+  GlobalObjectKey<CretaState<StatefulWidget>> registerContentsThumbKey(
+      String pageMid, String frameMid) {
+    return contentsThumbKeyHandler.registerKey(contentsThumbKeyMangler(pageMid, frameMid));
+  }
+
+  bool invalidateContentsThumb(String pageMid, String frameMid) {
+    return contentsThumbKeyHandler.invalidate(contentsThumbKeyMangler(pageMid, frameMid));
+  }
+
   // bool invalidateText(ContentsModel model) {
   //   GlobalObjectKey<State<StatefulWidget>>? key = findKeyText(model);
   //   if (key != null) {
@@ -341,7 +355,7 @@ class ContentsManager extends CretaManager {
               model.fit.value.toBoxFit(),
               model.isFlip.value,
               model.angle.value,
-               model.opacity.value,
+              model.opacity.value,
             );
           }
         }
@@ -353,7 +367,7 @@ class ContentsManager extends CretaManager {
         model.fit.value.toBoxFit(),
         model.isFlip.value,
         model.angle.value,
-         model.opacity.value,
+        model.opacity.value,
       );
     }
     return ('', '', BoxFit.cover, false, 0.0, 1.0);

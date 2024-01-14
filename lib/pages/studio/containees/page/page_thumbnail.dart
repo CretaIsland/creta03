@@ -298,8 +298,8 @@ class PageThumbnailState extends CretaState<PageThumbnail> with ContaineeMixin {
           //     return SizedBox.shrink();
           //   }
           // }
-          print(
-              '''frameModel=${frameModel.name.value}, ${frameModel.isOverlay.value}, ${(frameModel.parentMid.value != widget.pageModel.mid)}); ''');
+          //print(
+          //    '''frameModel=${frameModel.name.value}, ${frameModel.isOverlay.value}, ${(frameModel.parentMid.value != widget.pageModel.mid)}); ''');
 
           //print('${frameModel.mid}, ${frameModel.parentMid.value}');
 
