@@ -19,7 +19,7 @@ class LinkModel extends CretaModel {
 
   bool showLinkLine = false;
   GlobalObjectKey? iconKey; // DB 에 저장되지 않는 값
-  GlobalKey? stickerKey; // DB 에 저장되지 않는 값
+  //GlobalKey? stickerKey; // DB 에 저장되지 않는 값
 
   @override
   List<Object?> get props => [

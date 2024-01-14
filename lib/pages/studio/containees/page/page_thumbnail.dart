@@ -303,14 +303,13 @@ class PageThumbnailState extends CretaState<PageThumbnail> with ContaineeMixin {
                 double frameHeight =
                     (frameModel.height.value /* + model.shadowSpread.value */) * applyScale;
                 // isOverlay   가 있기 때문에, page mid 도 키로 쓰지 않으면 중복된다.
-                GlobalKey<FrameThumbnailState> key =
-                    _frameManager!.frameThumbnailKeyGen(widget.pageModel.mid, frameModel.mid);
 
                 Widget frameBox = SizedBox(
                   width: frameWidth,
                   height: frameHeight,
                   child: FrameThumbnail(
-                    key: key,
+                    key: _frameManager!
+                        .registerFrameThumbnailKey(widget.pageModel.mid, frameModel.mid),
                     model: frameModel,
                     pageModel: widget.pageModel,
                     //frameManager: _frameManager!,

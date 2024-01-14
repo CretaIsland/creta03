@@ -67,6 +67,31 @@ class KeyHandler {
     return null;
   }
 
+  RenderBox? getRenderBox(String keyString) {
+    GlobalObjectKey<CretaState<StatefulWidget>>? key = getFirstKey();
+    if (key == null) {
+      return null;
+    }
+    return key.currentContext?.findRenderObject() as RenderBox?;
+  }
+
+  bool isMousePointerOnWidget(String keyString, Offset pointerPosition) {
+    GlobalObjectKey<CretaState<StatefulWidget>>? key = findKey(keyString);
+    if (key == null) {
+      return false;
+    }
+    final RenderBox? box = key.currentContext?.findRenderObject() as RenderBox?;
+    if (box == null) return false;
+
+    final Offset widgetOffset = box.localToGlobal(Offset.zero);
+    final Size size = box.size;
+
+    return pointerPosition.dx >= widgetOffset.dx &&
+        pointerPosition.dx < widgetOffset.dx + size.width &&
+        pointerPosition.dy >= widgetOffset.dy &&
+        pointerPosition.dy < widgetOffset.dy + size.height;
+  }
+
   bool invalidate(String keyString) {
     GlobalObjectKey<CretaState<StatefulWidget>>? key = findKey(keyString);
     if (key != null) {
@@ -74,8 +99,10 @@ class KeyHandler {
         key.currentState!.invalidate();
         return true;
       }
+    } else {
+      logger.severe('missing keyString $keyString');
     }
-    logger.severe('invalidate failed');
+    logger.severe('invalidate failed $keyString');
     return false;
   }
 }

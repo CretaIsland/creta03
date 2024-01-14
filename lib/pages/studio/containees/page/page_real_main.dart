@@ -1,22 +1,22 @@
 // ignore: file_names
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
 
-import 'dart:math';
+//import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 
-import '../../../../data_io/contents_manager.dart';
+////import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
-import '../../../../data_io/link_manager.dart';
-import '../../../../design_system/component/polygon_connection_painter.dart';
+//import '../../../../data_io/link_manager.dart';
+//import '../../../../design_system/component/polygon_connection_painter.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
-import '../../../../model/contents_model.dart';
+//import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
-import '../../../../model/frame_model.dart';
-import '../../../../model/link_model.dart';
+//import '../../../../model/frame_model.dart';
+//import '../../../../model/link_model.dart';
 import '../../../../model/page_model.dart';
 import '../../studio_snippet.dart';
 import '../../studio_variables.dart';
@@ -214,139 +214,138 @@ class PageRealMainState extends State<PageRealMain> with ContaineeMixin {
     });
   }
 
-  // ignore: unused_element
-  Widget _drawLinks(FrameManager manager) {
-    // return StreamBuilder<AbsExModel>(
-    //     stream: _receiveEventFromProperty!.eventStream.stream,
-    //     builder: (context, snapshot) {
-    //       if (snapshot.data != null) {
-    //         if (snapshot.data! is FrameModel) {
-    //           FrameModel model = snapshot.data! as FrameModel;
-    //           manager.updateModel(model);
-    //           logger.fine('_drawLinks _receiveEventFromProperty-----${model.posY.value}');
-    //         } else {
-    //           logger.fine('_receiveEventFromProperty-----Unknown Model');
-    //         }
-    //       }
-    //       return Stack(
-    //         children: [
-    //           ..._drawLines(manager),
-    //         ],
-    //       );
-    //     });
-    return Stack(
-      children: [
-        ..._drawLines(manager),
-      ],
-    );
-  }
+  // Widget _drawLinks(FrameManager manager) {
+  //   // return StreamBuilder<AbsExModel>(
+  //   //     stream: _receiveEventFromProperty!.eventStream.stream,
+  //   //     builder: (context, snapshot) {
+  //   //       if (snapshot.data != null) {
+  //   //         if (snapshot.data! is FrameModel) {
+  //   //           FrameModel model = snapshot.data! as FrameModel;
+  //   //           manager.updateModel(model);
+  //   //           logger.fine('_drawLinks _receiveEventFromProperty-----${model.posY.value}');
+  //   //         } else {
+  //   //           logger.fine('_receiveEventFromProperty-----Unknown Model');
+  //   //         }
+  //   //       }
+  //   //       return Stack(
+  //   //         children: [
+  //   //           ..._drawLines(manager),
+  //   //         ],
+  //   //       );
+  //   //     });
+  //   return Stack(
+  //     children: [
+  //       ..._drawLines(manager),
+  //     ],
+  //   );
+  // }
 
-  List<Widget> _drawLines(FrameManager manager) {
-    logger.fine('_drawLines()--------------------------------------------');
-    List<LinkModel> linkList = [];
-    manager.listIterator((frameModel) {
-      ContentsManager contentsManager =
-          manager.findOrCreateContentsManager(frameModel as FrameModel);
-      // if (contentsManager == null) {
-      //   return null;
-      // }
-      ContentsModel? contentsModel = contentsManager.getCurrentModel();
-      if (contentsModel == null) {
-        return null;
-      }
-      LinkManager? linkManager = contentsManager.findLinkManager(contentsModel.mid);
-      if (linkManager == null) {
-        return SizedBox.shrink();
-      }
-      if (linkManager.length() == 0) {
-        return SizedBox.shrink();
-      }
-      logger.fine(
-          '_drawLines()-${linkManager.length()}-----${contentsModel.name}--------------------------------------');
+  // List<Widget> _drawLines(FrameManager manager) {
+  //   logger.fine('_drawLines()--------------------------------------------');
+  //   List<LinkModel> linkList = [];
+  //   manager.listIterator((frameModel) {
+  //     ContentsManager contentsManager =
+  //         manager.findOrCreateContentsManager(frameModel as FrameModel);
+  //     // if (contentsManager == null) {
+  //     //   return null;
+  //     // }
+  //     ContentsModel? contentsModel = contentsManager.getCurrentModel();
+  //     if (contentsModel == null) {
+  //       return null;
+  //     }
+  //     LinkManager? linkManager = contentsManager.findLinkManager(contentsModel.mid);
+  //     if (linkManager == null) {
+  //       return SizedBox.shrink();
+  //     }
+  //     if (linkManager.length() == 0) {
+  //       return SizedBox.shrink();
+  //     }
+  //     logger.fine(
+  //         '_drawLines()-${linkManager.length()}-----${contentsModel.name}--------------------------------------');
 
-      linkList = [
-        ...linkList,
-        ...linkManager.orderMapIterator((ele) {
-          LinkModel model = ele as LinkModel;
-          model.stickerKey = manager.findStickerKey(_pageModel.mid, model.connectedMid);
-          return model;
-        }).toList()
-      ];
+  //     linkList = [
+  //       ...linkList,
+  //       ...linkManager.orderMapIterator((ele) {
+  //         LinkModel model = ele as LinkModel;
+  //         //model.stickerKey = manager.findStickerKey(_pageModel.mid, model.connectedMid);
+  //         return model;
+  //       }).toList()
+  //     ];
 
-      return null;
-    });
-    return linkList.map((model) => _drawEachLine(model)).toList();
-  }
+  //     return null;
+  //   });
+  //   return linkList.map((model) => _drawEachLine(model)).toList();
+  // }
 
-  Widget _drawEachLine(LinkModel model) {
-    if (model.connectedClass == 'page') {
-      return const SizedBox.shrink();
-    }
-    if (model.showLinkLine == false) {
-      return const SizedBox.shrink();
-    }
-    logger.fine('_drawEachLine()--------------------------------------------');
+  // Widget _drawEachLine(LinkModel model) {
+  //   if (model.connectedClass == 'page') {
+  //     return const SizedBox.shrink();
+  //   }
+  //   if (model.showLinkLine == false) {
+  //     return const SizedBox.shrink();
+  //   }
+  //   logger.fine('_drawEachLine()--------------------------------------------');
 
-    final GlobalKey? stickerKey = model.stickerKey;
-    final GlobalObjectKey? iconKey = model.iconKey;
-    if (stickerKey == null || iconKey == null) {
-      return const SizedBox.shrink();
-    }
+  //   final GlobalKey? stickerKey = model.stickerKey;
+  //   final GlobalObjectKey? iconKey = model.iconKey;
+  //   if (stickerKey == null || iconKey == null) {
+  //     return const SizedBox.shrink();
+  //   }
 
-    final RenderBox? frame = stickerKey.currentContext?.findRenderObject() as RenderBox?;
-    final RenderBox? icon = iconKey.currentContext?.findRenderObject() as RenderBox?;
-    if (frame == null || icon == null) {
-      return const SizedBox.shrink();
-    }
+  //   final RenderBox? frame = stickerKey.currentContext?.findRenderObject() as RenderBox?;
+  //   final RenderBox? icon = iconKey.currentContext?.findRenderObject() as RenderBox?;
+  //   if (frame == null || icon == null) {
+  //     return const SizedBox.shrink();
+  //   }
 
-    Offset frameOffset = frame.localToGlobal(Offset.zero);
-    frameOffset = frameOffset;
-    final Size frameSize = frame.size;
+  //   Offset frameOffset = frame.localToGlobal(Offset.zero);
+  //   frameOffset = frameOffset;
+  //   final Size frameSize = frame.size;
 
-    final Offset frameTop = Offset(frameSize.width / 2 + frameOffset.dx, frameOffset.dy);
-    final Offset frameBottom =
-        Offset(frameSize.width / 2 + frameOffset.dx, frameOffset.dy + frameSize.height);
-    final Offset frameLeft = Offset(frameOffset.dx, frameSize.height / 2 + frameOffset.dy);
-    final Offset frameRight =
-        Offset(frameOffset.dx + frameSize.width, frameSize.height / 2 + frameOffset.dy);
+  //   final Offset frameTop = Offset(frameSize.width / 2 + frameOffset.dx, frameOffset.dy);
+  //   final Offset frameBottom =
+  //       Offset(frameSize.width / 2 + frameOffset.dx, frameOffset.dy + frameSize.height);
+  //   final Offset frameLeft = Offset(frameOffset.dx, frameSize.height / 2 + frameOffset.dy);
+  //   final Offset frameRight =
+  //       Offset(frameOffset.dx + frameSize.width, frameSize.height / 2 + frameOffset.dy);
 
-    Offset iconOffset = icon.localToGlobal(Offset.zero);
-    iconOffset = iconOffset;
-    final Size iconSize = icon.size;
-    // icon center;
-    final double iconX = iconOffset.dx + iconSize.width / 2; // center
-    final double iconY = iconOffset.dy + iconSize.height / 2;
+  //   Offset iconOffset = icon.localToGlobal(Offset.zero);
+  //   iconOffset = iconOffset;
+  //   final Size iconSize = icon.size;
+  //   // icon center;
+  //   final double iconX = iconOffset.dx + iconSize.width / 2; // center
+  //   final double iconY = iconOffset.dy + iconSize.height / 2;
 
-    final num dist1 = pow((frameTop.dx - iconX), 2) + pow((frameTop.dy - iconY), 2);
-    final num dist2 = pow((frameBottom.dx - iconX), 2) + pow((frameBottom.dy - iconY), 2);
-    final num dist3 = pow((frameLeft.dx - iconX), 2) + pow((frameLeft.dy - iconY), 2);
-    final num dist4 = pow((frameRight.dx - iconX), 2) + pow((frameRight.dy - iconY), 2);
+  //   final num dist1 = pow((frameTop.dx - iconX), 2) + pow((frameTop.dy - iconY), 2);
+  //   final num dist2 = pow((frameBottom.dx - iconX), 2) + pow((frameBottom.dy - iconY), 2);
+  //   final num dist3 = pow((frameLeft.dx - iconX), 2) + pow((frameLeft.dy - iconY), 2);
+  //   final num dist4 = pow((frameRight.dx - iconX), 2) + pow((frameRight.dy - iconY), 2);
 
-    final num smallestDist = min(min(dist1, dist2), min(dist3, dist4));
+  //   final num smallestDist = min(min(dist1, dist2), min(dist3, dist4));
 
-    Offset finalFrameOffset = Offset.zero;
-    if (dist1 == smallestDist) {
-      finalFrameOffset = frameTop;
-    } else if (dist2 == smallestDist) {
-      finalFrameOffset = frameBottom;
-    } else if (dist3 == smallestDist) {
-      finalFrameOffset = frameLeft;
-    } else if (dist4 == smallestDist) {
-      finalFrameOffset = frameRight;
-    }
+  //   Offset finalFrameOffset = Offset.zero;
+  //   if (dist1 == smallestDist) {
+  //     finalFrameOffset = frameTop;
+  //   } else if (dist2 == smallestDist) {
+  //     finalFrameOffset = frameBottom;
+  //   } else if (dist3 == smallestDist) {
+  //     finalFrameOffset = frameLeft;
+  //   } else if (dist4 == smallestDist) {
+  //     finalFrameOffset = frameRight;
+  //   }
 
-    if (finalFrameOffset == Offset.zero) {
-      return const SizedBox.shrink();
-    }
+  //   if (finalFrameOffset == Offset.zero) {
+  //     return const SizedBox.shrink();
+  //   }
 
-    logger
-        .info('Line ------ (${finalFrameOffset.dx},${finalFrameOffset.dy}) <--- ($iconX,$iconY) ');
+  //   logger
+  //       .info('Line ------ (${finalFrameOffset.dx},${finalFrameOffset.dy}) <--- ($iconX,$iconY) ');
 
-    return CustomPaint(
-      painter: PolygonConnectionPainter(
-        startPoint: Offset(iconX, iconY),
-        endPoint: finalFrameOffset,
-      ),
-    );
-  }
+  //   return CustomPaint(
+  //     painter: PolygonConnectionPainter(
+  //       startPoint: Offset(iconX, iconY),
+  //       endPoint: finalFrameOffset,
+  //     ),
+  //   );
+  // }
 }

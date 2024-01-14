@@ -284,15 +284,16 @@ class _DraggableStickersState extends State<DraggableStickers> {
         }
         if (contentsModel.isText()) {
           if (frameModel.isEditMode) {
-            GlobalObjectKey<InstantEditorState> editorKey = GlobalObjectKey<InstantEditorState>(
-                'InstantEditor${sticker.pageMid}/${frameModel.mid}');
-            sticker.instantEditorKey = editorKey;
+            // GlobalObjectKey<InstantEditorState> editorKey = GlobalObjectKey<InstantEditorState>(
+            //     'InstantEditor${sticker.pageMid}/${frameModel.mid}');
+            // sticker.instantEditorKey = editorKey;
             //print('editor selected');
             return Stack(
               children: [
                 _dragableResizable(sticker, frameModel, isVerticalResiable, isHorizontalResiable),
                 InstantEditor(
-                    key: editorKey,
+                    key: widget.frameManager!
+                        .registerInstantEditorrKey(sticker.pageMid, frameModel.mid),
                     frameModel: frameModel,
                     frameManager: widget.frameManager,
                     onTap: widget.onTap,
@@ -345,14 +346,15 @@ class _DraggableStickersState extends State<DraggableStickers> {
     double posX = frameModel.getRealPosX();
     double posY = frameModel.getRealPosY();
 
-    GlobalObjectKey<DraggableResizableState> draggableResizableKey =
-        GlobalObjectKey<DraggableResizableState>(
-            'DraggableResizable${sticker.pageMid}/${frameModel.mid}');
+    // GlobalObjectKey<DraggableResizableState> draggableResizableKey =
+    //     GlobalObjectKey<DraggableResizableState>(
+    //         'DraggableResizable${sticker.pageMid}/${frameModel.mid}');
 
-    sticker.dragableResiableKey = draggableResizableKey;
+    // sticker.dragableResiableKey = draggableResizableKey;
 
+    //
     return DraggableResizable(
-      key: draggableResizableKey,
+      key: widget.frameManager!.registerDragableResiableKey(sticker.pageMid, frameModel.mid),
       isVerticalResiable: isVerticalResiable,
       isHorizontalResiable: isHorizontalResiable,
       sticker: sticker,
@@ -579,7 +581,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
     bool isFullScreen = frameModel.isFullScreenTest(widget.book);
 
     double menuWidth = 291;
-   
+
     ContentsModel? contentsModel = widget.frameManager!.getFirstContents(frameModel.mid);
     ContentsManager? contentsManager = widget.frameManager!.getContentsManager(frameModel.mid);
 

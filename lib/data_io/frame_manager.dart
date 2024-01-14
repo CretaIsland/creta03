@@ -9,7 +9,7 @@ import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/database/abs_database.dart';
-import '../common/creta_utils.dart';
+//import '../common/creta_utils.dart';
 import '../lang/creta_lang.dart';
 import '../model/app_enums.dart';
 import '../model/book_model.dart';
@@ -19,9 +19,8 @@ import '../model/frame_model.dart';
 import '../model/page_model.dart';
 import '../pages/studio/book_preview_menu.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
-import '../pages/studio/containees/frame/frame_thumbnail.dart';
 import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
-import '../pages/studio/containees/frame/sticker/stickerview.dart';
+//import '../pages/studio/containees/frame/sticker/stickerview.dart';
 import '../pages/studio/left_menu/left_menu_page.dart';
 import '../pages/studio/left_menu/music/music_player_frame.dart';
 import '../pages/studio/studio_constant.dart';
@@ -30,6 +29,7 @@ import '../player/creta_play_timer.dart';
 import 'book_manager.dart';
 import 'contents_manager.dart';
 import 'creta_manager.dart';
+import 'key_handler.dart';
 
 //FrameManager? frameManagerHolder;
 
@@ -122,90 +122,172 @@ class FrameManager extends CretaManager {
 
   //Map<String, ValueKey> stickerKeyMap = {};
 
-  // ignore: prefer_final_fields
-  Map<String, GlobalKey<FrameThumbnailState>> _frameThumbnailKeyMap = {};
+// ignore: prefer_final_fields
+  // Map<String, GlobalKey<FrameThumbnailState>> _frameThumbnailKeyMap = {};
+  // GlobalKey<FrameThumbnailState> frameThumbnailKeyGen(String pageMid, String frameMid) {
+  //   String keyStr = frameThumbnailKeyMangler(pageMid, frameMid);
+  //   GlobalKey<FrameThumbnailState>? frameThumbnailKey = _frameThumbnailKeyMap[keyStr];
+  //   if (frameThumbnailKey != null) {
+  //     return frameThumbnailKey;
+  //   }
+  //   GlobalObjectKey<FrameThumbnailState> key = GlobalObjectKey<FrameThumbnailState>(keyStr);
+  //   _frameThumbnailKeyMap[keyStr] = key;
+  //   return key;
+  // }
+
+  // GlobalKey<FrameThumbnailState>? findFrameThumbnailKey(String pageMid, String frameMid) {
+  //   String keyStr = frameThumbnailKeyMangler(pageMid, frameMid);
+  //   return _frameThumbnailKeyMap[keyStr];
+  // }
+
+  //
+  //
+  //
+  //
+
+  // final Map<String, GlobalKey<StickerState>> _stickerKeyMap = {};
+
+  // String frameKeyMangler(String pageMid, String frameMid) {
+  //   return 'FrameEach$pageMid/$frameMid';
+  // }
+
+  // GlobalKey<StickerState> stickerKeyGen(String pageMid, String frameMid) {
+  //   String keyStr = stickerKeyMangler(pageMid, frameMid);
+  //   GlobalKey<StickerState>? stickerKey = _stickerKeyMap[keyStr];
+  //   if (stickerKey != null) {
+  //     return stickerKey;
+  //   }
+  //   GlobalObjectKey<StickerState> key = GlobalObjectKey<StickerState>(keyStr);
+  //   _stickerKeyMap[keyStr] = key;
+  //   return key;
+  // }
+
+  // GlobalKey<StickerState>? findStickerKey(String pageMid, String frameMid) {
+  //   String keyStr = stickerKeyMangler(pageMid, frameMid);
+  //   return _stickerKeyMap[keyStr];
+  // }
+
+  bool refreshFrame(String mid, {bool deep = false}) {
+    invalidateFrameEach(pageModel.mid, mid);
+    if (deep) {
+      invalidateContentsMain(pageModel.mid, mid);
+      invalidateDragableResiable(pageModel.mid, mid);
+      invalidateInstantEditor(pageModel.mid, mid);
+    }
+    invalidateFrameThumbnail(pageModel.mid, mid);
+    invalidateSticker(pageModel.mid, mid);
+    return true;
+  }
+  //
+  //
+  //
+
+  KeyHandler frameThumbnailKeyHandler = KeyHandler();
+
   String frameThumbnailKeyMangler(String pageMid, String frameMid) {
     return 'FrameThumbnail$pageMid/$frameMid';
   }
 
-  GlobalKey<FrameThumbnailState> frameThumbnailKeyGen(String pageMid, String frameMid) {
-    String keyStr = frameThumbnailKeyMangler(pageMid, frameMid);
-    GlobalKey<FrameThumbnailState>? frameThumbnailKey = _frameThumbnailKeyMap[keyStr];
-    if (frameThumbnailKey != null) {
-      return frameThumbnailKey;
-    }
-    GlobalObjectKey<FrameThumbnailState> key = GlobalObjectKey<FrameThumbnailState>(keyStr);
-    _frameThumbnailKeyMap[keyStr] = key;
-    return key;
+  GlobalObjectKey<CretaState<StatefulWidget>> registerFrameThumbnailKey(
+      String pageMid, String frameMid) {
+    return frameThumbnailKeyHandler.registerKey(frameThumbnailKeyMangler(pageMid, frameMid));
   }
 
-  GlobalKey<FrameThumbnailState>? findFrameThumbnailKey(String pageMid, String frameMid) {
-    String keyStr = frameThumbnailKeyMangler(pageMid, frameMid);
-    return _frameThumbnailKeyMap[keyStr];
+  bool invalidateFrameThumbnail(String pageMid, String frameMid) {
+    return frameThumbnailKeyHandler.invalidate(frameThumbnailKeyMangler(pageMid, frameMid));
   }
+//
+  //
+  //
 
-  final Map<String, GlobalKey<StickerState>> _stickerKeyMap = {};
-  //Map<String, GlobalKey<StickerState>> get stickerKeyMap => _stickerKeyMap;
-
+  KeyHandler stickerKeyHandler = KeyHandler();
   String stickerKeyMangler(String pageMid, String frameMid) {
-    return '$pageMid/$frameMid';
+    return 'Sticker$pageMid/$frameMid';
   }
 
-  String frameKeyMangler(String pageMid, String frameMid) {
+  GlobalObjectKey<CretaState<StatefulWidget>> registerStickerKey(String pageMid, String frameMid) {
+    return stickerKeyHandler.registerKey(stickerKeyMangler(pageMid, frameMid));
+  }
+
+  bool invalidateSticker(String pageMid, String frameMid) {
+    return stickerKeyHandler.invalidate(stickerKeyMangler(pageMid, frameMid));
+  }
+
+  //
+  //
+  //
+
+  KeyHandler instantEditorKeyHandler = KeyHandler();
+  String instantEditorKeyMangler(String pageMid, String frameMid) {
+    return 'InstantEditor$pageMid/$frameMid';
+  }
+
+  GlobalObjectKey<CretaState<StatefulWidget>> registerInstantEditorrKey(
+      String pageMid, String frameMid) {
+    return instantEditorKeyHandler.registerKey(instantEditorKeyMangler(pageMid, frameMid));
+  }
+
+  bool invalidateInstantEditor(String pageMid, String frameMid) {
+    return instantEditorKeyHandler.invalidate(instantEditorKeyMangler(pageMid, frameMid));
+  }
+
+  //
+  //
+  //
+
+  KeyHandler dragableResiableKeyHandler = KeyHandler();
+  String dragableResiableKeyMangler(String pageMid, String frameMid) {
+    return 'DragableResiable$pageMid/$frameMid';
+  }
+
+  GlobalObjectKey<CretaState<StatefulWidget>> registerDragableResiableKey(
+      String pageMid, String frameMid) {
+    //print('registerDragableResiableKey=${dragableResiableKeyMangler(pageMid, frameMid)}');
+    return dragableResiableKeyHandler.registerKey(dragableResiableKeyMangler(pageMid, frameMid));
+  }
+
+  bool invalidateDragableResiable(String pageMid, String frameMid) {
+    //print('invalidateDragableResiable=${dragableResiableKeyMangler(pageMid, frameMid)}');
+    return dragableResiableKeyHandler.invalidate(dragableResiableKeyMangler(pageMid, frameMid));
+  }
+
+  //
+  //
+  //
+  KeyHandler frameEachKeyHandler = KeyHandler();
+  String frameEachKeyMangler(String pageMid, String frameMid) {
     return 'FrameEach$pageMid/$frameMid';
   }
 
-  GlobalKey<StickerState> stickerKeyGen(String pageMid, String frameMid) {
-    String keyStr = stickerKeyMangler(pageMid, frameMid);
-    GlobalKey<StickerState>? stickerKey = _stickerKeyMap[keyStr];
-    if (stickerKey != null) {
-      return stickerKey;
-    }
-    GlobalObjectKey<StickerState> key = GlobalObjectKey<StickerState>(keyStr);
-    _stickerKeyMap[keyStr] = key;
-    return key;
+  GlobalObjectKey<CretaState<StatefulWidget>> registerFrameEachKey(
+      String pageMid, String frameMid) {
+    return frameEachKeyHandler.registerKey(frameEachKeyMangler(pageMid, frameMid));
   }
 
-  GlobalKey<StickerState>? findStickerKey(String pageMid, String frameMid) {
-    String keyStr = stickerKeyMangler(pageMid, frameMid);
-    return _stickerKeyMap[keyStr];
+  bool invalidateFrameEach(String pageMid, String frameMid) {
+    return frameEachKeyHandler.invalidate(frameEachKeyMangler(pageMid, frameMid));
+  }
+  //
+  //
+  //
+
+  KeyHandler contentMainKeyHandler = KeyHandler();
+  String contentMainKeyHandlerKeyMangler(String pageMid, String frameMid) {
+    return 'ContentsMain$pageMid/$frameMid';
   }
 
-  bool refreshFrame(String mid, {bool deep = false}) {
-    String keyStr = stickerKeyMangler(pageModel.mid, mid);
-    GlobalKey<StickerState>? stickerKey = _stickerKeyMap[keyStr];
-    if (stickerKey == null) return false;
-    stickerKey.currentState?.refresh(deep: deep);
-
-    GlobalKey<FrameThumbnailState>? frameThumbnailKey = findFrameThumbnailKey(pageModel.mid, mid);
-    if (frameThumbnailKey != null) {
-      frameThumbnailKey.currentState?.invalidate();
-    }
-    return true;
+  GlobalObjectKey<CretaState<StatefulWidget>> registerContentMainKeyHandlerKey(
+      String pageMid, String frameMid) {
+    return contentMainKeyHandler.registerKey(contentMainKeyHandlerKeyMangler(pageMid, frameMid));
   }
 
-  // final Map<String, GlobalKey<DraggableResizableState>> _draggerbleKeyMap = {};
-  // Map<String, GlobalKey<DraggableResizableState>> get draggerbleKeyMap => _draggerbleKeyMap;
-  // String draggerbleKeyMangler(String pageMid, String frameMid) {
-  //   return 'DraggableResizable$pageMid/$frameMid';
-  // }
+  bool invalidateContentsMain(String pageMid, String frameMid) {
+    return contentMainKeyHandler.invalidate(contentMainKeyHandlerKeyMangler(pageMid, frameMid));
+  }
 
-  // GlobalObjectKey<DraggableResizableState> draggerbleKeyGen(String pageMid, String frameMid) {
-  //   String keyStr = draggerbleKeyMangler(pageMid, frameMid);
-  //   GlobalObjectKey<DraggableResizableState> key = GlobalObjectKey<DraggableResizableState>(keyStr);
-  //   draggerbleKeyMap[keyStr] = key;
-  //   return key;
-  // }
-
-  // bool draggerbleInvalidate(String pageMid, String frameMid) {
-  //   String keyStr = draggerbleKeyMangler(pageMid, frameMid);
-  //   GlobalKey<DraggableResizableState>? key = draggerbleKeyMap[keyStr];
-  //   if (key == null) {
-  //     return false;
-  //   }
-  //   key.currentState?.invalidate();
-  //   return true;
-  // }
+  //
+  //
+  //
 
   Map<String, ContentsManager> contentsManagerMap = {};
 
@@ -786,11 +868,13 @@ class FrameManager extends CretaManager {
     FrameModel? retval;
     reverseMapIterator((model) {
       FrameModel frame = model as FrameModel;
-      GlobalKey? stickerKey = _stickerKeyMap['${pageModel.mid}/${frame.mid}'];
-      if (stickerKey == null) {
-        return null;
-      }
-      bool founded = CretaUtils.isMousePointerOnWidget(stickerKey, pos);
+      // GlobalKey? stickerKey = _stickerKeyMap['${pageModel.mid}/${frame.mid}'];
+      // if (stickerKey == null) {
+      //   return null;
+      // }
+      // bool founded = CretaUtils.isMousePointerOnWidget(stickerKey, pos);
+      String keyString = stickerKeyMangler(pageModel.mid, frame.mid);
+      bool founded = stickerKeyHandler.isMousePointerOnWidget(keyString, pos);
       if (founded) {
         logger.fine('pointer is on widget order ${frame.order.value}');
         retval = frame;
@@ -903,13 +987,16 @@ class FrameManager extends CretaManager {
   bool clickedInsideSelectedFrame(Offset position) {
     if (DraggableStickers.frameSelectNotifier == null) return false;
     if (DraggableStickers.frameSelectNotifier!.selectedAssetId == null) return false;
-    GlobalKey? key =
-        findStickerKey(pageModel.mid, DraggableStickers.frameSelectNotifier!.selectedAssetId!);
-    if (key == null) {
-      //print(' key is null , ${DraggableStickers.frameSelectNotifier!.selectedAssetId}');
-      return false;
-    }
-    return CretaUtils.isMousePointerOnWidget(key, position);
+    // GlobalKey? key =
+    //     findStickerKey(pageModel.mid, DraggableStickers.frameSelectNotifier!.selectedAssetId!);
+    // if (key == null) {
+    //   //print(' key is null , ${DraggableStickers.frameSelectNotifier!.selectedAssetId}');
+    //   return false;
+    // }
+    //return CretaUtils.isMousePointerOnWidget(key, position);
+    String keyString =
+        stickerKeyMangler(pageModel.mid, DraggableStickers.frameSelectNotifier!.selectedAssetId!);
+    return stickerKeyHandler.isMousePointerOnWidget(keyString, position);
   }
 
   ContentsModel? getFirstContents(String frameMid) {

@@ -51,6 +51,9 @@ class CretaPlayTimer extends ChangeNotifier {
 
   ContentsModel? _currentModel;
   ContentsModel? get currentModel => _currentModel;
+  void setCurrentModel(ContentsModel s) {
+    _currentModel = s;
+  }
 
   ContentsModel? _prevModel;
 
@@ -337,7 +340,8 @@ class CretaPlayTimer extends ChangeNotifier {
     final String key = contentsManager.keyMangler(model);
     CretaAbsPlayer? player = contentsManager.getPlayer(key);
     if (player != null) {
-      player.model!.updateFrom(model); // 모델을 달라졌을수 있다.
+      //print('player already exist ${model.remoteUrl}');
+      player.model!.updateFrom(model); // 모델이 달라졌을수 있다.
       _currentPlayer = player;
       return player;
     }

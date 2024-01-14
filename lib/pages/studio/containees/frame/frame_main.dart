@@ -461,12 +461,12 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
     double posX = model.posX.value * applyScale - LayoutConst.stikerOffset / 2;
     double posY = model.posY.value * applyScale - LayoutConst.stikerOffset / 2;
 
-    GlobalKey<StickerState>? stickerKey;
-    if (widget.isPrevious == false) {
-      stickerKey = frameManager!.stickerKeyGen(_pageModel.mid, model.mid);
-    } else {
-      stickerKey = GlobalKey<StickerState>();
-    }
+    // GlobalKey<StickerState>? stickerKey;
+    // if (widget.isPrevious == false) {
+    //   stickerKey = frameManager!.stickerKeyGen(_pageModel.mid, model.mid);
+    // } else {
+    //   stickerKey = GlobalKey<StickerState>();
+    // }
 
     // Text Type 의 경우 사이즈 계산을 위해서
     //print('7 : ${model.name.value}');
@@ -505,13 +505,13 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
       }
     }
 
-    String frameKeyStr =
-        //'FrameEach${model.width.value}${frameManager!.stickerKeyMangler(_pageModel.mid, model.mid)}';
-        frameManager!.frameKeyMangler(_pageModel.mid, model.mid);
-    GlobalKey<FrameEachState> frameKey = GlobalObjectKey<FrameEachState>(frameKeyStr);
+    // String frameKeyStr =
+    //     //'FrameEach${model.width.value}${frameManager!.stickerKeyMangler(_pageModel.mid, model.mid)}';
+    //     frameManager!.frameKeyMangler(_pageModel.mid, model.mid);
+    // GlobalKey<FrameEachState> frameKey = GlobalObjectKey<FrameEachState>(frameKeyStr);
 
     Widget eachFrame = FrameEach(
-      key: frameKey,
+      key: frameManager!.registerFrameEachKey(_pageModel.mid, model.mid),
       model: model,
       pageModel: _pageModel,
       frameManager: frameManager!,
@@ -524,8 +524,9 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
     bool isMain = (model.isMain.value || _mainFrameCandiator == model.mid);
 
     return Sticker(
-      key: stickerKey,
-      frameKey: frameKey,
+      key:  frameManager!.registerStickerKey(_pageModel.mid, model.mid),
+      //frameKey: frameKey,
+      frameManager: frameManager!,
       isOverlay: model.isOverlay.value,
       model: model,
       pageMid: _pageModel.mid,

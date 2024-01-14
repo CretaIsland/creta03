@@ -21,6 +21,7 @@ import '../../studio_snippet.dart';
 import '../containee_mixin.dart';
 import '../contents/contents_thumbnail.dart';
 import 'frame_play_mixin.dart';
+import '../../../../data_io/key_handler.dart';
 
 class FrameThumbnail extends StatefulWidget {
   //final FrameManager frameManager;
@@ -47,7 +48,7 @@ class FrameThumbnail extends StatefulWidget {
   State<FrameThumbnail> createState() => FrameThumbnailState();
 }
 
-class FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, FramePlayMixin {
+class FrameThumbnailState extends CretaState<FrameThumbnail> with ContaineeMixin, FramePlayMixin {
   double applyScale = 1;
   bool _isShowBorder = false;
 
@@ -61,10 +62,6 @@ class FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fra
   void dispose() {
     super.dispose();
     //logger.fine('FrameThumbnail dispose================');
-  }
-
-  void invalidate() {
-    setState(() {});
   }
 
   @override
@@ -117,7 +114,7 @@ class FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fra
   @override
   Widget build(BuildContext context) {
     //_initContentsManager();
-    //contentsManager = frameManager!.findContentsManager(widget.model);
+    //_contentsManager = frameManager!.findContentsManager(widget.model);
     applyScale = widget.applyScale;
     // if (_contentsManager != null) {
     //   return MultiProvider(
