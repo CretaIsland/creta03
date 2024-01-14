@@ -88,7 +88,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   }
 
   void _notifyToThumbnail() {
-    BookMainPage.pageManagerHolder?.invalidatThumbnail(widget.contentsManager.pageModel);
+    notifyToThumbnail(widget.contentsManager.pageModel);
   }
 
   @override
@@ -1157,6 +1157,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                     widget.contentsManager.notify();
                     if (model.textType == TextType.clock) {
                       _sendEvent!.sendEvent(_frameModel);
+                      _notifyToThumbnail();
                     }
                   }),
               BTN.fill_gray_i_m(
@@ -1171,6 +1172,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                     widget.contentsManager.notify();
                     if (model.textType == TextType.clock) {
                       _sendEvent!.sendEvent(_frameModel);
+                      _notifyToThumbnail();
                     }
                   }),
               BTN.fill_gray_i_m(
@@ -1185,6 +1187,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                     widget.contentsManager.notify();
                     if (model.textType == TextType.clock) {
                       _sendEvent!.sendEvent(_frameModel);
+                      _notifyToThumbnail();
                     }
                   }),
               // BTN.fill_gray_i_m(
@@ -1217,6 +1220,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                     widget.contentsManager.notify();
                     if (model.textType == TextType.clock) {
                       _sendEvent!.sendEvent(_frameModel);
+                      _notifyToThumbnail();
                     }
                   }),
               BTN.fill_gray_i_m(
@@ -1231,6 +1235,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                     widget.contentsManager.notify();
                     if (model.textType == TextType.clock) {
                       _sendEvent!.sendEvent(_frameModel);
+                      _notifyToThumbnail();
                     }
                   }),
               BTN.fill_gray_i_m(
@@ -1245,6 +1250,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                     widget.contentsManager.notify();
                     if (model.textType == TextType.clock) {
                       _sendEvent!.sendEvent(_frameModel);
+                      _notifyToThumbnail();
                     }
                   }),
             ],
@@ -1267,6 +1273,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           model.isBold.set(val);
           if (model.textType == TextType.clock) {
             _sendEvent!.sendEvent(_frameModel);
+            _notifyToThumbnail();
           }
           widget.contentsManager.notify();
         },
@@ -1274,6 +1281,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           model.isItalic.set(val);
           if (model.textType == TextType.clock) {
             _sendEvent!.sendEvent(_frameModel);
+            _notifyToThumbnail();
           }
           widget.contentsManager.notify();
         },
@@ -1281,6 +1289,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           model.isUnderline.set(val);
           if (model.textType == TextType.clock) {
             _sendEvent!.sendEvent(_frameModel);
+            _notifyToThumbnail();
           }
           widget.contentsManager.notify();
         },
@@ -1288,6 +1297,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           model.isStrike.set(val);
           if (model.textType == TextType.clock) {
             _sendEvent!.sendEvent(_frameModel);
+            _notifyToThumbnail();
           }
           widget.contentsManager.notify();
         },

@@ -11,6 +11,7 @@ import 'package:creta03/common/creta_utils.dart';
 import 'package:creta03/design_system/component/creta_texture_widget.dart';
 import 'package:creta03/design_system/component/shape/creta_clipper.dart';
 import '../../../../data_io/contents_manager.dart';
+import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/component/snippet.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../model/app_enums.dart';
@@ -53,7 +54,7 @@ class FrameThumbnailState extends CretaState<FrameThumbnail> with ContaineeMixin
   bool _isShowBorder = false;
 
   ContentsManager? _contentsManager;
-  //FrameManager? _anotherFrameManager;
+  FrameManager? _anotherFrameManager;
 
   Future<bool>? _isInitialized;
   //final bool _isHover = false;
@@ -96,15 +97,27 @@ class FrameThumbnailState extends CretaState<FrameThumbnail> with ContaineeMixin
     _contentsManager = frameManager!.findContentsManager(widget.model);
     //while (_contentsManager!.onceDBGetComplete == false) {
     while (_contentsManager == null) {
-      //썸네일에서는 가져오지 말아야 한다. 같은 COntentsManager를 쓰기때문이다.
-
+      logger.info('wait _contentsManager');
       // 1.1 초를 쉬어서, FrameMain  에서   contents 를 가져올 시간을 벌어준다.
-      //print('wait _contentsManager');
       await Future.delayed(const Duration(milliseconds: 1100));
-      _contentsManager = frameManager!.findContentsManager(widget.model);
-      // await _contentsManager!.getContents();
-      // _contentsManager!.addRealTimeListen(widget.model.mid);
-      // _contentsManager!.reOrdering();
+
+      if (widget.model.isOverlay.value == true) {
+        //  Overlay 이기 때문에,  ContentsManager 가 다른 frameManager 에 있는 것이므로
+        // 해당 프레임을 찾아야 한다.
+        _anotherFrameManager =
+            BookMainPage.pageManagerHolder!.findFrameManager(widget.model.parentMid.value);
+        if (_anotherFrameManager != null) {
+          _contentsManager = _anotherFrameManager!.findContentsManager(widget.model);
+        } else {
+          logger.severe('overlay frame not found');
+        }
+      } else {
+        _contentsManager = frameManager!.findContentsManager(widget.model);
+        //썸네일에서는 가져오지 말아야 한다. 같은 COntentsManager를 쓰기때문이다.
+        // await _contentsManager!.getContents();
+        // _contentsManager!.addRealTimeListen(widget.model.mid);
+        // _contentsManager!.reOrdering();
+      }
     }
     //print('frameThumbnail initChildren(${_contentsManager!.getAvailLength()})');
     //print('frameThumbnail initChildren()');

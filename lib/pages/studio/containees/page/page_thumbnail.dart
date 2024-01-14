@@ -2,8 +2,8 @@
 
 import 'package:creta03/pages/studio/containees/frame/frame_thumbnail.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:hycop/hycop/absModel/abs_ex_model.dart';
+// import 'package:get/get.dart';
+// import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 //import 'package:glass/glass.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -19,7 +19,7 @@ import '../../../../model/page_model.dart';
 //import '../../../../player/abs_player.dart';
 import '../../book_main_page.dart';
 import '../../studio_constant.dart';
-import '../../studio_getx_controller.dart';
+//import '../../studio_getx_controller.dart';
 import '../../studio_snippet.dart';
 import '../containee_mixin.dart';
 import '../../../../data_io/key_handler.dart';
@@ -51,7 +51,7 @@ class PageThumbnail extends StatefulWidget {
 class PageThumbnailState extends CretaState<PageThumbnail> with ContaineeMixin {
   FrameManager? _frameManager;
   bool _onceDBGetComplete = false;
-  FrameEventController? _receiveEventFromProperty;
+  //FrameEventController? _receiveEventFromProperty;
   //FrameEventController? _receiveEventFromMain;
 
   double opacity = 1;
@@ -67,10 +67,10 @@ class PageThumbnailState extends CretaState<PageThumbnail> with ContaineeMixin {
     super.initState();
     initChildren();
     //final FrameEventController receiveEventFromMain = Get.find(tag: 'frame-main-to-property');
-    final FrameEventController receiveEventFromProperty = Get.find(tag: 'frame-property-to-main');
+    //final FrameEventController receiveEventFromProperty = Get.find(tag: 'frame-property-to-main');
 
     //_receiveEventFromMain = receiveEventFromMain;
-    _receiveEventFromProperty = receiveEventFromProperty;
+    //_receiveEventFromProperty = receiveEventFromProperty;
 
     afterBuild();
   }
@@ -242,6 +242,7 @@ class PageThumbnailState extends CretaState<PageThumbnail> with ContaineeMixin {
   Widget _drawFrames() {
     return Consumer<FrameManager>(builder: (context, frameManager, child) {
       double applyScale = widget.pageWidth / widget.pageModel.width.value;
+
       // print('widget.pageWidth = ${widget.pageWidth}');
       // print('widget.pageModel.width=${widget.pageModel.width.value}');
       // print('StudioVariables.applyScale=${StudioVariables.applyScale}');
@@ -262,84 +263,88 @@ class PageThumbnailState extends CretaState<PageThumbnail> with ContaineeMixin {
       //           logger.fine('_receiveEventFromMain-----Unknown Model');
       //         }
       //       }
-      return StreamBuilder<AbsExModel>(
-          stream: _receiveEventFromProperty!.eventStream.stream,
-          builder: (context, snapshot) {
-            if (snapshot.data != null) {
-              if (snapshot.data! is FrameModel) {
-                logger.fine('_receiveEventFromProperty-----FrameModel');
-                FrameModel model = snapshot.data! as FrameModel;
-                frameManager.updateModel(model);
-                if (_buildComplete) {
-                  widget.changeEventReceived.call(model.parentMid.value);
-                }
-                //widget.changeEventReceived.call(model.parentMid.value);
-              } else {
-                logger.fine('_receiveEventFromProperty-----Unknown Model');
-              }
-            }
-            BookMainPage.thumbnailChanged = true;
-            //print('-----------------------------------------------');
-            return Stack(
-              children: _frameManager!.orderMapIterator((model) {
-                FrameModel frameModel = model as FrameModel;
+      // return StreamBuilder<AbsExModel>(
+      //     stream: _receiveEventFromProperty!.eventStream.stream,
+      //     builder: (context, snapshot) {
+      //       if (snapshot.data != null) {
+      //         if (snapshot.data! is FrameModel) {
+      //           logger.fine('_receiveEventFromProperty-----FrameModel');
+      //           FrameModel model = snapshot.data! as FrameModel;
+      //           frameManager.updateModel(model);
+      //           if (_buildComplete) {
+      //             widget.changeEventReceived.call(model.parentMid.value);
+      //           }
+      //           //widget.changeEventReceived.call(model.parentMid.value);
+      //         } else {
+      //           logger.fine('_receiveEventFromProperty-----Unknown Model');
+      //         }
+      //       }
+      if (_buildComplete) {
+        widget.changeEventReceived.call(widget.pageModel.mid);
+      }
+      BookMainPage.thumbnailChanged = true;
+      //print('-----------------------------------------------');
+      return Stack(
+        children: _frameManager!.orderMapIterator((model) {
+          FrameModel frameModel = model as FrameModel;
 
-                //if (_frameManager!.isVisible(model) == false) {
-                if (frameModel.isVisible(widget.pageModel.mid) == false &&
-                    frameModel.isBackgroundMusic() == false) {
-                  return SizedBox.shrink();
-                }
-                if (frameModel.parentMid.value != widget.pageModel.parentMid.value) {
-                  if (frameModel.isOverlay.value != false) {
-                    return SizedBox.shrink();
-                  }
-                }
+          //if (_frameManager!.isVisible(model) == false) {
+          if (frameModel.isVisible(widget.pageModel.mid) == false &&
+              frameModel.isBackgroundMusic() == false) {
+            return SizedBox.shrink();
+          }
+          // if (frameModel.parentMid.value != widget.pageModel.mid) {
+          //   if (frameModel.isOverlay.value == true) {
+          //     return SizedBox.shrink();
+          //   }
+          // }
+          print(
+              '''frameModel=${frameModel.name.value}, ${frameModel.isOverlay.value}, ${(frameModel.parentMid.value != widget.pageModel.mid)}); ''');
 
-                //print('${frameModel.mid}, ${frameModel.parentMid.value}');
+          //print('${frameModel.mid}, ${frameModel.parentMid.value}');
 
-                //logger.fine('frameManager.orderMapIterator-------${frameModel.name.value}');
-                double frameWidth =
-                    (frameModel.width.value /* + model.shadowSpread.value */) * applyScale;
-                double frameHeight =
-                    (frameModel.height.value /* + model.shadowSpread.value */) * applyScale;
-                // isOverlay   가 있기 때문에, page mid 도 키로 쓰지 않으면 중복된다.
+          //logger.fine('frameManager.orderMapIterator-------${frameModel.name.value}');
+          double frameWidth =
+              (frameModel.width.value /* + model.shadowSpread.value */) * applyScale;
+          double frameHeight =
+              (frameModel.height.value /* + model.shadowSpread.value */) * applyScale;
+          // isOverlay   가 있기 때문에, page mid 도 키로 쓰지 않으면 중복된다.
 
-                Widget frameBox = SizedBox(
-                  width: frameWidth,
-                  height: frameHeight,
-                  child: FrameThumbnail(
-                    key: _frameManager!
-                        .registerFrameThumbnailKey(widget.pageModel.mid, frameModel.mid),
-                    model: frameModel,
-                    pageModel: widget.pageModel,
-                    //frameManager: _frameManager!,
-                    applyScale: applyScale,
-                    width: frameWidth,
-                    height: frameHeight,
-                    chageEventReceived: widget.changeEventReceived,
-                  ),
-                );
+          Widget frameBox = SizedBox(
+            width: frameWidth,
+            height: frameHeight,
+            child: FrameThumbnail(
+              key: _frameManager!.registerFrameThumbnailKey(widget.pageModel.mid, frameModel.mid),
+              model: frameModel,
+              pageModel: widget.pageModel,
+              //frameManager: _frameManager!,
+              applyScale: applyScale,
+              width: frameWidth,
+              height: frameHeight,
+              chageEventReceived: widget.changeEventReceived,
+            ),
+          );
 
-                return Positioned(
-                  left: frameModel.posX.value * applyScale,
-                  top: frameModel.posY.value * applyScale,
-                  child:
-                      // frameModel.shouldOutsideRotate()
-                      //     ? Transform(
-                      //         alignment: Alignment.center,
-                      //         transform: Matrix4.identity()
-                      //           ..scale(1.0)
-                      //           ..rotateZ(CretaUtils.degreeToRadian(frameModel.angle.value)),
-                      //         child: frameBox,
-                      //       )
-                      //     :
-                      frameBox,
-                );
-              }).toList(),
+          return Positioned(
+            left: frameModel.posX.value * applyScale,
+            top: frameModel.posY.value * applyScale,
+            child:
+                // frameModel.shouldOutsideRotate()
+                //     ? Transform(
+                //         alignment: Alignment.center,
+                //         transform: Matrix4.identity()
+                //           ..scale(1.0)
+                //           ..rotateZ(CretaUtils.degreeToRadian(frameModel.angle.value)),
+                //         child: frameBox,
+                //       )
+                //     :
+                frameBox,
+          );
+        }).toList(),
 
-              //children: getStickerList(),
-            );
-          });
+        //children: getStickerList(),
+      );
+      //});
       //});
     });
   }

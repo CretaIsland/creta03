@@ -619,6 +619,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
               setState(() {
                 frameModel.toggleFullscreen(isFullScreen, widget.book);
                 _sendEvent!.sendEvent(frameModel);
+                _notifyToThumbnail();
               });
             }),
         if (frameModel.isBackgroundMusic() == false)
@@ -675,6 +676,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                 contentsManager?.notify();
                 if (contentsModel.isAutoFrameOrSide()) {
                   _sendEvent!.sendEvent(contentsManager!.frameModel);
+                  _notifyToThumbnail();
                   //widget.frameManager?.notify();
                 }
               }),
@@ -723,6 +725,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
                     frameModel.removeOverlayExclude(sticker.pageMid);
                   }
                   _sendEvent!.sendEvent(frameModel);
+                  BookMainPage.pageManagerHolder?.invalidatThumbnail(sticker.pageMid);
+                  //_notifyToThumbnail();
                   //BookMainPage.pageManagerHolder!.notify();
                 });
               }),
@@ -1114,6 +1118,10 @@ class _DraggableStickersState extends State<DraggableStickers> {
         return true;
       },
     );
+  }
+
+  void _notifyToThumbnail() {
+    BookMainPage.pageManagerHolder?.invalidatThumbnail(widget.page.mid);
   }
 
   // Widget _frameDropZone(Sticker sticker, {required Widget child}) {

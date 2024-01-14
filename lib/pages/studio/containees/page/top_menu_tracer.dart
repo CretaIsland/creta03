@@ -148,7 +148,7 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
       );
       Offset pos = CretaUtils.positionInPage(details.localPosition - center, null);
       frameManager!.createNextFrame(pos: pos, size: LayoutConst.defaultFrameSize).then((value) {
-        BookMainPage.pageManagerHolder!.invalidatThumbnail(frameManager!.pageModel);
+        BookMainPage.pageManagerHolder!.invalidatThumbnail(frameManager!.pageModel.mid);
         _sendEvent?.sendEvent(value);
 
         ///frameManager!.notify();

@@ -39,17 +39,17 @@ class PageManager extends CretaManager {
 /////////////////////////////////////////////////////////
   KeyHandler thumnKeyHandler = KeyHandler();
 
-  String thumbKkeyMangler(PageModel model) {
-    return 'Thumb${model.mid}';
+  String thumbKkeyMangler(String pageMid) {
+    return 'Thumb$pageMid';
   }
 
-  GlobalObjectKey<CretaState<StatefulWidget>> registerPageThumbnail(PageModel model) {
-    String keyString = thumbKkeyMangler(model);
+  GlobalObjectKey<CretaState<StatefulWidget>> registerPageThumbnail(String pageMid) {
+    String keyString = thumbKkeyMangler(pageMid);
     return thumnKeyHandler.registerKey(keyString);
   }
 
-  bool invalidatThumbnail(PageModel model) {
-    return thumnKeyHandler.invalidate(thumbKkeyMangler(model));
+  bool invalidatThumbnail(String pageMid) {
+    return thumnKeyHandler.invalidate(thumbKkeyMangler(pageMid));
   }
 
   Rect? getThumbArea() {
@@ -57,7 +57,7 @@ class PageManager extends CretaManager {
     if (pageModel == null) {
       return thumnKeyHandler.getFirstArea();
     }
-    return thumnKeyHandler.getArea(thumbKkeyMangler(pageModel));
+    return thumnKeyHandler.getArea(thumbKkeyMangler(pageModel.mid));
   }
 
   Rect? getFirstThumbArea() {

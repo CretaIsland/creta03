@@ -315,10 +315,11 @@ mixin CretaTextMixin {
 
     switch (model.aniType.value) {
       case TextAniType.fadeTransition:
-      case TextAniType.sizeTransition:
+      //case TextAniType.sizeTransition:
       case TextAniType.rotateTransition:
       case TextAniType.slideTransition:
       case TextAniType.scaleTransition:
+      case TextAniType.randomTransition:
         {
           String input = text;
           int linesLen = text.split('\n').length;
@@ -346,31 +347,41 @@ mixin CretaTextMixin {
                   eachLine,
                   style,
                   isThumbnail,
-                  sendEvent: false,
+                  sendEvent: (model.aniType.value == TextAniType.randomTransition),
                 );
               });
         }
-      case TextAniType.randomTransition:
-        {
-          int lines = text.split('\n').length;
-          int stopDuration = (model.anyDuration.value / lines).ceil();
-          int switchDuration = (model.anyDuration.value / (lines * 4)).ceil();
-          return CretaTextSwitcher(
-              text: text,
-              stopDuration: Duration(seconds: stopDuration),
-              switchDuration: Duration(seconds: switchDuration),
-              aniType: model.aniType.value,
-              builder: (index, eachLine) {
-                return _outLineAndShadowText(
-                  key: ValueKey<int>(index),
-                  model,
-                  eachLine,
-                  style,
-                  isThumbnail,
-                  sendEvent: false,
-                );
-              });
-        }
+      // case TextAniType.randomTransition:
+      //   {
+      //     String input = text;
+      //     int linesLen = text.split('\n').length;
+      //     if (linesLen < 1) {
+      //       input = 'Sample Text\nSample Text';
+      //     } else if (linesLen < 2) {
+      //       input = '$text\n$text';
+      //     }
+      //     List<String> lines = input.split('\n');
+      //     linesLen = lines.length;
+      //     double duration = (model.anyDuration.value / (linesLen + 1));
+      //     int stopDuration = duration.ceil();
+      //     int switchDuration = (duration / 4).ceil();
+
+      //     return CretaTextSwitcher(
+      //         text: text,
+      //         stopDuration: Duration(seconds: stopDuration),
+      //         switchDuration: Duration(seconds: switchDuration),
+      //         aniType: model.aniType.value,
+      //         builder: (index, eachLine) {
+      //           _currentIndex = index;
+      //           return _outLineAndShadowText(
+      //             key: ValueKey<int>(index),
+      //             model,
+      //             eachLine,
+      //             style,
+      //             isThumbnail,
+      //           );
+      //         });
+      //   }
       case TextAniType.tickerSide:
         {
           int duration = textSize * ((101 - model.anyDuration.value) / 10).ceil();

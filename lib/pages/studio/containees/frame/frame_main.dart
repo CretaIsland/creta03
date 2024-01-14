@@ -150,7 +150,7 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
 
     BookMainPage.containeeNotifier!.set(ContaineeEnum.Page, doNoti: true);
     _sendEvent?.sendEvent(model);
-    BookMainPage.pageManagerHolder?.invalidatThumbnail(_pageModel);
+    BookMainPage.pageManagerHolder?.invalidatThumbnail(_pageModel.mid);
     setState(() {});
     LeftMenuPage.initTreeNodes();
     LeftMenuPage.treeInvalidate();
@@ -331,7 +331,7 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
           frameManager?.setToDB(model); // save()로 저장하게되면, 나중에 백그라운드 저장되면서 느려진다.
           //model.save();
           _sendEvent?.sendEvent(model);
-          if (false == BookMainPage.pageManagerHolder?.invalidatThumbnail(_pageModel)) {
+          if (false == BookMainPage.pageManagerHolder?.invalidatThumbnail(_pageModel.mid)) {
             logger.severe('notify to thumbnail failed');
           }
 

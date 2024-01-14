@@ -837,7 +837,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                         idx++;
                       }
                       _contentsManager!.invalidatePlayerWidget(widget.model);
-                      //_sendEvent!.sendEvent(widget.model);
+                      _sendEvent!.sendEvent(widget.model);
                     },
                     width: 75,
                     height: 24,
@@ -866,7 +866,8 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                 onSelected: (value) {
                   widget.model.isFlip.set(value);
                   _contentsManager!.invalidatePlayerWidget(widget.model);
-                  //_sendEvent!.sendEvent(widget.model);
+                 
+                  _sendEvent!.sendEvent(widget.model);
                   setState(() {});
                 },
               );
@@ -892,7 +893,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                   onChannged: (val) {
                     widget.model.angle.set(val);
                     _contentsManager!.invalidatePlayerWidget(widget.model);
-                    //_sendEvent!.sendEvent(widget.model);
+                    _sendEvent!.sendEvent(widget.model);
                     setState(() {});
                   },
                 ),
@@ -910,7 +911,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                 onSelected: (value) {
                   widget.model.imageAniType.set(value ? ImageAniType.move : ImageAniType.none);
                   _contentsManager!.invalidatePlayerWidget(widget.model);
-                  //_sendEvent!.sendEvent(widget.model);
+                  _sendEvent!.sendEvent(widget.model);
                   setState(() {});
                 },
               ),
@@ -1278,15 +1279,15 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                   CretaStudioLang.transition[4],
                 )),
             StudioSnippet.smallDivider(height: 10),
-            SizedBox(
-                width: 250,
-                height: 36,
-                child: transitionText(
-                  model,
-                  TextAniType.sizeTransition,
-                  CretaStudioLang.transition[5],
-                )),
-            StudioSnippet.smallDivider(height: 10),
+            // SizedBox(
+            //     width: 250,
+            //     height: 36,
+            //     child: transitionText(
+            //       model,
+            //       TextAniType.sizeTransition,
+            //       CretaStudioLang.transition[5],
+            //     )),
+            // StudioSnippet.smallDivider(height: 10),
             // 옆으로 흐르는 문자열
             SizedBox(width: 250, height: 36, child: tickerSide(model)),
             StudioSnippet.smallDivider(height: 10),

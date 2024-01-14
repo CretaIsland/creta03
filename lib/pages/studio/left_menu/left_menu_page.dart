@@ -234,10 +234,10 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       pageManager.reOrdering();
       pageManager.resetPageSize();
       _pageCount = pageManager.getAvailLength();
-      
+
       if (pageManager.getSelected() == null && _pageCount > 0) {
         pageManager.setSelected(0);
-        
+
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
       }
       _resize();
@@ -803,9 +803,9 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     //   thumbKey = GlobalObjectKey('Thumb$pageIndex${pageModel.mid}');
     //   _pageManager!.thumbKeyMap[pageModel.mid] = thumbKey;
     // }
-
+    print('PageThumbnail---------${pageModel.name.value}----------------------------------------');
     return PageThumbnail(
-      key: BookMainPage.pageManagerHolder!.registerPageThumbnail(pageModel),
+      key: BookMainPage.pageManagerHolder!.registerPageThumbnail(pageModel.mid),
       pageIndex: pageIndex,
       bookModel: _pageManager!.bookModel!,
       pageModel: pageModel,
