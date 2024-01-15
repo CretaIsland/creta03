@@ -9,7 +9,7 @@ import 'package:routemaster/routemaster.dart';
 
 //import '../login_page.dart';
 import 'creta_account_manager.dart';
-//import '../../routes.dart';
+import '../../routes.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/buttons/creta_button.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
@@ -56,6 +56,7 @@ class LoginDialog extends StatefulWidget {
   State<LoginDialog> createState() => _LoginDialogState();
 
   static bool _showExtraInfoDialog = false;
+  static String nextPageAfterLoginSuccess = '';
   static void setShowExtraInfoDialog(bool show) {
     if (kDebugMode) print('setShowExtraInfoDialog($show)');
     _showExtraInfoDialog = show;
@@ -68,8 +69,10 @@ class LoginDialog extends StatefulWidget {
     // Function(String)? onErrorReport,
     required Function getBuildContext,
     LoginPageState loginPageState = LoginPageState.login,
+    String nextPageAfterLoginSuccess = AppRoutes.communityHome,
   }) {
     _showExtraInfoDialog = false;
+    LoginDialog.nextPageAfterLoginSuccess = nextPageAfterLoginSuccess;
     showDialog(
       context: context,
       builder: (context) => CretaDialog(
@@ -102,7 +105,7 @@ class LoginDialog extends StatefulWidget {
       } else {
         //Routemaster.of(getBuildContext.call()).push(AppRoutes.intro);
         if (AccountManager.currentLoginUser.isLoginedUser) {
-          String path = Uri.base.path;
+          String path = LoginDialog.nextPageAfterLoginSuccess;
           Routemaster.of(getBuildContext.call()).push(path);
         } else {
           // do nothing
@@ -763,8 +766,8 @@ class ExtraInfoDialog extends StatefulWidget {
       if (kDebugMode) print('ExtraInfoDialog.Routemaster');
       //Routemaster.of(getBuildContext.call()).push(AppRoutes.intro);
       if (AccountManager.currentLoginUser.isLoginedUser) {
-        String path = Uri.base.path;
-        Routemaster.of(getBuildContext.call()).push(path);
+        //String path = Uri.base.path;
+        Routemaster.of(getBuildContext.call()).push(LoginDialog.nextPageAfterLoginSuccess);
       } else {
         // do nothing
       }

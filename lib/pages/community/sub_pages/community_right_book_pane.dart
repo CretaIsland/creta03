@@ -189,8 +189,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
     CretaManager.startQueries(
       joinList: [
-        QuerySet(bookPublishedManagerHolder, _getRelatedBooksFromDB, _resultRelatedBooksFromDB),
         QuerySet(bookPublishedManagerHolder, _getBooksFromDB, _resultBooksFromDB),
+        QuerySet(bookPublishedManagerHolder, _getRelatedBooksFromDB, _resultRelatedBooksFromDB),
         QuerySet(channelManagerHolder, _getChannelsFromDB, _resultChannelsFromDB),
         QuerySet(favoritesManagerHolder, _getFavoritesFromDB, _resultFavoritesFromDB),
         QuerySet(playlistManagerHolder, _getPlaylistsFromDB, _resultPlaylistsFromDB),
@@ -248,9 +248,14 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
       // no book-data in DB
       return;
     }
+    final Map<String, String> bookIdMap = {};
     for (var model in modelList) {
       BookModel bookModel = model as BookModel;
-      _relatedBookList.add(bookModel);
+      if (bookModel.getMid == _currentBookModel?.getMid) continue;
+      bookIdMap.putIfAbsent(bookModel.getMid, () {
+        _relatedBookList.add(bookModel);
+        return bookModel.getMid;
+      });
     }
   }
 
@@ -1686,7 +1691,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                 Row(
                   children: [
                     Text(
-                      '연관 크레타북',
+                      '인기 크레타북',
                       style: CretaFont.titleLarge.copyWith(color: CretaColor.text[700]),
                     ),
                     Expanded(child: Container()),

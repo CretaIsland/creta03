@@ -118,10 +118,11 @@ final routesLoggedOut = RouteMap(
       ? const Redirect(AppRoutes.communityHome)
       : const Redirect(AppRoutes.intro),
   routes: {
-    AppRoutes.intro: (_) => (AccountManager.currentLoginUser.isLoginedUser)
-        ? const Redirect(AppRoutes.communityHome)
-        : const TransitionPage(child: LandingPage()),
-        //: const TransitionPage(child: IntroPage()),
+    // AppRoutes.intro: (_) => (AccountManager.currentLoginUser.isLoginedUser)
+    //     ? const Redirect(AppRoutes.communityHome)
+    //     : const TransitionPage(child: LandingPage()),
+    //     //: const TransitionPage(child: IntroPage()),
+    AppRoutes.intro: (_) => const TransitionPage(child: LandingPage()),
     AppRoutes.login: (routeData) {
       return (AccountManager.currentLoginUser.isLoginedUser)
           ? const Redirect(AppRoutes.communityHome)

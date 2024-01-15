@@ -207,7 +207,7 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
           title: Container(
             padding: const EdgeInsets.only(left: 24),
             child: InkWell(
-              onTap: () => Routemaster.of(context).push(AppRoutes.communityHome),
+              onTap: () => Routemaster.of(context).push(AppRoutes.intro),
               child: const Image(
                 image: AssetImage("assets/creta_logo_blue.png"),
                 height: 20,
