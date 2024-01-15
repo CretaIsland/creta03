@@ -276,6 +276,7 @@ class _LinkWidgetState extends State<LinkWidget> {
                   widget.frameModel.toggleFullscreen(isFullScreen, _bookModel!);
                   //logger.finest('sendEvent');
                   _sendEvent!.sendEvent(widget.frameModel);
+                  _notifyToThumbnail();
                 });
               }),
         ));
@@ -636,6 +637,10 @@ class _LinkWidgetState extends State<LinkWidget> {
       return false;
     }
     return true;
+  }
+
+  void _notifyToThumbnail() {
+    BookMainPage.pageManagerHolder?.invalidatThumbnail(widget.frameModel.parentMid.value);
   }
 
   // Widget _drawOrder(bool hasContents) {

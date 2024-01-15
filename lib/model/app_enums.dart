@@ -407,7 +407,7 @@ enum TextAniType {
   fadeTransition,
   rotateTransition,
   slideTransition,
-  sizeTransition,
+  //sizeTransition,
   scaleTransition,
   randomTransition,
   end;
@@ -419,7 +419,7 @@ enum TextAniType {
     if (this == fadeTransition) return true;
     if (this == rotateTransition) return true;
     if (this == slideTransition) return true;
-    if (this == sizeTransition) return true;
+    //if (this == sizeTransition) return true;
     if (this == scaleTransition) return true;
     if (this == randomTransition) return true;
     return false;

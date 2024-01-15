@@ -808,10 +808,15 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
               // _sendEvent!.sendEvent(widget.model);
             },
             onChanngeComplete: (value) {
+              //print('opacity = $value');
               widget.model.opacity.set(value);
               //widget.model.save();
               logger.fine('opacity=${widget.model.opacity.value}');
-              _sendEvent!.sendEvent(widget.model);
+              //_contentsManager!.invalidatePlayerWidget(widget.model);
+              // opacity 의 위치상, 여기서는 contentsMain 을 setState 해야한다.
+              _invalidateContentsMain();
+              _invalidateContentsThumb();
+              //_sendEvent!.sendEvent(widget.model);
             },
             postfix: '%',
           ),
@@ -834,7 +839,9 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                         }
                         idx++;
                       }
-                      _sendEvent!.sendEvent(widget.model);
+                      _contentsManager!.invalidatePlayerWidget(widget.model);
+                      _invalidateContentsThumb();
+                      //_sendEvent!.sendEvent(widget.model);
                     },
                     width: 75,
                     height: 24,
@@ -862,7 +869,9 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                 defaultValue: widget.model.isFlip.value,
                 onSelected: (value) {
                   widget.model.isFlip.set(value);
-                  _sendEvent!.sendEvent(widget.model);
+                  _contentsManager!.invalidatePlayerWidget(widget.model);
+                  _invalidateContentsThumb();
+                  //_sendEvent!.sendEvent(widget.model);
                   setState(() {});
                 },
               );
@@ -881,12 +890,16 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                   max: 360,
                   onChanngeComplete: (val) {
                     widget.model.angle.set(val);
-                    _sendEvent!.sendEvent(widget.model);
+                    _contentsManager!.invalidatePlayerWidget(widget.model);
+
+                    //_sendEvent!.sendEvent(widget.model);
                     setState(() {});
                   },
                   onChannged: (val) {
                     widget.model.angle.set(val);
-                    _sendEvent!.sendEvent(widget.model);
+                    _contentsManager!.invalidatePlayerWidget(widget.model);
+                    _invalidateContentsThumb();
+                    //_sendEvent!.sendEvent(widget.model);
                     setState(() {});
                   },
                 ),
@@ -903,7 +916,9 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                 defaultValue: widget.model.imageAniType.value == ImageAniType.move ? true : false,
                 onSelected: (value) {
                   widget.model.imageAniType.set(value ? ImageAniType.move : ImageAniType.none);
-                  _sendEvent!.sendEvent(widget.model);
+                  _contentsManager!.invalidatePlayerWidget(widget.model);
+                  _invalidateContentsThumb();
+                  //_sendEvent!.sendEvent(widget.model);
                   setState(() {});
                 },
               ),
@@ -938,13 +953,17 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
           setState(() {
             widget.model.filter.set(val);
           });
-          _sendEvent!.sendEvent(widget.model);
+          //_sendEvent!.sendEvent(widget.model);
+          _contentsManager!.invalidatePlayerWidget(widget.model);
+          _invalidateContentsThumb();
         },
         onDelete: () {
           setState(() {
             widget.model.filter.set(ImageFilterType.none);
           });
-          _sendEvent!.sendEvent(widget.model);
+          //_sendEvent!.sendEvent(widget.model);
+          _contentsManager!.invalidatePlayerWidget(widget.model);
+          _invalidateContentsThumb();
         },
       ),
     );
@@ -1271,15 +1290,15 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                   CretaStudioLang.transition[4],
                 )),
             StudioSnippet.smallDivider(height: 10),
-            SizedBox(
-                width: 250,
-                height: 36,
-                child: transitionText(
-                  model,
-                  TextAniType.sizeTransition,
-                  CretaStudioLang.transition[5],
-                )),
-            StudioSnippet.smallDivider(height: 10),
+            // SizedBox(
+            //     width: 250,
+            //     height: 36,
+            //     child: transitionText(
+            //       model,
+            //       TextAniType.sizeTransition,
+            //       CretaStudioLang.transition[5],
+            //     )),
+            // StudioSnippet.smallDivider(height: 10),
             // 옆으로 흐르는 문자열
             SizedBox(width: 250, height: 36, child: tickerSide(model)),
             StudioSnippet.smallDivider(height: 10),
@@ -1596,5 +1615,15 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             );
           }),
     );
+  }
+
+  void _invalidateContentsThumb() {
+    _contentsManager!
+        .invalidateContentsThumb(widget.frameManager.pageModel.mid, widget.model.parentMid.value);
+  }
+
+  void _invalidateContentsMain() {
+    widget.frameManager
+        .invalidateContentsMain(widget.frameManager.pageModel.mid, widget.model.parentMid.value);
   }
 }

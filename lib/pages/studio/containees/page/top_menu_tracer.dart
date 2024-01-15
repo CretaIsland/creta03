@@ -15,7 +15,7 @@ import '../../studio_variables.dart';
 import '../frame/frame_play_mixin.dart';
 
 class TopMenuTracer extends StatefulWidget {
-  final FrameManager? frameManager;
+  final FrameManager frameManager;
   const TopMenuTracer({super.key, required this.frameManager});
 
   @override
@@ -31,13 +31,15 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
   @override
   void initState() {
     super.initState();
-    frameManager = widget.frameManager;
+    setFrameManager(widget.frameManager);
+    //setFrameManager(BookMainPage.pageManagerHolder!.findSelectedFrameManager()!);
     final FrameEventController sendEvent = Get.find(tag: 'frame-main-to-property');
     _sendEvent = sendEvent;
   }
 
   @override
   Widget build(BuildContext context) {
+    //setFrameManager(BookMainPage.pageManagerHolder!.findSelectedFrameManager()!);
     return Consumer<TopMenuNotifier>(builder: (context, topMenuNotifier, child) {
       if (topMenuNotifier.isNormalCreate()) {
         return const SizedBox.shrink();
@@ -146,7 +148,9 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
       );
       Offset pos = CretaUtils.positionInPage(details.localPosition - center, null);
       frameManager!.createNextFrame(pos: pos, size: LayoutConst.defaultFrameSize).then((value) {
+        BookMainPage.pageManagerHolder!.invalidatThumbnail(frameManager!.pageModel.mid);
         _sendEvent?.sendEvent(value);
+
         ///frameManager!.notify();
         _isBusy = false;
         return null;

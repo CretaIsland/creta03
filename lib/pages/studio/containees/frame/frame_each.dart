@@ -13,6 +13,7 @@ import 'package:hycop/common/util/logger.dart';
 
 import 'package:creta03/common/creta_utils.dart';
 import 'package:creta03/design_system/component/creta_texture_widget.dart';
+import '../../../../data_io/key_handler.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/depot_manager.dart';
 import '../../../../data_io/frame_manager.dart';
@@ -59,7 +60,7 @@ class FrameEach extends StatefulWidget {
   State<FrameEach> createState() => FrameEachState();
 }
 
-class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixin {
+class FrameEachState extends CretaState<FrameEach> with ContaineeMixin, FramePlayMixin {
   double applyScale = 1;
 
   ContentsManager? _contentsManager;
@@ -73,7 +74,7 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
 
   //OffsetEventController? _linkSendEvent;
   FrameEachEventController? _linkReceiveEvent;
-  late GlobalObjectKey<ContentsMainState> contentsMainKey;
+  //late GlobalObjectKey<ContentsMainState> contentsMainKey;
   //bool _isLinkEnter = false;
 
   @override
@@ -100,32 +101,22 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
     // _linkSendEvent = sendEvent;
     final FrameEachEventController linkReceiveEvent = Get.find(tag: 'to-FrameEach');
     _linkReceiveEvent = linkReceiveEvent;
-    contentsMainKey = GlobalObjectKey<ContentsMainState>(
-        'ContentsMain${widget.pageModel.mid}/${widget.model.mid}');
+    // contentsMainKey = GlobalObjectKey<ContentsMainState>(
+    //     'ContentsMain${widget.pageModel.mid}/${widget.model.mid}');
 
     _width = widget.width;
   }
 
   Future<bool> initChildren() async {
-    //logger.fine('==========================FrameEach initialized================');
-    frameManager = widget.frameManager;
+    setFrameManager(widget.frameManager);
     if (frameManager == null) {
       logger.severe('frame manager is null');
       return false;
     }
-    //print('pageModel=${widget.pageModel.mid}');
-    //print('model.par=${widget.model.parentMid.value}');
-    //print('model.isO=${widget.model.isOverlay.value}');
     _contentsManager = frameManager!.findOrCreateContentsManager(widget.model);
-    // if (_contentsManager == null) {
-    //   //logger.fine('new ContentsManager created (${widget.model.mid})');
-    //   _contentsManager = frameManager!.newContentsManager(widget.model);
-    //   _contentsManager!.clearAll();
-    // } else {
-    //   //logger.fine('old ContentsManager used (${widget.model.mid})');
-    // }
+
     if (_playTimer == null) {
-      _playTimer = CretaPlayTimer(_contentsManager!, widget.frameManager);
+      _playTimer = CretaPlayTimer(_contentsManager!, frameManager!);
       _contentsManager!.setPlayerHandler(_playTimer!);
     }
     if (_contentsManager!.onceDBGetComplete == false) {
@@ -138,15 +129,10 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
     return true;
   }
 
-  void invalidate() {
-    // 프레임에서 콘텐츠 영역만 invalidate 를 시킨다.
-    setState(() {});
-  }
-
-  void invalidateContentsMain() {
-    // 프레임에서 콘텐츠 영역만 invalidate 를 시킨다.
-    contentsMainKey.currentState?.invalidate();
-  }
+  // void invalidateContentsMain() {
+  //   // 프레임에서 콘텐츠 영역만 invalidate 를 시킨다.
+  //   contentsMainKey.currentState?.invalidate();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -240,14 +226,14 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
                 //print('onMove');
                 if (widget.model.dragOnMove == false) {
                   widget.model.dragOnMove = true;
-                  invalidateContentsMain();
+                  frameManager!.invalidateContentsMain(widget.pageModel.mid, widget.model.mid);
                 }
               },
               onLeave: (data) {
                 //print('onLeave');
                 if (widget.model.dragOnMove == true) {
                   widget.model.dragOnMove = false;
-                  invalidateContentsMain();
+                  frameManager!.invalidateContentsMain(widget.pageModel.mid, widget.model.mid);
                 }
               },
               onAccept: (data) async {
@@ -262,7 +248,7 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
                     }
                   }
                   widget.model.dragOnMove = false;
-                  invalidateContentsMain();
+                  frameManager!.invalidateContentsMain(widget.pageModel.mid, widget.model.mid);
                 } else if (data is ContentsModel) {
                   //print('drop gifModel =${data}');
                   _onDropFrame(widget.model.mid, [data]);
@@ -552,22 +538,7 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
         timeChanged: () {
           setState(() {});
         },
-        child: ClipRect(
-          clipBehavior: Clip.hardEdge,
-          child: ContentsMain(
-            key: contentsMainKey,
-            frameModel: model,
-            frameOffset: widget.frameOffset,
-            pageModel: widget.pageModel,
-            frameManager: frameManager!,
-            contentsManager: _contentsManager!,
-            applyScale: applyScale,
-          ),
-          // child: Image.asset(
-          //   'assets/creta_default.png',
-          //   fit: BoxFit.cover,
-          // ),
-        ),
+        child: _childContents(model),
       );
     }
     // if (model.nextContentTypes.value != NextContentTypes.none) {
@@ -608,7 +579,7 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
       return dateTimeFrame(
         frameModel: model,
         child: _childContents(model),
-        frameManager: widget.frameManager,
+        frameManager: frameManager!,
         frameMid: model.mid,
       );
     }
@@ -648,7 +619,8 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
     return ClipRect(
       clipBehavior: Clip.hardEdge,
       child: ContentsMain(
-        key: contentsMainKey,
+        key: frameManager!
+                .registerContentMainKeyHandlerKey(widget.pageModel.mid, widget.model.mid),
         frameModel: model,
         frameOffset: widget.frameOffset,
         pageModel: widget.pageModel,

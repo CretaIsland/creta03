@@ -234,10 +234,10 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       pageManager.reOrdering();
       pageManager.resetPageSize();
       _pageCount = pageManager.getAvailLength();
-      //('PageManager Consumer  $_pageCount');
+
       if (pageManager.getSelected() == null && _pageCount > 0) {
         pageManager.setSelected(0);
-        //print('1111111');
+
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
       }
       _resize();
@@ -798,14 +798,14 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     // }
     //logger.fine('pageThumnail not exist');
 
-    GlobalObjectKey? thumbKey = _pageManager!.thumbKeyMap[pageModel.mid];
-    if (thumbKey == null) {
-      thumbKey = GlobalObjectKey('Thumb$pageIndex${pageModel.mid}');
-      _pageManager!.thumbKeyMap[pageModel.mid] = thumbKey;
-    }
-
+    // GlobalObjectKey? thumbKey = _pageManager!.thumbKeyMap[pageModel.mid];
+    // if (thumbKey == null) {
+    //   thumbKey = GlobalObjectKey('Thumb$pageIndex${pageModel.mid}');
+    //   _pageManager!.thumbKeyMap[pageModel.mid] = thumbKey;
+    // }
+    //print('PageThumbnail---------${pageModel.name.value}----------------------------------------');
     return PageThumbnail(
-      key: thumbKey,
+      key: BookMainPage.pageManagerHolder!.registerPageThumbnail(pageModel.mid),
       pageIndex: pageIndex,
       bookModel: _pageManager!.bookModel!,
       pageModel: pageModel,
@@ -939,15 +939,12 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     if (pageMid != selected.mid) {
       return;
     }
-    GlobalObjectKey? thumbKey = BookMainPage.pageManagerHolder!.getSelectedThumbKey();
-    if (thumbKey == null) {
-      return;
-    }
+
     Rect? pageViewArea = CretaUtils.getArea(_pageViewKey);
     if (pageViewArea == null) {
       return;
     }
-    _thumbArea = CretaUtils.getArea(thumbKey);
+    _thumbArea = BookMainPage.pageManagerHolder!.getThumbArea();
 
     bool contained = false;
     if (_thumbArea != null) {
@@ -1006,8 +1003,8 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       }
 
       // 제일 첫번째를 가져온다.
-      GlobalObjectKey? thumbKey = BookMainPage.pageManagerHolder!.thumbKeyMap.values.first;
-      _thumbArea = CretaUtils.getArea(thumbKey);
+
+      _thumbArea = BookMainPage.pageManagerHolder!.getFirstThumbArea();
       if (_thumbArea != null) {
         if (CretaUtils.isRectContained(pageViewArea, _thumbArea!)) {
           // 이미 화면에 완전히 보인다.
@@ -1019,11 +1016,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       }
 
       // 이때는 selecte 된 Page thumbnail 을 찍는 다.
-      thumbKey = BookMainPage.pageManagerHolder!.getSelectedThumbKey();
-      if (thumbKey == null) {
-        return;
-      }
-      _thumbArea = CretaUtils.getArea(thumbKey);
+      _thumbArea = BookMainPage.pageManagerHolder!.getThumbArea();
       if (_thumbArea != null) {
         if (CretaUtils.isRectContained(pageViewArea, _thumbArea!)) {
           // 이미 화면에 완전히 보인다.

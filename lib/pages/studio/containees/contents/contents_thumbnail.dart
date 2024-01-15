@@ -15,6 +15,7 @@ import 'package:hycop/common/util/logger.dart';
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
+import '../../../../data_io/key_handler.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../lang/creta_studio_lang.dart';
@@ -53,7 +54,7 @@ class ContentsThumbnail extends StatefulWidget {
   State<ContentsThumbnail> createState() => ContentsThumbnailState();
 }
 
-class ContentsThumbnailState extends State<ContentsThumbnail>
+class ContentsThumbnailState extends CretaState<ContentsThumbnail>
     with CretaTextMixin, CretaDocMixin, CretaMusicMixin {
   //ContentsManager? _contentsManager;
   //CretaPlayTimer? _playerHandler;
@@ -170,7 +171,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
           return showBGM(applyScale);
         }
         return StreamBuilder<AbsExModel>(
-            stream: _receiveTextEvent!.eventStream.stream,
+            stream: _receiveEvent!.eventStream.stream,
             builder: (context, snapshot) {
               if (snapshot.data != null && snapshot.data is ContentsModel) {
                 ContentsModel model = snapshot.data! as ContentsModel;
@@ -243,7 +244,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
             if (snapshot.data != null && snapshot.data is ContentsModel) {
               ContentsModel model = snapshot.data!;
               contentsManager.updateModel(model);
-              logger.info(
+              logger.severe(
                   "'contents-property-to-main' event received , model updated ${model.name}, thumbnail=${model.thumbnailUrl}, ${model.thumbnailUrl}");
             }
             if (contentsCount > 0) {
@@ -252,7 +253,8 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
               late BoxFit boxfit;
               late bool isFlip;
               late double angle;
-              (name, thumbnailUrl, boxfit, isFlip, angle) = contentsManager.getThumbnail();
+              late double opacity;
+              (name, thumbnailUrl, boxfit, isFlip, angle, opacity) = contentsManager.getThumbnail();
               if (thumbnailUrl.isNotEmpty) {
                 logger.info("---------------name=$name");
                 logger.info("thumbnail=$thumbnailUrl");
@@ -270,12 +272,15 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
                   )),
                 );
 
+                Widget opacityImage =
+                    opacity < 1.0 ? Opacity(opacity: opacity, child: drawImage) : drawImage;
+
                 Widget angleImage = angle > 0
                     ? Transform.rotate(
                         angle: CretaUtils.degreeToRadian(angle),
-                        child: drawImage,
+                        child: opacityImage,
                       )
-                    : drawImage;
+                    : opacityImage;
 
                 return isFlip
                     ? Transform(

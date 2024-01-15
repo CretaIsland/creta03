@@ -51,6 +51,9 @@ class CretaPlayTimer extends ChangeNotifier {
 
   ContentsModel? _currentModel;
   ContentsModel? get currentModel => _currentModel;
+  void setCurrentModel(ContentsModel s) {
+    _currentModel = s;
+  }
 
   ContentsModel? _prevModel;
 
@@ -337,6 +340,8 @@ class CretaPlayTimer extends ChangeNotifier {
     final String key = contentsManager.keyMangler(model);
     CretaAbsPlayer? player = contentsManager.getPlayer(key);
     if (player != null) {
+      //print('player already exist ${model.remoteUrl}');
+      player.model!.updateFrom(model); // 모델이 달라졌을수 있다.
       _currentPlayer = player;
       return player;
     }
@@ -406,22 +411,21 @@ class CretaPlayTimer extends ChangeNotifier {
 
   CretaAbsPlayerWidget createWidget(ContentsModel model) {
     CretaAbsPlayer player = createPlayer(model);
-    //print('createWidget${model.name}, ${model.contentsType})------------');
     switch (model.contentsType) {
       case ContentsType.video:
         return CretaVideoWidget(
-          key: contentsManager.keyGen(player.keyString, model.contentsType),
+          key: contentsManager.registerPlayerWidgetKey(player.keyString, model.contentsType),
           player: player,
         );
       case ContentsType.image:
+        //print('createWidget image, ${model.name} ,${player.keyString}');
         return CretaImagerWidget(
-          key: contentsManager.keyGen(player.keyString, model.contentsType),
+          key: contentsManager.registerPlayerWidgetKey(player.keyString, model.contentsType),
           player: player,
         );
       case ContentsType.text:
-        //print('createWidget');
         return CretaTextWidget(
-          key: contentsManager.keyGen(player.keyString, model.contentsType),
+          key: contentsManager.registerPlayerWidgetKey(player.keyString, model.contentsType),
           player: player,
         );
       case ContentsType.document:
@@ -431,24 +435,24 @@ class CretaPlayTimer extends ChangeNotifier {
         // );
         //print('-------------createWidget${model.name}, ${model.contentsType})------------');
         return CretaDocWidget(
-          key: contentsManager.keyGen(player.keyString, model.contentsType),
+          key: contentsManager.registerPlayerWidgetKey(player.keyString, model.contentsType),
           player: player,
           frameManager: frameManager,
         );
       case ContentsType.music:
         // print('-------------createMusicWidget${model.name}, ${model.contentsType})------------');
         return CretaMusicWidget(
-          key: contentsManager.keyGen(player.keyString, model.contentsType),
+          key: contentsManager.registerPlayerWidgetKey(player.keyString, model.contentsType),
           player: player,
         );
       case ContentsType.pdf:
         return CretaPdfWidget(
-          key: contentsManager.keyGen(player.keyString, model.contentsType),
+          key: contentsManager.registerPlayerWidgetKey(player.keyString, model.contentsType),
           player: player,
         );
       default:
         return CretaEmptyPlayerWidget(
-          key: contentsManager.keyGen(player.keyString, model.contentsType),
+          key: contentsManager.registerPlayerWidgetKey(player.keyString, model.contentsType),
           player: player,
         );
     }

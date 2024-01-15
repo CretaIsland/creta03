@@ -274,6 +274,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
     bool isHorizontalResiable = true;
     FrameModel? frameModel = widget.frameManager!.getModel(sticker.id) as FrameModel?;
     if (frameModel != null && frameModel.isTextType()) {
+      //print('3 : ${frameModel.name.value}');
       ContentsModel? contentsModel = widget.frameManager!.getFirstContents(frameModel.mid);
       if (contentsModel != null) {
         if (contentsModel.isAutoFrameHeight()) {
@@ -283,15 +284,16 @@ class _DraggableStickersState extends State<DraggableStickers> {
         }
         if (contentsModel.isText()) {
           if (frameModel.isEditMode) {
-            GlobalObjectKey<InstantEditorState> editorKey = GlobalObjectKey<InstantEditorState>(
-                'InstantEditor${sticker.pageMid}/${frameModel.mid}');
-            sticker.instantEditorKey = editorKey;
+            // GlobalObjectKey<InstantEditorState> editorKey = GlobalObjectKey<InstantEditorState>(
+            //     'InstantEditor${sticker.pageMid}/${frameModel.mid}');
+            // sticker.instantEditorKey = editorKey;
             //print('editor selected');
             return Stack(
               children: [
                 _dragableResizable(sticker, frameModel, isVerticalResiable, isHorizontalResiable),
                 InstantEditor(
-                    key: editorKey,
+                    key: widget.frameManager!
+                        .registerInstantEditorrKey(sticker.pageMid, frameModel.mid),
                     frameModel: frameModel,
                     frameManager: widget.frameManager,
                     onTap: widget.onTap,
@@ -344,14 +346,15 @@ class _DraggableStickersState extends State<DraggableStickers> {
     double posX = frameModel.getRealPosX();
     double posY = frameModel.getRealPosY();
 
-    GlobalObjectKey<DraggableResizableState> draggableResizableKey =
-        GlobalObjectKey<DraggableResizableState>(
-            'DraggableResizable${sticker.pageMid}/${frameModel.mid}');
+    // GlobalObjectKey<DraggableResizableState> draggableResizableKey =
+    //     GlobalObjectKey<DraggableResizableState>(
+    //         'DraggableResizable${sticker.pageMid}/${frameModel.mid}');
 
-    sticker.dragableResiableKey = draggableResizableKey;
+    // sticker.dragableResiableKey = draggableResizableKey;
 
+    //
     return DraggableResizable(
-      key: draggableResizableKey,
+      key: widget.frameManager!.registerDragableResiableKey(sticker.pageMid, frameModel.mid),
       isVerticalResiable: isVerticalResiable,
       isHorizontalResiable: isHorizontalResiable,
       sticker: sticker,
@@ -402,6 +405,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
         FrameModel? frameModel = widget.frameManager!.getModel(sticker.id) as FrameModel?;
         if (frameModel != null && frameModel.isTextType()) {
+          //print('4 : ${frameModel.name.value}');
           ContentsModel? contentsModel = widget.frameManager!.getFirstContents(frameModel.mid);
           if (contentsModel != null && contentsModel.isText() && contentsModel.isAutoFontSize()) {
             // 마우스를 끌기 시작하여, fontSize 가 변하기 시작한다는 사실을 알림.
@@ -615,6 +619,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
               setState(() {
                 frameModel.toggleFullscreen(isFullScreen, widget.book);
                 _sendEvent!.sendEvent(frameModel);
+                _notifyToThumbnail();
               });
             }),
         if (frameModel.isBackgroundMusic() == false)
@@ -671,6 +676,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                 contentsManager?.notify();
                 if (contentsModel.isAutoFrameOrSide()) {
                   _sendEvent!.sendEvent(contentsManager!.frameModel);
+                  _notifyToThumbnail();
                   //widget.frameManager?.notify();
                 }
               }),
@@ -719,6 +725,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
                     frameModel.removeOverlayExclude(sticker.pageMid);
                   }
                   _sendEvent!.sendEvent(frameModel);
+                  BookMainPage.pageManagerHolder?.invalidatThumbnail(sticker.pageMid);
+                  //_notifyToThumbnail();
                   //BookMainPage.pageManagerHolder!.notify();
                 });
               }),
@@ -1110,6 +1118,10 @@ class _DraggableStickersState extends State<DraggableStickers> {
         return true;
       },
     );
+  }
+
+  void _notifyToThumbnail() {
+    BookMainPage.pageManagerHolder?.invalidatThumbnail(widget.page.mid);
   }
 
   // Widget _frameDropZone(Sticker sticker, {required Widget child}) {

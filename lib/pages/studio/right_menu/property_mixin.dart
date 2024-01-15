@@ -1,3 +1,4 @@
+import 'package:creta03/pages/studio/book_main_page.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,6 +24,7 @@ import '../../../lang/creta_studio_lang.dart';
 import '../../../model/app_enums.dart';
 import '../../../model/creta_model.dart';
 import '../../../model/creta_style_mixin.dart';
+import '../../../model/page_model.dart';
 import '../studio_constant.dart';
 import '../studio_getx_controller.dart';
 import '../studio_snippet.dart';
@@ -51,6 +53,10 @@ mixin PropertyMixin {
   void initMixin() {
     titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);
     dataStyle = CretaFont.bodySmall;
+  }
+
+  void notifyToThumbnail(PageModel pageModel) {
+    BookMainPage.pageManagerHolder?.invalidatThumbnail(pageModel.mid);
   }
 
   Widget propertyCard({
@@ -303,7 +309,6 @@ mixin PropertyMixin {
     required Function(Color) onColor1Changed,
     required Function cardOpenPressed,
   }) {
-
     return Column(
       children: [
         //_gradationButton(),

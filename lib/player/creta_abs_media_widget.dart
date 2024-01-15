@@ -12,10 +12,10 @@ class CretaEmptyPlayerWidget extends CretaAbsPlayerWidget {
   const CretaEmptyPlayerWidget({super.key, required super.player});
 
   @override
-  State<CretaEmptyPlayerWidget> createState() => _CretaEmptyPlayerWidgetState();
+  State<CretaEmptyPlayerWidget> createState() => CretaEmptyPlayerWidgetState();
 }
 
-class _CretaEmptyPlayerWidgetState extends State<CretaEmptyPlayerWidget> {
+class CretaEmptyPlayerWidgetState extends State<CretaEmptyPlayerWidget> {
   @override
   Widget build(BuildContext context) {
     return const Placeholder();

@@ -2,16 +2,17 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import '../../../../../data_io/frame_manager.dart';
+import '../../../../../data_io/key_handler.dart';
 import '../../../../../model/book_model.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
 import '../../../../../model/page_model.dart';
 import '../../../../../player/music/creta_music_mixin.dart';
 import '../../../studio_variables.dart';
-import '../frame_each.dart';
+//import '../frame_each.dart';
 import 'draggable_resizable.dart';
 import 'draggable_stickers.dart';
-import 'instant_editor.dart';
+//import 'instant_editor.dart';
 
 enum ImageQuality { low, medium, high }
 
@@ -196,14 +197,16 @@ class Sticker extends StatefulWidget {
   final FrameModel model;
   final String pageMid;
   final bool isOverlay;
-  final GlobalKey<FrameEachState> frameKey;
-  GlobalKey<InstantEditorState>? instantEditorKey;
-  GlobalKey<DraggableResizableState>? dragableResiableKey;
+  final FrameManager frameManager;
+  // final GlobalKey<FrameEachState> frameKey;
+  // GlobalKey<InstantEditorState>? instantEditorKey;
+  // GlobalKey<DraggableResizableState>? dragableResiableKey;
 
   Sticker({
     Key? key,
     //required this.id,
-    required this.frameKey,
+    //required this.frameKey,
+    required this.frameManager,
     required this.position,
     required this.angle,
     required this.frameSize,
@@ -219,17 +222,19 @@ class Sticker extends StatefulWidget {
   StickerState createState() => StickerState();
 }
 
-class StickerState extends State<Sticker> with CretaMusicMixin {
-  void refresh({bool deep = false}) {
-    setState(() {
-      widget.frameKey.currentState?.invalidate();
-      if (deep) {
-        widget.frameKey.currentState?.invalidateContentsMain();
-        widget.dragableResiableKey?.currentState?.invalidate();
-        widget.instantEditorKey?.currentState?.invalidate();
-      }
-    });
-  }
+class StickerState extends CretaState<Sticker> with CretaMusicMixin {
+  // void refresh({bool deep = false}) {
+  //   setState(() {
+  //     widget.frameManager.invalidateFrameEach(widget.pageMid, widget.model.mid);
+  //     if (deep) {
+  //       widget.frameManager.invalidateContentsMain(widget.pageMid, widget.model.mid);
+  //       widget.frameManager.invalidateDragableResiable(widget.pageMid, widget.model.mid);
+  //       widget.frameManager.invalidateInstantEditor(widget.pageMid, widget.model.mid);
+  //       // widget.dragableResiableKey?.currentState?.invalidate();
+  //       // widget.instantEditorKey?.currentState?.invalidate();
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {

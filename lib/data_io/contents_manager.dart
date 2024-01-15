@@ -28,13 +28,7 @@ import '../pages/studio/studio_snippet.dart';
 import '../pages/studio/studio_variables.dart';
 import '../player/creta_abs_player.dart';
 import '../player/creta_play_timer.dart';
-import '../player/doc/creta_doc_widget.dart';
-import '../player/image/creta_image_widget.dart';
-import '../player/music/creta_music_widget.dart';
-import '../player/pdf/creta_pdf_widget.dart';
-import '../player/text/creta_text_widget.dart';
 import '../player/video/creta_video_player.dart';
-import '../player/video/creta_video_widget.dart';
 import 'creta_manager.dart';
 //import 'depot_manager.dart';
 import 'depot_manager.dart';
@@ -58,90 +52,58 @@ class ContentsManager extends CretaManager {
   KeyHandler pdfKeyHandler = KeyHandler();
   KeyHandler defaultKeyHandler = KeyHandler();
 
-  GlobalObjectKey<State<StatefulWidget>> keyGen(String keyString, ContentsType cType) {
+  GlobalObjectKey<CretaState<StatefulWidget>> registerPlayerWidgetKey(
+      String keyString, ContentsType cType) {
     switch (cType) {
       case ContentsType.video:
-        return videoKeyHandler.keyGen(keyString);
+        return videoKeyHandler.registerKey(keyString);
       case ContentsType.image:
-        return imageKeyHandler.keyGen(keyString);
+        return imageKeyHandler.registerKey(keyString);
       case ContentsType.text:
-        return textKeyHandler.keyGen(keyString);
+        return textKeyHandler.registerKey(keyString);
       case ContentsType.document:
-        return docKeyHandler.keyGen(keyString);
+        return docKeyHandler.registerKey(keyString);
       case ContentsType.music:
-        return musicKeyHandler.keyGen(keyString);
+        return musicKeyHandler.registerKey(keyString);
       case ContentsType.pdf:
-        return pdfKeyHandler.keyGen(keyString);
+        return pdfKeyHandler.registerKey(keyString);
 
       default:
-        return defaultKeyHandler.keyGen(keyString);
+        return defaultKeyHandler.registerKey(keyString);
     }
   }
 
-  bool invalidateVideo(ContentsModel model) {
-    CretaVideoPlayerWidgetState? state =
-        videoKeyHandler.getStateObject(keyMangler(model)) as CretaVideoPlayerWidgetState?;
-    if (state != null) {
-      state.invalidate();
-      return true;
+  bool invalidatePlayerWidget(ContentsModel model) {
+    switch (model.contentsType) {
+      case ContentsType.video:
+        return videoKeyHandler.invalidate(keyMangler(model));
+      case ContentsType.image:
+        return imageKeyHandler.invalidate(keyMangler(model));
+      case ContentsType.text:
+        return textKeyHandler.invalidate(keyMangler(model));
+      case ContentsType.document:
+        return docKeyHandler.invalidate(keyMangler(model));
+      case ContentsType.music:
+        return musicKeyHandler.invalidate(keyMangler(model));
+      case ContentsType.pdf:
+        return pdfKeyHandler.invalidate(keyMangler(model));
+      default:
+        return defaultKeyHandler.invalidate(keyMangler(model));
     }
-    logger.severe('TextPlayerWidget key not found ${model.mid}');
-    return false;
   }
 
-  bool invalidateImage(ContentsModel model) {
-    CretaImagePlayerWidgetState? state =
-        imageKeyHandler.getStateObject(keyMangler(model)) as CretaImagePlayerWidgetState?;
-    if (state != null) {
-      state.invalidate();
-      return true;
-    }
-    logger.severe('TextPlayerWidget key not found ${model.mid}');
-    return false;
+  KeyHandler contentsThumbKeyHandler = KeyHandler();
+  String contentsThumbKeyMangler(String pageMid, String frameMid) {
+    return 'ContentsThumbnail$pageMid/$frameMid';
   }
 
-  bool invalidateText(ContentsModel model) {
-    CretaTextPlayerWidgetState? state =
-        textKeyHandler.getStateObject(keyMangler(model)) as CretaTextPlayerWidgetState?;
-    if (state != null) {
-      state.invalidate();
-      return true;
-    }
-    logger.severe('TextPlayerWidget key not found ${model.mid}');
-    return false;
+  GlobalObjectKey<CretaState<StatefulWidget>> registerContentsThumbKey(
+      String pageMid, String frameMid) {
+    return contentsThumbKeyHandler.registerKey(contentsThumbKeyMangler(pageMid, frameMid));
   }
 
-  bool invalidateDoc(ContentsModel model) {
-    CretaDocPlayerWidgetState? state =
-        docKeyHandler.getStateObject(keyMangler(model)) as CretaDocPlayerWidgetState?;
-    if (state != null) {
-      state.invalidate();
-      return true;
-    }
-    logger.severe('DocPlayerWidget key not found ${model.mid}');
-    return false;
-  }
-
-  bool invalidateMusic(ContentsModel model) {
-    CretaMusicPlayerWidgetState? state =
-        musicKeyHandler.getStateObject(keyMangler(model)) as CretaMusicPlayerWidgetState?;
-    if (state != null) {
-      state.invalidate();
-      return true;
-    }
-    logger.severe('MusicPlayerWidget key not found ${model.mid}');
-    return false;
-  }
-
-  bool invalidatePdf(ContentsModel model) {
-    CretaPdfPlayerWidgetState? state =
-        pdfKeyHandler.getStateObject(keyMangler(model)) as CretaPdfPlayerWidgetState?;
-    if (state != null) {
-      state.invalidate();
-      return true;
-    }
-    logger.severe('PdfPlayerWidget key not found ${model.mid}');
-    return false;
+  bool invalidateContentsThumb(String pageMid, String frameMid) {
+    return contentsThumbKeyHandler.invalidate(contentsThumbKeyMangler(pageMid, frameMid));
   }
 
   // bool invalidateText(ContentsModel model) {
@@ -365,7 +327,7 @@ class ContentsManager extends CretaManager {
     return modelList.length;
   }
 
-  (String, String, BoxFit, bool, double) getThumbnail() {
+  (String, String, BoxFit, bool, double, double) getThumbnail() {
     for (var value in valueList()) {
       ContentsModel model = value as ContentsModel;
       if (isVisible(model) == false) {
@@ -383,6 +345,7 @@ class ContentsManager extends CretaManager {
               model.fit.value.toBoxFit(),
               model.isFlip.value,
               model.angle.value,
+              model.opacity.value,
             );
           }
           if (model.url.isNotEmpty) {
@@ -392,6 +355,7 @@ class ContentsManager extends CretaManager {
               model.fit.value.toBoxFit(),
               model.isFlip.value,
               model.angle.value,
+              model.opacity.value,
             );
           }
         }
@@ -403,9 +367,10 @@ class ContentsManager extends CretaManager {
         model.fit.value.toBoxFit(),
         model.isFlip.value,
         model.angle.value,
+        model.opacity.value,
       );
     }
-    return ('', '', BoxFit.cover, false, 0.0);
+    return ('', '', BoxFit.cover, false, 0.0, 1.0);
 
     // List<String?> list = valueList().map((value) {
     //   ContentsModel model = value as ContentsModel;
@@ -704,7 +669,8 @@ class ContentsManager extends CretaManager {
           }
         }
         if (player.model!.isImage() || player.model!.aniType.value != TextAniType.none) {
-          notify();
+          //notify();  notify 는 전체에 이벤트가 가므로 지정된 놈만 이벤트가 가기 위해, invalidate 로 바꿈
+          invalidatePlayerWidget(player.model!);
         }
         if (player.model != null && player.model!.isMusic()) {
           logger.info('--------------pauseMusic ${player.model!.name}');

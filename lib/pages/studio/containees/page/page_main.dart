@@ -78,14 +78,16 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
 
   Future<void> initChildren() async {
     //saveManagerHolder!.addBookChildren('frame=');
-    //frameManager = BookMainPage.pageManagerHolder!.findFrameManager(widget.pageModel.mid);
+    resetFrameManager(widget.pageModel.mid);
     // frame 을 init 하는 것은, bookMain 에서 하는 것으로 바뀌었다.
     // 여기서 frameManager 는 사실상 null 일수 가 없다. ( 신규로 frame 을 만드는 경우를 빼고)
     if (frameManager == null) {
-      frameManager = BookMainPage.pageManagerHolder!.newFrameManager(
+      logger.severe('_frameManager not found, something wierd');
+      setFrameManager(BookMainPage.pageManagerHolder!.newFrameManager(
         widget.bookModel,
         widget.pageModel,
-      );
+      ));
+
       await BookMainPage.pageManagerHolder!.initFrameManager(frameManager!, widget.pageModel.mid);
     }
     _onceDBGetComplete = true;
@@ -156,7 +158,7 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
         _build(context),
         // 커서를 추적하면서,  프레임을 만들거나, 텍스트를 신규하기 위한 위짓.
         TopMenuTracer(
-          frameManager: frameManager,
+          frameManager: frameManager!,
         ),
       ],
     );
@@ -299,43 +301,43 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
       onceDBGetComplete: _onceDBGetComplete,
     );
 
-    // return current;
+    return current;
 
-    PageModel? pageModel = BookMainPage.pageManagerHolder?.prevModel;
-    pageModel ??= widget.pageModel;
-    GlobalObjectKey previousKey = BookMainPage.pageManagerHolder!.createPageKey(pageModel.mid);
+    // PageModel? pageModel = BookMainPage.pageManagerHolder?.prevModel;
+    // pageModel ??= widget.pageModel;
+    // GlobalObjectKey previousKey = BookMainPage.pageManagerHolder!.createPageKey(pageModel.mid);
 
-    Widget previous = PageRealMain(
-      pageKey: previousKey,
-      bookModel: widget.bookModel,
-      pageModel: pageModel,
-      pageWidth: BookMainPage.pageWidth,
-      pageHeight: BookMainPage.pageHeight, // + LayoutConst.miniMenuArea,);
-      useColor: useColor,
-      bgColor1: pageModel.bgColor1.value,
-      bgColor2: pageModel.bgColor2.value,
-      gradationType: pageModel.gradationType.value,
-      opacity: pageModel.opacity.value,
-      frameManager: frameManager!,
-      onceDBGetComplete: _onceDBGetComplete,
-    );
+    // Widget previous = PageRealMain(
+    //   pageKey: previousKey,
+    //   bookModel: widget.bookModel,
+    //   pageModel: pageModel,
+    //   pageWidth: BookMainPage.pageWidth,
+    //   pageHeight: BookMainPage.pageHeight, // + LayoutConst.miniMenuArea,);
+    //   useColor: useColor,
+    //   bgColor1: pageModel.bgColor1.value,
+    //   bgColor2: pageModel.bgColor2.value,
+    //   gradationType: pageModel.gradationType.value,
+    //   opacity: pageModel.opacity.value,
+    //   frameManager: frameManager!,
+    //   onceDBGetComplete: _onceDBGetComplete,
+    // );
 
-    return AnimatedSwitcher(
-      duration: const Duration(seconds: 1),
-      transitionBuilder: (Widget child, Animation<double> animation) {
-        const begin = Offset(0.0, 1.0);
-        const end = Offset.zero;
-        const curve = Curves.easeInOut;
+    // return AnimatedSwitcher(
+    //   duration: const Duration(seconds: 1),
+    //   transitionBuilder: (Widget child, Animation<double> animation) {
+    //     const begin = Offset(0.0, 1.0);
+    //     const end = Offset.zero;
+    //     const curve = Curves.easeInOut;
 
-        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+    //     var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
-        return SlideTransition(
-          position: tween.animate(animation),
-          child: child,
-        );
-      },
-      child: BookMainPage.pageManagerHolder!.transitForward ? current : previous,
-    );
+    //     return SlideTransition(
+    //       position: tween.animate(animation),
+    //       child: child,
+    //     );
+    //   },
+    //   child: BookMainPage.pageManagerHolder!.transitForward ? current : previous,
+    // );
 
     // 당분간 page 에서 texture 는 사용하지 않는다.
     // if (textureType == TextureType.glass) {

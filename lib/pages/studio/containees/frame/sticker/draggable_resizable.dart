@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import 'package:hycop/common/util/logger.dart';
 import '../../../../../design_system/creta_color.dart';
+import '../../../../../data_io/key_handler.dart';
 import '../../../../../model/frame_model.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_constant.dart';
@@ -128,7 +129,7 @@ class DraggableResizable extends StatefulWidget {
   DraggableResizableState createState() => DraggableResizableState();
 }
 
-class DraggableResizableState extends State<DraggableResizable> {
+class DraggableResizableState extends CretaState<DraggableResizable> {
   late Size _size;
   late Offset _position;
   //late BoxConstraints constraints;
@@ -140,12 +141,14 @@ class DraggableResizableState extends State<DraggableResizable> {
   // bool _mainSymbolSwitch = true;
   // Timer? _mainSymbolSwitchTimer;
 
-  void invalidate() {
+  @override
+  bool invalidate() {
     setState(() {
       _size = widget.sticker.frameSize;
       _position = widget.realPosition;
       _angle = widget.sticker.angle;
     });
+    return true;
   }
 
   @override

@@ -12,6 +12,7 @@ import 'package:hycop/common/util/logger.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../data_io/link_manager.dart';
+import '../../../../data_io/key_handler.dart';
 import '../../../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
@@ -42,7 +43,7 @@ class ContentsMain extends StatefulWidget {
   State<ContentsMain> createState() => ContentsMainState();
 }
 
-class ContentsMainState extends State<ContentsMain> {
+class ContentsMainState extends CretaState<ContentsMain> {
   //ContentsManager? _contentsManager;
   //CretaPlayTimer? _playerHandler;
   bool _onceDBGetComplete = false;
@@ -68,10 +69,6 @@ class ContentsMainState extends State<ContentsMain> {
     //_contentsManager?.removeRealTimeListen();
     //saveManagerHolder?.unregisterManager('contents', postfix: widget.frameModel.mid);
     super.dispose();
-  }
-
-  void invalidate() {
-    setState(() {});
   }
 
   @override
@@ -181,8 +178,8 @@ class ContentsMainState extends State<ContentsMain> {
   }
 
   Widget _mainBuild(ContentsModel model, CretaPlayTimer playTimer) {
-    //print('_mainBuild(${model.name}, ${model.contentsType})-------------------------');
-    if (model.opacity.value > 0.01) {
+    //print('_mainBuild(${model.remoteUrl}, ${model.contentsType})-------------------------');
+    if (model.opacity.value < 1) {
       return Opacity(
         opacity: model.opacity.value,
         child: playTimer.createWidget(model),

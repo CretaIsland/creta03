@@ -17,13 +17,15 @@ import '../../../../design_system/creta_color.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
+import '../../book_main_page.dart';
 import '../../studio_snippet.dart';
 import '../containee_mixin.dart';
 import '../contents/contents_thumbnail.dart';
 import 'frame_play_mixin.dart';
+import '../../../../data_io/key_handler.dart';
 
 class FrameThumbnail extends StatefulWidget {
-  final FrameManager frameManager;
+  //final FrameManager frameManager;
   final PageModel pageModel;
   final FrameModel model;
   final double applyScale;
@@ -33,7 +35,7 @@ class FrameThumbnail extends StatefulWidget {
   final void Function(String pageMid) chageEventReceived;
   const FrameThumbnail({
     super.key,
-    required this.frameManager,
+    //required this.frameManager,
     required this.pageModel,
     required this.model,
     required this.applyScale,
@@ -47,12 +49,12 @@ class FrameThumbnail extends StatefulWidget {
   State<FrameThumbnail> createState() => FrameThumbnailState();
 }
 
-class FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, FramePlayMixin {
+class FrameThumbnailState extends CretaState<FrameThumbnail> with ContaineeMixin, FramePlayMixin {
   double applyScale = 1;
   bool _isShowBorder = false;
 
   ContentsManager? _contentsManager;
-  //FrameManager? _anotherFrameManager;
+  FrameManager? _anotherFrameManager;
 
   Future<bool>? _isInitialized;
   //final bool _isHover = false;
@@ -63,10 +65,6 @@ class FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fra
     //logger.fine('FrameThumbnail dispose================');
   }
 
-  void invalidate() {
-    setState(() {});
-  }
-
   @override
   void initState() {
     super.initState();
@@ -75,8 +73,7 @@ class FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fra
 
   //bool initChildren() {
   Future<bool> initChildren() async {
-    logger.info('FrameThumbnail initialized================');
-    frameManager = widget.frameManager;
+    setFrameManager(BookMainPage.pageManagerHolder!.findFrameManager(widget.pageModel.mid)!);
     if (frameManager == null) {
       logger.severe('frame manager is null');
     }
@@ -100,14 +97,27 @@ class FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fra
     _contentsManager = frameManager!.findContentsManager(widget.model);
     //while (_contentsManager!.onceDBGetComplete == false) {
     while (_contentsManager == null) {
-      //썸네일에서는 가져오지 말아야 한다. 같은 COntentsManager를 쓰기때문이다.
-      logger.fine('frame_thumbnail : wait contentsManager');
-      // 0.5 초를 쉬어서, FrameMain  에서   contents 를 가져올 시간을 벌어준다.
-      await Future.delayed(const Duration(milliseconds: 500));
-      _contentsManager = frameManager!.findContentsManager(widget.model);
-      // await _contentsManager!.getContents();
-      // _contentsManager!.addRealTimeListen(widget.model.mid);
-      // _contentsManager!.reOrdering();
+      logger.info('wait _contentsManager');
+      // 1.1 초를 쉬어서, FrameMain  에서   contents 를 가져올 시간을 벌어준다.
+      await Future.delayed(const Duration(milliseconds: 1100));
+
+      if (widget.model.isOverlay.value == true) {
+        //  Overlay 이기 때문에,  ContentsManager 가 다른 frameManager 에 있는 것이므로
+        // 해당 프레임을 찾아야 한다.
+        _anotherFrameManager =
+            BookMainPage.pageManagerHolder!.findFrameManager(widget.model.parentMid.value);
+        if (_anotherFrameManager != null) {
+          _contentsManager = _anotherFrameManager!.findContentsManager(widget.model);
+        } else {
+          logger.severe('overlay frame not found');
+        }
+      } else {
+        _contentsManager = frameManager!.findContentsManager(widget.model);
+        //썸네일에서는 가져오지 말아야 한다. 같은 COntentsManager를 쓰기때문이다.
+        // await _contentsManager!.getContents();
+        // _contentsManager!.addRealTimeListen(widget.model.mid);
+        // _contentsManager!.reOrdering();
+      }
     }
     //print('frameThumbnail initChildren(${_contentsManager!.getAvailLength()})');
     //print('frameThumbnail initChildren()');
@@ -117,6 +127,7 @@ class FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fra
   @override
   Widget build(BuildContext context) {
     //_initContentsManager();
+    //_contentsManager = frameManager!.findContentsManager(widget.model);
     applyScale = widget.applyScale;
     // if (_contentsManager != null) {
     //   return MultiProvider(
@@ -317,7 +328,7 @@ class FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fra
     if (model.isDateTimeType()) {
       return dateTimeFrame(
         frameModel: model,
-        frameManager: widget.frameManager,
+        frameManager: frameManager!,
         frameMid: model.mid,
         child: _childThumbnail(model, useColor),
       );
@@ -354,8 +365,9 @@ class FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fra
           ? ClipRect(
               clipBehavior: Clip.hardEdge,
               child: ContentsThumbnail(
-                key: GlobalObjectKey<ContentsThumbnailState>(
-                    'ContentsThumbnail${widget.pageModel.mid}/${model.mid}'),
+                // key: GlobalObjectKey<ContentsThumbnailState>(
+                //     'ContentsThumbnail${widget.pageModel.mid}/${model.mid}'),
+                key: _contentsManager!.registerContentsThumbKey(widget.pageModel.mid, model.mid),
                 frameModel: model,
                 pageModel: widget.pageModel,
                 frameManager: frameManager!,

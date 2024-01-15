@@ -112,11 +112,20 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     );
   }
 
+  void _notifyToThumbnail() {
+    if (widget.pageModel != null) {
+      notifyToThumbnail(widget.pageModel!);
+    } else {
+      logger.severe('something wrong, pageModel is null');
+    }
+  }
+
   void _invalidateFrame() {
     if (!_frameManager!.refreshFrame(widget.model.mid)) {
       // key 를 찾지못한 경우만, sendEvent 를 한다.
       _sendEvent!.sendEvent(widget.model);
     }
+    _notifyToThumbnail();
     //_invalidateFrame();  // _sendEvent!.sendEvent(widget.model);;
   }
 
@@ -297,6 +306,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               }
               // _invalidateFrame();
               _sendEvent!.sendEvent(widget.model);
+              _notifyToThumbnail();
             },
             width: 55,
             height: 24,
@@ -352,6 +362,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               }
               // _invalidateFrame();
               _sendEvent!.sendEvent(widget.model);
+              _notifyToThumbnail();
             },
             width: 55,
             height: 24,
@@ -399,6 +410,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                         logger.info('onEditComplete');
                         widget.model.posX.set(int.parse(value).toDouble());
                         _sendEvent?.sendEvent(widget.model);
+                        _notifyToThumbnail();
                       }),
                       minNumber: 0,
                     ),
@@ -427,6 +439,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                       onEditComplete: ((value) {
                         widget.model.posY.set(int.parse(value).toDouble());
                         _sendEvent?.sendEvent(widget.model);
+                        _notifyToThumbnail();
                       }),
                     ),
                   ],
@@ -529,6 +542,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                         logger.finest('sendEvent');
                         //_invalidateFrame();
                         _sendEvent!.sendEvent(widget.model);
+                        _notifyToThumbnail();
                         //_frameManager?.refreshFrame(widget.model.mid, deep: true);
                       });
                     }),
@@ -1075,6 +1089,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
 
     //BookMainPage.bookManagerHolder!.notify();
     _sendEvent!.sendEvent(widget.model);
+    _notifyToThumbnail();
     logger.finest('onEditComplete ${targetAttr.value}');
   }
 
@@ -2150,6 +2165,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             onSelected: (value) {
               widget.model.showWhenEventReceived.set(value);
               _sendEvent?.sendEvent(widget.model);
+              _notifyToThumbnail();
             },
           ),
         ],
@@ -2176,6 +2192,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             onEditComplete: ((value) {
               widget.model.eventSend.set(value);
               _sendEvent?.sendEvent(widget.model);
+              _notifyToThumbnail();
             }),
             minNumber: 0,
           ),
@@ -2298,6 +2315,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       widget.model.toggeleOverlay(value, _frameManager!);
     });
     _sendEvent?.sendEvent(widget.model);
+    _notifyToThumbnail();
     //BookMainPage.pageManagerHolder!.notify();
   }
 

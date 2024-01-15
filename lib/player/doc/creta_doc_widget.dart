@@ -10,6 +10,7 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 
 import '../../data_io/frame_manager.dart';
+import '../../data_io/key_handler.dart';
 import '../../design_system/buttons/creta_button.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../lang/creta_lang.dart';
@@ -72,7 +73,7 @@ class CretaDocWidget extends CretaAbsPlayerWidget {
   }
 }
 
-class CretaDocPlayerWidgetState extends State<CretaDocWidget> with CretaDocMixin {
+class CretaDocPlayerWidgetState extends CretaState<CretaDocWidget> with CretaDocMixin {
   ContentsEventController? _receiveEvent;
   late HtmlEditorController controller;
   Size _dialogSize = const Size(800, 600);
@@ -82,11 +83,6 @@ class CretaDocPlayerWidgetState extends State<CretaDocWidget> with CretaDocMixin
   void setState(VoidCallback fn) {
     if (mounted) super.setState(fn);
   }
-
-  void invalidate() {
-    setState(() {});
-  }
-
 
   @override
   void initState() {

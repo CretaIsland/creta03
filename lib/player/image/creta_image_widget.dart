@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import '../../data_io/key_handler.dart';
 import '../../common/creta_utils.dart';
 import '../../model/app_enums.dart';
 import '../../pages/studio/studio_variables.dart';
@@ -21,7 +22,7 @@ class CretaImagerWidget extends CretaAbsPlayerWidget {
   CretaImagePlayerWidgetState createState() => CretaImagePlayerWidgetState();
 }
 
-class CretaImagePlayerWidgetState extends State<CretaImagerWidget>
+class CretaImagePlayerWidgetState extends CretaState<CretaImagerWidget>
     with SingleTickerProviderStateMixin {
   Timer? _aniTimer;
   bool _animateFlag = false;
@@ -30,11 +31,6 @@ class CretaImagePlayerWidgetState extends State<CretaImagerWidget>
   void setState(VoidCallback fn) {
     if (mounted) super.setState(fn);
   }
-
-  void invalidate() {
-    setState(() {});
-  }
-
 
   @override
   void initState() {

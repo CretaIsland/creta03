@@ -6,6 +6,7 @@ import 'package:hycop/common/util/logger.dart';
 import '../../../../../common/creta_utils.dart';
 import '../../../../../data_io/contents_manager.dart';
 import '../../../../../data_io/frame_manager.dart';
+import '../../../../../data_io/key_handler.dart';
 import '../../../../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import '../../../../../design_system/component/autoSizeTextField/auto_size_text_field.dart';
 import '../../../../../design_system/creta_color.dart';
@@ -43,7 +44,7 @@ class InstantEditor extends StatefulWidget {
   State<InstantEditor> createState() => InstantEditorState();
 }
 
-class InstantEditorState extends State<InstantEditor> {
+class InstantEditorState extends CretaState<InstantEditor> {
   // initial scale of sticker
 
   final TextEditingController _textController = TextEditingController();
@@ -109,11 +110,6 @@ class InstantEditorState extends State<InstantEditor> {
   //   );
   //   _realSize = Size(newWidth, newHeight);
   // }
-
-  void invalidate() {
-    setState(() {});
-  }
-
   @override
   void dispose() {
     super.dispose();
@@ -198,19 +194,22 @@ class InstantEditorState extends State<InstantEditor> {
 
   @override
   Widget build(BuildContext context) {
-    // _contentsManager ??= widget.frameManager!.getContentsManager(widget.frameModel.mid);
-    // if (_contentsManager == null) {
-    //   return const SizedBox.shrink();
-    // }
-    // ContentsModel? model = _contentsManager!.getFirstModel();
+    _contentsManager ??= widget.frameManager!.getContentsManager(widget.frameModel.mid);
+    if (_contentsManager == null) {
+      logger.severe('find contentsManager failed for ${widget.frameModel.mid}');
+      return const SizedBox.shrink();
+    }
+    ContentsModel? model = _contentsManager!.getFirstModel();
+
+    if (model == null) {
+      logger.severe('find first contents failed for ${widget.frameModel.mid}');
+      return const SizedBox.shrink();
+    }
+
+    //ContentsModel? model = widget.frameManager!.getFirstContents(widget.frameModel.mid);
     // if (model == null) {
     //   return const SizedBox.shrink();
     // }
-
-    ContentsModel? model = widget.frameManager!.getFirstContents(widget.frameModel.mid);
-    if (model == null) {
-      return const SizedBox.shrink();
-    }
 
     // if (model.isAutoFontSize()) {
     //   //print('AutoSizeType.autoFontSize _fontSize=$fontSize');
@@ -253,7 +252,8 @@ class InstantEditorState extends State<InstantEditor> {
     //print('cursorPos=${model.cursorPos}, length=${_textController.text.length}   ');
     if (_textController.text.length > model.cursorPos) {
       _textController.selection = TextSelection.fromPosition(
-        TextPosition(offset: model.cursorPos + 1),
+        //TextPosition(offset: model.cursorPos + 1),
+        TextPosition(offset: model.cursorPos),
       );
     } else if (_textController.text.isNotEmpty && _textController.text.length <= model.cursorPos) {
       _textController.selection = TextSelection.fromPosition(
@@ -659,7 +659,7 @@ class InstantEditorState extends State<InstantEditor> {
   Future<void> _saveChanges(ContentsModel model) async {
     //double dbHeight = _realSize!.height / StudioVariables.applyScale;
     model.remoteUrl = _textController.text;
-
+    //print('_saveChanges(${model.remoteUrl})');
     if (model.isAutoFrameOrSide()) {
       widget.frameModel.save();
       // if (widget.frameModel.height.value != _realSize!.height  ) {
@@ -671,7 +671,10 @@ class InstantEditorState extends State<InstantEditor> {
       // }
     }
     model.save();
+    _contentsManager?.playTimer?.setCurrentModel(model);
     _contentsManager?.notify();
+    //_contentsManager?.invalidatePlayerWidget(model);
+
     widget.onEditComplete();
   }
 }

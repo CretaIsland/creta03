@@ -66,21 +66,7 @@ class TextSwitcherWidgetState extends State<CretaTextSwitcher> {
   Widget build(BuildContext context) {
     TextAniType aniType = _getTextAniType(widget.aniType);
 
-    return
-        // MouseRegion(
-        //   onHover: (event) {
-        //     setState(() {
-        //       _isHover = true;
-        //     });
-        //   },
-        //   onExit: (event) {
-        //     setState(() {
-        //       _isHover = false;
-        //     });
-        //   },
-        //   child: _isHover
-        //       ?
-        AnimatedSwitcher(
+    return AnimatedSwitcher(
       duration: aniType == TextAniType.rotateTransition
           ? const Duration(seconds: 1)
           : widget.switchDuration,
@@ -96,19 +82,18 @@ class TextSwitcherWidgetState extends State<CretaTextSwitcher> {
             const begin = Offset(0.0, 1.0);
             const end = Offset.zero;
             const curve = Curves.easeInOut;
-
             var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
             return SlideTransition(
               position: tween.animate(animation),
               child: child,
             );
-          case TextAniType.sizeTransition:
-            return SizeTransition(
-              sizeFactor: animation,
-              axis: Axis.horizontal,
-              child: child,
-            );
+          // case TextAniType.sizeTransition:
+          //   return SizeTransition(
+          //     sizeFactor: animation,
+          //     axis: Axis.vertical,
+          //     axisAlignment: BorderSide.strokeAlignCenter,
+          //     child: child,
+          //   );
           case TextAniType.scaleTransition:
             return ScaleTransition(
               scale: animation,
@@ -119,11 +104,6 @@ class TextSwitcherWidgetState extends State<CretaTextSwitcher> {
         }
       },
       child: widget.builder.call(_currentIndex, _textLines[_currentIndex]),
-      // Text(
-      //   _textLines[_currentIndex],
-      //   key: ValueKey<int>(_currentIndex),
-      //   style: widget.textStyle,
-      // ),
     );
   }
 
@@ -132,16 +112,16 @@ class TextSwitcherWidgetState extends State<CretaTextSwitcher> {
       return aniType;
     }
     counter++;
-    switch (counter % 5) {
+    switch (counter % 4) {
       case 0:
         return TextAniType.fadeTransition;
+      // case 1:
+      //   return TextAniType.sizeTransition;
       case 1:
-        return TextAniType.sizeTransition;
-      case 2:
         return TextAniType.rotateTransition;
-      case 3:
+      case 2:
         return TextAniType.slideTransition;
-      case 4:
+      case 3:
         return TextAniType.scaleTransition;
     }
     return TextAniType.fadeTransition;

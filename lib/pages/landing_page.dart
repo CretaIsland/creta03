@@ -25,7 +25,10 @@ class _LandingPageState extends State<LandingPage> {
   double? _screenWidth;
 
   // published book manager
-   late BookPublishedManager bookPublishedManagerHolder;
+  late BookPublishedManager bookPublishedManagerHolder;
+
+  // appbar effect
+  BoxShadow? appBarShadow;
 
   // dropdown menu item
   late List<DropdownMenuItem> languageItems;
@@ -35,6 +38,9 @@ class _LandingPageState extends State<LandingPage> {
   late String selectedLanguage;
   late BookType selectedPurpose;
   late BookSort selectedSort;
+
+  late List<String> topBannerImgPaths;
+  late List<String> bottomBannerImgPaths;
 
   // search result creta book
   List<BookModel> searchCretaBooks = [];
@@ -87,6 +93,35 @@ class _LandingPageState extends State<LandingPage> {
     selectedPurpose = purposeItems.first.value;
     selectedSort = sortItems.first.value;
 
+    topBannerImgPaths = [
+      "assets/landing_page/image/banner/banner_top1.png",
+      "assets/landing_page/image/banner/banner_top2.png",
+      "assets/landing_page/image/banner/banner_top3.png",
+      "assets/landing_page/image/banner/banner_top4.png",
+      "assets/landing_page/image/banner/banner_top5.png",
+      "assets/landing_page/image/banner/banner_top6.png",
+      "assets/landing_page/image/banner/banner_top7.png",
+      "assets/landing_page/image/banner/banner_top8.png",
+      "assets/landing_page/image/banner/banner_top9.png",
+      "assets/landing_page/image/banner/banner_top10.png",
+      "assets/landing_page/image/banner/banner_top11.png",
+    ];
+    bottomBannerImgPaths = [
+      "assets/landing_page/image/banner/banner_bottom1.png",
+      "assets/landing_page/image/banner/banner_bottom2.png",
+      "assets/landing_page/image/banner/banner_bottom3.png",
+      "assets/landing_page/image/banner/banner_bottom4.png",
+      "assets/landing_page/image/banner/banner_bottom5.png",
+      "assets/landing_page/image/banner/banner_bottom6.png",
+      "assets/landing_page/image/banner/banner_bottom7.png",
+      "assets/landing_page/image/banner/banner_bottom8.png",
+      "assets/landing_page/image/banner/banner_bottom9.png",
+      "assets/landing_page/image/banner/banner_bottom10.png",
+      "assets/landing_page/image/banner/banner_bottom11.png",
+      "assets/landing_page/image/banner/banner_bottom12.png",
+    ];
+
+
     presentationAnimationController =  VideoPlayerController.asset("assets/landing_page/video/presentation_animation.mp4");
     communityAnimationController = VideoPlayerController.asset("assets/landing_page/video/community_animation.mp4");
     signageAnimationController = VideoPlayerController.asset("assets/landing_page/video/signage_animation.mp4");
@@ -110,6 +145,17 @@ class _LandingPageState extends State<LandingPage> {
     }));
     
     _verticalScroller = ScrollController();
+    _verticalScroller.addListener(() {
+      if(_verticalScroller.offset > 10) {
+        setState(() {
+          appBarShadow = BoxShadow(
+            color: const Color(0xff1A1A1A).withOpacity(0.12),
+            blurRadius: 12,
+            offset: const Offset(0, 2)
+          );
+        });
+      }
+    });
   }
 
   @override
@@ -137,9 +183,7 @@ class _LandingPageState extends State<LandingPage> {
         scrollDirection: Axis.horizontal,
         child: Column(
           children: [
-            const SizedBox(height: 45),
             appBar(),
-            const SizedBox(height: 45),
             SizedBox(
               width: _screenWidth,
               height: MediaQuery.sizeOf(context).height - 138,
@@ -147,7 +191,6 @@ class _LandingPageState extends State<LandingPage> {
                 controller: _verticalScroller,
                 child: Column(
                   children: [
-                    const SizedBox(height: 32),
                     mainBanner(),
                     const SizedBox(height: 14),
                     exploreSection(),
@@ -269,29 +312,36 @@ class _LandingPageState extends State<LandingPage> {
   // ************************************ app bar ************************************
   Widget appBar() {
     TextStyle appBarBTNStyle = CretaFont.buttonLarge.copyWith(fontWeight: FontWeight.w400, fontSize: 16, color: CretaColor.primary);
-    return SizedBox(
-      width: 1574,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Image(
-            image: AssetImage("assets/creta_logo_blue.png"),
-            width: 136,
-            height: 40,
-          ),
-          SizedBox(
-            width: 329,
-            height: 48,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                customButton(width: 40, height: 19, child: Text("Login", style: appBarBTNStyle), onTap: () => LoginDialog.popupDialog(context: context, getBuildContext: getBuildContext)),
-                customButton(width: 140, height: 48, child: Text("Sign up", style: appBarBTNStyle), onTap: () {}, border: Border.all(color: CretaColor.primary), borderRadius: BorderRadius.circular(6.6)),
-                dropdownMenu(width: 64, height: 19, items: languageItems, defaultValue: selectedLanguage, onSelected: (value) => selectedLanguage = value)
-              ],
+    return Container(
+      width: _screenWidth,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: appBarShadow != null ? [appBarShadow!] : null
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 45, left: 160, right: 160, bottom: 24),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [ 
+            const Image(
+              image: AssetImage("assets/creta_logo_blue.png"),
+              width: 136,
+              height: 40,
             ),
-          )
-        ],
+            SizedBox(
+              width: 329,
+              height: 48,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  customButton(width: 40, height: 19, child: Text("Login", style: appBarBTNStyle), onTap: () => LoginDialog.popupDialog(context: context, getBuildContext: getBuildContext)),
+                  customButton(width: 140, height: 48, child: Text("Sign up", style: appBarBTNStyle), onTap: () {}, border: Border.all(color: CretaColor.primary), borderRadius: BorderRadius.circular(6.6)),
+                  dropdownMenu(width: 64, height: 19, items: languageItems, defaultValue: selectedLanguage, onSelected: (value) => selectedLanguage = value)
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -308,9 +358,9 @@ class _LandingPageState extends State<LandingPage> {
           Column(
             children: [
               const SizedBox(height: 100),
-              rollingBannerImg(),
+              rollingBannerImg(topBannerImgPaths),
               const SizedBox(height: 26),
-              rollingBannerImg()
+              rollingBannerImg(bottomBannerImgPaths, scrollDirection: "right")
             ],
           ),
           Center(
@@ -346,25 +396,27 @@ class _LandingPageState extends State<LandingPage> {
     );
   }
 
-  Widget rollingBannerImg() {
-    List<Color> bannerImgs = [Colors.red, Colors.blue, Colors.yellow, Colors.green, Colors.white, Colors.pink, Colors.purple];
+  Widget rollingBannerImg(List<String> bannerImgPaths, {String scrollDirection = "left"}) {
     return Transform.rotate(
       angle: -0.1,
-      child: Container(
+      child: SizedBox(
         width: _screenWidth,
         height: 320,
-        color: Colors.grey.shade100,
         child: CarouselSlider(
-          items: bannerImgs.map((color) => Container(
-            width: 542,
-            height: 300,
-            color: color,
+          items: bannerImgPaths.map((imgPath) => ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image(
+              image: AssetImage(imgPath),
+              height: 320,
+              fit: BoxFit.fitHeight,
+            ),
           )).toList(),
           options: CarouselOptions(
+            reverse: scrollDirection == "right",
             autoPlay: true,
             autoPlayInterval: const Duration(seconds: 2),
             initialPage: 0,
-            viewportFraction: 0.3,
+            viewportFraction: 0.2,
             scrollDirection: Axis.horizontal,
             autoPlayCurve: Curves.easeInOut
           ),

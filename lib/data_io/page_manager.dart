@@ -24,14 +24,48 @@ import '../pages/studio/studio_variables.dart';
 import 'creta_manager.dart';
 import 'book_manager.dart';
 import 'frame_manager.dart';
+import 'key_handler.dart';
 
 //PageManager? pageManagerHolder;
 
 class PageManager extends CretaManager {
   BookModel? bookModel;
   Map<String, FrameManager?> frameManagerMap = {};
-  Map<String, GlobalObjectKey> thumbKeyMap = {};
+  //Map<String, GlobalObjectKey> thumbKeyMap = {};
   Map<String, GlobalObjectKey> pageKeyMap = {};
+
+/////////////////////////////////////////////////////////
+// thumnKeyHandler area start
+/////////////////////////////////////////////////////////
+  KeyHandler thumnKeyHandler = KeyHandler();
+
+  String thumbKkeyMangler(String pageMid) {
+    return 'Thumb$pageMid';
+  }
+
+  GlobalObjectKey<CretaState<StatefulWidget>> registerPageThumbnail(String pageMid) {
+    String keyString = thumbKkeyMangler(pageMid);
+    return thumnKeyHandler.registerKey(keyString);
+  }
+
+  bool invalidatThumbnail(String pageMid) {
+    return thumnKeyHandler.invalidate(thumbKkeyMangler(pageMid));
+  }
+
+  Rect? getThumbArea() {
+    PageModel? pageModel = getSelected() as PageModel?;
+    if (pageModel == null) {
+      return thumnKeyHandler.getFirstArea();
+    }
+    return thumnKeyHandler.getArea(thumbKkeyMangler(pageModel.mid));
+  }
+
+  Rect? getFirstThumbArea() {
+    return thumnKeyHandler.getFirstArea();
+  }
+/////////////////////////////////////////////////////////
+// thumnKeyHandler area end
+/////////////////////////////////////////////////////////
 
   GlobalObjectKey createPageKey(String mid) {
     String key = 'PageRealMainKey$mid';
@@ -106,6 +140,11 @@ class PageManager extends CretaManager {
     return frameManagerMap[pageMid];
   }
 
+  FrameManager? findSelectedFrameManager() {
+    String mid = getSelectedMid();
+    return frameManagerMap[mid];
+  }
+
   FrameModel? findFrameModel(String frameMid) {
     // frameMid 만 가지고, 해당  frameModel 을 찾아야 한다.
     FrameModel? retval;
@@ -135,6 +174,7 @@ class PageManager extends CretaManager {
   }
 
   FrameManager newFrameManager(BookModel bookModel, PageModel pageModel) {
+    //print('newFrameManager');
     FrameManager retval = FrameManager(
       bookModel: bookModel,
       pageModel: pageModel,
@@ -283,26 +323,26 @@ class PageManager extends CretaManager {
     return false;
   }
 
-  bool gotoNext() {
+  bool gotoNext({bool loop = true}) {
     _prevModel = getSelected() as PageModel?;
     _transitForward = true;
 
-    String? mid = getNextMid();
+    String? mid = getNextMid(loop: loop);
     return _movePage(mid);
   }
 
-  bool gotoPrev() {
+  bool gotoPrev({bool loop = true}) {
     _prevModel = getSelected() as PageModel?;
     _transitForward = false;
 
-    String? mid = getPrevMid();
+    String? mid = getPrevMid(loop: loop);
     return _movePage(mid);
   }
 
   bool _movePage(String? mid) {
     if (mid != null) {
       //DraggableStickers.isFrontBackHover = false;
-      notify();
+      //notify();
       if (StudioVariables.isPreview == true) {
         // 프리뷰 모드에서만, pageTransition 이 동작한다.
         // PageModel? model = getModelByMid(mid) as PageModel?;
@@ -342,18 +382,21 @@ class PageManager extends CretaManager {
     return null;
   }
 
-  String? getNextMid() {
+  String? getNextMid({bool loop = true}) {
     double selectedOrder = getSelectedOrder();
     String? retval = _getNextMid(selectedOrder, false);
     if (retval != null) {
       return retval;
     }
     // 처음부터 다시 시작한다.
-    if (onGotoNextBook != null) {
-      onGotoNextBook?.call();
-      return null;
+    if (loop) {
+      if (onGotoNextBook != null) {
+        onGotoNextBook?.call();
+        return null;
+      }
+      return _getNextMid(-1, true);
     }
-    return _getNextMid(-1, true);
+    return null;
   }
 
   String? _getNextMid(double selectedOrder, bool startToFirst) {
@@ -397,18 +440,21 @@ class PageManager extends CretaManager {
     return null;
   }
 
-  String? getPrevMid() {
+  String? getPrevMid({bool loop = true}) {
     double selectedOrder = getSelectedOrder();
     String? retval = _getPrevMid(selectedOrder, false);
     if (retval != null) {
       return retval;
     }
     // 마지막으로 돌아간다
-    if (onGotoPrevBook != null) {
-      onGotoPrevBook?.call();
-      return null;
+    if (loop) {
+      if (onGotoPrevBook != null) {
+        onGotoPrevBook?.call();
+        return null;
+      }
+      return _getPrevMid(-1, true);
     }
-    return _getPrevMid(-1, true);
+    return null;
   }
 
   String? _getPrevMid(double selectedOrder, bool startToFirst) {
@@ -573,15 +619,6 @@ class PageManager extends CretaManager {
   //   return null;
   // }
 
-  GlobalObjectKey? getSelectedThumbKey() {
-    // mian frame 이 지정되어 있지 않다면, show 된 것 중 가장 앞에 있는 것을 리턴한다.
-    PageModel? pageModel = getSelected() as PageModel?;
-    if (pageModel == null) {
-      return thumbKeyMap.values.first;
-    }
-    return thumbKeyMap[pageModel.mid];
-  }
-
   double nextOrder(double currentOrder, {bool alwaysOneExist = false}) {
     bool matched = false;
 
@@ -737,30 +774,43 @@ class PageManager extends CretaManager {
   }
 
   void removePage(PageModel model) {
-    mychangeStack.startTrans();
-    model.isRemoved.set(
-      true,
-      doComplete: (val) {
-        //print('removePage doComplete');
-        if (isSelected(model.mid)) {
-          if (gotoNext()) {
-            gotoPrev();
-          }
-        }
-      },
-    );
-    removeChild(model.mid).then((value) {
-      mychangeStack.endTrans();
-      if (isSelected(model.mid)) {
-        if (gotoNext()) {
-          gotoPrev();
-        }
+    model.isRemoved.set(true);
+    if (isSelected(model.mid)) {
+      if (gotoNext(loop: false) == false) {
+        gotoPrev();
       }
-      //print('removePage');
+    } else {
       notify();
-      LeftMenuPage.treeInvalidate();
-      return;
-    });
+    }
+    BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
+    LeftMenuPage.treeInvalidate();
+
+    //mychangeStack.startTrans();
+    // model.isRemoved.set(
+    //   true,
+    //   doComplete: (val) {
+    //     print('removePage doComplete');
+    //     if (isSelected(model.mid)) {
+    //       if (gotoNext(loop: false) == false) {
+    //         gotoPrev();
+    //       }
+    //     }
+    //   },
+    // );
+    // removeChild(model.mid).then((value) {
+    //   mychangeStack.endTrans();
+    //   if (isSelected(model.mid)) {
+    //     if (gotoNext(loop: false) == false) {
+    //       gotoPrev();
+    //     }
+    //   }
+    //   //print('removePage');
+    //   notify();
+    //   LeftMenuPage.treeInvalidate();
+    //   return;
+    // });
+
+    return;
   }
 
   int getPageIndex(String pageMid) {
