@@ -164,8 +164,10 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
     //_fullscreenBookKey = GlobalObjectKey('_CommunityRightBookPaneState.fullscreenBookKey.${CommunityRightBookPane.bookId}.parent');
     //_fullscreenParentBookKey = GlobalObjectKey('_CommunityRightBookPaneState.fullscreenParentBookKey.${CommunityRightBookPane.bookId}.parent');
-    _bookKey = GlobalObjectKey('_CommunityRightBookPaneState.bookKey.${CommunityRightBookPane.bookId}.parent');
-    _parentBookKey = GlobalObjectKey('_CommunityRightBookPaneState.parentBookKey.${CommunityRightBookPane.bookId}.parent');
+    _bookKey = GlobalObjectKey(
+        '_CommunityRightBookPaneState.bookKey.${CommunityRightBookPane.bookId}.parent');
+    _parentBookKey = GlobalObjectKey(
+        '_CommunityRightBookPaneState.parentBookKey.${CommunityRightBookPane.bookId}.parent');
 
     bookPublishedManagerHolder = BookPublishedManager();
     channelManagerHolder = ChannelManager();
@@ -249,7 +251,6 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     for (var model in modelList) {
       BookModel bookModel = model as BookModel;
       _relatedBookList.add(bookModel);
-
     }
   }
 
@@ -261,7 +262,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
       return;
     }
     bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: CommunityRightBookPane.bookId));
+    bookPublishedManagerHolder.addWhereClause(
+        'mid', QueryValue(value: CommunityRightBookPane.bookId));
     bookPublishedManagerHolder.queryByAddedContitions();
   }
 
@@ -350,7 +352,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     }
     List<AbsExModel> bookList = [_currentBookModel!];
     if (AccountManager.currentLoginUser.isLoginedUser) {
-      for(var bookModel in _relatedBookList) {
+      for (var bookModel in _relatedBookList) {
         bookList.add(bookModel);
       }
     }
@@ -365,7 +367,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     } else {
       // something is exist in DB ==> Favorites
       //_bookIsInFavorites = true;
-      for(var model in modelList) {
+      for (var model in modelList) {
         FavoritesModel favModel = model as FavoritesModel;
         _favoritesBookIdMap[favModel.bookId] = true;
       }
@@ -380,7 +382,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
       return;
     }
     playlistManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    playlistManagerHolder.addWhereClause('mid', QueryValue(value: CommunityRightBookPane.playlistId));
+    playlistManagerHolder.addWhereClause(
+        'mid', QueryValue(value: CommunityRightBookPane.playlistId));
     playlistManagerHolder.queryByAddedContitions();
   }
 
@@ -418,7 +421,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
         bookIdMap.putIfAbsent(plModel.bookIdList[0], () => plModel.bookIdList[0]);
       }
     }
-    _playlistModelOnRightPane?.bookIdList.forEach((bookId) => bookIdMap.putIfAbsent(bookId, () => bookId));
+    _playlistModelOnRightPane?.bookIdList
+        .forEach((bookId) => bookIdMap.putIfAbsent(bookId, () => bookId));
     final List<String> bookIdList = [];
     bookIdMap.forEach((key, value) => bookIdList.add(key));
     bookPublishedManagerHolder.queryFromIdList(bookIdList);
@@ -475,7 +479,9 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
   void _getSubscriptionFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('start _getSubscriptionFromDB(${modelList.length})');
-    if (_currentBookModel == null || _channelModel == null || AccountManager.currentLoginUser.isLoginedUser == false) {
+    if (_currentBookModel == null ||
+        _channelModel == null ||
+        AccountManager.currentLoginUser.isLoginedUser == false) {
       // no book-data ==> skip
       subscriptionManagerHolder.setState(DBState.idle);
       return;
@@ -483,7 +489,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     subscriptionManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     subscriptionManagerHolder.addWhereClause(
         'channelId', QueryValue(value: CretaAccountManager.getUserProperty!.channelId));
-    subscriptionManagerHolder.addWhereClause('subscriptionChannelId', QueryValue(value: _channelModel!.mid));
+    subscriptionManagerHolder.addWhereClause(
+        'subscriptionChannelId', QueryValue(value: _channelModel!.mid));
     subscriptionManagerHolder.queryByAddedContitions();
   }
 
@@ -526,7 +533,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
       // creator
       UserPropertyModel? creatorUserModel = _userPropertyMap[_currentBookModel!.creator];
       if (creatorUserModel != null) {
-        widget.onUpdateBookModel?.call(_currentBookModel!, creatorUserModel, _favoritesBookIdMap[_currentBookModel!.getMid] ?? false, addToPlaylist);
+        widget.onUpdateBookModel?.call(_currentBookModel!, creatorUserModel,
+            _favoritesBookIdMap[_currentBookModel!.getMid] ?? false, addToPlaylist);
         setState(() {
           _controller.text = _currentBookModel?.description.value ?? '';
         });
@@ -680,7 +688,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   Widget _getPlaylistWidget(BuildContext context) {
     int bookCount = _playlistModelOnRightPane!.bookIdList.length;
     final bool showScrollbar = (bookCount > 5);
-    double playlistHeight = _showPlaylist ? (showScrollbar && !_showAllPlaylistItems ? 400 : bookCount * 74 + 2) : 0;
+    double playlistHeight =
+        _showPlaylist ? (showScrollbar && !_showAllPlaylistItems ? 400 : bookCount * 74 + 2) : 0;
     return Container(
       width: _sideAreaRect.width,
       height: _showPlaylist ? 20 + 32 + 20 + playlistHeight + 20 + 2 : 74,
@@ -711,11 +720,14 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                       width: 61,
                       buttonColor: CretaButtonColor.gray100light,
                       textColor: CretaColor.text[400],
-                      onPressed: () => setState(() => (_showAllPlaylistItems = !_showAllPlaylistItems)),
+                      onPressed: () =>
+                          setState(() => (_showAllPlaylistItems = !_showAllPlaylistItems)),
                     ),
                   Expanded(child: Container()),
                   BTN.fill_gray_i_m(
-                    icon: _showPlaylist ? Icons.keyboard_arrow_up_sharp : Icons.keyboard_arrow_down_sharp,
+                    icon: _showPlaylist
+                        ? Icons.keyboard_arrow_up_sharp
+                        : Icons.keyboard_arrow_down_sharp,
                     iconSize: 24,
                     iconColor: CretaColor.text[700],
                     buttonColor: CretaButtonColor.gray100light,
@@ -746,7 +758,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                     thumbVisibility: true,
                     controller: _playlistScrollController,
                     child: ScrollConfiguration(
-                      behavior: ScrollConfiguration.of(context).copyWith(scrollbars: showScrollbar), // 스크롤바 감추기
+                      behavior: ScrollConfiguration.of(context)
+                          .copyWith(scrollbars: showScrollbar), // 스크롤바 감추기
                       child: ListView(
                         scrollDirection: Axis.vertical,
                         controller: _playlistScrollController,
@@ -801,12 +814,12 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
   void _toggleFullscreen() {
     //setState(() {
-      StudioVariables.isFullscreen = !StudioVariables.isFullscreen;
-      if (StudioVariables.isFullscreen) {
-        document.documentElement?.requestFullscreen();
-      } else {
-        document.exitFullscreen();
-      }
+    StudioVariables.isFullscreen = !StudioVariables.isFullscreen;
+    if (StudioVariables.isFullscreen) {
+      document.documentElement?.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
     //});
   }
 
@@ -838,24 +851,24 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     Routemaster.of(context).push(linkUrl);
   }
 
-  Widget _getBookPreview(Size size, { GlobalKey? bookKey, GlobalKey? parentKey }) {
+  Widget _getBookPreview(Size size, {GlobalKey? bookKey, GlobalKey? parentKey}) {
     //if (_cretaRelatedBookList.isNotEmpty) {
-      return RepaintBoundary(
-        key: bookKey ?? _parentBookKey,
-        child: SizedBox(
-          width: size.width,
-          height: size.height,
-          child: BookMainPage(
-            bookKey: parentKey ?? _bookKey,
-            isPreviewX: true,
-            size: size,
-            isPublishedMode: true,
-            toggleFullscreen: _toggleFullscreen,
-            onGotoPrevBook: CommunityRightBookPane.playlistId.isEmpty ? null : _onGotoPrevBook,
-            onGotoNextBook: CommunityRightBookPane.playlistId.isEmpty ? null : _onGotoNextBook,
-          ),
+    return RepaintBoundary(
+      key: bookKey ?? _parentBookKey,
+      child: SizedBox(
+        width: size.width,
+        height: size.height,
+        child: BookMainPage(
+          bookKey: parentKey ?? _bookKey,
+          isPreviewX: true,
+          size: size,
+          isPublishedMode: true,
+          toggleFullscreen: _toggleFullscreen,
+          onGotoPrevBook: CommunityRightBookPane.playlistId.isEmpty ? null : _onGotoPrevBook,
+          onGotoNextBook: CommunityRightBookPane.playlistId.isEmpty ? null : _onGotoNextBook,
         ),
-      );
+      ),
+    );
     //}
     //return Container();
   }
@@ -1046,7 +1059,9 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
           SizedBox(
             width: 16,
           ),
-          (_channelModel == null || CretaAccountManager.getUserProperty?.channelId == _channelModel?.mid || AccountManager.currentLoginUser.isLoginedUser == false)
+          (_channelModel == null ||
+                  CretaAccountManager.getUserProperty?.channelId == _channelModel?.mid ||
+                  AccountManager.currentLoginUser.isLoginedUser == false)
               ? SizedBox.shrink()
               : BTN.fill_blue_t_m(
                   text: (_subscriptionModel == null) ? '구독하기' : '구독중',
@@ -1096,7 +1111,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   final TextEditingController _controller = TextEditingController();
 
   void takeSnapshot() {
-    RenderRepaintBoundary boundary = _parentBookKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+    RenderRepaintBoundary boundary =
+        _parentBookKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
     boundary.toImage().then((value) {
       value.toByteData(format: ImageByteFormat.png).then((value) {
         Uint8List memImageData = value!.buffer.asUint8List();
@@ -1124,7 +1140,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                   padding: EdgeInsets.fromLTRB(0, 3, 0, 2),
                   child: Text(
                     '내용',
-                    style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
+                    style: CretaFont.titleELarge
+                        .copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
                     textAlign: TextAlign.left,
                   ),
                 ),
@@ -1281,7 +1298,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
               children: [
                 Text(
                   '위 크레타북에서 사용된 콘텐츠',
-                  style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
+                  style: CretaFont.titleELarge
+                      .copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
                   textAlign: TextAlign.left,
                 ),
                 Expanded(child: Container()),
@@ -1335,7 +1353,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
             children: [
               Text(
                 '위 크레타북에서 사용된 콘텐츠',
-                style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
+                style: CretaFont.titleELarge
+                    .copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
                 textAlign: TextAlign.left,
               ),
               Expanded(child: Container()),
@@ -1411,14 +1430,16 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
       //color: Colors.red,
       width: _usingContentsRect.width,
       //height: size.height,
-      padding: EdgeInsets.fromLTRB(_usingContentsRect.childLeftPadding, 0, _usingContentsRect.childRightPadding, 0),
+      padding: EdgeInsets.fromLTRB(
+          _usingContentsRect.childLeftPadding, 0, _usingContentsRect.childRightPadding, 0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             '댓글',
-            style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
+            style: CretaFont.titleELarge
+                .copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
             textAlign: TextAlign.left,
           ),
           SizedBox(height: 20),
@@ -1500,20 +1521,18 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
         // }).toList(),
         children: _relatedBookList.map((bookModel) {
           ChannelModel? chModel =
-          bookModel.channels.isEmpty ? null : _channelMap[bookModel.channels[0]];
-          return Container(
-            child: CretaBookUIItem(
-              key: GlobalObjectKey('_getRelatedBookList.${bookModel.getMid}'),
-              bookModel: bookModel,
-              userPropertyModel: _userPropertyMap[bookModel.creator],
-              channelModel: chModel,
-              width: 306,
-              height: 230,
-              isFavorites: _favoritesBookIdMap[bookModel.getMid] ?? false,
-              addToFavorites: _addToFavorites,
-              addToPlaylist: _addToPlaylist,
-              onRemoveBook: null,//_onRemoveBook,
-            ),
+              bookModel.channels.isEmpty ? null : _channelMap[bookModel.channels[0]];
+          return CretaBookUIItem(
+            key: GlobalObjectKey('_getRelatedBookList.${bookModel.getMid}'),
+            bookModel: bookModel,
+            userPropertyModel: _userPropertyMap[bookModel.creator],
+            channelModel: chModel,
+            width: 306,
+            height: 230,
+            isFavorites: _favoritesBookIdMap[bookModel.getMid] ?? false,
+            addToFavorites: _addToFavorites,
+            addToPlaylist: _addToPlaylist,
+            onRemoveBook: null, //_onRemoveBook,
           );
         }).toList(),
       ),
@@ -1531,7 +1550,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     double bookAreaWidth = widget.cretaLayoutRect.childWidth - 20 - _sideAreaRect.width;
     double bookAreaHeight = bookAreaWidth * _bookAreaRatio;
     _bookAreaSize = Size(bookAreaWidth, bookAreaHeight);
-    _usingContentsRect = CretaLayoutRect.fromPadding(bookAreaWidth, 206 + 40 + 40 - 12 - 5, 12, 40 - 12 - 5, 22, 40);
+    _usingContentsRect =
+        CretaLayoutRect.fromPadding(bookAreaWidth, 206 + 40 + 40 - 12 - 5, 12, 40 - 12 - 5, 22, 40);
   }
 
   Widget _getMainPane() {
@@ -1568,7 +1588,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
   Widget _getSidePane(BuildContext context) {
     return SizedBox(
-      key: GlobalObjectKey(GlobalObjectKey('_CommunityRightBookPaneState.getSidePane.${CommunityRightBookPane.bookId}')),
+      key: GlobalObjectKey(GlobalObjectKey(
+          '_CommunityRightBookPaneState.getSidePane.${CommunityRightBookPane.bookId}')),
       width: _sideAreaRect.width,
       child: Column(
         children: [
@@ -1646,7 +1667,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                             setState(() {
                               _hashtagController.text = '';
                               _hashtagValueList.add(value);
-                              _currentBookModel?.hashTag.set(CretaUtils.listToString(_hashtagValueList));
+                              _currentBookModel?.hashTag
+                                  .set(CretaUtils.listToString(_hashtagValueList));
                             });
                           }
                         },
