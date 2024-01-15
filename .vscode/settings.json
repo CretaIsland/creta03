@@ -2,5 +2,5 @@
     "C_Cpp.errorSquiggles": "disabled",
     "cmake.configureOnOpen": true,
     "files.autoSave": "afterDelay",
-    "cmake.sourceDirectory": "D:/Flutter/project/creta03/linux"
+    "cmake.sourceDirectory": "D:/creta03/linux"
 }

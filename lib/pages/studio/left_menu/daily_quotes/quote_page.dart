@@ -3,14 +3,17 @@ import 'dart:math';
 import 'package:creta03/design_system/component/custom_image.dart';
 import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/logger.dart';
 import 'package:quoter/quoter.dart';
-
+import 'package:translator_plus/translator_plus.dart';
 import '../../../../model/frame_model.dart';
 
 class QuotePage extends StatefulWidget {
   final double? width;
   final double? height;
   final FrameModel? frameModel;
+  final Quoter quoter;
+
   const QuotePage({
     Key? key,
     this.quoter = const Quoter(),
@@ -18,8 +21,6 @@ class QuotePage extends StatefulWidget {
     this.height,
     this.frameModel,
   }) : super(key: key);
-
-  final Quoter quoter;
 
   @override
   State<QuotePage> createState() => _QuotePageState();
@@ -29,6 +30,7 @@ class _QuotePageState extends State<QuotePage> {
   Quote? _quote;
   Random random = Random();
   late String url;
+  String korVer = "";
 
   @override
   void initState() {
@@ -41,7 +43,25 @@ class _QuotePageState extends State<QuotePage> {
   void _generateRandomQuote() {
     setState(() {
       _quote = widget.quoter.getRandomQuote();
+      _translateToKor(_quote!.quotation);
     });
+  }
+
+  Future<void> _translateToKor(String quote) async {
+    try {
+      final Translation translation = await GoogleTranslator().translate(
+        quote.toString(),
+        from: 'en',
+        to: 'ko',
+      );
+
+      setState(() {
+        korVer = translation.text;
+      });
+    } catch (e) {
+      logger.severe('Exception: $e');
+      throw Exception('Translation request failed');
+    }
   }
 
   @override
@@ -61,10 +81,12 @@ class _QuotePageState extends State<QuotePage> {
             color: Colors.black38,
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 32.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                const Spacer(),
                 Text(
                   _quote?.quotation ?? "",
                   textAlign: TextAlign.center,
@@ -74,13 +96,23 @@ class _QuotePageState extends State<QuotePage> {
                     fontSize: 32.0,
                   ),
                 ),
-                const SizedBox(height: 48.0),
+                const SizedBox(height: 20.0),
                 Text(
                   _quote?.quotee ?? "Unknown author",
                   style: const TextStyle(
                     fontFamily: "Ic",
                     color: Colors.white,
                     fontSize: 20.0,
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  korVer,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontFamily: "Ic",
+                    color: Colors.white,
+                    fontSize: 18.0,
                   ),
                 ),
               ],

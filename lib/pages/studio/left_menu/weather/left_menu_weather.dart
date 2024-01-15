@@ -230,8 +230,8 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
     if (pageModel == null) return;
 
     //페이지폭의 50% 로 만든다. 세로는 가로의 1/6 이다.
-    double width = 120;
-    double height = 120;
+    double width = 160;
+    double height = 160;
     double x = (pageModel.width.value - width) / 2;
     double y = (pageModel.height.value - height) / 2;
 

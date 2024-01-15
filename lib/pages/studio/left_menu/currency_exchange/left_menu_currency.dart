@@ -46,7 +46,7 @@ class _LeftMenuCurrencyState extends State<LeftMenuCurrency> {
           child: Text(widget.title, style: widget.dataStyle),
         ),
         SizedBox(
-          height: StudioVariables.workHeight - 320.0,
+          height: StudioVariables.workHeight - 332.0,
           child: FutureBuilder<RatesModel>(
             future: ratesModel,
             builder: (context, snapshot) {

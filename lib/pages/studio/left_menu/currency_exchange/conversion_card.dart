@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:creta03/pages/studio/containees/frame/frame_play_mixin.dart';
 import 'package:creta03/pages/studio/left_menu/currency_exchange/dropdown_row.dart';
 import 'package:creta03/pages/studio/left_menu/currency_exchange/rate_result.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class ConversionCard extends StatefulWidget {
   State<ConversionCard> createState() => _ConversionCardState();
 }
 
-class _ConversionCardState extends State<ConversionCard> {
+class _ConversionCardState extends State<ConversionCard> with FramePlayMixin {
   final GlobalKey<FormFieldState> formFieldKey = GlobalKey();
   String dropDownValue1 = "USD";
   String dropDownValue2 = "KRW";
@@ -114,7 +115,7 @@ class _ConversionCardState extends State<ConversionCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -127,8 +128,7 @@ class _ConversionCardState extends State<ConversionCard> {
             ],
           ),
           const SizedBox(height: 20),
-          SizedBox(
-            height: 380.0,
+          Expanded(
             child: GridView.builder(
               itemCount: defaultBasedCurrency.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -167,7 +167,7 @@ class _ConversionCardState extends State<ConversionCard> {
               },
             ),
           ),
-          const Spacer(),
+          const SizedBox(height: 20),
           const Center(child: Text('Currency Rates by Open Exchange Rates')),
         ],
       ),

@@ -331,6 +331,10 @@ class FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fra
       );
     }
 
+    if (model.isQuoteType()) {
+      return Image.asset('quote_BG.jpg');
+    }
+
     // if (_contentsManager!.length() == 0) {
     //   // print('No contents in this frame');
     //   return const SizedBox.shrink();

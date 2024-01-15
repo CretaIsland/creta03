@@ -55,21 +55,6 @@ class _LeftMenuNewsState extends State<LeftMenuNews> {
     return news.news;
   }
 
-  // static String _selectedType = CretaStudioLang.newsCategories.values.first;
-
-  // String _getCurrentTypes() {
-  //   int index = 0;
-  //   String currentSelectedType = _selectedType;
-  //   List<String> types = CretaStudioLang.newsCategories.values.toList();
-  //   for (String ele in types) {
-  //     if (currentSelectedType == ele) {
-  //       return types[index];
-  //     }
-  //     index++;
-  //   }
-  //   return CretaStudioLang.newsCategories.values.toString()[0];
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -95,13 +80,7 @@ class _LeftMenuNewsState extends State<LeftMenuNews> {
               );
             } else {
               List<CategoryModel> categories = snapshot.data![0] as List<CategoryModel>;
-              // List<Article> newslist = snapshot.data![1] as List<Article>;
-              return Column(
-                children: [
-                  newsCategories(categories),
-                  // newsArticle(newslist),
-                ],
-              );
+              return newsCategories(categories);
             }
           },
         ),
@@ -113,7 +92,7 @@ class _LeftMenuNewsState extends State<LeftMenuNews> {
   Widget newsCategories(List<CategoryModel> categories) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      height: StudioVariables.workHeight - 148,
+      height: StudioVariables.workHeight - 360,
       child: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           mainAxisSpacing: 12,
@@ -139,64 +118,6 @@ class _LeftMenuNewsState extends State<LeftMenuNews> {
       ),
     );
   }
-
-  // Widget newsCategories() {
-  //   return Padding(
-  //     padding: EdgeInsets.only(
-  //       top: verticalPadding,
-  //       bottom: verticalPadding,
-  //       right: 2.0,
-  //     ),
-  //     child: CretaTabButton(
-  //       defaultString: _getCurrentTypes(),
-  //       onEditComplete: (value) {
-  //         int idx = 0;
-  //         for (String val in CretaStudioLang.newsCategories.values) {
-  //           if (value == val) {
-  //             setState(() {
-  //               _selectedType = CretaStudioLang.newsCategories.values.toList()[idx];
-  //               _newsFuture = getNews(value);
-  //             });
-  //           }
-  //           idx++;
-  //         }
-  //       },
-  //       autoWidth: true,
-  //       height: 32,
-  //       selectedTextColor: Colors.white,
-  //       unSelectedTextColor: CretaColor.primary,
-  //       selectedColor: CretaColor.primary,
-  //       unSelectedColor: Colors.white,
-  //       unSelectedBorderColor: CretaColor.primary,
-  //       buttonLables: CretaStudioLang.newsCategories.keys.toList(),
-  //       buttonValues: CretaStudioLang.newsCategories.values.toList(),
-  //     ),
-  //   );
-  // }
-
-  // News Article
-  // Widget newsArticle(List<Article> newslist) {
-  //   return SingleChildScrollView(
-  //     child: Container(
-  //       height: 480.0,
-  //       padding: const EdgeInsets.only(top: 16),
-  //       child: ListView.builder(
-  //         itemCount: newslist.length,
-  //         shrinkWrap: true,
-  //         physics: const ClampingScrollPhysics(),
-  //         itemBuilder: (context, index) {
-  //           return NewsTile(
-  //             imgUrl: newslist[index].urlToImage ?? "",
-  //             title: newslist[index].title ?? "",
-  //             desc: newslist[index].description ?? "",
-  //             content: newslist[index].content ?? "",
-  //             posturl: newslist[index].articleUrl ?? "",
-  //           );
-  //         },
-  //       ),
-  //     ),
-  //   );
-  // }
 
   double x = 80;
   double y = 160;

@@ -103,7 +103,7 @@ class CretaStudioLang {
     '구글맵': 'map',
     '뉴스': 'news',
     '환율계산': 'currency exchange',
-    '일간 견적서': 'daily quote',
+    '오늘 영어': 'daily quote',
   };
 
   static Map<String, String> newsCategories = {
@@ -650,7 +650,7 @@ class CretaStudioLang {
   static String timeline = '타임라인';
   static String news = '뉴스';
   static String currencyXchange = '환율계산';
-  static String dailyQuote = '일간 견적서';
+  static String dailyQuote = '오늘 영어';
 
   static var onlineWeather = '날씨 온라인 연결';
   static String offLineWeather = "날씨 수동으로 선택";

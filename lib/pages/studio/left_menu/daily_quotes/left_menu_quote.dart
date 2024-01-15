@@ -89,6 +89,7 @@ class _LeftMenuQuoteState extends State<LeftMenuQuote> {
       bgColor1: Colors.transparent,
       type: frameType,
     );
+
     frameCount++;
     mychangeStack.endTrans();
   }
