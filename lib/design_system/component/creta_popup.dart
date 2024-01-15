@@ -163,4 +163,61 @@ class CretaPopup {
           );
         });
   }
+
+  static Future<void> simple({
+    required BuildContext context,
+    required String title,
+    required IconData icon,
+    required String question,
+    required void Function()? onYes,
+    String yesBtText = 'Close',
+    bool yesIsDefault = true,
+  }) {
+    return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // User must tap button for close dialog!
+        builder: (BuildContext dialogContext) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+            titlePadding: const EdgeInsets.all(0), // Remove default padding
+            title: Column(
+              children: [
+                Padding(
+                    padding: const EdgeInsets.only(left: 16.0, top: 13.0, right: 12.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(title, style: CretaFont.titleMedium),
+                        BTN.fill_gray_i_s(
+                            icon: Icons.close, onPressed: () => Navigator.of(context).pop())
+                      ],
+                    )),
+                const Divider(
+                  indent: 8,
+                  endIndent: 8,
+                ),
+              ],
+            ),
+            content: Text(question, style: CretaFont.bodyMedium),
+            actions: <Widget>[
+              Column(
+                children: [
+                  const Divider(
+                    height: 10,
+                  ),
+                  const SizedBox(height: 12),
+                  BTN.line_red_t_m(
+                    //width: 55,
+                    text: yesBtText,
+                    onPressed: () async {
+                      onYes?.call();
+                      Navigator.of(dialogContext).pop();
+                    },
+                  ),
+                ],
+              ),
+            ],
+          );
+        });
+  }
 }

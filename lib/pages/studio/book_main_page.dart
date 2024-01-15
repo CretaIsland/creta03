@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/undo/undo.dart';
+import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:hycop/hycop/hycop_factory.dart';
 import 'package:hycop/hycop/socket/mouse_tracer.dart';
 import 'package:hycop/hycop/socket/socket_client.dart';
@@ -91,6 +92,8 @@ class BookMainPage extends StatefulWidget {
   static double pageWidth = 0;
   static double pageHeight = 0;
   static Offset pageOffset = Offset.zero;
+
+  static bool isNotLoginUser = false;
 
   //static ContaineeEnum selectedClass = ContaineeEnum.Book;
   final bool isPreviewX;
@@ -197,9 +200,11 @@ class _BookMainPageState extends State<BookMainPage> {
   void initState() {
     _staticValuseDispose(); //static value 를 정리해준다.
     logger.info("---initState _BookMainPageState-------------------");
-
     //_hideMouseTimer();
     super.initState();
+
+    BookMainPage.isNotLoginUser =
+        AccountManager.currentLoginUser.email.contains('notlogin@sqisoft.com');
 
     // final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
     // _linkSendEvent = linkSendEvent;
@@ -1442,22 +1447,37 @@ class _BookMainPageState extends State<BookMainPage> {
             hasShadow: false,
             tooltip: CretaStudioLang.tooltipPlay,
           ),
-          SizedBox(width: padding),
-          BTN.line_blue_it_m_animation(
-              text: CretaStudioLang.publish,
-              image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
-              onPressed: () {
-                //BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
+          //SizedBox(width: padding),
+          Padding(
+            padding: EdgeInsets.only(left: padding),
+            child: BTN.line_blue_it_m_animation(
+                text: CretaStudioLang.publish,
+                image:
+                    NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+                onPressed: () {
+                  //BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
+                  if (BookMainPage.isNotLoginUser == true) {
+                    // CretaPopup.simple(
+                    //   context: context,
+                    //   title: title,
+                    //   icon: icon,
+                    //   question: question,
+                    //   onYes: onYes,
+                    // );
+                    // return;
+                    return;
+                  }
 
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return BookPublishDialog(
-                        key: GlobalKey(),
-                        model: _bookModel,
-                      );
-                    });
-              }),
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return BookPublishDialog(
+                          key: GlobalKey(),
+                          model: _bookModel,
+                        );
+                      });
+                }),
+          ),
           SizedBox(width: padding * 2.5),
         ],
       ),
