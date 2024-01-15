@@ -1201,12 +1201,12 @@ class _LandingPageState extends State<LandingPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     AccountManager.currentLoginUser.isLoginedUser ? 
-                    customButton(width: 52, height: 19, child: Text("Logout", style: footerBTNStyle), onTap: () {
+                    customButton(width: 52, height: 19, child: Text("Logout", style: footerBTNStyle), backgroundColor: Colors.black, onTap: () {
                       setState(() {
                         CretaAccountManager.logout();
                       });
                     })
-                    : customButton(width: 40, height: 19, child: Text("Login", style: footerBTNStyle), onTap: () => LoginDialog.popupDialog(context: context, getBuildContext: getBuildContext)),
+                    : customButton(width: 40, height: 19, child: Text("Login", style: footerBTNStyle), backgroundColor: Colors.black, onTap: () => LoginDialog.popupDialog(context: context, getBuildContext: getBuildContext)),
                     customButton(width: 140, height: 48, child: Text("Sign up", style: footerBTNStyle), backgroundColor: Colors.black, onTap: () => LoginDialog.popupDialog(context: context, getBuildContext: getBuildContext, loginPageState: LoginPageState.singup), border: Border.all(color: Colors.white), borderRadius: BorderRadius.circular(6.6)),
                   ],
                 ),
