@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:creta03/design_system/component/custom_image.dart';
-import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:quoter/quoter.dart';
@@ -67,7 +66,8 @@ class _QuotePageState extends State<QuotePage> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: StudioVariables.workHeight - 480,
+      // height: StudioVariables.workHeight - 480,
+      width: widget.width,
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -75,13 +75,14 @@ class _QuotePageState extends State<QuotePage> {
             width: widget.width!,
             height: widget.height!,
             image: url,
-            boxFit: BoxFit.fill,
+            boxFit: BoxFit.cover,
           ),
           Container(
             color: Colors.black38,
           ),
-          Padding(
+          Container(
             padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 32.0),
+            width: widget.width,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -90,6 +91,7 @@ class _QuotePageState extends State<QuotePage> {
                 Text(
                   _quote?.quotation ?? "",
                   textAlign: TextAlign.center,
+                  softWrap: true,
                   style: const TextStyle(
                     fontFamily: "Ic",
                     color: Colors.white,
