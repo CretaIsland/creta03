@@ -222,6 +222,10 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
       subscriptionManagerHolder.setState(DBState.idle);
       return;
     }
+    if (AccountManager.currentLoginUser.isLoginedUser == false) {
+      subscriptionManagerHolder.setState(DBState.idle);
+      return;
+    }
     subscriptionManagerHolder.queryMySubscription(_currentChannelModel!.getMid);
   }
 

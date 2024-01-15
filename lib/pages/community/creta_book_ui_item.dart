@@ -8,7 +8,8 @@ import 'package:flutter/services.dart';
 //import 'dart:async';
 //import 'package:flutter/gestures.dart';
 //import 'package:hycop/hycop.dart';
-import 'package:hycop/common/util/logger.dart';
+//import 'package:hycop/common/util/logger.dart';
+import 'package:hycop/hycop.dart';
 import 'package:routemaster/routemaster.dart';
 //import 'package:url_strategy/url_strategy.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
@@ -744,19 +745,21 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
       //     onPressed: () {},//_doPopupMenuEdit,
       //     linkUrl: '${AppRoutes.studioBookMainPage}?${widget.bookModel.sourceMid}',
       //   ),
-      CretaMenuItem(
-        caption: '재생목록에 추가',
-        onPressed: _doPopupMenuAddToPlayList,
-      ),
+      if (AccountManager.currentLoginUser.isLoginedUser)
+        CretaMenuItem(
+          caption: '재생목록에 추가',
+          onPressed: _doPopupMenuAddToPlayList,
+        ),
       CretaMenuItem(
         caption: '공유하기',
         onPressed: _doPopupMenuShare,
       ),
-      CretaMenuItem(
-        caption: '다운로드',
-        onPressed: _doPopupMenuDownload,
-      ),
-      if (widget.bookModel.isEditable)
+      if (AccountManager.currentLoginUser.isLoginedUser)
+        CretaMenuItem(
+          caption: '다운로드',
+          onPressed: _doPopupMenuDownload,
+        ),
+      if (widget.bookModel.isEditable && widget.onRemoveBook != null)
         CretaMenuItem(
           caption: '삭제하기',
           onPressed: _doPopupMenuRemove,
@@ -915,13 +918,14 @@ https://sharer.kakao.com/talk/friends/picker/easylink?app_key=437a6516bd110eb436
                 textStyle: CretaFont.buttonSmall.copyWith(color: CretaColor.text[100]),
               ),
             Expanded(child: Container()),
-            BTN.opacity_gray_i_s(
-              icon: widget.isFavorites ? Icons.favorite : Icons.favorite_border,
-              iconColor: CretaColor.text[100],
-              onPressed: () {
-                widget.addToFavorites?.call(widget.bookModel.mid, widget.isFavorites);
-              },
-            ),
+            if (AccountManager.currentLoginUser.isLoginedUser)
+              BTN.opacity_gray_i_s(
+                icon: widget.isFavorites ? Icons.favorite : Icons.favorite_border,
+                iconColor: CretaColor.text[100],
+                onPressed: () {
+                  widget.addToFavorites?.call(widget.bookModel.mid, widget.isFavorites);
+                },
+              ),
             // SizedBox(width: 4),
             // BTN.opacity_gray_i_s(
             //   icon: Icons.content_copy_rounded,

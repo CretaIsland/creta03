@@ -29,7 +29,7 @@ class _LeftMenuWebConferenceState extends State<LeftMenuWebConference> with Left
     super.initState();
     initMixin();
     //for webRTC
-    connectServer();
+    //connectServer();
   }
 
   @override

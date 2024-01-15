@@ -9,7 +9,7 @@ import 'package:routemaster/routemaster.dart';
 
 //import '../login_page.dart';
 import 'creta_account_manager.dart';
-import '../../routes.dart';
+//import '../../routes.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/buttons/creta_button.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
@@ -100,7 +100,13 @@ class LoginDialog extends StatefulWidget {
           getBuildContext: getBuildContext,
         );
       } else {
-        Routemaster.of(getBuildContext.call()).push(AppRoutes.intro);
+        //Routemaster.of(getBuildContext.call()).push(AppRoutes.intro);
+        if (AccountManager.currentLoginUser.isLoginedUser) {
+          String path = Uri.base.path;
+          Routemaster.of(getBuildContext.call()).push(path);
+        } else {
+          // do nothing
+        }
       }
     });
   }
@@ -180,14 +186,16 @@ class _LoginDialogState extends State<LoginDialog> {
         if (isNewUser) {
           // create model objects
           UserPropertyModel userModel =
-            CretaAccountManager.userPropertyManagerHolder.makeCurrentNewUserProperty(agreeUsingMarketing: true);
+              CretaAccountManager.userPropertyManagerHolder.makeCurrentNewUserProperty(agreeUsingMarketing: true);
           TeamModel teamModel = CretaAccountManager.teamManagerHolder.getNewTeam(
             createAndSetToCurrent: true,
             username: AccountManager.currentLoginUser.name,
             userEmail: userModel.email,
           );
-          ChannelModel teamChannelModel = CretaAccountManager.channelManagerHolder.makeNewChannel(teamId: teamModel.mid);
-          ChannelModel myChannelModel = CretaAccountManager.channelManagerHolder.makeNewChannel(userId: userModel.email);
+          ChannelModel teamChannelModel =
+              CretaAccountManager.channelManagerHolder.makeNewChannel(teamId: teamModel.mid);
+          ChannelModel myChannelModel =
+              CretaAccountManager.channelManagerHolder.makeNewChannel(userId: userModel.email);
           userModel.channelId = myChannelModel.mid;
           teamModel.channelId = teamChannelModel.mid;
           userModel.channelId = myChannelModel.mid;
@@ -249,8 +257,8 @@ class _LoginDialogState extends State<LoginDialog> {
       AccountManager.createAccount(userData).then((value) async {
         logger.finest('register end');
         // create model objects
-        UserPropertyModel userModel =
-        CretaAccountManager.userPropertyManagerHolder.makeCurrentNewUserProperty(agreeUsingMarketing: agreeUsingMarketing);
+        UserPropertyModel userModel = CretaAccountManager.userPropertyManagerHolder
+            .makeCurrentNewUserProperty(agreeUsingMarketing: agreeUsingMarketing);
         TeamModel teamModel = CretaAccountManager.teamManagerHolder.getNewTeam(
           createAndSetToCurrent: true,
           username: nickname,
@@ -753,7 +761,13 @@ class ExtraInfoDialog extends StatefulWidget {
         //Navigator.of(getBuildContext.call()).pop();
       }
       if (kDebugMode) print('ExtraInfoDialog.Routemaster');
-      Routemaster.of(getBuildContext.call()).push(AppRoutes.intro);
+      //Routemaster.of(getBuildContext.call()).push(AppRoutes.intro);
+      if (AccountManager.currentLoginUser.isLoginedUser) {
+        String path = Uri.base.path;
+        Routemaster.of(getBuildContext.call()).push(path);
+      } else {
+        // do nothing
+      }
       //doAfterLogin?.call();
     });
   }

@@ -12,6 +12,7 @@ import 'package:routemaster/routemaster.dart';
 import 'package:url_launcher/link.dart';
 import '../../routes.dart';
 //import '../../pages/login_page.dart';
+import '../login/login_dialog.dart';
 import '../../pages/login/creta_account_manager.dart';
 //import '../../common/cross_common_job.dart';
 import '../../common/creta_utils.dart';
@@ -131,7 +132,11 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         caption: '구독목록',
         iconData: Icons.local_library_outlined,
         onPressed: () {
-          Routemaster.of(context).push(AppRoutes.subscriptionList);
+          if (AccountManager.currentLoginUser.isLoginedUser) {
+            Routemaster.of(context).push(AppRoutes.subscriptionList);
+          } else {
+            LoginDialog.popupDialog(context: context, getBuildContext: getBuildContext);
+          }
         },
         linkUrl: AppRoutes.subscriptionList,
         isIconText: true,
@@ -140,7 +145,11 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         caption: '시청기록',
         iconData: Icons.article_outlined,
         onPressed: () {
-          Routemaster.of(context).push(AppRoutes.watchHistory);
+          if (AccountManager.currentLoginUser.isLoginedUser) {
+            Routemaster.of(context).push(AppRoutes.watchHistory);
+          } else {
+            LoginDialog.popupDialog(context: context, getBuildContext: getBuildContext);
+          }
         },
         linkUrl: AppRoutes.watchHistory,
         isIconText: true,
@@ -149,7 +158,11 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         caption: '좋아요',
         iconData: Icons.favorite_outline,
         onPressed: () {
-          Routemaster.of(context).push(AppRoutes.favorites);
+          if (AccountManager.currentLoginUser.isLoginedUser) {
+            Routemaster.of(context).push(AppRoutes.favorites);
+          } else {
+            LoginDialog.popupDialog(context: context, getBuildContext: getBuildContext);
+          }
         },
         linkUrl: AppRoutes.favorites,
         isIconText: true,
@@ -158,7 +171,11 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         caption: '재생목록',
         iconData: Icons.playlist_play,
         onPressed: () {
-          Routemaster.of(context).push(AppRoutes.playlist);
+          if (AccountManager.currentLoginUser.isLoginedUser) {
+            Routemaster.of(context).push(AppRoutes.playlist);
+          } else {
+            LoginDialog.popupDialog(context: context, getBuildContext: getBuildContext);
+          }
         },
         linkUrl: AppRoutes.playlist,
         isIconText: true,
@@ -960,7 +977,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                             ),
                           ),
                           SizedBox(width: 12),
-                          (CretaAccountManager.getUserProperty!.channelId == _currentChannelModel?.getMid)
+                          (CretaAccountManager.getUserProperty?.channelId == _currentChannelModel?.getMid)
                               ? SizedBox.shrink()
                               : BTN.fill_blue_t_m(
                                   width: 84,
@@ -1196,7 +1213,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                       style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[400]),
                     ),
                     SizedBox(width: 12),
-                    (CretaAccountManager.getUserProperty!.channelId == _currentChannelModel?.getMid)
+                    (CretaAccountManager.getUserProperty?.channelId == _currentChannelModel?.getMid)
                         ? SizedBox.shrink()
                         : BTN.fill_blue_t_m(
                             width: 84,
@@ -1343,16 +1360,18 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                           iconColor: Colors.white,
                         ),
                       if (_currentBookModel!.isEditable) SizedBox(width: 12),
-                      BTN.fill_gray_it_l(
-                        icon: _bookIsFavorites ? Icons.favorite_outlined : Icons.favorite_border_outlined,
-                        text: '${_currentBookModel!.likeCount}',
-                        onPressed: _toggleBookToFavorites,
-                        buttonColor: CretaButtonColor.transparent,
-                        textColor: Colors.white,
-                        width: null,
-                        sidePadding: CretaButtonSidePadding.fromLR(8, 8),
-                      ),
-                      SizedBox(width: 13),
+                      if (AccountManager.currentLoginUser.isLoginedUser)
+                        BTN.fill_gray_it_l(
+                          icon: _bookIsFavorites ? Icons.favorite_outlined : Icons.favorite_border_outlined,
+                          text: '${_currentBookModel!.likeCount}',
+                          onPressed: _toggleBookToFavorites,
+                          buttonColor: CretaButtonColor.transparent,
+                          textColor: Colors.white,
+                          width: null,
+                          sidePadding: CretaButtonSidePadding.fromLR(8, 8),
+                        ),
+                      if (AccountManager.currentLoginUser.isLoginedUser)
+                        SizedBox(width: 13),
                       if (_currentBookModel!.isCopyable)
                         BTN.fill_gray_itt_l(
                           icon: Icons.copy_rounded,
@@ -1405,25 +1424,28 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                                     AppRoutes.launchTab(url);
                                   },
                                 ),
-                              CretaMenuItem(
-                                caption: '재생목록에 추가',
-                                onPressed: () {
-                                  _addToPlaylist?.call();
-                                },
-                              ),
+                              if (AccountManager.currentLoginUser.isLoginedUser)
+                                CretaMenuItem(
+                                  caption: '재생목록에 추가',
+                                  onPressed: () {
+                                    _addToPlaylist?.call();
+                                  },
+                                ),
                               CretaMenuItem(caption: '공유하기', onPressed: () {}),
-                              CretaMenuItem(caption: '다운로드', onPressed: () {}),
+                              if (AccountManager.currentLoginUser.isLoginedUser)
+                                CretaMenuItem(caption: '다운로드', onPressed: () {}),
                               if (_currentBookModel!.isEditable) CretaMenuItem(caption: '삭제하기', onPressed: () {}),
                               if (_currentBookModel!.isCopyable) CretaMenuItem(caption: '사본만들기', onPressed: () {}),
-                              CretaMenuItem(
-                                caption: '전체화면 재생 주소 복사',
-                                onPressed: () {
-                                  String url = Uri.base.origin;
-                                  url +=
-                                      '${AppRoutes.studioBookPreviewPage}?${CommunityRightBookPane.bookId}&mode=preview';
-                                  Clipboard.setData(ClipboardData(text: url));
-                                },
-                              ),
+                              if (AccountManager.currentLoginUser.isLoginedUser)
+                                CretaMenuItem(
+                                  caption: '전체화면 재생 주소 복사',
+                                  onPressed: () {
+                                    String url = Uri.base.origin;
+                                    url +=
+                                        '${AppRoutes.studioBookPreviewPage}?${CommunityRightBookPane.bookId}&mode=preview';
+                                    Clipboard.setData(ClipboardData(text: url));
+                                  },
+                                ),
                             ],
                             initFunc: () {},
                           ).then((value) {

@@ -204,7 +204,7 @@ class _LeftMenuState
       case LeftMenuEnum.Widget:
         return false;
       case LeftMenuEnum.Camera:
-        return false;
+        return true;
       case LeftMenuEnum.Comment:
         return true;
       default:
