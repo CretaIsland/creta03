@@ -6,8 +6,10 @@ import 'package:creta03/design_system/creta_font.dart';
 import 'package:creta03/model/app_enums.dart';
 import 'package:creta03/model/book_model.dart';
 import 'package:creta03/pages/login/login_dialog.dart';
+import 'package:creta03/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
+import 'package:routemaster/routemaster.dart';
 import 'package:video_player/video_player.dart';
 
 class LandingPage extends StatefulWidget {
@@ -77,8 +79,8 @@ class _LandingPageState extends State<LandingPage> {
 
     languageItems = [
       DropdownMenuItem(value: "ko", child: Text("한국어", style: languageMenuStyle)),
-      DropdownMenuItem(value: "en", child: Text("EN", style: languageMenuStyle)),
-      DropdownMenuItem(value: "ja", child: Text("日本語", style: languageMenuStyle))
+      // DropdownMenuItem(value: "en", child: Text("EN", style: languageMenuStyle)),
+      // DropdownMenuItem(value: "ja", child: Text("日本語", style: languageMenuStyle))
     ];
     purposeItems = [
       DropdownMenuItem(value: BookType.presentaion, child: Text("프레젠테이션", style: searchFilterStyle)),
@@ -94,7 +96,7 @@ class _LandingPageState extends State<LandingPage> {
     selectedSort = sortItems.first.value;
 
     topBannerImgPaths = [
-      "assets/landing_page/image/banner/banner_top1.png",
+      // "assets/landing_page/image/banner/banner_top1.png",
       "assets/landing_page/image/banner/banner_top2.png",
       "assets/landing_page/image/banner/banner_top3.png",
       "assets/landing_page/image/banner/banner_top4.png",
@@ -112,8 +114,8 @@ class _LandingPageState extends State<LandingPage> {
       "assets/landing_page/image/banner/banner_bottom3.png",
       "assets/landing_page/image/banner/banner_bottom4.png",
       "assets/landing_page/image/banner/banner_bottom5.png",
-      "assets/landing_page/image/banner/banner_bottom6.png",
       "assets/landing_page/image/banner/banner_bottom7.png",
+      "assets/landing_page/image/banner/banner_bottom6.png",
       "assets/landing_page/image/banner/banner_bottom8.png",
       "assets/landing_page/image/banner/banner_bottom9.png",
       "assets/landing_page/image/banner/banner_bottom10.png",
@@ -381,16 +383,16 @@ class _LandingPageState extends State<LandingPage> {
               ),
             )
           ),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 150),
-              child: Text(
-                "어쩌구 저쩌구 소개글 어쩌구 저쩌구 소개글 어쩌구 저쩌구 소개글 어쩌구 저쩌구 소개글 \n어쩌구 저쩌구 소개글 어쩌구 저쩌구 소개글",
-                style: CretaFont.titleLarge.copyWith(color: CretaColor.text.shade400),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          )
+          // Center(
+          //   child: Padding(
+          //     padding: const EdgeInsets.only(top: 150),
+          //     child: Text(
+          //       "어쩌구 저쩌구 소개글 어쩌구 저쩌구 소개글 어쩌구 저쩌구 소개글 어쩌구 저쩌구 소개글 \n어쩌구 저쩌구 소개글 어쩌구 저쩌구 소개글",
+          //       style: CretaFont.titleLarge.copyWith(color: CretaColor.text.shade400),
+          //       textAlign: TextAlign.center,
+          //     ),
+          //   ),
+          // )
         ],
       ),
     );
@@ -415,8 +417,8 @@ class _LandingPageState extends State<LandingPage> {
             reverse: scrollDirection == "right",
             autoPlay: true,
             autoPlayInterval: const Duration(seconds: 2),
-            initialPage: 0,
-            viewportFraction: 0.2,
+            initialPage: 1,
+            viewportFraction: 0.25,
             scrollDirection: Axis.horizontal,
             autoPlayCurve: Curves.easeInOut
           ),
@@ -673,9 +675,9 @@ class _LandingPageState extends State<LandingPage> {
                   ],
                 ),
                 const SizedBox(width: 122), 
-                experienceBTN("사이니지", "어쩌구 저쩌구"),
+                experienceBTN("사이니지", ""),
                 const SizedBox(width: 28),
-                experienceBTN("프레젠테이션", "어쩌구 저쩌구")
+                experienceBTN("프레젠테이션", "")
               ],
             )
           )
@@ -819,7 +821,9 @@ class _LandingPageState extends State<LandingPage> {
                 child: Center(
                   child: Text("체험하기", style: CretaFont.buttonLarge.copyWith(color: Colors.white, fontSize: 24)),
                 ), 
-                onTap: () {}
+                onTap: () {
+                  Routemaster.of(getBuildContext()).push(AppRoutes.communityHome);
+                }
               )
             ],
           ),
@@ -1086,7 +1090,7 @@ class _LandingPageState extends State<LandingPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(soultionName, style: CretaFont.titleELarge.copyWith(fontWeight: FontWeight.w700, fontSize: 40, color: fontColor)),
-                fontColor == Colors.white ? BTN.line_blue_t_el(text: "체험해보기", width: 135, onPressed: () {}) : BTN.fill_blue_t_el(text: "탐색해보기", width: 135, onPressed: () {})
+                fontColor == Colors.white ? BTN.line_blue_t_el(text: "체험해보기", width: 135, onPressed: () {}) : BTN.fill_blue_t_el(text: "탐색해보기", width: 135, onPressed: () => Routemaster.of(context).push(AppRoutes.communityHome))
               ],
             ),
           ),
@@ -1139,7 +1143,9 @@ class _LandingPageState extends State<LandingPage> {
                 backgroundColor: CretaColor.primary,
                 borderRadius: BorderRadius.circular(13),
                 child: Center(child: Text("무료로 시작하기", style: CretaFont.buttonLarge.copyWith(fontSize: 24, color: Colors.white))), 
-                onTap: () {}
+                onTap: () {
+                  Routemaster.of(context).push(AppRoutes.communityHome);
+                }
               )
             ],
           ),

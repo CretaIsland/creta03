@@ -2,6 +2,7 @@
 
 //import 'package:appflowy_editor/appflowy_editor.dart';
 //import 'package:creta03/model/contents_model.dart';
+import 'package:creta03/pages/landing_page.dart';
 import 'package:creta03/pages/mypage/mypage.dart';
 //import 'package:creta03/pages/studio/left_menu/word_pad/quill_appflowy.dart';
 // import 'package:creta03/pages/studio/left_menu/word_pad/quill_html_enhanced.daxt';
@@ -15,7 +16,7 @@ import 'design_system/demo_page/menu_demo_page.dart';
 import 'design_system/demo_page/text_field_demo_page.dart';
 //import 'pages/login_page.dart';
 import 'developer/gen_collections_page.dart';
-import 'pages/intro_page.dart';
+// import 'pages/intro_page.dart';
 import 'pages/studio/book_grid_page.dart';
 import 'pages/studio/book_main_page.dart';
 import 'package:hycop/hycop.dart';
@@ -119,7 +120,8 @@ final routesLoggedOut = RouteMap(
   routes: {
     AppRoutes.intro: (_) => (AccountManager.currentLoginUser.isLoginedUser)
         ? const Redirect(AppRoutes.communityHome)
-        : const TransitionPage(child: IntroPage()),
+        : const TransitionPage(child: LandingPage()),
+        //: const TransitionPage(child: IntroPage()),
     AppRoutes.login: (routeData) {
       return (AccountManager.currentLoginUser.isLoginedUser)
           ? const Redirect(AppRoutes.communityHome)
@@ -376,6 +378,7 @@ final routesLoggedOut = RouteMap(
 final routesLoggedIn = RouteMap(
   onUnknownRoute: (_) => const Redirect(AppRoutes.intro),
   routes: {
-    AppRoutes.intro: (_) => TransitionPage(child: IntroPage()),
+    AppRoutes.intro: (_) => TransitionPage(child: LandingPage()),
+    // AppRoutes.intro: (_) => TransitionPage(child: IntroPage()),
   },
 );
