@@ -422,12 +422,21 @@ class Snippet {
         CretaMenuItem(
           caption: CretaLang.accountMenu[0], // 마이페이지
           onPressed: () {
+            if (BookMainPage.isNotLoginUser == true) {
+              BookMainPage.warningNeedToLogin(context);
+              return;
+            }
             Routemaster.of(context).push(AppRoutes.myPageDashBoard);
           },
         ),
         CretaMenuItem(
           caption: CretaLang.accountMenu[1], // 팀전환
-          onPressed: () {},
+          onPressed: () {
+            if (BookMainPage.isNotLoginUser == true) {
+              BookMainPage.warningNeedToLogin(context);
+              return;
+            }
+          },
         ),
         CretaMenuItem(
           caption: CretaLang.accountMenu[2], // 로그아웃
@@ -440,10 +449,10 @@ class Snippet {
           caption: CretaLang.accountMenu[4], // 버전 정보
           onPressed: () {
             showDialog(
-              context: context,
-              builder: (context) {
-                return CretaVersionPopUp();
-              });
+                context: context,
+                builder: (context) {
+                  return CretaVersionPopUp();
+                });
           },
         ),
         if (!kReleaseMode)
@@ -456,7 +465,6 @@ class Snippet {
               invalidate?.call();
             },
           ),
-
       ],
       initFunc: () {},
     ).then((value) {

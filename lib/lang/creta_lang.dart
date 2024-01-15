@@ -147,4 +147,6 @@ class CretaLang {
   static const String confirm = '확인';
   static const String cancel = '취소';
   static const String nodatafounded = '자료가 없습니다';
+  static const String needToLoginTitle = '로그인 필요';
+  static const String needToLogin = '로그인이 필요한 기능입니다';
 }

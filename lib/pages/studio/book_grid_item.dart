@@ -529,10 +529,16 @@ class BookGridItemState extends State<BookGridItem> {
       desc: SampleData.sampleDesc[randomNumber % SampleData.sampleDesc.length],
     );
 
-    book.hashTag.set('#$randomNumber tag...');
+    book.hashTag.set('#${randomNumber}tag');
 
     await widget.bookManager.createToDB(book);
     widget.bookManager.insert(book);
+
+   
+    StudioVariables.selectedBookMid = book.mid;
+    // ignore: use_build_context_synchronously
+    Routemaster.of(context)
+        .push('${AppRoutes.studioBookMainPage}?${StudioVariables.selectedBookMid}');
   }
 
   Future<BookModel?> _removeItem(BookModel? removedItem) async {

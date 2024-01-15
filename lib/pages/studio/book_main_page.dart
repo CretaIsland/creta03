@@ -34,6 +34,7 @@ import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_label_text_editor.dart';
 import '../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import '../../design_system/component/autoSizeText/font_size_changing_notifier.dart';
+import '../../design_system/component/creta_popup.dart';
 import '../../design_system/component/custom_image.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_color.dart';
@@ -94,6 +95,15 @@ class BookMainPage extends StatefulWidget {
   static Offset pageOffset = Offset.zero;
 
   static bool isNotLoginUser = false;
+  static void warningNeedToLogin(BuildContext context) {
+    CretaPopup.simple(
+      context: context,
+      title: CretaLang.needToLoginTitle,
+      icon: Icons.login,
+      question: CretaLang.needToLogin,
+      onYes: () {},
+    );
+  }
 
   //static ContaineeEnum selectedClass = ContaineeEnum.Book;
   final bool isPreviewX;
@@ -1330,6 +1340,11 @@ class _BookMainPageState extends State<BookMainPage> {
           BTN.floating_l(
             icon: Icons.person_add_outlined,
             onPressed: () {
+              if (BookMainPage.isNotLoginUser == true) {
+                BookMainPage.warningNeedToLogin(context);
+                return;
+              }
+
               showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -1383,6 +1398,10 @@ class _BookMainPageState extends State<BookMainPage> {
           BTN.floating_l(
             icon: Icons.file_download_outlined,
             onPressed: () {
+              if (BookMainPage.isNotLoginUser == true) {
+                BookMainPage.warningNeedToLogin(context);
+                return;
+              }
               logger.fine('donwload in studio');
               StudioMainMenu.downloadDialog(context);
               // CretaPopup.yesNoDialog(
@@ -1457,14 +1476,7 @@ class _BookMainPageState extends State<BookMainPage> {
                 onPressed: () {
                   //BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
                   if (BookMainPage.isNotLoginUser == true) {
-                    // CretaPopup.simple(
-                    //   context: context,
-                    //   title: title,
-                    //   icon: icon,
-                    //   question: question,
-                    //   onYes: onYes,
-                    // );
-                    // return;
+                    BookMainPage.warningNeedToLogin(context);
                     return;
                   }
 
