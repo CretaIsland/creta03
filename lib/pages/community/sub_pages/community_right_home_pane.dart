@@ -281,6 +281,10 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
 
   void _getPlaylistsFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('_getPlaylistsFromDB');
+    if (CretaAccountManager.getUserProperty == null) {
+      playlistManagerHolder.setState(DBState.idle);
+      return;
+    }
     playlistManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     playlistManagerHolder.addWhereClause(
         'channelId', QueryValue(value: CretaAccountManager.getUserProperty!.channelId));

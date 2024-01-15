@@ -299,7 +299,7 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          !widget.showAddCommentBar
+          (!widget.showAddCommentBar || AccountManager.currentLoginUser.isLoginedUser == false)
               ? Container()
               : CretaCommentBar(
                   data: _newAddingCommentData,
@@ -316,7 +316,7 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
                   ),
                 ),
           Container(
-            padding: EdgeInsets.fromLTRB(16, 20, 0, 0),
+            padding: EdgeInsets.fromLTRB(16, (AccountManager.currentLoginUser.isLoginedUser == false) ? 0 : 20, 0, 0),
             child: Column(
               children: _getCommentWidgetList(widget.paneWidth == null ? 0 : widget.paneWidth! - 16),
             ),

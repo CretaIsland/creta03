@@ -234,16 +234,22 @@ final routesLoggedOut = RouteMap(
     AppRoutes.studioBookTeamPage: (_) => TransitionPage(
           child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.teamPage),
         ),
-    AppRoutes.communityHome: (_) => (AccountManager.currentLoginUser.isLoginedUser)
-        ? TransitionPage(
-            child: CommunityPage(
-              key: GlobalObjectKey('AppRoutes.communityHome'),
-              subPageUrl: AppRoutes.communityHome,
-            ),
-          )
-        : const Redirect(AppRoutes.intro),
+    // AppRoutes.communityHome: (_) => (AccountManager.currentLoginUser.isLoginedUser)
+    //     ? TransitionPage(
+    //         child: CommunityPage(
+    //           key: GlobalObjectKey('AppRoutes.communityHome'),
+    //           subPageUrl: AppRoutes.communityHome,
+    //         ),
+    //       )
+    //     : const Redirect(AppRoutes.intro),
+    AppRoutes.communityHome: (_) => TransitionPage(
+      child: CommunityPage(
+        key: GlobalObjectKey('AppRoutes.communityHome'),
+        subPageUrl: AppRoutes.communityHome,
+      ),
+    ),
     AppRoutes.channel: (routeData) {
-      if (AccountManager.currentLoginUser.isLoginedUser) {
+      // if (AccountManager.currentLoginUser.isLoginedUser) {
         String url = routeData.fullPath;
         int pos = url.indexOf('channel=');
         String channelMid = (pos > 0) ? url.substring(pos) : '';
@@ -254,9 +260,9 @@ final routesLoggedOut = RouteMap(
             subPageUrl: AppRoutes.channel,
           ),
         );
-      } else {
-        return const TransitionPage(child: IntroPage());
-      }
+      // } else {
+      //   return const TransitionPage(child: IntroPage());
+      // }
     },
     AppRoutes.subscriptionList: (_) => (AccountManager.currentLoginUser.isLoginedUser)
         ? TransitionPage(
@@ -291,7 +297,7 @@ final routesLoggedOut = RouteMap(
       }
     },
     AppRoutes.communityBook: (routeData) {
-      if (AccountManager.currentLoginUser.isLoginedUser) {
+     //if (AccountManager.currentLoginUser.isLoginedUser) {
         // String url = routeData.fullPath;
         // int pos = url.indexOf('book=');
         // String bookMid = (pos > 0) ? url.substring(pos) : '';
@@ -313,9 +319,9 @@ final routesLoggedOut = RouteMap(
             subPageUrl: AppRoutes.communityBook,
           ),
         );
-      } else {
-        return const Redirect(AppRoutes.intro);
-      }
+      // } else {
+      //   return const Redirect(AppRoutes.intro);
+      // }
     },
     AppRoutes.watchHistory: (_) => (AccountManager.currentLoginUser.isLoginedUser)
         ? TransitionPage(

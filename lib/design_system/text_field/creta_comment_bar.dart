@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hycop/hycop.dart';
 //import 'package:hycop/hycop.dart';
 
 import '../creta_color.dart';
@@ -309,7 +310,7 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
       padding: EdgeInsets.fromLTRB(64, 8, 0, 8),
       child: Row(
         children: [
-          (widget.data.parentId.isNotEmpty)
+          (widget.data.parentId.isNotEmpty || AccountManager.currentLoginUser.isLoginedUser == false)
               ? Container()
               : Container(
                   padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
