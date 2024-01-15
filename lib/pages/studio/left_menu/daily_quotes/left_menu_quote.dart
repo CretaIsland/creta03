@@ -53,9 +53,8 @@ class _LeftMenuQuoteState extends State<LeftMenuQuote> {
                   color: Colors.black45,
                 ),
                 const Text(
-                  "Quote of the Day",
+                  "오늘의\n 명언",
                   textAlign: TextAlign.center,
-                  maxLines: 2,
                   style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
                 ),
               ],
