@@ -8,7 +8,8 @@ import 'package:flutter/services.dart';
 //import 'package:flutter/gestures.dart';
 //import 'package:hycop/hycop.dart';
 //import 'package:hycop/common/util/logger.dart';
-//import 'package:routemaster/routemaster.dart';
+import 'package:routemaster/routemaster.dart';
+import 'package:url_launcher/link.dart';
 //import 'package:url_strategy/url_strategy.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_elibated_button.dart';
@@ -21,7 +22,7 @@ import '../../design_system/creta_color.dart';
 //import 'package:image_network/image_network.dart';
 //import 'package:cached_network_image/cached_network_image.dart';
 //import '../../common/cross_common_job.dart';
-//import '../../routes.dart';
+import '../../routes.dart';
 //import 'sub_pages/community_left_menu_pane.dart';
 //import '../../design_system/component/creta_basic_layout_mixin.dart';
 import '../../design_system/component/custom_image.dart';
@@ -702,14 +703,22 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
     return Snippet.CretaScaffoldOfCommunity(
       //title: Text('Community page'),
       title: Row(
-        children: const [
+        children: [
           SizedBox(
             width: 24,
           ),
-          Image(
-            image: AssetImage('assets/creta_logo_blue.png'),
-            //width: 120,
-            height: 20,
+          Link(
+            uri: Uri.parse(AppRoutes.intro),
+            builder: (context, function) {
+              return InkWell(
+                onTap: () => Routemaster.of(context).push(AppRoutes.intro),
+                child: Image(
+                  image: AssetImage('assets/creta_logo_blue.png'),
+                  //width: 120,
+                  height: 20,
+                ),
+              );
+            },
           ),
         ],
       ),

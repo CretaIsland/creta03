@@ -1370,8 +1370,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                           width: null,
                           sidePadding: CretaButtonSidePadding.fromLR(8, 8),
                         ),
-                      if (AccountManager.currentLoginUser.isLoginedUser)
-                        SizedBox(width: 13),
+                      if (AccountManager.currentLoginUser.isLoginedUser) SizedBox(width: 13),
                       if (_currentBookModel!.isCopyable)
                         BTN.fill_gray_itt_l(
                           icon: Icons.copy_rounded,
@@ -1990,14 +1989,22 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     return Snippet.CretaScaffoldOfCommunity(
       //title: Text('Community page'),
       title: Row(
-        children: const [
+        children: [
           SizedBox(
             width: 24,
           ),
-          Image(
-            image: AssetImage('assets/creta_logo_blue.png'),
-            //width: 120,
-            height: 20,
+          Link(
+            uri: Uri.parse(AppRoutes.intro),
+            builder: (context, function) {
+              return InkWell(
+                onTap: () => Routemaster.of(context).push(AppRoutes.intro),
+                child: Image(
+                  image: AssetImage('assets/creta_logo_blue.png'),
+                  //width: 120,
+                  height: 20,
+                ),
+              );
+            },
           ),
         ],
       ),

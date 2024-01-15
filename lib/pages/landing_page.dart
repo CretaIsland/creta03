@@ -5,6 +5,7 @@ import 'package:creta03/design_system/creta_color.dart';
 import 'package:creta03/design_system/creta_font.dart';
 import 'package:creta03/model/app_enums.dart';
 import 'package:creta03/model/book_model.dart';
+import 'package:creta03/pages/login/creta_account_manager.dart';
 import 'package:creta03/pages/login/login_dialog.dart';
 import 'package:creta03/routes.dart';
 import 'package:flutter/material.dart';
@@ -146,6 +147,7 @@ class _LandingPageState extends State<LandingPage> {
       quickStartAnimationController.setLooping(true);
     }));
     
+    searchCretaBook().then((value) => setState(() {}));
     _verticalScroller = ScrollController();
     _verticalScroller.addListener(() {
       if(_verticalScroller.offset > 10) {
@@ -336,8 +338,14 @@ class _LandingPageState extends State<LandingPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  customButton(width: 40, height: 19, child: Text("Login", style: appBarBTNStyle), onTap: () => LoginDialog.popupDialog(context: context, getBuildContext: getBuildContext)),
-                  customButton(width: 140, height: 48, child: Text("Sign up", style: appBarBTNStyle), onTap: () {}, border: Border.all(color: CretaColor.primary), borderRadius: BorderRadius.circular(6.6)),
+                  AccountManager.currentLoginUser.isLoginedUser ? 
+                    customButton(width: 52, height: 19, child: Text("Logout", style: appBarBTNStyle), onTap: () {
+                      setState(() {
+                        CretaAccountManager.logout();
+                      });
+                    })
+                    : customButton(width: 40, height: 19, child: Text("Login", style: appBarBTNStyle), onTap: () => LoginDialog.popupDialog(context: context, getBuildContext: getBuildContext)),
+                  customButton(width: 140, height: 48, child: Text("Sign up", style: appBarBTNStyle), onTap: () => LoginDialog.popupDialog(context: context, getBuildContext: getBuildContext, loginPageState: LoginPageState.singup), border: Border.all(color: CretaColor.primary), borderRadius: BorderRadius.circular(6.6)),
                   dropdownMenu(width: 64, height: 19, items: languageItems, defaultValue: selectedLanguage, onSelected: (value) => selectedLanguage = value)
                 ],
               ),
@@ -383,16 +391,16 @@ class _LandingPageState extends State<LandingPage> {
               ),
             )
           ),
-          // Center(
-          //   child: Padding(
-          //     padding: const EdgeInsets.only(top: 150),
-          //     child: Text(
-          //       "어쩌구 저쩌구 소개글 어쩌구 저쩌구 소개글 어쩌구 저쩌구 소개글 어쩌구 저쩌구 소개글 \n어쩌구 저쩌구 소개글 어쩌구 저쩌구 소개글",
-          //       style: CretaFont.titleLarge.copyWith(color: CretaColor.text.shade400),
-          //       textAlign: TextAlign.center,
-          //     ),
-          //   ),
-          // )
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 150),
+              child: Text(
+                "크레타는 사용자가 상상하는대로 다양하게 사용할 수 있습니다. \n사이니지, 프레젠테이션, 전자칠판, 화상회의까지 \n각 용도별로 직접 체험해보세요.",
+                style: CretaFont.titleLarge.copyWith(color: CretaColor.text.shade400),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -526,16 +534,19 @@ class _LandingPageState extends State<LandingPage> {
                     List<Widget> searchResults = [];
                     for(var cretaBook in searchCretaBooks.sublist(index * 5, endIndex)) {
                       searchResults.add(
-                        Container(
-                          width: 290,
-                          height: 231,
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
-                          child: Image.network(
-                            cretaBook.thumbnailUrl.value,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Image.asset("assets/creta_logo_blue.png", fit: BoxFit.cover);
-                            },
-                          )
+                        InkWell(
+                          onTap: () => Routemaster.of(context).push("${AppRoutes.communityBook}?${cretaBook.mid}"),
+                          child: Container(
+                            width: 290,
+                            height: 231,
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                            child: Image.network(
+                              cretaBook.thumbnailUrl.value,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Image.asset("assets/creta_logo_blue.png", fit: BoxFit.cover);
+                              },
+                            )
+                          ),
                         )
                       );
                       searchResults.add(const SizedBox(width: 20));
@@ -581,7 +592,7 @@ class _LandingPageState extends State<LandingPage> {
 
     return SizedBox(
       width: 1665,
-      height: 1090,
+      height: 900, //1062
       child: Column(
         children: [
           Stack(
@@ -648,39 +659,39 @@ class _LandingPageState extends State<LandingPage> {
                   ),
                 ),
                 experienceQuickBTN("프레젠테이션", "Create and present", const Offset(18, 14), () { }),
-                experienceQuickBTN(width: 220, "커뮤니티", "Share and communicate", const Offset(562, 320), () { }),
-                experienceQuickBTN("디지털사이니지", "Create and present", const Offset(1460, 0), () { })
+                experienceQuickBTN(width: 220, "커뮤니티", "Share and communicate", const Offset(562, 320), () => Routemaster.of(context).push(AppRoutes.communityHome)),
+                experienceQuickBTN("디지털사이니지", "Create and broadcast", const Offset(1460, 0), () { })
               ],
             ),
           ),
-          const SizedBox(height: 84),
-          Container(
-            width: 1600,
-            height: 400,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade100,
-              borderRadius: BorderRadius.circular(60)
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(width: 80),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("체험하기", style: CretaFont.titleELarge.copyWith(fontSize: 56, fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 32),
-                    Text("크레타는 사용자가 상상하는대로 다양하게 사용할 수 있습니다. \n사이니지, 프레젠테이션, 전자칠판, 화상회의까지 \n각 용도별로 직접 체험해보세요.", style: CretaFont.bodyLarge.copyWith(color: CretaColor.text.shade400)),
-                  ],
-                ),
-                const SizedBox(width: 122), 
-                experienceBTN("사이니지", ""),
-                const SizedBox(width: 28),
-                experienceBTN("프레젠테이션", "")
-              ],
-            )
-          )
+          // const SizedBox(height: 84),
+          // Container(
+          //   width: 1600,
+          //   height: 400,
+          //   decoration: BoxDecoration(
+          //     color: Colors.grey.shade100,
+          //     borderRadius: BorderRadius.circular(60)
+          //   ),
+          //   child: Row(
+          //     crossAxisAlignment: CrossAxisAlignment.center,
+          //     children: [
+          //       const SizedBox(width: 80),
+          //       Column(
+          //         crossAxisAlignment: CrossAxisAlignment.start,
+          //         mainAxisAlignment: MainAxisAlignment.center,
+          //         children: [
+          //           Text("체험하기", style: CretaFont.titleELarge.copyWith(fontSize: 56, fontWeight: FontWeight.w700)),
+          //           const SizedBox(height: 32),
+          //           Text("크레타는 사용자가 상상하는대로 다양하게 사용할 수 있습니다. \n사이니지, 프레젠테이션, 전자칠판, 화상회의까지 \n각 용도별로 직접 체험해보세요.", style: CretaFont.bodyLarge.copyWith(color: CretaColor.text.shade400)),
+          //         ],
+          //       ),
+          //       const SizedBox(width: 122), 
+          //       experienceBTN("사이니지", ""),
+          //       const SizedBox(width: 28),
+          //       experienceBTN("프레젠테이션", "")
+          //     ],
+          //   )
+          // )
         ],
       ),
     );
@@ -1189,8 +1200,14 @@ class _LandingPageState extends State<LandingPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    customButton(width: 40, height: 19, child: Text("Login", style: footerBTNStyle), backgroundColor: Colors.black, onTap: () => LoginDialog.popupDialog(context: context, getBuildContext: getBuildContext)),
-                    customButton(width: 140, height: 48, child: Text("Sign up", style: footerBTNStyle), backgroundColor: Colors.black, onTap: () {}, border: Border.all(color: Colors.white), borderRadius: BorderRadius.circular(6.6)),
+                    AccountManager.currentLoginUser.isLoginedUser ? 
+                    customButton(width: 52, height: 19, child: Text("Logout", style: footerBTNStyle), onTap: () {
+                      setState(() {
+                        CretaAccountManager.logout();
+                      });
+                    })
+                    : customButton(width: 40, height: 19, child: Text("Login", style: footerBTNStyle), onTap: () => LoginDialog.popupDialog(context: context, getBuildContext: getBuildContext)),
+                    customButton(width: 140, height: 48, child: Text("Sign up", style: footerBTNStyle), backgroundColor: Colors.black, onTap: () => LoginDialog.popupDialog(context: context, getBuildContext: getBuildContext, loginPageState: LoginPageState.singup), border: Border.all(color: Colors.white), borderRadius: BorderRadius.circular(6.6)),
                   ],
                 ),
               )
