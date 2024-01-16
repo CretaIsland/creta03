@@ -481,4 +481,29 @@ class BookManager extends CretaManager {
     }
     return newBook;
   }
+
+  Future<BookModel> createNewBook() async {
+    // final Random random = Random();
+    // int randomNumber = random.nextInt(1000);
+    // int modelIdx = randomNumber % 10;
+    // BookModel book = BookModel.withName(
+    //   '${CretaStudioLang.newBook}_$randomNumber',
+    //   creator: AccountManager.currentLoginUser.email,
+    //   creatorName: AccountManager.currentLoginUser.name,
+    //   imageUrl: 'https://picsum.photos/200/?random=$modelIdx',
+    //   viewCount: randomNumber,
+    //   likeCount: 1000 - randomNumber,
+    //   bookTypeVal: BookType.fromInt(randomNumber % 4 + 1),
+    //   ownerList: const [],
+    //   readerList: const [],
+    //   writerList: const [],
+    //   desc: SampleData.sampleDesc[randomNumber % SampleData.sampleDesc.length],
+    // );
+
+    // book.hashTag.set('#${randomNumber}tag');
+    BookModel book = createSample();
+    await createToDB(book);
+    insert(book);
+    return book;
+  }
 }

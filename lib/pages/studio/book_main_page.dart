@@ -94,7 +94,6 @@ class BookMainPage extends StatefulWidget {
   static double pageHeight = 0;
   static Offset pageOffset = Offset.zero;
 
-  static bool isNotLoginUser = false;
   static void warningNeedToLogin(BuildContext context) {
     CretaPopup.simple(
       context: context,
@@ -213,8 +212,9 @@ class _BookMainPageState extends State<BookMainPage> {
     //_hideMouseTimer();
     super.initState();
 
-    BookMainPage.isNotLoginUser =
-        AccountManager.currentLoginUser.email.contains('notlogin@sqisoft.com');
+    if (AccountManager.currentLoginUser.isLoginedUser) {
+      // 여기서 권한 체크 꼭 할것...
+    }
 
     // final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
     // _linkSendEvent = linkSendEvent;
@@ -1340,7 +1340,7 @@ class _BookMainPageState extends State<BookMainPage> {
           BTN.floating_l(
             icon: Icons.person_add_outlined,
             onPressed: () {
-              if (BookMainPage.isNotLoginUser == true) {
+              if (AccountManager.currentLoginUser.isLoginedUser == false) {
                 BookMainPage.warningNeedToLogin(context);
                 return;
               }
@@ -1398,7 +1398,7 @@ class _BookMainPageState extends State<BookMainPage> {
           BTN.floating_l(
             icon: Icons.file_download_outlined,
             onPressed: () {
-              if (BookMainPage.isNotLoginUser == true) {
+              if (AccountManager.currentLoginUser.isLoginedUser == false) {
                 BookMainPage.warningNeedToLogin(context);
                 return;
               }
@@ -1475,7 +1475,7 @@ class _BookMainPageState extends State<BookMainPage> {
                     NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
                 onPressed: () {
                   //BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
-                  if (BookMainPage.isNotLoginUser == true) {
+                  if (AccountManager.currentLoginUser.isLoginedUser == false) {
                     BookMainPage.warningNeedToLogin(context);
                     return;
                   }

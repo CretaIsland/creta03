@@ -422,7 +422,7 @@ class Snippet {
         CretaMenuItem(
           caption: CretaLang.accountMenu[0], // 마이페이지
           onPressed: () {
-            if (BookMainPage.isNotLoginUser == true) {
+            if (AccountManager.currentLoginUser.isLoginedUser == false) {
               BookMainPage.warningNeedToLogin(context);
               return;
             }
@@ -432,7 +432,7 @@ class Snippet {
         CretaMenuItem(
           caption: CretaLang.accountMenu[1], // 팀전환
           onPressed: () {
-            if (BookMainPage.isNotLoginUser == true) {
+            if (AccountManager.currentLoginUser.isLoginedUser == false) {
               BookMainPage.warningNeedToLogin(context);
               return;
             }
