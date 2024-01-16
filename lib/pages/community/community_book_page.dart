@@ -435,9 +435,7 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
                   enabled: _clickedDescriptionEditButton,
                   autofocus: false,
                   decoration: BoxDecoration(
-                    color: _clickedDescriptionEditButton
-                        ? Colors.white
-                        : Color.fromARGB(255, 250, 250, 250),
+                    color: _clickedDescriptionEditButton ? Colors.white : Color.fromARGB(255, 250, 250, 250),
                     border: _clickedDescriptionEditButton
                         ? Border.all(color: CretaColor.text[200]!)
                         : Border.all(color: Color.fromARGB(255, 250, 250, 250)),
@@ -707,18 +705,23 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
           SizedBox(
             width: 24,
           ),
-          Link(
-            uri: Uri.parse(AppRoutes.intro),
-            builder: (context, function) {
-              return InkWell(
-                onTap: () => Routemaster.of(context).push(AppRoutes.intro),
-                child: Image(
-                  image: AssetImage('assets/creta_logo_blue.png'),
-                  //width: 120,
-                  height: 20,
-                ),
-              );
-            },
+          Theme(
+            data: ThemeData(
+              hoverColor: Colors.transparent,
+            ),
+            child: Link(
+              uri: Uri.parse(AppRoutes.intro),
+              builder: (context, function) {
+                return InkWell(
+                  onTap: () => Routemaster.of(context).push(AppRoutes.intro),
+                  child: Image(
+                    image: AssetImage('assets/creta_logo_blue.png'),
+                    //width: 120,
+                    height: 20,
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),

@@ -537,6 +537,7 @@ class _LoginDialogState extends State<LoginDialog> {
             width: 294,
             text: '구글로 로그인하기',
             svgImg1: 'assets/google__g__logo.svg',
+            sidePadding: CretaButtonSidePadding(left: 0, right: 11),
             onPressed: () {
               _loginByGoogle();
             },

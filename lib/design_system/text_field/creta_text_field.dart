@@ -607,7 +607,7 @@ class CretaTextFieldState extends State<CretaTextField> {
           _focusNode?.unfocus();
           CretaTextField.mainFocusNode?.requestFocus(); // bookMain 이 포커스를 가져가도록 해줘야 한다.
         },
-        obscureText: (widget.textType == CretaTextFieldType.password),
+        obscureText: (widget.textType == CretaTextFieldType.password) ? _obscured : false,
         cursorColor: CretaColor.primary,
         textInputAction: widget.textInputAction,
         enabled: widget.enabled,
@@ -651,6 +651,20 @@ class CretaTextFieldState extends State<CretaTextField> {
         onSubmitted: ((value) {
           _onSubmitted(value);
         }),
+        suffix: (widget.textType != CretaTextFieldType.password)
+            ? SizedBox.shrink()
+            : Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                child: GestureDetector(
+                  onTap: _toggleObscured,
+                  child: Icon(
+                    _obscured ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+                    size: 18,
+                    //color: (_focusNode?.hasFocus ?? false) ? CretaColor.primary : CretaColor.text[200]!,
+                    color: CretaColor.primary,
+                  ),
+                ),
+        ),
         // onEditingComplete: () {
         //   _searchValue = _controller.text;
         //   logger.finest('onEditingComplete $_searchValue');
@@ -810,4 +824,12 @@ class CretaTextFieldState extends State<CretaTextField> {
   //     }
   //   }
   // }
+
+  bool _obscured = true;
+  void _toggleObscured() {
+    setState(() {
+      _obscured = !_obscured;
+    });
+  }
+
 }

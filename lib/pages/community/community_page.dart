@@ -1993,18 +1993,23 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           SizedBox(
             width: 24,
           ),
-          Link(
-            uri: Uri.parse(AppRoutes.intro),
-            builder: (context, function) {
-              return InkWell(
-                onTap: () => Routemaster.of(context).push(AppRoutes.intro),
-                child: Image(
-                  image: AssetImage('assets/creta_logo_blue.png'),
-                  //width: 120,
-                  height: 20,
-                ),
-              );
-            },
+          Theme(
+            data: ThemeData(
+              hoverColor: Colors.transparent,
+            ),
+            child: Link(
+              uri: Uri.parse(AppRoutes.intro),
+              builder: (context, function) {
+                return InkWell(
+                  onTap: () => Routemaster.of(context).push(AppRoutes.intro),
+                  child: Image(
+                    image: AssetImage('assets/creta_logo_blue.png'),
+                    //width: 120,
+                    height: 20,
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
@@ -2016,9 +2021,14 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             bannerKey: GlobalObjectKey('${_communityChannelType.name}|${_currentChannelModel?.bannerImgUrl ?? ' '}'),
             context,
             gotoButtonPressed: () {
-              Routemaster.of(context).push(AppRoutes.studioBookGridPage);
+              if (CretaAccountManager.experienceWithoutLogin) {
+                Routemaster.of(context).push(AppRoutes.studioBookMainPage);
+              }
+              else {
+                Routemaster.of(context).push(AppRoutes.studioBookGridPage);
+              }
             },
-            gotoButtonTitle: '내 크레타북 관리',
+            gotoButtonTitle: CretaAccountManager.experienceWithoutLogin ? '스튜디오 체험하기' : '내 크레타북 관리',
             leftMenuItemList: _leftMenuItemList,
             bannerTitle: 'title',
             bannerDescription: 'description',
