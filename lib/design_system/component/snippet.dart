@@ -190,6 +190,42 @@ class Snippet {
     );
   }
 
+  static Widget loginButton(
+    BuildContext context,
+    Function getBuildContext,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: Center(
+        child: SizedBox(
+          height: 36,
+          child: BTN.fill_blue_t_l(
+            //key: GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'),
+            buttonColor: CretaButtonColor.white,
+            //fgColor: CretaColor.text[700]!,
+            height: 36,
+            text: CretaLang.login,
+            //image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+            //image:
+            //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
+            textStyle: CretaFont.buttonLarge.copyWith(color: CretaColor.text[700]),
+            onPressed: () {
+              // _popupAccountMenu(
+              //     GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'), context);
+              LoginDialog.popupDialog(
+                context: context,
+                // doAfterLogin: doAfterLogin,
+                // doAfterSignup: doAfterSignup,
+                // onErrorReport: onErrorReport,
+                getBuildContext: getBuildContext,
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
   static PreferredSizeWidget CretaAppBarOfCommunity({
     required BuildContext context,
     required Widget title,
@@ -205,36 +241,7 @@ class Snippet {
       shadowColor: Colors.grey[500],
       actions: (!AccountManager.currentLoginUser.isLoginedUser)
           ? [
-              Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: Center(
-                  child: SizedBox(
-                    height: 36,
-                    child: BTN.fill_blue_t_l(
-                      //key: GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'),
-                      buttonColor: CretaButtonColor.white,
-                      //fgColor: CretaColor.text[700]!,
-                      height: 36,
-                      text: '로그인',
-                      //image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
-                      //image:
-                      //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
-                      textStyle: CretaFont.buttonLarge.copyWith(color: CretaColor.text[700]),
-                      onPressed: () {
-                        // _popupAccountMenu(
-                        //     GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'), context);
-                        LoginDialog.popupDialog(
-                          context: context,
-                          // doAfterLogin: doAfterLogin,
-                          // doAfterSignup: doAfterSignup,
-                          // onErrorReport: onErrorReport,
-                          getBuildContext: getBuildContext,
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
+              loginButton(context, getBuildContext),
               Padding(
                 padding: const EdgeInsets.only(right: 40),
                 child: Center(
@@ -246,7 +253,7 @@ class Snippet {
                       //buttonColor: CretaButtonColor.white,
                       //fgColor: CretaColor.text[700]!,
                       width: 112,
-                      text: '회원가입',
+                      text: CretaLang.signUp,
                       icon: Icons.arrow_forward,
                       //image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
                       //image:
@@ -499,7 +506,10 @@ class Snippet {
           width: 10,
         ),
         (!AccountManager.currentLoginUser.isLoginedUser)
-            ? SizedBox.shrink()
+            //? SizedBox.shrink() // <-- 로그인 버튼이 이자리에 와야 함.
+            ? Snippet.loginButton(context, () {
+                return context;
+              })
             : Center(
                 child: SizedBox(
                   height: 40,

@@ -73,6 +73,8 @@ class CretaLang {
   static const String forever = '영구히';
   static const String onlyOnce = '한번만';
   static const String copyOf = '의 사본';
+  static const String login = '로그인';
+  static const String signUp = '회원가입';
 
   static List<String> contentsTypeString = [
     "없음",

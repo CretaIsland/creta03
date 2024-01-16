@@ -190,15 +190,21 @@ final routesLoggedOut = RouteMap(
           // 체험하기가 아닌 경우,  인트로로 간다.
           return const Redirect(AppRoutes.intro);
         }
+        logger.severe('체험하기.....');
         // 체험하기의 경우.
         // 체험하기버튼 => http://locahost/book
-        if (StudioVariables.selectedBookMid == '') {
+        if (StudioVariables.selectedBookMid == '' && StudioVariables.waitBook == false) {
+          StudioVariables.waitBook = true;
           BookMainPage.bookManagerHolder ??= BookManager();
           BookMainPage.bookManagerHolder!.createNewBook().then((book) {
             StudioVariables.selectedBookMid = book.mid;
+            logger.severe('Book created');
+            StudioVariables.waitBook = false;
             return Redirect('${AppRoutes.studioBookMainPage}?${StudioVariables.selectedBookMid}');
           });
-          return const Redirect(AppRoutes.intro);
+          logger.severe('Book wait...');
+          return Redirect('${AppRoutes.studioBookMainPage}?${StudioVariables.selectedBookMid}');
+          //return const Redirect(AppRoutes.wait);
         }
         return TransitionPage(
             child:

@@ -100,7 +100,18 @@ class BookMainPage extends StatefulWidget {
       title: CretaLang.needToLoginTitle,
       icon: Icons.login,
       question: CretaLang.needToLogin,
+      yesBtText: CretaLang.close,
       onYes: () {},
+      // noBtText: CretaStudioLang.noBtDnText,
+      // onNo: () {},
+      // onYes: () {
+      //   LoginDialog.popupDialog(
+      //     context: context,
+      //     getBuildContext: () {
+      //       return context;
+      //     },
+      //   );
+      // },
     );
   }
 
@@ -311,7 +322,8 @@ class _BookMainPageState extends State<BookMainPage> {
 
     mouseTracerHolder = MouseTracer();
 
-    if ((widget.isPublishedMode ?? false) == false) {
+    if ((widget.isPublishedMode ?? false) == false &&
+        AccountManager.currentLoginUser.isLoginedUser) {
       client.initialize(CretaAccountManager.getEnterprise!.socketUrl);
       client.connectServer(StudioVariables.selectedBookMid);
     }
@@ -556,7 +568,8 @@ class _BookMainPageState extends State<BookMainPage> {
       _staticValuseDispose();
     }
 
-    if ((widget.isPublishedMode ?? false) == false) {
+    if ((widget.isPublishedMode ?? false) == false &&
+        AccountManager.currentLoginUser.isLoginedUser) {
       client.disconnect(notify: false);
     }
     if (webRTCClient != null) {
@@ -659,10 +672,13 @@ class _BookMainPageState extends State<BookMainPage> {
                   onHover: (pointerEvent) {
                     //if (StudioVariables.allowMutilUser == true) {
                     if (mouseTracerHolder!.mouseCursorList.isEmpty) return;
-                    if (lastEventTime.add(Duration(milliseconds: 100)).isBefore(DateTime.now())) {
-                      client.changeCursorPosition(pointerEvent.position.dx / screenWidthPercentage,
-                          (pointerEvent.position.dy - 50) / screenHeightPrecentage);
-                      lastEventTime = DateTime.now();
+                    if (AccountManager.currentLoginUser.isLoginedUser) {
+                      if (lastEventTime.add(Duration(milliseconds: 100)).isBefore(DateTime.now())) {
+                        client.changeCursorPosition(
+                            pointerEvent.position.dx / screenWidthPercentage,
+                            (pointerEvent.position.dy - 50) / screenHeightPrecentage);
+                        lastEventTime = DateTime.now();
+                      }
                     }
                     //}
                   },
@@ -1226,23 +1242,27 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget _avartars() {
-    return Consumer<ConnectedUserManager>(builder: (context, connectedUserManager, child) {
-      Set<ConnectedUserModel> connectedUserSet =
-          connectedUserManager.getConnectedUserSet(CretaAccountManager.getUserProperty!.nickname);
-      //print('Consumer<ConnectedUserManager>(${connectedUserSet.length} )');
-      return Visibility(
-          // 아바타
-          visible: StudioVariables.workHeight > 1 && StudioVariables.workWidth > 800 ? true : false,
-          child: StudioVariables.workHeight > 1 && StudioVariables.workWidth > 1300
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: connectedUserSet.map((e) {
-                    return _eachAvartar(e);
-                  }).toList(),
-                )
-              : _standForAvartar(connectedUserSet));
-    });
+    if (AccountManager.currentLoginUser.isLoginedUser) {
+      return Consumer<ConnectedUserManager>(builder: (context, connectedUserManager, child) {
+        Set<ConnectedUserModel> connectedUserSet =
+            connectedUserManager.getConnectedUserSet(CretaAccountManager.getUserProperty!.nickname);
+        //print('Consumer<ConnectedUserManager>(${connectedUserSet.length} )');
+        return Visibility(
+            // 아바타
+            visible:
+                StudioVariables.workHeight > 1 && StudioVariables.workWidth > 800 ? true : false,
+            child: StudioVariables.workHeight > 1 && StudioVariables.workWidth > 1300
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: connectedUserSet.map((e) {
+                      return _eachAvartar(e);
+                    }).toList(),
+                  )
+                : _standForAvartar(connectedUserSet));
+      });
+    }
+    return SizedBox.square();
   }
 
   Widget _eachAvartar(ConnectedUserModel? user) {

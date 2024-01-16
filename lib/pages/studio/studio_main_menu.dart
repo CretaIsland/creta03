@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:routemaster/routemaster.dart';
 
 import '../../common/creta_constant.dart';
@@ -212,6 +213,11 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
       child: IconButton(
         icon: Icon(Icons.menu_outlined, size: _isHover ? 24 : 20),
         onPressed: () {
+          if (AccountManager.currentLoginUser.isLoginedUser == false) {
+            BookMainPage.warningNeedToLogin(context);
+            return;
+          }
+
           logger.finest('menu pressed');
           CretaPopupMenu.showMenu(
             width: 150,
