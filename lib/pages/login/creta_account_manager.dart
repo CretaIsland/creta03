@@ -79,6 +79,11 @@ class CretaAccountManager {
   static set setFrameList(List<FrameModel> frameList) => _loginFrameList = [...frameList];
   static List<FrameModel> get getFrameList => _loginFrameList;
 
+  // 무료 체험자를 검증하기 위한 bool type 추가
+  // false일 경우 로그인 안함 && 체험하기도 아님 (=url로 바로 진입했을 때)
+  // true일 경우 랜딩페이지에서 체험하기 버튼을 통해 진입했을 때
+  static bool experienceWithoutLogin = false;
+
   //
   static Future<bool> initUserProperty() async {
     if (_userPropertyManagerHolder == null) {

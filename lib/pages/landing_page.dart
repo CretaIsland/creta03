@@ -658,8 +658,14 @@ class _LandingPageState extends State<LandingPage> {
                     ],
                   ),
                 ),
-                experienceQuickBTN("프레젠테이션", "Create and present", const Offset(18, 14), () { }),
-                experienceQuickBTN(width: 220, "커뮤니티", "Share and communicate", const Offset(562, 320), () => Routemaster.of(context).push(AppRoutes.communityHome)),
+                experienceQuickBTN("프레젠테이션", "Create and present", const Offset(18, 14), () {
+                  CretaAccountManager.experienceWithoutLogin = true;
+                  Routemaster.of(context).push(AppRoutes.studioBookMainPage);
+                }),
+                experienceQuickBTN(width: 220, "커뮤니티", "Share and communicate", const Offset(562, 320), () {
+                  CretaAccountManager.experienceWithoutLogin = true;
+                  Routemaster.of(context).push(AppRoutes.communityHome);
+                }),
                 experienceQuickBTN("디지털사이니지", "Create and broadcast", const Offset(1460, 0), () { })
               ],
             ),
@@ -833,6 +839,7 @@ class _LandingPageState extends State<LandingPage> {
                   child: Text("체험하기", style: CretaFont.buttonLarge.copyWith(color: Colors.white, fontSize: 24)),
                 ), 
                 onTap: () {
+                  CretaAccountManager.experienceWithoutLogin = true;
                   Routemaster.of(getBuildContext()).push(AppRoutes.communityHome);
                 }
               )
@@ -1101,7 +1108,15 @@ class _LandingPageState extends State<LandingPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(soultionName, style: CretaFont.titleELarge.copyWith(fontWeight: FontWeight.w700, fontSize: 40, color: fontColor)),
-                fontColor == Colors.white ? BTN.line_blue_t_el(text: "체험해보기", width: 135, onPressed: () {}) : BTN.fill_blue_t_el(text: "탐색해보기", width: 135, onPressed: () => Routemaster.of(context).push(AppRoutes.communityHome))
+                fontColor == Colors.white ? 
+                  BTN.line_blue_t_el(text: "체험해보기", width: 135, onPressed: () {
+                    CretaAccountManager.experienceWithoutLogin = true;
+                    Routemaster.of(context).push(AppRoutes.studioBookMainPage);
+                  }) 
+                  : BTN.fill_blue_t_el(text: "탐색해보기", width: 135, onPressed: () {
+                    CretaAccountManager.experienceWithoutLogin = true;
+                    Routemaster.of(context).push(AppRoutes.communityHome);
+                  })
               ],
             ),
           ),
@@ -1155,6 +1170,7 @@ class _LandingPageState extends State<LandingPage> {
                 borderRadius: BorderRadius.circular(13),
                 child: Center(child: Text("무료로 시작하기", style: CretaFont.buttonLarge.copyWith(fontSize: 24, color: Colors.white))), 
                 onTap: () {
+                  CretaAccountManager.experienceWithoutLogin = true;
                   Routemaster.of(context).push(AppRoutes.communityHome);
                 }
               )
