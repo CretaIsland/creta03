@@ -620,7 +620,7 @@ class Snippet {
               ),
               ElevatedButton.icon(
                 onPressed: () {
-                  AccountManager.logout().then((value) {
+                  CretaAccountManager.logout().then((value) {
                     Routemaster.of(context).push(AppRoutes.intro);
                   });
                   //Routemaster.of(context).push(AppRoutes.intro);
