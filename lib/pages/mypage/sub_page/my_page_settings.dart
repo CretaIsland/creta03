@@ -1,21 +1,19 @@
+import 'package:creta03/data_io/user_property_manager.dart';
+import 'package:creta03/design_system/buttons/creta_toggle_button.dart';
+import 'package:creta03/design_system/creta_color.dart';
+import 'package:creta03/design_system/creta_font.dart';
+import 'package:creta03/design_system/menu/creta_widget_drop_down.dart';
+import 'package:creta03/lang/creta_mypage_lang.dart';
+import 'package:creta03/model/app_enums.dart';
+import 'package:creta03/pages/mypage/mypage_common_widget.dart';
 import 'package:flutter/material.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 
-import 'package:creta03/data_io/team_manager.dart';
-import 'package:creta03/data_io/user_property_manager.dart';
-import 'package:creta03/design_system/creta_font.dart';
-import 'package:creta03/lang/creta_mypage_lang.dart';
-import 'package:creta03/model/app_enums.dart';
-import 'package:creta03/design_system/buttons/creta_toggle_button.dart';
-import 'package:creta03/design_system/creta_color.dart';
-import 'package:creta03/design_system/menu/creta_widget_drop_down.dart';
-
 
 
 class MyPageSettings extends StatefulWidget {
-
   final double width;
   final double height;
   const MyPageSettings({super.key, required this.width, required this.height});
@@ -50,74 +48,41 @@ class _MyPageSettingsState extends State<MyPageSettings> {
     }
   }
 
-
-  Widget divideLine({double leftPadding = 0.0, double topPadding = 0.0, double rightPadding = 0.0, double bottomPadding = 0.0, double width = 10.0, double height = 1.0}) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(leftPadding, topPadding, rightPadding, bottomPadding),
-      child: Container(
-        width: width,
-        height: height,
-        color: Colors.grey.shade200,
-      ),
-    );
-  }
-
-
   @override
   Widget build(BuildContext context) {
-    return Consumer2<UserPropertyManager, TeamManager>(
-      builder: (context, userPropertyManager, teamManager, child) {
+    return Consumer<UserPropertyManager>(
+      builder: (context, userPropertyManager, child) {
         return Container(
           width: widget.width,
           height: widget.height,
           color: Colors.white,
           child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
             child: widget.width > 400 ? Padding(
-              padding: const EdgeInsets.only(left: 165.0, top: 72.0),
+              padding: const EdgeInsets.only(top: 72, left: 165),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    CretaMyPageLang.settings,
-                    style: const TextStyle(
-                      fontFamily: 'Pretendard', 
-                      fontWeight: CretaFont.semiBold, 
-                      fontSize: 40, color: 
-                      CretaColor.text
-                    ),
-                  ),
-                  divideLine(topPadding: 22.0, bottomPadding: 32.0, width: widget.width * .7),
+                  Text(CretaMyPageLang.settings, style: CretaFont.displaySmall.copyWith(fontWeight: FontWeight.w600)),
+                  MyPageCommonWidget.divideLine(width: widget.width * .6, padding: const EdgeInsets.only(top: 22, bottom: 32)),
                   Padding(
-                    padding: const EdgeInsets.only(left: 12.0),
+                    padding: const EdgeInsets.only(left: 12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          CretaMyPageLang.myNotice,
-                          style: CretaFont.titleELarge,
-                        ),
-                        const SizedBox(height: 32.0),
+                        Text("내 알림", style: CretaFont.titleELarge),
+                        const SizedBox(height: 32),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  CretaMyPageLang.pushNotice,
-                                  style: CretaFont.titleMedium,
-                                ),
-                                const SizedBox(height: 25.0),
-                                Text(
-                                  CretaMyPageLang.emailNotice,
-                                  style: CretaFont.titleMedium,
-                                )
+                                Text("푸시 알림", style: CretaFont.titleMedium),
+                                const SizedBox(height: 25),
+                                Text("이메일 알림", style: CretaFont.titleMedium)
                               ],
                             ),
-                            const SizedBox(width: 199.0),
+                            const SizedBox(width: 200),
                             Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 CretaToggleButton(
                                   defaultValue: userPropertyManager.userPropertyModel!.usePushNotice,
@@ -139,26 +104,19 @@ class _MyPageSettingsState extends State<MyPageSettings> {
                           ],
                         )
                       ],
-                    ),
+                    ), 
                   ),
-                  divideLine(topPadding: 27.0, bottomPadding: 32.0, width: widget.width * .7),
+                  MyPageCommonWidget.divideLine(width: widget.width * .6, padding: const EdgeInsets.only(top: 27, bottom: 32)),
                   Padding(
-                    padding: const EdgeInsets.only(left: 12.0),
+                    padding: const EdgeInsets.only(left: 12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          CretaMyPageLang.mySetting,
-                          style: CretaFont.titleELarge,
-                        ),
-                        const SizedBox(height: 31.0),
+                        Text("내 설정", style: CretaFont.titleELarge),
+                        const SizedBox(height: 32),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text(
-                              CretaMyPageLang.theme,
-                              style: CretaFont.titleMedium,
-                            ),
+                            Text("테마", style: CretaFont.titleMedium),
                             const SizedBox(width: 245.0),
                             CretaWidgetDropDown(
                               items: themeItemList, 
@@ -173,24 +131,13 @@ class _MyPageSettingsState extends State<MyPageSettings> {
                           ],
                         ),
                         const SizedBox(height: 14.0),
-                        Text(
-                          CretaMyPageLang.themeTip,
-                          style: TextStyle(
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                            color: CretaColor.text.shade400,
-                          )
-                        ),
-                        const SizedBox(height: 23.0),
+                        Text(CretaMyPageLang.themeTip, style: CretaFont.bodySmall.copyWith(color: CretaColor.text.shade400)),
+                        const SizedBox(height: 24),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text(
-                              CretaMyPageLang.initPage,
-                              style: CretaFont.titleMedium,
-                            ),
-                            const SizedBox(width: 199.0),
+                            Text(CretaMyPageLang.initPage, style: CretaFont.titleMedium),
+                            const SizedBox(width: 200.0),
                             CretaWidgetDropDown(
                               items: initPageItemList, 
                               defaultValue: userPropertyManager.userPropertyModel!.initPage.index, 
@@ -204,23 +151,12 @@ class _MyPageSettingsState extends State<MyPageSettings> {
                           ],
                         ),
                         const SizedBox(height: 14.0),
-                        Text(
-                          CretaMyPageLang.initPageTip,
-                          style: TextStyle(
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                            color: CretaColor.text.shade400,
-                          )
-                        ),
-                        const SizedBox(height: 23.0),
+                        Text(CretaMyPageLang.initPageTip, style: CretaFont.bodySmall.copyWith(color: CretaColor.text.shade400)),
+                        const SizedBox(height: 24),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text(
-                              CretaMyPageLang.cookieSetting,
-                              style: CretaFont.titleMedium,
-                            ),
+                            Text(CretaMyPageLang.cookieSetting, style: CretaFont.titleMedium),
                             const SizedBox(width: 213.0),
                             CretaWidgetDropDown(
                               items: cookieItemList, 
@@ -235,25 +171,16 @@ class _MyPageSettingsState extends State<MyPageSettings> {
                           ],
                         ),
                         const SizedBox(height: 14.0),
-                        Text(
-                          CretaMyPageLang.cookieSettingTip,
-                          style: TextStyle(
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                            color: CretaColor.text.shade400,
-                          )
-                        ),
+                        Text(CretaMyPageLang.cookieSettingTip, style: CretaFont.bodySmall.copyWith(color: CretaColor.text.shade400))
                       ],
                     ),
-                  ),
-                  const SizedBox(height: 120.0)
+                  )
                 ],
               ),
-            ) : const SizedBox(),
+            ) : const SizedBox.shrink()
           ),
         );
       },
-    );
+    );  
   }
 }

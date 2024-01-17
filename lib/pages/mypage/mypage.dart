@@ -164,8 +164,7 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
       case AppRoutes.myPageSettings:
         return MyPageSettings(width: rightPaneRect.width, height: rightPaneRect.height);
       case AppRoutes.myPageTeamManage:
-        return MyPageTeamManage(
-            width: rightPaneRect.width, height: rightPaneRect.height, replaceColor: replaceColor);
+        return MyPageTeamManage(width: rightPaneRect.width, height: rightPaneRect.height, replaceColor: replaceColor);
       default:
         return MyPageDashBoard(
             width: rightPaneRect.width, height: rightPaneRect.height, replaceColor: replaceColor);
