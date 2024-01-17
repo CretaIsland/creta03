@@ -85,7 +85,7 @@ class CretaAccountManager {
   static bool experienceWithoutLogin = false;
 
   //
-  static Future<bool> initUserProperty() async {
+  static Future<bool> initUserProperty({bool doGuestLogin = true}) async {
     if (_userPropertyManagerHolder == null) {
       _userPropertyManagerHolder = UserPropertyManager();
       _userPropertyManagerHolder?.configEvent();
@@ -97,8 +97,7 @@ class CretaAccountManager {
       _teamManagerHolder?.clearAll();
     }
     if (_favFrameManagerHolder == null) {
-      _favFrameManagerHolder =
-          FrameManager(pageModel: PageModel('', BookModel('')), bookModel: BookModel(''));
+      _favFrameManagerHolder = FrameManager(pageModel: PageModel('', BookModel('')), bookModel: BookModel(''));
       _favFrameManagerHolder?.configEvent();
       _favFrameManagerHolder?.clearAll();
     }
@@ -119,7 +118,7 @@ class CretaAccountManager {
     bool isLogined = await _getUserProperty();
     if (isLogined == false) {
       logger.warning('login failed (_getUserProperty failed)');
-      await logout();
+      await logout(doGuestLogin: doGuestLogin);
       return false;
     }
     await _getFrameListFromDB();
@@ -142,7 +141,7 @@ class CretaAccountManager {
     return true;
   }
 
-  static Future<bool> logout() async {
+  static Future<bool> logout({bool doGuestLogin = true}) async {
     channelManagerHolder.clearAll();
     enterpriseManagerHolder.clearAll();
     _favFrameManagerHolder?.clearAll();
@@ -156,15 +155,15 @@ class CretaAccountManager {
     _loginFrameList.clear();
 
     await AccountManager.logout();
+    if (doGuestLogin) await _guestUserLogin();
     return true;
   }
 
   static Future<bool> _getUserProperty() async {
-    if (currentLoginUser.isLoginedUser == false) {
+    if (currentLoginUser.isLoginedUser == false && currentLoginUser.isGuestUser == false) {
       return false;
     }
-    userPropertyManagerHolder.addWhereClause(
-        'parentMid', QueryValue(value: currentLoginUser.userId));
+    userPropertyManagerHolder.addWhereClause('parentMid', QueryValue(value: currentLoginUser.userId));
     userPropertyManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     await userPropertyManagerHolder.queryByAddedContitions();
     AbsExModel? model = userPropertyManagerHolder.onlyOne();
@@ -279,8 +278,7 @@ class CretaAccountManager {
       for (var model in teamManagerHolder.modelList) {
         TeamModel teamModel = model as TeamModel;
         teamMap[teamModel.getMid] = teamModel;
-        _teamMemberMap[teamModel.getMid] =
-            await _getTeamMembers(teamModel.getMid, teamModel.teamMembers);
+        _teamMemberMap[teamModel.getMid] = await _getTeamMembers(teamModel.getMid, teamModel.teamMembers);
       }
       for (String teamMid in getUserProperty!.teams) {
         TeamModel? teamModel = teamMap[teamMid];
@@ -421,10 +419,10 @@ class CretaAccountManager {
   }
 
   static Future<void> _initChannel() async {
-    if (_loginUserProperty == null) return;
+    if (getUserProperty == null) return;
     // get user's channel
     bool isChannelExist = false;
-    String channelId = _loginUserProperty!.channelId;
+    String channelId = getUserProperty!.channelId;
     if (channelId.isNotEmpty) {
       // exist channelId ==> get from DB
       channelManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
@@ -437,10 +435,10 @@ class CretaAccountManager {
     }
     if (isChannelExist == false) {
       // not exist channelId ==> create to DB
-      _loginChannel = channelManagerHolder.makeNewChannel(userId: _loginUserProperty!.getMid);
+      _loginChannel = channelManagerHolder.makeNewChannel(userId: getUserProperty!.getMid);
       await channelManagerHolder.createChannel(_loginChannel!);
-      _loginUserProperty!.channelId = _loginChannel!.getMid;
-      await userPropertyManagerHolder.setToDB(_loginUserProperty!);
+      getUserProperty!.channelId = _loginChannel!.getMid;
+      await userPropertyManagerHolder.setToDB(getUserProperty!);
     }
     // get my teams's channel
     for (var teamModel in _loginTeamList) {
@@ -464,5 +462,35 @@ class CretaAccountManager {
   static void setChannelDescription(ChannelModel targetModel) {
     channelManagerHolder.setToDB(targetModel);
     channelManagerHolder.notify();
+  }
+
+  static Future<bool> _guestUserLogin() async {
+    logger.finest('_login pressed');
+    await AccountManager.login(myConfig!.config.guestUserId, myConfig!.config.guestUserPassword).then((value) async {
+      HycopFactory.setBucketId();
+      await CretaAccountManager.initUserProperty(doGuestLogin: false).then((value) {
+        if (value) {
+          // success !!!
+          //Navigator.of(widget.context).pop();
+          //Routemaster.of(widget.getBuildContext.call()).push(AppRoutes.intro);
+          //widget.doAfterLogin?.call();
+        } else {
+          // fail
+          throw HycopUtils.getHycopException(defaultMessage: 'Login failed !!!');
+        }
+      });
+    }).onError((error, stackTrace) {
+      String errMsg;
+      if (error is HycopException) {
+        HycopException ex = error;
+        logger.severe(ex.message);
+        errMsg = '로그인에 실패하였습니다. 가입된 정보를 확인해보세요.';
+      } else {
+        errMsg = 'Unknown DB Error !!!';
+        logger.severe(errMsg);
+      }
+      //widget.onErrorReport?.call(errMsg);
+    });
+    return (AccountManager.currentLoginUser.isGuestUser);
   }
 }

@@ -235,7 +235,7 @@ class _BookMainPageState extends State<BookMainPage> {
     BookMainPage.musicKeyMap.clear();
     BookMainPage.backGroundMusic = null;
 
-    CretaAccountManager.initUserProperty();
+    //CretaAccountManager.initUserProperty();
 
     BookPreviewMenu.previewMenuPressed = false;
 

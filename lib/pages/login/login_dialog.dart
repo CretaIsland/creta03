@@ -9,7 +9,7 @@ import 'package:routemaster/routemaster.dart';
 
 //import '../login_page.dart';
 import 'creta_account_manager.dart';
-import '../../routes.dart';
+//import '../../routes.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/buttons/creta_button.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
@@ -69,7 +69,7 @@ class LoginDialog extends StatefulWidget {
     // Function(String)? onErrorReport,
     required Function getBuildContext,
     LoginPageState loginPageState = LoginPageState.login,
-    String nextPageAfterLoginSuccess = AppRoutes.communityHome,
+    String nextPageAfterLoginSuccess = '',//AppRoutes.communityHome,
   }) {
     _showExtraInfoDialog = false;
     LoginDialog.nextPageAfterLoginSuccess = nextPageAfterLoginSuccess;
@@ -108,6 +108,9 @@ class LoginDialog extends StatefulWidget {
           // 로그인에 성공했을때,  아래 변수를 초기화 해주어야 함.
           CretaAccountManager.experienceWithoutLogin = false; //skpark add
           String path = LoginDialog.nextPageAfterLoginSuccess;
+          if (path.isEmpty) {
+            path = Uri.base.path;
+          }
           Routemaster.of(getBuildContext.call()).push(path);
         } else {
           // do nothing
@@ -779,7 +782,11 @@ class ExtraInfoDialog extends StatefulWidget {
       //Routemaster.of(getBuildContext.call()).push(AppRoutes.intro);
       if (AccountManager.currentLoginUser.isLoginedUser) {
         //String path = Uri.base.path;
-        Routemaster.of(getBuildContext.call()).push(LoginDialog.nextPageAfterLoginSuccess);
+        String path = LoginDialog.nextPageAfterLoginSuccess;
+        if (path.isEmpty) {
+          path = Uri.base.path;
+        }
+        Routemaster.of(getBuildContext.call()).push(path);
       } else {
         // do nothing
       }
