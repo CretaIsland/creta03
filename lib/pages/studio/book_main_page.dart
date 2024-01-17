@@ -226,10 +226,6 @@ class _BookMainPageState extends State<BookMainPage> {
     //_hideMouseTimer();
     super.initState();
 
-    if (AccountManager.currentLoginUser.isLoginedUser) {
-      // 여기서 권한 체크 꼭 할것...
-    }
-
     // final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
     // _linkSendEvent = linkSendEvent;
     // final FrameEachEventController autoPlaySendEvent = Get.find(tag: 'to-FrameEach');

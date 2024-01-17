@@ -18,6 +18,7 @@ import 'design_system/demo_page/text_field_demo_page.dart';
 //import 'pages/login_page.dart';
 import 'developer/gen_collections_page.dart';
 // import 'pages/intro_page.dart';
+import 'model/book_model.dart';
 import 'pages/login/creta_account_manager.dart';
 import 'pages/studio/book_grid_page.dart';
 import 'pages/studio/book_main_page.dart';
@@ -190,23 +191,17 @@ final routesLoggedOut = RouteMap(
           // 체험하기가 아닌 경우,  인트로로 간다.
           return const Redirect(AppRoutes.intro);
         }
+        StudioVariables.selectedBookMid = '';
         logger.severe('체험하기.....start (${StudioVariables.selectedBookMid}) ');
         // 체험하기의 경우.
         // 체험하기버튼 => http://locahost/book
         if (StudioVariables.selectedBookMid == '') {
-          if (StudioVariables.waitBook == false) {
-            StudioVariables.waitBook = true;
-            BookMainPage.bookManagerHolder ??= BookManager();
-            BookMainPage.bookManagerHolder!.createNewBook().then((book) {
-              StudioVariables.selectedBookMid = book.mid;
-              logger.severe('Book created');
-              StudioVariables.waitBook = false;
-              return Redirect('${AppRoutes.studioBookMainPage}?${StudioVariables.selectedBookMid}');
-            });
-          }
-          logger.severe('Book wait...');
-          return Redirect('${AppRoutes.studioBookMainPage}?${StudioVariables.selectedBookMid}');
-          //return const Redirect(AppRoutes.wait);
+          BookMainPage.bookManagerHolder ??= BookManager();
+          BookModel book = BookMainPage.bookManagerHolder!.createSample();
+          StudioVariables.selectedBookMid = book.mid;
+          BookMainPage.bookManagerHolder!.createNewBook(book).then((book) {
+            logger.severe('Book created');
+          });
         }
         logger.severe('체험하기.....end : (${StudioVariables.selectedBookMid})');
         return TransitionPage(

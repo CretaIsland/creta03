@@ -532,8 +532,8 @@ class BookGridItemState extends State<BookGridItem> {
     // await widget.bookManager.createToDB(book);
     // widget.bookManager.insert(book);
 
-    BookModel book = await widget.bookManager.createNewBook();
-
+    BookModel book = widget.bookManager.createSample();
+    await widget.bookManager.createNewBook(book);
     StudioVariables.selectedBookMid = book.mid;
     // ignore: use_build_context_synchronously
     Routemaster.of(context)

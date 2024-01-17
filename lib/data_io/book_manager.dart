@@ -483,7 +483,7 @@ class BookManager extends CretaManager {
     return newBook;
   }
 
-  Future<BookModel> createNewBook() async {
+  Future<BookModel> createNewBook(BookModel book) async {
     // final Random random = Random();
     // int randomNumber = random.nextInt(1000);
     // int modelIdx = randomNumber % 10;
@@ -502,7 +502,7 @@ class BookManager extends CretaManager {
     // );
 
     // book.hashTag.set('#${randomNumber}tag');
-    BookModel book = createSample();
+   
     await createToDB(book);
     insert(book);
     return book;

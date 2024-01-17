@@ -450,6 +450,7 @@ class Snippet {
         CretaMenuItem(
           caption: CretaLang.accountMenu[2], // 로그아웃
           onPressed: () {
+            StudioVariables.selectedBookMid = '';
             CretaAccountManager.logout()
                 .then((value) => Routemaster.of(context).push(AppRoutes.login));
           },

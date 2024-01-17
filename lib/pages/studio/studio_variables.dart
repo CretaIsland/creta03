@@ -18,7 +18,7 @@ enum ClickToCreateEnum {
 }
 
 class StudioVariables {
-  static bool waitBook = false; // 체험하기에서 book이 만들어질때까지 기다리기 위한 플랙
+ 
   static String selectedBookMid = ''; // selected book mid
   static double topMenuBarHeight = LayoutConst.topMenuBarHeight;
   static double menuStickWidth = LayoutConst.menuStickWidth;
