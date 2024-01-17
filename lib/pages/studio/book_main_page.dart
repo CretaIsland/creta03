@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import 'package:creta03/no_authority.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -177,6 +178,8 @@ class BookMainPage extends StatefulWidget {
 
 class _BookMainPageState extends State<BookMainPage> {
   BookModel? _bookModel;
+  bool _hasRWPermition = false;
+  bool _hasROPermition = true;
   bool _onceDBGetComplete = false;
   final GlobalKey<CretaLabelTextEditorState> textFieldKey = GlobalKey<CretaLabelTextEditorState>();
 
@@ -405,6 +408,35 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Future<void> initChildren(BookModel model) async {
+    if (AccountManager.currentLoginUser.isLoginedUser) {
+      // print('owners=${model.owners.toString()}');
+      // print('writers=${model.owners.toString()}');
+      // print('readers=${model.owners.toString()}');
+      // print('creator=${model.creator.toString()}');
+      // print('login=${AccountManager.currentLoginUser.email}');
+
+      bool isCreator = model.creator == AccountManager.currentLoginUser.email;
+      bool isOwner = model.owners.contains(AccountManager.currentLoginUser.email);
+      bool hasWriter = model.writers.contains(AccountManager.currentLoginUser.email);
+
+      // print('isCreator = $isCreator');
+      // print('isOwner = $isOwner');
+      // print('hasWriter = $hasWriter');
+
+      _hasROPermition = model.readers.contains(AccountManager.currentLoginUser.email);
+      _hasRWPermition = isOwner || hasWriter || isCreator;
+
+      // print('_hasROPermition = $_hasROPermition');
+      // print('_hasRWPermition = $_hasRWPermition');
+
+      if (_hasRWPermition == false && _hasROPermition == true) {
+        // 읽기 권한만 있는 경우
+        StudioVariables.isPreview = true;
+      }
+    } else {
+      logger.info('Its not loggined user');
+    }
+
     saveManagerHolder!.setDefaultBook(model);
     saveManagerHolder!.addBookChildren('book=');
     saveManagerHolder!.addBookChildren('page=');
@@ -944,6 +976,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
     var retval = FutureBuilder<bool>(
         future: _waitDBJob(),
+        //future: _waitDBJob(),
         builder: (context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.hasError) {
             //error가 발생하게 될 경우 반환하게 되는 부분
@@ -997,6 +1030,12 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget _mainPage() {
+    // print('build _hasROPermition = $_hasROPermition');
+    // print('build _hasRWPermition = $_hasRWPermition');
+    if (_hasRWPermition == false && _hasROPermition == false) {
+      // 파일을 열 권한이 없음.
+      return NoAuthority();
+    }
     _resize();
     if (StudioVariables.workHeight < 1) {
       return Container();

@@ -75,6 +75,8 @@ class CretaLang {
   static const String copyOf = '의 사본';
   static const String login = '로그인';
   static const String signUp = '회원가입';
+  static const String home = '크레타 홈페이지로 가기';
+  static const String noAuth = '문서를 열 권한이 없습니다';
 
   static List<String> contentsTypeString = [
     "없음",

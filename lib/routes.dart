@@ -190,7 +190,7 @@ final routesLoggedOut = RouteMap(
           // 체험하기가 아닌 경우,  인트로로 간다.
           return const Redirect(AppRoutes.intro);
         }
-        logger.severe('체험하기.....');
+        logger.severe('체험하기.....start (${StudioVariables.selectedBookMid}) ');
         // 체험하기의 경우.
         // 체험하기버튼 => http://locahost/book
         if (StudioVariables.selectedBookMid == '' && StudioVariables.waitBook == false) {
@@ -206,6 +206,7 @@ final routesLoggedOut = RouteMap(
           return Redirect('${AppRoutes.studioBookMainPage}?${StudioVariables.selectedBookMid}');
           //return const Redirect(AppRoutes.wait);
         }
+        logger.severe('체험하기.....end : (${StudioVariables.selectedBookMid})');
         return TransitionPage(
             child:
                 BookMainPage(bookKey: GlobalObjectKey('Book${StudioVariables.selectedBookMid}')));
