@@ -71,7 +71,6 @@ class _LandingPageState extends State<LandingPage> {
   @override
   void initState() {
     super.initState();
-    print('LandingPage.initState()');
     StudioVariables.selectedBookMid = ''; //skpark add
     bookPublishedManagerHolder = BookPublishedManager();
 
@@ -180,8 +179,6 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('LandingPage.build   StudioVariables.selectedBookMid=${StudioVariables.selectedBookMid}');
-
     _screenWidth == null ||
             (_screenWidth != null && _screenWidth! < MediaQuery.sizeOf(context).width)
         ? _screenWidth = MediaQuery.sizeOf(context).width
