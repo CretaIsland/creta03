@@ -244,7 +244,7 @@ class ContentsThumbnailState extends CretaState<ContentsThumbnail>
             if (snapshot.data != null && snapshot.data is ContentsModel) {
               ContentsModel model = snapshot.data!;
               contentsManager.updateModel(model);
-              logger.severe(
+              logger.info(
                   "'contents-property-to-main' event received , model updated ${model.name}, thumbnail=${model.thumbnailUrl}, ${model.thumbnailUrl}");
             }
             if (contentsCount > 0) {

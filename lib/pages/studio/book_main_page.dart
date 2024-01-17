@@ -301,7 +301,7 @@ class _BookMainPageState extends State<BookMainPage> {
         return value;
       });
     } else {
-      logger.severe("2) mid is empty ");
+      //logger.severe("2) mid is empty ");
       BookModel sampleBook = BookMainPage.bookManagerHolder!.createSample();
       mid = sampleBook.mid;
       BookMainPage.bookManagerHolder!.saveSample(sampleBook).then((value) async {

@@ -1546,7 +1546,7 @@ class ContentsManager extends CretaManager {
 
       String uri = content.getURI();
       if (uri.isNotEmpty && uri.contains("http")) {
-        BookManager.contentsSet.add(uri);
+        BookManager.contentsUrlMap[content] = uri;
       }
 
       String contentStr = content.toJson(tab: '\t\t\t');
@@ -1562,6 +1562,7 @@ class ContentsManager extends CretaManager {
       return null;
     });
     jsonStr += '\n\t\t\t]\n';
+    //print('skpark=$jsonStr');
     return jsonStr;
   }
 

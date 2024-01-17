@@ -15,6 +15,7 @@ import '../lang/creta_lang.dart';
 import '../lang/creta_studio_lang.dart';
 import '../model/app_enums.dart';
 import '../model/book_model.dart';
+import '../model/contents_model.dart';
 import '../model/creta_model.dart';
 import '../model/page_model.dart';
 import '../model/team_model.dart';
@@ -29,7 +30,7 @@ import 'page_manager.dart';
 
 class BookManager extends CretaManager {
   // contents 들의 url 모음, 다운로드 버튼을 눌렀을 때 생성된다.
-  static Set<String> contentsSet = {};
+  static Map<ContentsModel, String> contentsUrlMap = {};
 
   static String newbBackgroundMusicFrame = '';
 
@@ -314,16 +315,16 @@ class BookManager extends CretaManager {
 
   String? toJson(PageManager? pageManager, BookModel book) {
     String bookStr = book.toJson();
-    BookManager.contentsSet.clear();
+    BookManager.contentsUrlMap.clear();
     if (pageManager != null) {
       bookStr += pageManager.toJson();
     }
-    if (BookManager.contentsSet.isEmpty) {
+    if (BookManager.contentsUrlMap.isEmpty) {
       bookStr += '\n\t,"contentsUrl": []';
     } else {
       bookStr += '\n\t,"contentsUrl": [';
       int count = 0;
-      for (var ele in BookManager.contentsSet) {
+      for (var ele in BookManager.contentsUrlMap.values) {
         if (count > 0) {
           bookStr += ",";
         }
@@ -502,7 +503,7 @@ class BookManager extends CretaManager {
     // );
 
     // book.hashTag.set('#${randomNumber}tag');
-   
+
     await createToDB(book);
     insert(book);
     return book;
@@ -528,11 +529,29 @@ class BookManager extends CretaManager {
     // 버킷을 모두 옯겨줘야 한다.
 
     // 옮길 콘텐츠 URL 을 모두 가져온다.
+    // 쎔네일도 바꾸어야 한다.
     BookMainPage.pageManagerHolder?.toJson();
-    for (var url in BookManager.contentsSet) {
-      HycopFactory.storage!.copyFile(
-        url,
-      );
+
+    //print('BookManager.contentsUrlMap.entries=${BookManager.contentsUrlMap.entries.length}');
+    for (var ele in BookManager.contentsUrlMap.entries) {
+      // <-- moveFile 로 변경해야함.
+      HycopFactory.storage!
+          .copyFile(
+        ele.value,
+        targetThumbnailUrl: ele.key.thumbnailUrl != null ? ele.key.thumbnailUrl! : '',
+      )
+          .then((newFileModel) {
+        //print('skpark copyFile end----------------------');
+        // 여기서 컨텐츠의 url 을 교체해주어야 한다.
+        if (newFileModel != null) {
+          ele.key.remoteUrl = newFileModel.url;
+          ele.key.thumbnailUrl = newFileModel.thumbnailUrl;
+
+          //print('skpark ele.key.remoteUrl=${ele.key.remoteUrl}');
+          setToDB(ele.key);
+        }
+        return null;
+      });
     }
   }
 }
