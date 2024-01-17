@@ -69,7 +69,8 @@ class LoginDialog extends StatefulWidget {
     // Function(String)? onErrorReport,
     required Function getBuildContext,
     LoginPageState loginPageState = LoginPageState.login,
-    String nextPageAfterLoginSuccess = '',//AppRoutes.communityHome,
+    String nextPageAfterLoginSuccess = '', //AppRoutes.communityHome,
+    Function? onAfterLogin, //skpark add
   }) {
     _showExtraInfoDialog = false;
     LoginDialog.nextPageAfterLoginSuccess = nextPageAfterLoginSuccess;
@@ -93,6 +94,7 @@ class LoginDialog extends StatefulWidget {
         ),
       ),
     ).then((value) {
+      CretaAccountManager.experienceWithoutLogin = false; //skpark add
       if (kDebugMode) print('ExtraInfoDialog.popupDialog($_showExtraInfoDialog)');
       if (_showExtraInfoDialog) {
         if (kDebugMode) print('if(_showExtraInfoDialog)');
@@ -102,11 +104,17 @@ class LoginDialog extends StatefulWidget {
           // onErrorReport: onErrorReport,
           getBuildContext: getBuildContext,
         );
+        if (AccountManager.currentLoginUser.isLoginedUser) {
+          // 로그인에 성공했을때,  아래 변수를 초기화 해주어야 함.
+          CretaAccountManager.experienceWithoutLogin = false; //skpark add
+          onAfterLogin?.call();
+        }
       } else {
         //Routemaster.of(getBuildContext.call()).push(AppRoutes.intro);
         if (AccountManager.currentLoginUser.isLoginedUser) {
           // 로그인에 성공했을때,  아래 변수를 초기화 해주어야 함.
           CretaAccountManager.experienceWithoutLogin = false; //skpark add
+          onAfterLogin?.call();
           String path = LoginDialog.nextPageAfterLoginSuccess;
           if (path.isEmpty) {
             path = Uri.base.path;

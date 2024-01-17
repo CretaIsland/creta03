@@ -20,6 +20,7 @@ import '../model/page_model.dart';
 import '../model/team_model.dart';
 //import '../pages/login_page.dart';
 import '../pages/login/creta_account_manager.dart';
+import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
 import 'creta_manager.dart';
 import 'page_manager.dart';
@@ -505,5 +506,33 @@ class BookManager extends CretaManager {
     await createToDB(book);
     insert(book);
     return book;
+  }
+
+  Future<void> userChanged() async {
+    // 로그인하지 않고 사용하던 유저가 Studio Book 안으로 들어온 다음,
+    // 로그인을 했기 때문에,  Book 과 Contents file 을 모두 이 새로운 사람의
+    // id 로 소유권을 옮겨야 한다.
+
+    BookModel? book = onlyOne() as BookModel?;
+    if (book == null) {
+      return;
+    }
+
+    String newUserId = AccountManager.currentLoginUser.email;
+    book.creator = newUserId;
+    book.owners.clear();
+    book.owners.add(newUserId);
+
+    await setToDB(book);
+
+    // 버킷을 모두 옯겨줘야 한다.
+
+    // 옮길 콘텐츠 URL 을 모두 가져온다.
+    BookMainPage.pageManagerHolder?.toJson();
+    for (var url in BookManager.contentsSet) {
+      HycopFactory.storage!.copyFile(
+        url,
+      );
+    }
   }
 }

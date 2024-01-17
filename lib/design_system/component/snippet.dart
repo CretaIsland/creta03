@@ -190,10 +190,11 @@ class Snippet {
     );
   }
 
-  static Widget loginButton(
-    BuildContext context,
-    Function getBuildContext,
-  ) {
+  static Widget loginButton({
+    required BuildContext context,
+    required Function getBuildContext,
+    Function? onAfterLogin,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: Center(
@@ -218,6 +219,7 @@ class Snippet {
                 // doAfterSignup: doAfterSignup,
                 // onErrorReport: onErrorReport,
                 getBuildContext: getBuildContext,
+                onAfterLogin: onAfterLogin,
               );
             },
           ),
@@ -241,7 +243,7 @@ class Snippet {
       shadowColor: Colors.grey[500],
       actions: (!AccountManager.currentLoginUser.isLoginedUser)
           ? [
-              loginButton(context, getBuildContext),
+              loginButton(context: context, getBuildContext: getBuildContext),
               Padding(
                 padding: const EdgeInsets.only(right: 40),
                 child: Center(
@@ -507,9 +509,16 @@ class Snippet {
         ),
         (!AccountManager.currentLoginUser.isLoginedUser)
             //? SizedBox.shrink() // <-- 로그인 버튼이 이자리에 와야 함.
-            ? Snippet.loginButton(context, () {
-                return context;
-              })
+            ? Snippet.loginButton(
+                context: context,
+                getBuildContext: () => context,
+                onAfterLogin: () {
+                  // 로그인하지 않고 사용하던 유저가 Studio Book 안으로 들어온 다음,
+                  // 로그인을 했기 때문에,  Book 과 Contents file 을 모두 이 새로운 사람의
+                  // id 로 소유권을 옮겨야 한다.
+                  BookMainPage.bookManagerHolder?.userChanged();
+                },
+              )
             : Center(
                 child: SizedBox(
                   height: 40,
