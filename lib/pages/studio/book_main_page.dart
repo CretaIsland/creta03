@@ -444,8 +444,10 @@ class _BookMainPageState extends State<BookMainPage> {
       }
     }
 
-    HycopFactory.realtime!.startTemp(model.mid);
-    HycopFactory.realtime!.setPrefix('creta');
+    if (AccountManager.currentLoginUser.isLoginedUser) {
+      HycopFactory.realtime!.startTemp(model.mid);
+      HycopFactory.realtime!.setPrefix('creta');
+    }
 
     if (model.backgroundMusicFrame.value.isNotEmpty) {
       BookMainPage.backGroundMusic = await CretaManager.getModelFromDB(
@@ -580,9 +582,11 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   void _staticValuseDispose() {
-    BookMainPage.bookManagerHolder?.removeRealTimeListen();
-    BookMainPage.pageManagerHolder?.removeRealTimeListen();
-    BookMainPage.connectedUserHolder?.removeRealTimeListen();
+    if (AccountManager.currentLoginUser.isLoginedUser) {
+      BookMainPage.bookManagerHolder?.removeRealTimeListen();
+      BookMainPage.pageManagerHolder?.removeRealTimeListen();
+      BookMainPage.connectedUserHolder?.removeRealTimeListen();
+    }
     BookMainPage.pageManagerHolder?.clearFrameManager();
 
     saveManagerHolder?.stopTimer();
@@ -594,8 +598,9 @@ class _BookMainPageState extends State<BookMainPage> {
     //horizontalScroll?.dispose();
 
     logger.info("---_staticValuseDispose end-------------------");
-
-    HycopFactory.realtime!.stop();
+    if (AccountManager.currentLoginUser.isLoginedUser) {
+      HycopFactory.realtime!.stop();
+    }
   }
 
   @override
