@@ -155,6 +155,9 @@ class _LoginDialogState extends State<LoginDialog> {
 
   Future<void> _login(String email, String password) async {
     logger.finest('_login pressed');
+    if (AccountManager.currentLoginUser.isGuestUser) {
+      await CretaAccountManager.logout(doGuestLogin: false);
+    }
     AccountManager.login(email, password).then((value) async {
       HycopFactory.setBucketId();
       CretaAccountManager.initUserProperty().then((value) {
