@@ -126,7 +126,7 @@ final routesLoggedOut = RouteMap(
     AppRoutes.intro: (_) => (AccountManager.currentLoginUser.isLoginedUser)
         ? const Redirect(AppRoutes.communityHome)
         : const TransitionPage(child: LandingPage()),
-        //: const TransitionPage(child: IntroPage()),
+    //: const TransitionPage(child: IntroPage()),
     //AppRoutes.intro: (_) => const TransitionPage(child: LandingPage()),
     AppRoutes.login: (routeData) {
       return (AccountManager.currentLoginUser.isLoginedUser)
@@ -193,15 +193,17 @@ final routesLoggedOut = RouteMap(
         logger.severe('체험하기.....start (${StudioVariables.selectedBookMid}) ');
         // 체험하기의 경우.
         // 체험하기버튼 => http://locahost/book
-        if (StudioVariables.selectedBookMid == '' && StudioVariables.waitBook == false) {
-          StudioVariables.waitBook = true;
-          BookMainPage.bookManagerHolder ??= BookManager();
-          BookMainPage.bookManagerHolder!.createNewBook().then((book) {
-            StudioVariables.selectedBookMid = book.mid;
-            logger.severe('Book created');
-            StudioVariables.waitBook = false;
-            return Redirect('${AppRoutes.studioBookMainPage}?${StudioVariables.selectedBookMid}');
-          });
+        if (StudioVariables.selectedBookMid == '') {
+          if (StudioVariables.waitBook == false) {
+            StudioVariables.waitBook = true;
+            BookMainPage.bookManagerHolder ??= BookManager();
+            BookMainPage.bookManagerHolder!.createNewBook().then((book) {
+              StudioVariables.selectedBookMid = book.mid;
+              logger.severe('Book created');
+              StudioVariables.waitBook = false;
+              return Redirect('${AppRoutes.studioBookMainPage}?${StudioVariables.selectedBookMid}');
+            });
+          }
           logger.severe('Book wait...');
           return Redirect('${AppRoutes.studioBookMainPage}?${StudioVariables.selectedBookMid}');
           //return const Redirect(AppRoutes.wait);
