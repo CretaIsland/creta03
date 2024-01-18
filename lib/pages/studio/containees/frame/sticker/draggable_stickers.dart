@@ -302,9 +302,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
             //print('editor selected');
             return Stack(
               children: [
-                IgnorePointer(
-                    child: _dragableResizable(
-                        sticker, frameModel, isVerticalResiable, isHorizontalResiable)),
+                _dragableResizable(sticker, frameModel, isVerticalResiable, isHorizontalResiable),
                 InstantEditor(
                     key: widget.frameManager!
                         .registerInstantEditorrKey(sticker.pageMid, frameModel.mid),

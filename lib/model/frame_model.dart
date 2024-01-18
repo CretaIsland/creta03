@@ -69,7 +69,6 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   bool get isEditMode => _isEditMode;
   void setIsEditMode(bool mode) {
     _isEditMode = mode;
-    
   }
 
   MusicPlayerSizeEnum musicPlayerSizeType = MusicPlayerSizeEnum.Big;

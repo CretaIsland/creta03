@@ -535,9 +535,9 @@ class BookManager extends CretaManager {
     //print('skpark BookManager.contentsUrlMap.entries=${BookManager.contentsUrlMap.entries.length}');
     for (var ele in BookManager.contentsUrlMap.entries) {
       // <-- moveFile 로 변경해야함.
-      print('skpark url=${ele.value}');
-      print(
-          'skpark targetThumbnailUrl=${ele.key.thumbnailUrl != null ? ele.key.thumbnailUrl! : ""}');
+      //print('skpark url=${ele.value}');
+      //print(
+      //    'skpark targetThumbnailUrl=${ele.key.thumbnailUrl != null ? ele.key.thumbnailUrl! : ""}');
 
       Map<String, String> urlParse = HycopFactory.storage!.parseFileUrl(ele.value);
       HycopFactory.storage!
@@ -546,7 +546,7 @@ class BookManager extends CretaManager {
         if (newFileModel != null) {
           ele.key.remoteUrl = newFileModel.url;
           ele.key.thumbnailUrl = newFileModel.thumbnailUrl;
-          print('skpark ele.key.remoteUrl=${ele.key.remoteUrl}');
+          //print('skpark ele.key.remoteUrl=${ele.key.remoteUrl}');
           setToDB(ele.key);
         }
         return null;

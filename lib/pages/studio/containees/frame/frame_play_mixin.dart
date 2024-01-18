@@ -529,7 +529,7 @@ mixin FramePlayMixin {
       bgColor1: Colors.transparent,
       type: FrameType.text,
     );
-    frameModel.setIsEditMode( true); // 바로 Editor 모드로 들어가도록 한다.
+    frameModel.setIsEditMode(true); // 바로 Editor 모드로 들어가도록 한다.
     //print('style.fontSize = ${style.fontSize!}');
     ContentsModel model = await _defaultTextModel(
       frameModel.mid,

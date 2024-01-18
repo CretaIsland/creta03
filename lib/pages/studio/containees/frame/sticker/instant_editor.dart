@@ -265,9 +265,9 @@ class InstantEditorState extends CretaState<InstantEditor> {
       // 프레임도 폰트도 변하지 않는다.  그냥 텍스트 부분이 overflow 가 된다.
       // 초기에 텍스트가 overflow 가 되기 위해 계산해 주어야 한다.
       //print('AutoSizeType.noAutoSize _fontSize=$fontSize');
-      _resize(uri, model.autoSizeType.value);
-      // _getLineHeightAndCount(uri, _fontSize, model.autoSizeType.value);
-      // _resize();
+      // 지금은 resize 하지 않고, 스크롤바가 나오는 것으로 변경됨!!!!!!
+
+      //_resize(uri, model.autoSizeType.value);
     } else if (model.isAutoFrameOrSide()) {
       // 초기 프레임사이즈를 결정해 주어야 한다.
       //print('AutoSizeType.autoFrameSize _fontSize=$fontSize');
@@ -332,27 +332,31 @@ class InstantEditorState extends CretaState<InstantEditor> {
       //     (StudioConst.defaultTextPadding - (borderWidth * 2)) * StudioVariables.applyScale;
       // //(StudioConst.defaultTextPadding * StudioVariables.applyScale);
       // if (padding < 0) padding = 0;
-      // 프레임 사이즈가 변하지 않는다. 에디터 사이즈는 변할 수 있다.
+      // 프레임 사이즈가 변하지 않는다. 에디터 사이즈는 변할 수 있다.b  --> 에디터 사이즈 변하지 않는 걸로
       //applySize = Size(_frameSize.width, _realSize!.height);
       applySize = _frameSize;
 
       if (widget.enabled == true) {
-        editorWidget = OverflowBox(
-          alignment: alignVToAlignment(model.valign.value),
-          //alignment: Alignment.topCenter,
-          maxHeight: _realSize!.height, // double.infinity, //,
-          maxWidth: _frameSize.width,
-          child: _autoTextField(model, uri, fontSize, _realSize!.height, useAutoSize: false),
-          //child: _myTextField(model, uri, padding),
-        );
+        // editorWidget = OverflowBox(
+        //   alignment: alignVToAlignment(model.valign.value),
+        //   //alignment: Alignment.topCenter,
+        //   maxHeight: _realSize!.height, // double.infinity, //,
+        //   maxWidth: _frameSize.width,
+        //   child: _autoTextField(model, uri, fontSize, _realSize!.height, useAutoSize: false),
+        //   //child: _myTextField(model, uri, padding),
+        // );
+        // 에디터 위셋 사이즈가 변하지 않기 때문에 OverflowBox 를 더이상 사용하지 않는다
+        editorWidget = _autoTextField(model, uri, fontSize, _realSize!.height, useAutoSize: false);
       } else {
-        editorWidget = OverflowBox(
-          alignment: alignVToAlignment(model.valign.value),
-          //alignment: Alignment.topCenter,
-          maxHeight: _realSize!.height, // double.infinity, //,
-          maxWidth: _frameSize.width,
-          child: Text(uri, style: style),
-        );
+        // editorWidget = OverflowBox(
+        //   alignment: alignVToAlignment(model.valign.value),
+        //   //alignment: Alignment.topCenter,
+        //   maxHeight: _realSize!.height, // double.infinity, //,
+        //   maxWidth: _frameSize.width,
+        //   child: Text(uri, style: style),
+        // );
+        // 에디터 위셋 사이즈가 변하지 않기 때문에 OverflowBox 를 더이상 사용하지 않는다
+        editorWidget = Text(uri, style: style);
       }
     }
 
@@ -455,7 +459,8 @@ class InstantEditorState extends CretaState<InstantEditor> {
         _saveChanges(model);
         if (model.isAutoFontSize()) {
           logger.info('InstantEditor fontSizeNotifier');
-          CretaAutoSizeText.fontSizeNotifier?.start(doNotify: true);
+          //CretaAutoSizeText.fontSizeNotifier?.start(doNotify: true);
+          CretaAutoSizeText.fontSizeNotifier?.stop();
         } // rightMenu 에 전달
         //BookMainPage.containeeNotifier!.setFrameClick(true);
         DraggableStickers.frameSelectNotifier?.set(widget.frameModel.mid);
