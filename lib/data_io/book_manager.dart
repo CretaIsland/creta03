@@ -539,23 +539,35 @@ class BookManager extends CretaManager {
       //print(
       //    'skpark targetThumbnailUrl=${ele.key.thumbnailUrl != null ? ele.key.thumbnailUrl! : ""}');
 
-      HycopFactory.storage!
-          .copyFile(
-        ele.value,
-        targetThumbnailUrl: ele.key.thumbnailUrl != null ? ele.key.thumbnailUrl! : '',
-      )
-          .then((newFileModel) {
-        //print('skpark copyFile end----------------------');
-        // 여기서 컨텐츠의 url 을 교체해주어야 한다.
+      Map<String, String> urlParse = HycopFactory.storage!.parseFileUrl(ele.value);
+      HycopFactory.storage!.copyFile(urlParse["bucketId"]!, urlParse["fileId"]!).then((newFileModel) {
         if (newFileModel != null) {
           ele.key.remoteUrl = newFileModel.url;
           ele.key.thumbnailUrl = newFileModel.thumbnailUrl;
-
           //print('skpark ele.key.remoteUrl=${ele.key.remoteUrl}');
           setToDB(ele.key);
         }
         return null;
       });
+      // 20240118-nr.han 수정. copyFile의 파라미터가 바뀌면서 사용방법이 바뀌었습니다.
+	  // 아래 주석처리된 코드가 이전 코드고, 위에 있는 코드가 변경사항에 맞춘 코드입니다.
+      // HycopFactory.storage!
+      //     .copyFile(
+      //   ele.value,
+      //   targetThumbnailUrl: ele.key.thumbnailUrl != null ? ele.key.thumbnailUrl! : '',
+      // )
+      //     .then((newFileModel) {
+      //   //print('skpark copyFile end----------------------');
+      //   // 여기서 컨텐츠의 url 을 교체해주어야 한다.
+      //   if (newFileModel != null) {
+      //     ele.key.remoteUrl = newFileModel.url;
+      //     ele.key.thumbnailUrl = newFileModel.thumbnailUrl;
+
+      //     //print('skpark ele.key.remoteUrl=${ele.key.remoteUrl}');
+      //     setToDB(ele.key);
+      //   }
+      //   return null;
+      // });
     }
   }
 }
