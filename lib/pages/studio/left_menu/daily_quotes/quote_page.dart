@@ -67,12 +67,12 @@ class _QuotePageState extends State<QuotePage> {
   Widget build(BuildContext context) {
     return SizedBox(
       // height: StudioVariables.workHeight - 480,
-      width: widget.width,
+      width: double.infinity,
       child: Stack(
         alignment: Alignment.center,
         children: [
           CustomImage(
-            width: widget.width!,
+            width:  widget.width!,
             height: widget.height!,
             image: url,
             boxFit: BoxFit.cover,

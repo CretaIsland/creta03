@@ -167,7 +167,7 @@ class _ConversionCardState extends State<ConversionCard> with FramePlayMixin {
               },
             ),
           ),
-          const SizedBox(height: 20),
+          // const SizedBox(height: 20),
           const Center(child: Text('Currency Rates by Open Exchange Rates')),
         ],
       ),
