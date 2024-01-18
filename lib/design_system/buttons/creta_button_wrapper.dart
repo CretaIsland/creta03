@@ -668,7 +668,7 @@ class BTN {
     CretaButtonColor buttonColor = CretaButtonColor.white,
     Color fgColor = Colors.white,
     required Function onPressed,
-    double? width = 170,
+    double width = 170,
     CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
@@ -680,6 +680,7 @@ class BTN {
       onPressed: onPressed,
       sidePadding: sidePadding,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
@@ -689,21 +690,22 @@ class BTN {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Center(
+              child: SizedBox(
+                width: width - 12 - 44 - 20,
+                child: Text(
                   text,
+                  textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
                   style: CretaFont.buttonLarge.copyWith(color: fgColor),
                 ),
-              ],
+              ),
             ),
           ),
           Expanded(child: Container()),
           Padding(
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            padding: const EdgeInsets.only(right: 8.0),
             child: Icon(
               icon,
               size: 20,
@@ -1352,12 +1354,11 @@ class BTN {
     );
   }
 
-  static CretaElevatedButton line_blue_t_el({
-    required String text,
-    required Function onPressed,
-    double? width= 179,
-    double height = 56
-  }) {
+  static CretaElevatedButton line_blue_t_el(
+      {required String text,
+      required Function onPressed,
+      double? width = 179,
+      double height = 56}) {
     return CretaElevatedButton(
       width: width,
       height: height,

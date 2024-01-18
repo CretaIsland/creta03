@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:routemaster/routemaster.dart';
 
 import '../../common/creta_constant.dart';
@@ -14,6 +15,7 @@ import 'book_grid_page.dart';
 import 'book_main_page.dart';
 import 'containees/containee_nofifier.dart';
 import 'left_menu/left_menu_page.dart';
+import 'studio_variables.dart';
 
 class StudioMainMenu extends StatefulWidget {
   const StudioMainMenu({super.key});
@@ -97,6 +99,7 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
         // 목록화면을 오픈다.new
         caption: CretaLang.open,
         onPressed: () {
+          StudioVariables.selectedBookMid = '';
           //Routemaster.of(context).pop();
           if (BookGridPage.lastGridMenu != null) {
             Routemaster.of(context).push(BookGridPage.lastGridMenu!);
@@ -212,6 +215,11 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
       child: IconButton(
         icon: Icon(Icons.menu_outlined, size: _isHover ? 24 : 20),
         onPressed: () {
+          if (AccountManager.currentLoginUser.isLoginedUser == false) {
+            BookMainPage.warningNeedToLogin(context);
+            return;
+          }
+
           logger.finest('menu pressed');
           CretaPopupMenu.showMenu(
             width: 150,

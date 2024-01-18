@@ -4,11 +4,13 @@
 
 import 'dart:async';
 
+import 'package:creta03/no_authority.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/undo/undo.dart';
+import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:hycop/hycop/hycop_factory.dart';
 import 'package:hycop/hycop/socket/mouse_tracer.dart';
 import 'package:hycop/hycop/socket/socket_client.dart';
@@ -33,6 +35,7 @@ import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_label_text_editor.dart';
 import '../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import '../../design_system/component/autoSizeText/font_size_changing_notifier.dart';
+import '../../design_system/component/creta_popup.dart';
 import '../../design_system/component/custom_image.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_color.dart';
@@ -91,6 +94,27 @@ class BookMainPage extends StatefulWidget {
   static double pageWidth = 0;
   static double pageHeight = 0;
   static Offset pageOffset = Offset.zero;
+
+  static void warningNeedToLogin(BuildContext context) {
+    CretaPopup.simple(
+      context: context,
+      title: CretaLang.needToLoginTitle,
+      icon: Icons.login,
+      question: CretaLang.needToLogin,
+      yesBtText: CretaLang.close,
+      onYes: () {},
+      // noBtText: CretaStudioLang.noBtDnText,
+      // onNo: () {},
+      // onYes: () {
+      //   LoginDialog.popupDialog(
+      //     context: context,
+      //     getBuildContext: () {
+      //       return context;
+      //     },
+      //   );
+      // },
+    );
+  }
 
   //static ContaineeEnum selectedClass = ContaineeEnum.Book;
   final bool isPreviewX;
@@ -154,6 +178,8 @@ class BookMainPage extends StatefulWidget {
 
 class _BookMainPageState extends State<BookMainPage> {
   BookModel? _bookModel;
+  bool _hasRWPermition = false;
+  bool _hasROPermition = true;
   bool _onceDBGetComplete = false;
   final GlobalKey<CretaLabelTextEditorState> textFieldKey = GlobalKey<CretaLabelTextEditorState>();
 
@@ -197,7 +223,6 @@ class _BookMainPageState extends State<BookMainPage> {
   void initState() {
     _staticValuseDispose(); //static value 를 정리해준다.
     logger.info("---initState _BookMainPageState-------------------");
-
     //_hideMouseTimer();
     super.initState();
 
@@ -209,7 +234,7 @@ class _BookMainPageState extends State<BookMainPage> {
     BookMainPage.musicKeyMap.clear();
     BookMainPage.backGroundMusic = null;
 
-    CretaAccountManager.initUserProperty();
+    //CretaAccountManager.initUserProperty();
 
     BookPreviewMenu.previewMenuPressed = false;
 
@@ -276,7 +301,7 @@ class _BookMainPageState extends State<BookMainPage> {
         return value;
       });
     } else {
-      logger.severe("2) mid is empty ");
+      //logger.severe("2) mid is empty ");
       BookModel sampleBook = BookMainPage.bookManagerHolder!.createSample();
       mid = sampleBook.mid;
       BookMainPage.bookManagerHolder!.saveSample(sampleBook).then((value) async {
@@ -296,7 +321,8 @@ class _BookMainPageState extends State<BookMainPage> {
 
     mouseTracerHolder = MouseTracer();
 
-    if ((widget.isPublishedMode ?? false) == false) {
+    if ((widget.isPublishedMode ?? false) == false &&
+        AccountManager.currentLoginUser.isLoginedUser) {
       client.initialize(CretaAccountManager.getEnterprise!.socketUrl);
       client.connectServer(StudioVariables.selectedBookMid);
     }
@@ -378,6 +404,35 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Future<void> initChildren(BookModel model) async {
+    if (AccountManager.currentLoginUser.isLoginedUser) {
+      // print('owners=${model.owners.toString()}');
+      // print('writers=${model.owners.toString()}');
+      // print('readers=${model.owners.toString()}');
+      // print('creator=${model.creator.toString()}');
+      // print('login=${AccountManager.currentLoginUser.email}');
+
+      bool isCreator = model.creator == AccountManager.currentLoginUser.email;
+      bool isOwner = model.owners.contains(AccountManager.currentLoginUser.email);
+      bool hasWriter = model.writers.contains(AccountManager.currentLoginUser.email);
+
+      // print('isCreator = $isCreator');
+      // print('isOwner = $isOwner');
+      // print('hasWriter = $hasWriter');
+
+      _hasROPermition = model.readers.contains(AccountManager.currentLoginUser.email);
+      _hasRWPermition = isOwner || hasWriter || isCreator;
+
+      // print('_hasROPermition = $_hasROPermition');
+      // print('_hasRWPermition = $_hasRWPermition');
+
+      if (_hasRWPermition == false && _hasROPermition == true) {
+        // 읽기 권한만 있는 경우
+        StudioVariables.isPreview = true;
+      }
+    } else {
+      logger.info('Its not loggined user');
+    }
+
     saveManagerHolder!.setDefaultBook(model);
     saveManagerHolder!.addBookChildren('book=');
     saveManagerHolder!.addBookChildren('page=');
@@ -417,8 +472,10 @@ class _BookMainPageState extends State<BookMainPage> {
       }
     }
 
-    HycopFactory.realtime!.startTemp(model.mid);
-    HycopFactory.realtime!.setPrefix('creta');
+    if (AccountManager.currentLoginUser.isLoginedUser) {
+      HycopFactory.realtime!.startTemp(model.mid);
+      HycopFactory.realtime!.setPrefix('creta');
+    }
 
     if (model.backgroundMusicFrame.value.isNotEmpty) {
       BookMainPage.backGroundMusic = await CretaManager.getModelFromDB(
@@ -541,7 +598,8 @@ class _BookMainPageState extends State<BookMainPage> {
       _staticValuseDispose();
     }
 
-    if ((widget.isPublishedMode ?? false) == false) {
+    if ((widget.isPublishedMode ?? false) == false &&
+        AccountManager.currentLoginUser.isLoginedUser) {
       client.disconnect(notify: false);
     }
     if (webRTCClient != null) {
@@ -552,9 +610,11 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   void _staticValuseDispose() {
-    BookMainPage.bookManagerHolder?.removeRealTimeListen();
-    BookMainPage.pageManagerHolder?.removeRealTimeListen();
-    BookMainPage.connectedUserHolder?.removeRealTimeListen();
+    if (AccountManager.currentLoginUser.isLoginedUser) {
+      BookMainPage.bookManagerHolder?.removeRealTimeListen();
+      BookMainPage.pageManagerHolder?.removeRealTimeListen();
+      BookMainPage.connectedUserHolder?.removeRealTimeListen();
+    }
     BookMainPage.pageManagerHolder?.clearFrameManager();
 
     saveManagerHolder?.stopTimer();
@@ -566,8 +626,9 @@ class _BookMainPageState extends State<BookMainPage> {
     //horizontalScroll?.dispose();
 
     logger.info("---_staticValuseDispose end-------------------");
-
-    HycopFactory.realtime!.stop();
+    if (AccountManager.currentLoginUser.isLoginedUser) {
+      HycopFactory.realtime!.stop();
+    }
   }
 
   @override
@@ -644,10 +705,13 @@ class _BookMainPageState extends State<BookMainPage> {
                   onHover: (pointerEvent) {
                     //if (StudioVariables.allowMutilUser == true) {
                     if (mouseTracerHolder!.mouseCursorList.isEmpty) return;
-                    if (lastEventTime.add(Duration(milliseconds: 100)).isBefore(DateTime.now())) {
-                      client.changeCursorPosition(pointerEvent.position.dx / screenWidthPercentage,
-                          (pointerEvent.position.dy - 50) / screenHeightPrecentage);
-                      lastEventTime = DateTime.now();
+                    if (AccountManager.currentLoginUser.isLoginedUser) {
+                      if (lastEventTime.add(Duration(milliseconds: 100)).isBefore(DateTime.now())) {
+                        client.changeCursorPosition(
+                            pointerEvent.position.dx / screenWidthPercentage,
+                            (pointerEvent.position.dy - 50) / screenHeightPrecentage);
+                        lastEventTime = DateTime.now();
+                      }
                     }
                     //}
                   },
@@ -908,6 +972,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
     var retval = FutureBuilder<bool>(
         future: _waitDBJob(),
+        //future: _waitDBJob(),
         builder: (context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.hasError) {
             //error가 발생하게 될 경우 반환하게 되는 부분
@@ -961,6 +1026,12 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget _mainPage() {
+    // print('build _hasROPermition = $_hasROPermition');
+    // print('build _hasRWPermition = $_hasRWPermition');
+    if (_hasRWPermition == false && _hasROPermition == false) {
+      // 파일을 열 권한이 없음.
+      return NoAuthority();
+    }
     _resize();
     if (StudioVariables.workHeight < 1) {
       return Container();
@@ -1211,23 +1282,27 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget _avartars() {
-    return Consumer<ConnectedUserManager>(builder: (context, connectedUserManager, child) {
-      Set<ConnectedUserModel> connectedUserSet =
-          connectedUserManager.getConnectedUserSet(CretaAccountManager.getUserProperty!.nickname);
-      //print('Consumer<ConnectedUserManager>(${connectedUserSet.length} )');
-      return Visibility(
-          // 아바타
-          visible: StudioVariables.workHeight > 1 && StudioVariables.workWidth > 800 ? true : false,
-          child: StudioVariables.workHeight > 1 && StudioVariables.workWidth > 1300
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: connectedUserSet.map((e) {
-                    return _eachAvartar(e);
-                  }).toList(),
-                )
-              : _standForAvartar(connectedUserSet));
-    });
+    if (AccountManager.currentLoginUser.isLoginedUser) {
+      return Consumer<ConnectedUserManager>(builder: (context, connectedUserManager, child) {
+        Set<ConnectedUserModel> connectedUserSet =
+            connectedUserManager.getConnectedUserSet(CretaAccountManager.getUserProperty!.nickname);
+        //print('Consumer<ConnectedUserManager>(${connectedUserSet.length} )');
+        return Visibility(
+            // 아바타
+            visible:
+                StudioVariables.workHeight > 1 && StudioVariables.workWidth > 800 ? true : false,
+            child: StudioVariables.workHeight > 1 && StudioVariables.workWidth > 1300
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: connectedUserSet.map((e) {
+                      return _eachAvartar(e);
+                    }).toList(),
+                  )
+                : _standForAvartar(connectedUserSet));
+      });
+    }
+    return SizedBox.square();
   }
 
   Widget _eachAvartar(ConnectedUserModel? user) {
@@ -1325,6 +1400,11 @@ class _BookMainPageState extends State<BookMainPage> {
           BTN.floating_l(
             icon: Icons.person_add_outlined,
             onPressed: () {
+              if (AccountManager.currentLoginUser.isLoginedUser == false) {
+                BookMainPage.warningNeedToLogin(context);
+                return;
+              }
+
               showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -1378,6 +1458,10 @@ class _BookMainPageState extends State<BookMainPage> {
           BTN.floating_l(
             icon: Icons.file_download_outlined,
             onPressed: () {
+              if (AccountManager.currentLoginUser.isLoginedUser == false) {
+                BookMainPage.warningNeedToLogin(context);
+                return;
+              }
               logger.fine('donwload in studio');
               StudioMainMenu.downloadDialog(context);
               // CretaPopup.yesNoDialog(
@@ -1442,22 +1526,30 @@ class _BookMainPageState extends State<BookMainPage> {
             hasShadow: false,
             tooltip: CretaStudioLang.tooltipPlay,
           ),
-          SizedBox(width: padding),
-          BTN.line_blue_it_m_animation(
-              text: CretaStudioLang.publish,
-              image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
-              onPressed: () {
-                //BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
+          //SizedBox(width: padding),
+          Padding(
+            padding: EdgeInsets.only(left: padding),
+            child: BTN.line_blue_it_m_animation(
+                text: CretaStudioLang.publish,
+                image:
+                    NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+                onPressed: () {
+                  //BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
+                  if (AccountManager.currentLoginUser.isLoginedUser == false) {
+                    BookMainPage.warningNeedToLogin(context);
+                    return;
+                  }
 
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return BookPublishDialog(
-                        key: GlobalKey(),
-                        model: _bookModel,
-                      );
-                    });
-              }),
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return BookPublishDialog(
+                          key: GlobalKey(),
+                          model: _bookModel,
+                        );
+                      });
+                }),
+          ),
           SizedBox(width: padding * 2.5),
         ],
       ),

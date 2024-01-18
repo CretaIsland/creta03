@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_final_fields
 
 import 'package:flutter/material.dart';
+import 'package:hycop/hycop/account/account_manager.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -87,6 +88,12 @@ class _StickMenuState extends State<StickMenu> {
               iconData: iconData,
               title: CretaStudioLang.menuStick[idx],
               onTap: () {
+                if (AccountManager.currentLoginUser.isLoginedUser == false && idx == 3) {
+                  // 보관함의 경우
+                  BookMainPage.warningNeedToLogin(context);
+                  return;
+                }
+
                 LeftMenuEnum selectedButton = LeftMenuEnum.values[idx];
                 if (BookMainPage.leftMenuNotifier!.selectedStick == selectedButton) {
                   BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.None);

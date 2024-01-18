@@ -15,11 +15,13 @@ import '../lang/creta_lang.dart';
 import '../lang/creta_studio_lang.dart';
 import '../model/app_enums.dart';
 import '../model/book_model.dart';
+import '../model/contents_model.dart';
 import '../model/creta_model.dart';
 import '../model/page_model.dart';
 import '../model/team_model.dart';
 //import '../pages/login_page.dart';
 import '../pages/login/creta_account_manager.dart';
+import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
 import 'creta_manager.dart';
 import 'page_manager.dart';
@@ -28,7 +30,7 @@ import 'page_manager.dart';
 
 class BookManager extends CretaManager {
   // contents 들의 url 모음, 다운로드 버튼을 눌렀을 때 생성된다.
-  static Set<String> contentsSet = {};
+  static Map<ContentsModel, String> contentsUrlMap = {};
 
   static String newbBackgroundMusicFrame = '';
 
@@ -313,16 +315,16 @@ class BookManager extends CretaManager {
 
   String? toJson(PageManager? pageManager, BookModel book) {
     String bookStr = book.toJson();
-    BookManager.contentsSet.clear();
+    BookManager.contentsUrlMap.clear();
     if (pageManager != null) {
       bookStr += pageManager.toJson();
     }
-    if (BookManager.contentsSet.isEmpty) {
+    if (BookManager.contentsUrlMap.isEmpty) {
       bookStr += '\n\t,"contentsUrl": []';
     } else {
       bookStr += '\n\t,"contentsUrl": [';
       int count = 0;
-      for (var ele in BookManager.contentsSet) {
+      for (var ele in BookManager.contentsUrlMap.values) {
         if (count > 0) {
           bookStr += ",";
         }
@@ -480,5 +482,76 @@ class BookManager extends CretaManager {
       newBook = null;
     }
     return newBook;
+  }
+
+  Future<BookModel> createNewBook(BookModel book) async {
+    // final Random random = Random();
+    // int randomNumber = random.nextInt(1000);
+    // int modelIdx = randomNumber % 10;
+    // BookModel book = BookModel.withName(
+    //   '${CretaStudioLang.newBook}_$randomNumber',
+    //   creator: AccountManager.currentLoginUser.email,
+    //   creatorName: AccountManager.currentLoginUser.name,
+    //   imageUrl: 'https://picsum.photos/200/?random=$modelIdx',
+    //   viewCount: randomNumber,
+    //   likeCount: 1000 - randomNumber,
+    //   bookTypeVal: BookType.fromInt(randomNumber % 4 + 1),
+    //   ownerList: const [],
+    //   readerList: const [],
+    //   writerList: const [],
+    //   desc: SampleData.sampleDesc[randomNumber % SampleData.sampleDesc.length],
+    // );
+
+    // book.hashTag.set('#${randomNumber}tag');
+
+    await createToDB(book);
+    insert(book);
+    return book;
+  }
+
+  Future<void> userChanged() async {
+    // 로그인하지 않고 사용하던 유저가 Studio Book 안으로 들어온 다음,
+    // 로그인을 했기 때문에,  Book 과 Contents file 을 모두 이 새로운 사람의
+    // id 로 소유권을 옮겨야 한다.
+
+    BookModel? book = onlyOne() as BookModel?;
+    if (book == null) {
+      return;
+    }
+
+    String newUserId = AccountManager.currentLoginUser.email;
+    book.creator = newUserId;
+    book.owners.clear();
+    book.owners.add(newUserId);
+
+    await setToDB(book);
+
+    // 버킷을 모두 옯겨줘야 한다.
+
+    // 옮길 콘텐츠 URL 을 모두 가져온다.
+    // 쎔네일도 바꾸어야 한다.
+    BookMainPage.pageManagerHolder?.toJson();
+
+    //print('BookManager.contentsUrlMap.entries=${BookManager.contentsUrlMap.entries.length}');
+    for (var ele in BookManager.contentsUrlMap.entries) {
+      // <-- moveFile 로 변경해야함.
+      HycopFactory.storage!
+          .copyFile(
+        ele.value,
+        targetThumbnailUrl: ele.key.thumbnailUrl != null ? ele.key.thumbnailUrl! : '',
+      )
+          .then((newFileModel) {
+        //print('skpark copyFile end----------------------');
+        // 여기서 컨텐츠의 url 을 교체해주어야 한다.
+        if (newFileModel != null) {
+          ele.key.remoteUrl = newFileModel.url;
+          ele.key.thumbnailUrl = newFileModel.thumbnailUrl;
+
+          //print('skpark ele.key.remoteUrl=${ele.key.remoteUrl}');
+          setToDB(ele.key);
+        }
+        return null;
+      });
+    }
   }
 }

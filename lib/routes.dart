@@ -9,6 +9,7 @@ import 'package:creta03/pages/mypage/mypage.dart';
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'data_io/book_manager.dart';
 import 'design_system/component/colorPicker/color_picker_demo.dart';
 import 'design_system/demo_page/font_demo_page.dart';
 import 'design_system/demo_page/button_demo_page.dart';
@@ -17,6 +18,8 @@ import 'design_system/demo_page/text_field_demo_page.dart';
 //import 'pages/login_page.dart';
 import 'developer/gen_collections_page.dart';
 // import 'pages/intro_page.dart';
+import 'model/book_model.dart';
+import 'pages/login/creta_account_manager.dart';
 import 'pages/studio/book_grid_page.dart';
 import 'pages/studio/book_main_page.dart';
 import 'package:hycop/hycop.dart';
@@ -26,6 +29,7 @@ import 'pages/community/sub_pages/community_right_book_pane.dart';
 import 'pages/community/sub_pages/community_right_channel_pane.dart';
 import 'pages/community/sub_pages/community_right_playlist_detail_pane.dart';
 import 'pages/studio/studio_variables.dart';
+import 'wait_page.dart';
 //import 'pages/login/creta_account_manager.dart';
 
 abstract class AppRoutes {
@@ -80,6 +84,7 @@ abstract class AppRoutes {
     return result;
   }
 
+  static const String wait = '/wait';
   static const String intro = '/intro';
   static const String menuDemoPage = '/menuDemoPage';
   static const String fontDemoPage = '/fontDemoPage';
@@ -118,11 +123,12 @@ final routesLoggedOut = RouteMap(
       ? const Redirect(AppRoutes.communityHome)
       : const Redirect(AppRoutes.intro),
   routes: {
-    // AppRoutes.intro: (_) => (AccountManager.currentLoginUser.isLoginedUser)
-    //     ? const Redirect(AppRoutes.communityHome)
-    //     : const TransitionPage(child: LandingPage()),
-    //     //: const TransitionPage(child: IntroPage()),
-    AppRoutes.intro: (_) => const TransitionPage(child: LandingPage()),
+    AppRoutes.wait: (_) => const TransitionPage(child: WaitPage()),
+    AppRoutes.intro: (_) => (AccountManager.currentLoginUser.isLoginedUser)
+        ? const Redirect(AppRoutes.communityHome)
+        : const TransitionPage(child: LandingPage()),
+    //: const TransitionPage(child: IntroPage()),
+    //AppRoutes.intro: (_) => const TransitionPage(child: LandingPage()),
     AppRoutes.login: (routeData) {
       return (AccountManager.currentLoginUser.isLoginedUser)
           ? const Redirect(AppRoutes.communityHome)
@@ -179,7 +185,28 @@ final routesLoggedOut = RouteMap(
             child:
                 BookMainPage(bookKey: GlobalObjectKey('Book${StudioVariables.selectedBookMid}')));
       } else {
-        return const Redirect(AppRoutes.intro);
+        // 로그인도 안한 경우
+
+        if (CretaAccountManager.experienceWithoutLogin == false) {
+          // 체험하기가 아닌 경우,  인트로로 간다.
+          return const Redirect(AppRoutes.intro);
+        }
+        StudioVariables.selectedBookMid = '';
+        logger.severe('체험하기.....start (${StudioVariables.selectedBookMid}) ');
+        // 체험하기의 경우.
+        // 체험하기버튼 => http://locahost/book
+        if (StudioVariables.selectedBookMid == '') {
+          BookMainPage.bookManagerHolder ??= BookManager();
+          BookModel book = BookMainPage.bookManagerHolder!.createSample();
+          StudioVariables.selectedBookMid = book.mid;
+          BookMainPage.bookManagerHolder!.createNewBook(book).then((book) {
+            logger.severe('Book created');
+          });
+        }
+        logger.severe('체험하기.....end : (${StudioVariables.selectedBookMid})');
+        return TransitionPage(
+            child:
+                BookMainPage(bookKey: GlobalObjectKey('Book${StudioVariables.selectedBookMid}')));
       }
     },
     AppRoutes.studioBookPreviewPage: (routeData) {
@@ -200,8 +227,7 @@ final routesLoggedOut = RouteMap(
       paramMap.forEach((key, value) {
         if (key == 'book') {
           StudioVariables.selectedBookMid = '$key=$value';
-        }
-        else if (key == 'mode' && value == 'preview') {
+        } else if (key == 'mode' && value == 'preview') {
           isPublishedMode = true;
         }
       });
@@ -246,23 +272,23 @@ final routesLoggedOut = RouteMap(
     //       )
     //     : const Redirect(AppRoutes.intro),
     AppRoutes.communityHome: (_) => TransitionPage(
-      child: CommunityPage(
-        key: GlobalObjectKey('AppRoutes.communityHome'),
-        subPageUrl: AppRoutes.communityHome,
-      ),
-    ),
+          child: CommunityPage(
+            key: GlobalObjectKey('AppRoutes.communityHome'),
+            subPageUrl: AppRoutes.communityHome,
+          ),
+        ),
     AppRoutes.channel: (routeData) {
       // if (AccountManager.currentLoginUser.isLoginedUser) {
-        String url = routeData.fullPath;
-        int pos = url.indexOf('channel=');
-        String channelMid = (pos > 0) ? url.substring(pos) : '';
-        CommunityRightChannelPane.channelId = channelMid;
-        return TransitionPage(
-          child: CommunityPage(
-            key: GlobalObjectKey(channelMid.isNotEmpty ? channelMid : 'NoChannelMid'),
-            subPageUrl: AppRoutes.channel,
-          ),
-        );
+      String url = routeData.fullPath;
+      int pos = url.indexOf('channel=');
+      String channelMid = (pos > 0) ? url.substring(pos) : '';
+      CommunityRightChannelPane.channelId = channelMid;
+      return TransitionPage(
+        child: CommunityPage(
+          key: GlobalObjectKey(channelMid.isNotEmpty ? channelMid : 'NoChannelMid'),
+          subPageUrl: AppRoutes.channel,
+        ),
+      );
       // } else {
       //   return const TransitionPage(child: IntroPage());
       // }
@@ -300,28 +326,29 @@ final routesLoggedOut = RouteMap(
       }
     },
     AppRoutes.communityBook: (routeData) {
-     //if (AccountManager.currentLoginUser.isLoginedUser) {
-        // String url = routeData.fullPath;
-        // int pos = url.indexOf('book=');
-        // String bookMid = (pos > 0) ? url.substring(pos) : '';
-        // CommunityRightBookPane.bookId = bookMid;
-        CommunityRightBookPane.bookId = '';
-        CommunityRightBookPane.playlistId = '';
-        routeData.queryParameters.forEach((key, value) {
-          if (key == 'book') {
-            CommunityRightBookPane.bookId = '$key=$value';
-          }
-          else if (key == 'playlist') {
-            CommunityRightBookPane.playlistId = '$key=$value';
-          }
-        });
-        StudioVariables.selectedBookMid = CommunityRightBookPane.bookId;
-        return TransitionPage(
-          child: CommunityPage(
-            key: GlobalObjectKey(CommunityRightBookPane.bookId.isNotEmpty ? CommunityRightBookPane.bookId : 'NoBookMid'),
-            subPageUrl: AppRoutes.communityBook,
-          ),
-        );
+      //if (AccountManager.currentLoginUser.isLoginedUser) {
+      // String url = routeData.fullPath;
+      // int pos = url.indexOf('book=');
+      // String bookMid = (pos > 0) ? url.substring(pos) : '';
+      // CommunityRightBookPane.bookId = bookMid;
+      CommunityRightBookPane.bookId = '';
+      CommunityRightBookPane.playlistId = '';
+      routeData.queryParameters.forEach((key, value) {
+        if (key == 'book') {
+          CommunityRightBookPane.bookId = '$key=$value';
+        } else if (key == 'playlist') {
+          CommunityRightBookPane.playlistId = '$key=$value';
+        }
+      });
+      StudioVariables.selectedBookMid = CommunityRightBookPane.bookId;
+      return TransitionPage(
+        child: CommunityPage(
+          key: GlobalObjectKey(CommunityRightBookPane.bookId.isNotEmpty
+              ? CommunityRightBookPane.bookId
+              : 'NoBookMid'),
+          subPageUrl: AppRoutes.communityBook,
+        ),
+      );
       // } else {
       //   return const Redirect(AppRoutes.intro);
       // }

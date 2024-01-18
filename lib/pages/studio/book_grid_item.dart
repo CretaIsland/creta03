@@ -3,7 +3,6 @@
 import 'dart:math';
 
 import 'package:creta03/lang/creta_studio_lang.dart';
-import 'package:creta03/model/app_enums.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
@@ -24,7 +23,6 @@ import '../../lang/creta_lang.dart';
 import '../../model/book_model.dart';
 import '../../routes.dart';
 import 'book_grid_page.dart';
-import 'sample_data.dart';
 import 'studio_constant.dart';
 import 'studio_variables.dart';
 
@@ -513,26 +511,33 @@ class BookGridItemState extends State<BookGridItem> {
   }
 
   void insertItem() async {
-    int randomNumber = random.nextInt(1000);
-    int modelIdx = randomNumber % 10;
-    BookModel book = BookModel.withName(
-      '${CretaStudioLang.newBook}_$randomNumber',
-      creator: AccountManager.currentLoginUser.email,
-      creatorName: AccountManager.currentLoginUser.name,
-      imageUrl: 'https://picsum.photos/200/?random=$modelIdx',
-      viewCount: randomNumber,
-      likeCount: 1000 - randomNumber,
-      bookTypeVal: BookType.fromInt(randomNumber % 4 + 1),
-      ownerList: const [],
-      readerList: const [],
-      writerList: const [],
-      desc: SampleData.sampleDesc[randomNumber % SampleData.sampleDesc.length],
-    );
+    // int randomNumber = random.nextInt(1000);
+    // int modelIdx = randomNumber % 10;
+    // BookModel book = BookModel.withName(
+    //   '${CretaStudioLang.newBook}_$randomNumber',
+    //   creator: AccountManager.currentLoginUser.email,
+    //   creatorName: AccountManager.currentLoginUser.name,
+    //   imageUrl: 'https://picsum.photos/200/?random=$modelIdx',
+    //   viewCount: randomNumber,
+    //   likeCount: 1000 - randomNumber,
+    //   bookTypeVal: BookType.fromInt(randomNumber % 4 + 1),
+    //   ownerList: const [],
+    //   readerList: const [],
+    //   writerList: const [],
+    //   desc: SampleData.sampleDesc[randomNumber % SampleData.sampleDesc.length],
+    // );
 
-    book.hashTag.set('#$randomNumber tag...');
+    // book.hashTag.set('#${randomNumber}tag');
 
-    await widget.bookManager.createToDB(book);
-    widget.bookManager.insert(book);
+    // await widget.bookManager.createToDB(book);
+    // widget.bookManager.insert(book);
+
+    BookModel book = widget.bookManager.createSample();
+    await widget.bookManager.createNewBook(book);
+    StudioVariables.selectedBookMid = book.mid;
+    // ignore: use_build_context_synchronously
+    Routemaster.of(context)
+        .push('${AppRoutes.studioBookMainPage}?${StudioVariables.selectedBookMid}');
   }
 
   Future<BookModel?> _removeItem(BookModel? removedItem) async {

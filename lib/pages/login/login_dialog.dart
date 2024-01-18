@@ -9,7 +9,7 @@ import 'package:routemaster/routemaster.dart';
 
 //import '../login_page.dart';
 import 'creta_account_manager.dart';
-import '../../routes.dart';
+//import '../../routes.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/buttons/creta_button.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
@@ -69,7 +69,8 @@ class LoginDialog extends StatefulWidget {
     // Function(String)? onErrorReport,
     required Function getBuildContext,
     LoginPageState loginPageState = LoginPageState.login,
-    String nextPageAfterLoginSuccess = AppRoutes.communityHome,
+    String nextPageAfterLoginSuccess = '', //AppRoutes.communityHome,
+    Function? onAfterLogin, //skpark add
   }) {
     _showExtraInfoDialog = false;
     LoginDialog.nextPageAfterLoginSuccess = nextPageAfterLoginSuccess;
@@ -93,6 +94,7 @@ class LoginDialog extends StatefulWidget {
         ),
       ),
     ).then((value) {
+      CretaAccountManager.experienceWithoutLogin = false; //skpark add
       if (kDebugMode) print('ExtraInfoDialog.popupDialog($_showExtraInfoDialog)');
       if (_showExtraInfoDialog) {
         if (kDebugMode) print('if(_showExtraInfoDialog)');
@@ -102,10 +104,21 @@ class LoginDialog extends StatefulWidget {
           // onErrorReport: onErrorReport,
           getBuildContext: getBuildContext,
         );
+        if (AccountManager.currentLoginUser.isLoginedUser) {
+          // 로그인에 성공했을때,  아래 변수를 초기화 해주어야 함.
+          CretaAccountManager.experienceWithoutLogin = false; //skpark add
+          onAfterLogin?.call();
+        }
       } else {
         //Routemaster.of(getBuildContext.call()).push(AppRoutes.intro);
         if (AccountManager.currentLoginUser.isLoginedUser) {
+          // 로그인에 성공했을때,  아래 변수를 초기화 해주어야 함.
+          CretaAccountManager.experienceWithoutLogin = false; //skpark add
+          onAfterLogin?.call();
           String path = LoginDialog.nextPageAfterLoginSuccess;
+          if (path.isEmpty) {
+            path = Uri.base.path;
+          }
           Routemaster.of(getBuildContext.call()).push(path);
         } else {
           // do nothing
@@ -150,6 +163,9 @@ class _LoginDialogState extends State<LoginDialog> {
 
   Future<void> _login(String email, String password) async {
     logger.finest('_login pressed');
+    if (AccountManager.currentLoginUser.isGuestUser) {
+      await CretaAccountManager.logout(doGuestLogin: false);
+    }
     AccountManager.login(email, password).then((value) async {
       HycopFactory.setBucketId();
       CretaAccountManager.initUserProperty().then((value) {
@@ -181,15 +197,16 @@ class _LoginDialogState extends State<LoginDialog> {
 
     AccountManager.createAccountByGoogle(myConfig!.config.googleOAuthCliendId).then((value) {
       HycopFactory.setBucketId();
-      CretaAccountManager.userPropertyManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
+      CretaAccountManager.userPropertyManagerHolder
+          .addWhereClause('isRemoved', QueryValue(value: false));
       CretaAccountManager.userPropertyManagerHolder
           .addWhereClause('email', QueryValue(value: AccountManager.currentLoginUser.email));
       CretaAccountManager.userPropertyManagerHolder.queryByAddedContitions().then((value) async {
         bool isNewUser = value.isEmpty;
         if (isNewUser) {
           // create model objects
-          UserPropertyModel userModel =
-              CretaAccountManager.userPropertyManagerHolder.makeCurrentNewUserProperty(agreeUsingMarketing: true);
+          UserPropertyModel userModel = CretaAccountManager.userPropertyManagerHolder
+              .makeCurrentNewUserProperty(agreeUsingMarketing: true);
           TeamModel teamModel = CretaAccountManager.teamManagerHolder.getNewTeam(
             createAndSetToCurrent: true,
             username: AccountManager.currentLoginUser.name,
@@ -207,7 +224,8 @@ class _LoginDialogState extends State<LoginDialog> {
           await CretaAccountManager.channelManagerHolder.createChannel(teamChannelModel);
           await CretaAccountManager.channelManagerHolder.createChannel(myChannelModel);
           await CretaAccountManager.teamManagerHolder.createTeam(teamModel);
-          await CretaAccountManager.userPropertyManagerHolder.createUserProperty(createModel: userModel);
+          await CretaAccountManager.userPropertyManagerHolder
+              .createUserProperty(createModel: userModel);
           await CretaAccountManager.initUserProperty();
           LoginDialog.setShowExtraInfoDialog(true);
         }
@@ -242,7 +260,8 @@ class _LoginDialogState extends State<LoginDialog> {
     });
   }
 
-  Future<void> _signup(String nickname, String email, String password, bool agreeUsingMarketing) async {
+  Future<void> _signup(
+      String nickname, String email, String password, bool agreeUsingMarketing) async {
     logger.finest('_signup pressed');
 
     logger.finest('isExistAccount');
@@ -267,8 +286,10 @@ class _LoginDialogState extends State<LoginDialog> {
           username: nickname,
           userEmail: userModel.email,
         );
-        ChannelModel teamChannelModel = CretaAccountManager.channelManagerHolder.makeNewChannel(teamId: teamModel.mid);
-        ChannelModel myChannelModel = CretaAccountManager.channelManagerHolder.makeNewChannel(userId: userModel.email);
+        ChannelModel teamChannelModel =
+            CretaAccountManager.channelManagerHolder.makeNewChannel(teamId: teamModel.mid);
+        ChannelModel myChannelModel =
+            CretaAccountManager.channelManagerHolder.makeNewChannel(userId: userModel.email);
         userModel.channelId = myChannelModel.mid;
         teamModel.channelId = teamChannelModel.mid;
         userModel.channelId = myChannelModel.mid;
@@ -277,7 +298,8 @@ class _LoginDialogState extends State<LoginDialog> {
         await CretaAccountManager.channelManagerHolder.createChannel(teamChannelModel);
         await CretaAccountManager.channelManagerHolder.createChannel(myChannelModel);
         await CretaAccountManager.teamManagerHolder.createTeam(teamModel);
-        await CretaAccountManager.userPropertyManagerHolder.createUserProperty(createModel: userModel);
+        await CretaAccountManager.userPropertyManagerHolder
+            .createUserProperty(createModel: userModel);
         await CretaAccountManager.initUserProperty();
         LoginDialog.setShowExtraInfoDialog(true);
         if (kDebugMode) print('_signup.widget.doAfterSignup?.call()');
@@ -431,7 +453,8 @@ class _LoginDialogState extends State<LoginDialog> {
                 return;
               }
               bool agreeTerms = _checkboxSignupValueMap[stringAgreeTerms] ?? false;
-              bool agreeUsingMarketing = _checkboxSignupValueMap[stringAgreeUsingMarketing] ?? false;
+              bool agreeUsingMarketing =
+                  _checkboxSignupValueMap[stringAgreeUsingMarketing] ?? false;
               if (agreeTerms == false) {
                 showSnackBar(widget.getBuildContext.call(), '필수 항목을 동의해주세요');
                 //widget.onErrorReport?.call('필수 항목을 동의해주세요');
@@ -537,6 +560,7 @@ class _LoginDialogState extends State<LoginDialog> {
             width: 294,
             text: '구글로 로그인하기',
             svgImg1: 'assets/google__g__logo.svg',
+            sidePadding: CretaButtonSidePadding(left: 0, right: 11),
             onPressed: () {
               _loginByGoogle();
             },
@@ -656,7 +680,9 @@ class _LoginDialogState extends State<LoginDialog> {
                     onTap: () {
                       String email = _loginEmailTextEditingController.text;
                       List<String> emailList = [email];
-                      CretaAccountManager.userPropertyManagerHolder.getUserPropertyFromEmail(emailList).then((value) {
+                      CretaAccountManager.userPropertyManagerHolder
+                          .getUserPropertyFromEmail(emailList)
+                          .then((value) {
                         if (value.isEmpty) {
                           showSnackBar(widget.context, '가입된 회원이 아닙니다');
                           return;
@@ -767,7 +793,11 @@ class ExtraInfoDialog extends StatefulWidget {
       //Routemaster.of(getBuildContext.call()).push(AppRoutes.intro);
       if (AccountManager.currentLoginUser.isLoginedUser) {
         //String path = Uri.base.path;
-        Routemaster.of(getBuildContext.call()).push(LoginDialog.nextPageAfterLoginSuccess);
+        String path = LoginDialog.nextPageAfterLoginSuccess;
+        if (path.isEmpty) {
+          path = Uri.base.path;
+        }
+        Routemaster.of(getBuildContext.call()).push(path);
       } else {
         // do nothing
       }
@@ -785,7 +815,10 @@ enum ExtraInfoPageState {
 
 class _ExtraInfoDialogState extends State<ExtraInfoDialog> {
   ExtraInfoPageState _extraInfoPageState = ExtraInfoPageState.purpose;
-  final Map<String, int> _genderValueMap = {'남': GenderType.male.index, '여': GenderType.female.index};
+  final Map<String, int> _genderValueMap = {
+    '남': GenderType.male.index,
+    '여': GenderType.female.index
+  };
   late final List<CretaMenuItem> _purposeDropdownMenuList;
   final List<CretaMenuItem> _birthDropdownMenuList = [];
   BookType _usingPurpose = BookType.presentaion;
@@ -1082,7 +1115,8 @@ class _ExtraInfoDialogState extends State<ExtraInfoDialog> {
           const SizedBox(height: 12),
           Padding(
             padding: const EdgeInsets.fromLTRB(117, 0, 117, 0),
-            child: CretaStepper(totalSteps: ExtraInfoPageState.end.index, currentStep: _extraInfoPageState.index),
+            child: CretaStepper(
+                totalSteps: ExtraInfoPageState.end.index, currentStep: _extraInfoPageState.index),
           ),
           const SizedBox(height: 37),
           ..._getBody(),
@@ -1128,7 +1162,8 @@ class CretaStepper extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.fromLTRB(stepSize / 4 - 0.5, stepSize / 4, 0, 0),
-                child: Icon(Icons.fiber_manual_record_rounded, color: Colors.white, size: stepSize / 2),
+                child: Icon(Icons.fiber_manual_record_rounded,
+                    color: Colors.white, size: stepSize / 2),
               ),
             ],
           ),
@@ -1141,7 +1176,8 @@ class CretaStepper extends StatelessWidget {
             children: [
               Padding(
                 padding: EdgeInsets.fromLTRB(stepSize / 4 - 0.5, stepSize / 4, 0, 0),
-                child: Icon(Icons.fiber_manual_record_rounded, color: CretaColor.text[300], size: stepSize / 2),
+                child: Icon(Icons.fiber_manual_record_rounded,
+                    color: CretaColor.text[300], size: stepSize / 2),
               ),
             ],
           ),

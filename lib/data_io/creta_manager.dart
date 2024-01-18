@@ -634,12 +634,15 @@ abstract class CretaManager extends AbsExModelManager {
 
   void addRealTimeListen(String instId) {
     //print('addRealTimeListen($instanceId, $collectionId, )^^^^^^^^^^^^^^^^^^^^');
+
     instanceId = instId;
-    HycopFactory.realtime!.addListener(instanceId!, collectionId, realTimeCallback);
+    if (AccountManager.currentLoginUser.isLoginedUser) {
+      HycopFactory.realtime!.addListener(instanceId!, collectionId, realTimeCallback);
+    }
   }
 
   void removeRealTimeListen() {
-    if (instanceId != null) {
+    if (instanceId != null && AccountManager.currentLoginUser.isLoginedUser) {
       HycopFactory.realtime!.removeListener(instanceId!, collectionId);
     }
   }

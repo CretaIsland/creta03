@@ -1737,13 +1737,13 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     if (widget.subPageUrl == AppRoutes.channel) {
       //'${widget.subPageUrl}-$_selectedSubscriptionUserId-${_filterBookType.name}-${_filterBookSort.name}-${_filterPermissionType.name}';
       key =
-          '${Uri.base.query}|${_currentChannelModel?.getMid ?? ''}|${_communityChannelType.name}|${_subscriptionModelList?.length ?? -1}|${_filterBookType.name}|${_filterBookSort.name}|${_filterPermissionType.name}|$_filterSearchKeyword|${_filterSearchKeywordTime.toIso8601String()}';
+          '${CretaAccountManager.currentLoginUser.email}|${Uri.base.query}|${_currentChannelModel?.getMid ?? ''}|${_communityChannelType.name}|${_subscriptionModelList?.length ?? -1}|${_filterBookType.name}|${_filterBookSort.name}|${_filterPermissionType.name}|$_filterSearchKeyword|${_filterSearchKeywordTime.toIso8601String()}';
     } else if (widget.subPageUrl == AppRoutes.communityBook) {
       key =
-          '${CommunityRightBookPane.bookId}|${_subscriptionModelList?.length ?? -1}|${_selectedSubscriptionModel?.subscriptionChannelId ?? ''}|${_filterBookType.name}|${_filterBookSort.name}|${_filterPermissionType.name}|$_filterSearchKeyword|${_filterSearchKeywordTime.toIso8601String()}';
+          '${CretaAccountManager.currentLoginUser.email}|${CommunityRightBookPane.bookId}|${_subscriptionModelList?.length ?? -1}|${_selectedSubscriptionModel?.subscriptionChannelId ?? ''}|${_filterBookType.name}|${_filterBookSort.name}|${_filterPermissionType.name}|$_filterSearchKeyword|${_filterSearchKeywordTime.toIso8601String()}';
     } else {
       key =
-          '${Uri.base.query}|${_subscriptionModelList?.length ?? -1}|${_selectedSubscriptionModel?.subscriptionChannelId ?? ''}|${_filterBookType.name}|${_filterBookSort.name}|${_filterPermissionType.name}|$_filterSearchKeyword|${_filterSearchKeywordTime.toIso8601String()}';
+          '${CretaAccountManager.currentLoginUser.email}|${Uri.base.query}|${_subscriptionModelList?.length ?? -1}|${_selectedSubscriptionModel?.subscriptionChannelId ?? ''}|${_filterBookType.name}|${_filterBookSort.name}|${_filterPermissionType.name}|$_filterSearchKeyword|${_filterSearchKeywordTime.toIso8601String()}';
     }
     if (kDebugMode) print('_getRightPaneKey = $key');
     return GlobalObjectKey(key);
@@ -1986,6 +1986,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     }
     //resize(context);
     CommunityRightChannelPane.lastDropdownMenuCount = _getLeftDropdownMenuOnBanner().length;
+    String logoUrl = (CretaAccountManager.currentLoginUser.isLoginedUser) ? AppRoutes.intro : AppRoutes.communityHome;
     return Snippet.CretaScaffoldOfCommunity(
       //title: Text('Community page'),
       title: Row(
@@ -1993,18 +1994,23 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           SizedBox(
             width: 24,
           ),
-          Link(
-            uri: Uri.parse(AppRoutes.intro),
-            builder: (context, function) {
-              return InkWell(
-                onTap: () => Routemaster.of(context).push(AppRoutes.intro),
-                child: Image(
-                  image: AssetImage('assets/creta_logo_blue.png'),
-                  //width: 120,
-                  height: 20,
-                ),
-              );
-            },
+          Theme(
+            data: ThemeData(
+              hoverColor: Colors.transparent,
+            ),
+            child: Link(
+              uri: Uri.parse(logoUrl),
+              builder: (context, function) {
+                return InkWell(
+                  onTap: () => Routemaster.of(context).push(logoUrl),
+                  child: Image(
+                    image: AssetImage('assets/creta_logo_blue.png'),
+                    //width: 120,
+                    height: 20,
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
@@ -2016,9 +2022,14 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             bannerKey: GlobalObjectKey('${_communityChannelType.name}|${_currentChannelModel?.bannerImgUrl ?? ' '}'),
             context,
             gotoButtonPressed: () {
-              Routemaster.of(context).push(AppRoutes.studioBookGridPage);
+              if (CretaAccountManager.experienceWithoutLogin) {
+                CretaAccountManager.experienceWithoutLogin = true;
+                Routemaster.of(context).push(AppRoutes.studioBookMainPage);
+              } else {
+                Routemaster.of(context).push(AppRoutes.studioBookGridPage);
+              }
             },
-            gotoButtonTitle: '내 크레타북 관리',
+            gotoButtonTitle: CretaAccountManager.experienceWithoutLogin ? '스튜디오 체험하기' : '내 크레타북 관리',
             leftMenuItemList: _leftMenuItemList,
             bannerTitle: 'title',
             bannerDescription: 'description',

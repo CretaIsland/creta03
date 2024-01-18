@@ -73,6 +73,10 @@ class CretaLang {
   static const String forever = '영구히';
   static const String onlyOnce = '한번만';
   static const String copyOf = '의 사본';
+  static const String login = '로그인';
+  static const String signUp = '회원가입';
+  static const String home = '크레타 홈페이지로 가기';
+  static const String noAuth = '문서를 열 권한이 없습니다';
 
   static List<String> contentsTypeString = [
     "없음",
@@ -147,4 +151,6 @@ class CretaLang {
   static const String confirm = '확인';
   static const String cancel = '취소';
   static const String nodatafounded = '자료가 없습니다';
+  static const String needToLoginTitle = '로그인 필요';
+  static const String needToLogin = '로그인이 필요한 기능입니다';
 }

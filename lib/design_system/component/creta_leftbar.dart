@@ -5,7 +5,7 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:url_launcher/link.dart';
-import '../../lang/creta_lang.dart';
+//import '../../lang/creta_lang.dart';
 import '../buttons/creta_button_wrapper.dart';
 import '../buttons/creta_tapbar_button.dart';
 import '../creta_color.dart';
@@ -123,7 +123,7 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
                         builder: (context, function) {
                           return BTN.fill_gray_l_profile(
                             text: AccountManager.currentLoginUser.name,
-                            subText: CretaLang.billInfo,
+                            subText: '구독자 ${CretaAccountManager.getChannel?.followerCount ?? 0}명',//CretaLang.billInfo,
                             image: const AssetImage('assets/creta_default.png'),
                             onPressed: () {
                               if (channelId.isNotEmpty) {
