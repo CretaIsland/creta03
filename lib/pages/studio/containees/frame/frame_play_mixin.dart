@@ -215,17 +215,15 @@ mixin FramePlayMixin {
       }
       if (contentsModel == null) {
         if (_frameManager != null) {
-       
           contentsModel = _frameManager!.getFirstContents(model.mid);
         }
         if (contentsModel == null) {
           // overlay 경우일 가능성이 크다.
           //print('sdfdfsdfsdfsdfdfdffs');
           if (model.isOverlay.value == true) {
-         
             _frameManager = BookMainPage.pageManagerHolder!.findFrameManager(model.parentMid.value);
-        
-           contentsModel = _frameManager!.getFirstContents(model.mid);
+
+            contentsModel = _frameManager!.getFirstContents(model.mid);
           }
         }
       }
@@ -366,11 +364,11 @@ mixin FramePlayMixin {
   }
 
   XchangeEle getCurrencyCard(int subType) {
-    // if (subType >= 0 && subType < rateList.length) {
+    // if (subType >= 0 && subType < rateEle.length) {
     //   return XchangeEle(
-    //     baseCurrency: rateList[subType],
-    //     finalCurrency: rateList[subType],
-    //     conversion: rateList[subType],
+    //     baseCurrency: rateEle[subType],
+    //     finalCurrency: rateEle[subType],
+    //     conversion: rateEle[subType],
     //   );
     // } else {
     //   return XchangeEle(
