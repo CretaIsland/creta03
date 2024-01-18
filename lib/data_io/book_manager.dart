@@ -532,9 +532,13 @@ class BookManager extends CretaManager {
     // 쎔네일도 바꾸어야 한다.
     BookMainPage.pageManagerHolder?.toJson();
 
-    //print('BookManager.contentsUrlMap.entries=${BookManager.contentsUrlMap.entries.length}');
+    //print('skpark BookManager.contentsUrlMap.entries=${BookManager.contentsUrlMap.entries.length}');
     for (var ele in BookManager.contentsUrlMap.entries) {
       // <-- moveFile 로 변경해야함.
+      //print('skpark url=${ele.value}');
+      //print(
+      //    'skpark targetThumbnailUrl=${ele.key.thumbnailUrl != null ? ele.key.thumbnailUrl! : ""}');
+
       HycopFactory.storage!
           .copyFile(
         ele.value,

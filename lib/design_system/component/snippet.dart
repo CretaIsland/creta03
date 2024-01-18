@@ -206,7 +206,6 @@ class Snippet {
             //fgColor: CretaColor.text[700]!,
             height: 36,
             text: CretaLang.login,
-            //image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
             //image:
             //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
             textStyle: CretaFont.buttonLarge.copyWith(color: CretaColor.text[700]),
@@ -257,8 +256,6 @@ class Snippet {
                       width: 112,
                       text: CretaLang.signUp,
                       icon: Icons.arrow_forward,
-                      //image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
-                      //image:
                       //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
                       onPressed: () {
                         LoginDialog.popupDialog(
@@ -316,8 +313,7 @@ class Snippet {
                     fgColor: CretaColor.text[700]!,
                     text: AccountManager.currentLoginUser.name,
                     icon: Icons.arrow_drop_down_outlined,
-                    image: NetworkImage(
-                        'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+                    image: NetworkImage(CretaAccountManager.getUserProperty!.profileImgUrl),
                     //image:
                     //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
                     onPressed: () {
@@ -596,8 +592,7 @@ class Snippet {
                   buttonColor: CretaButtonColor.blue,
                   text: AccountManager.currentLoginUser.name,
                   icon: Icons.arrow_drop_down_outlined,
-                  image:
-                      NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+                  image: NetworkImage(CretaAccountManager.getUserProperty!.profileImgUrl),
                   onPressed: () {
                     _popupAccountMenu(
                         GlobalObjectKey('MyCretaAppBarOfStudio.BTN.fill_gray_iti_l'), context);

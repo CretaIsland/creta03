@@ -1082,10 +1082,10 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   void _resize() {
-    double pageDisplayRate = 0.7;
-    if (_bookModel!.width.value <= _bookModel!.height.value) {
-      pageDisplayRate = 0.9;
-    }
+    double pageDisplayRate = 0.8;
+    // if (_bookModel!.width.value <= _bookModel!.height.value) {
+    //   pageDisplayRate = 0.8;
+    // }
 
     if (StudioVariables.isPreview) {
       StudioVariables.topMenuBarHeight = 0;
@@ -1112,6 +1112,9 @@ class _BookMainPageState extends State<BookMainPage> {
       StudioVariables.virtualWidth = StudioVariables.workWidth * StudioVariables.applyScale;
       StudioVariables.virtualHeight = StudioVariables.workHeight * StudioVariables.applyScale;
     }
+    // print('autoScale = ${StudioVariables.autoScale}');
+    // print('workWidth = ${StudioVariables.workWidth}');
+    // print('virtualWidth = ${StudioVariables.virtualWidth}');
     scaleChanged = false;
 
     StudioVariables.availWidth = StudioVariables.virtualWidth * pageDisplayRate;
@@ -1557,29 +1560,22 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget _scrollArea(BuildContext context) {
-    //verticalScroll ??= ScrollController(initialScrollOffset: StudioVariables.workHeight * 0.1);
-    //horizontalScroll ??= ScrollController(initialScrollOffset: StudioVariables.workWidth * 0.1);
+    bool isPageExist = true;
 
-    //return Consumer<ContaineeNotifier>(builder: (context, notifier, child) {
-    double scrollWidth = getScrollWidth();
-    //double marginX = (StudioVariables.workWidth - StudioVariables.virtualWidth) / 2;
-    double marginX = (scrollWidth - StudioVariables.virtualWidth) / 2;
+    //double scrollWidth = _getScrollWidth();
+    //double scrollWidth = StudioVariables.workWidth;
+    double marginX = (StudioVariables.workWidth - StudioVariables.virtualWidth) / 2;
     double marginY = (StudioVariables.workHeight - StudioVariables.virtualHeight) / 2;
     if (marginX < 0) marginX = 0;
     if (marginY < 0) marginY = 0;
+    // double totalWidth =
+    //     StudioVariables.virtualWidth + LayoutConst.rightMenuWidth + LayoutConst.leftMenuWidth;
+    // double scrollWidth = 0;
+    // double marginX = 0;
+    // double marginY = 0;
+    double totalWidth = StudioVariables.virtualWidth;
 
-    bool isPageExist = true;
-
-    double totalWidth =
-        StudioVariables.virtualWidth + LayoutConst.rightMenuWidth + LayoutConst.leftMenuWidth;
-
-    // if (BookMainPage.selectedStick != LeftMenuEnum.None) {
-    //   return Positioned(
-    //     left: LayoutConst.leftMenuWidth,
-    //     top: 0,
-    //     child: scrollBox,
-    //   );
-    // }
+    //print('margin=$marginX, $marginY');
 
     return RawKeyboardListener(
       autofocus: true,
@@ -1588,36 +1584,42 @@ class _BookMainPageState extends State<BookMainPage> {
       child: Center(
           child: StudioVariables.isPreview
               ? noneScrollBox(isPageExist)
-              : scrollBox(totalWidth, scrollWidth, marginX, marginY)),
+              : scrollBox(totalWidth, marginX, marginY)),
     );
     //});
   }
 
-  Widget scrollBox(double totalWidth, double scrollWidth, double marginX, double marginY) {
+  Widget scrollBox(double totalWidth, double marginX, double marginY) {
+    //print('----------scrollbaox---------------');
+
+    double initialOffsetX = (StudioVariables.virtualWidth - StudioVariables.workWidth) / 2;
+    if (initialOffsetX < 0) {
+      initialOffsetX = 0;
+    }
+    double initialOffsetY = (StudioVariables.virtualHeight - StudioVariables.workHeight) / 2;
+    if (initialOffsetY < 0) {
+      initialOffsetY = 0;
+    }
+
     return Container(
-      width: StudioVariables.workWidth, //scrollWidth,
+      width: StudioVariables.workWidth,
       height: StudioVariables.workHeight,
       color: LayoutConst.studioBGColor,
-      //color: Colors.green,
+      //color: Colors.greenAccent,
       child: Center(
         child: CrossScrollBar(
           key: ValueKey('CrossScrollBar_${_bookModel!.mid}'),
-          //key: GlobalKey(),
           width: totalWidth,
-          //width: StudioVariables.workWidth,
           marginX: marginX,
           marginY: marginY,
-          // initialScrollOffsetX:
-          //     horizontalScrollOffset ?? (totalWidth - StudioVariables.workWidth) * 0.5,
-          // initialScrollOffsetY: vericalScrollOffset ?? StudioVariables.workHeight * 0.1,
           currentHorizontalScrollBarOffset: (value) {
             StudioVariables.horizontalScrollOffset = value;
           },
           currentVerticalScrollBarOffset: (value) {
             StudioVariables.verticalScrollOffset = value;
           },
-          //initialScrollOffsetX: BookMainPage.pageOffset.dx - 30,
-          initialScrollOffsetX: (StudioVariables.workWidth - scrollWidth) / 2,
+          initialScrollOffsetX: initialOffsetX,
+          initialScrollOffsetY: initialOffsetY,
           child: Center(child: Consumer<PageManager>(builder: (context, pageManager, child) {
             pageManager.reOrdering();
             PageModel? pageModel = pageManager.getSelected() as PageModel?;
@@ -1725,7 +1727,8 @@ class _BookMainPageState extends State<BookMainPage> {
     );
   }
 
-  double getScrollWidth() {
+  // ignore: unused_element
+  double _getScrollWidth() {
     double retval = StudioVariables.workWidth;
     if (BookMainPage.containeeNotifier!.selectedClass != ContaineeEnum.None) {
       retval = retval - LayoutConst.rightMenuWidth;
@@ -1785,7 +1788,6 @@ class _BookMainPageState extends State<BookMainPage> {
     );
   }
 
-  // ignore: unused_element
   Widget _drawPrevPage(BuildContext context, PageManager pageManager) {
     logger.fine('_drawPrevPage Invoked ***** ${LinkParams.invokerMid}');
     if (LinkParams.invokerMid == null) {

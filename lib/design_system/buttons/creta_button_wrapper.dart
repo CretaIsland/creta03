@@ -2,6 +2,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
+import '../../common/creta_utils.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../component/snippet.dart';
 import '../creta_color.dart';
@@ -612,9 +613,15 @@ class BTN {
     required String subText,
     required ImageProvider image,
     required Function onPressed,
-    double? width = 219,
+    double width = 219,
     CretaButtonSidePadding? sidePadding,
   }) {
+    double textWidth = CretaUtils.calculateTextSize(
+      text,
+      CretaFont.titleLarge,
+      width - 24 - 52 - 20,
+    ).width;
+
     return CretaButton(
       width: width,
       height: 76,
@@ -636,11 +643,14 @@ class BTN {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(text, style: CretaFont.titleLarge.copyWith(color: CretaColor.text[700]!)),
-                  ],
+                child: SizedBox(
+                  width: textWidth,
+                  child: Text(
+                    text,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    style: CretaFont.titleLarge.copyWith(color: CretaColor.text[700]!),
+                  ),
                 ),
               ),
               Padding(
@@ -671,6 +681,11 @@ class BTN {
     double width = 170,
     CretaButtonSidePadding? sidePadding,
   }) {
+    double textWidth = CretaUtils.calculateTextSize(
+      text,
+      CretaFont.buttonLarge,
+      width - 12 - 48 - 20 - 12, // 12는 이유를 모르겠음..어쩃든 12를 더 띠어야 함.
+    ).width;
     return CretaButton(
       key: key,
       width: width,
@@ -680,20 +695,20 @@ class BTN {
       onPressed: onPressed,
       sidePadding: sidePadding,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 8.0),
+            padding: const EdgeInsets.only(left: 12.0),
             child: CircleAvatar(
               radius: 12,
               backgroundImage: image,
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Center(
               child: SizedBox(
-                width: width - 12 - 44 - 20,
+                width: textWidth,
                 child: Text(
                   text,
                   textAlign: TextAlign.center,
@@ -703,9 +718,9 @@ class BTN {
               ),
             ),
           ),
-          Expanded(child: Container()),
+          //Expanded(child: Container()),
           Padding(
-            padding: const EdgeInsets.only(right: 8.0),
+            padding: const EdgeInsets.only(right: 12.0),
             child: Icon(
               icon,
               size: 20,
