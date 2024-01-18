@@ -535,22 +535,24 @@ class BookManager extends CretaManager {
     //print('skpark BookManager.contentsUrlMap.entries=${BookManager.contentsUrlMap.entries.length}');
     for (var ele in BookManager.contentsUrlMap.entries) {
       // <-- moveFile 로 변경해야함.
-      //print('skpark url=${ele.value}');
-      //print(
-      //    'skpark targetThumbnailUrl=${ele.key.thumbnailUrl != null ? ele.key.thumbnailUrl! : ""}');
+      print('skpark url=${ele.value}');
+      print(
+          'skpark targetThumbnailUrl=${ele.key.thumbnailUrl != null ? ele.key.thumbnailUrl! : ""}');
 
       Map<String, String> urlParse = HycopFactory.storage!.parseFileUrl(ele.value);
-      HycopFactory.storage!.copyFile(urlParse["bucketId"]!, urlParse["fileId"]!).then((newFileModel) {
+      HycopFactory.storage!
+          .copyFile(urlParse["bucketId"]!, urlParse["fileId"]!)
+          .then((newFileModel) {
         if (newFileModel != null) {
           ele.key.remoteUrl = newFileModel.url;
           ele.key.thumbnailUrl = newFileModel.thumbnailUrl;
-          //print('skpark ele.key.remoteUrl=${ele.key.remoteUrl}');
+          print('skpark ele.key.remoteUrl=${ele.key.remoteUrl}');
           setToDB(ele.key);
         }
         return null;
       });
       // 20240118-nr.han 수정. copyFile의 파라미터가 바뀌면서 사용방법이 바뀌었습니다.
-	  // 아래 주석처리된 코드가 이전 코드고, 위에 있는 코드가 변경사항에 맞춘 코드입니다.
+      // 아래 주석처리된 코드가 이전 코드고, 위에 있는 코드가 변경사항에 맞춘 코드입니다.
       // HycopFactory.storage!
       //     .copyFile(
       //   ele.value,

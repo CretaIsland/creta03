@@ -302,7 +302,9 @@ class _DraggableStickersState extends State<DraggableStickers> {
             //print('editor selected');
             return Stack(
               children: [
-                _dragableResizable(sticker, frameModel, isVerticalResiable, isHorizontalResiable),
+                IgnorePointer(
+                    child: _dragableResizable(
+                        sticker, frameModel, isVerticalResiable, isHorizontalResiable)),
                 InstantEditor(
                     key: widget.frameManager!
                         .registerInstantEditorrKey(sticker.pageMid, frameModel.mid),
@@ -313,7 +315,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                       setState(
                         () {
                           //_isEditorAlreadyExist = false;
-                          frameModel.isEditMode = false;
+                          frameModel.setIsEditMode(false);
                         },
                       );
                       //widget.frameManager?.notify();
@@ -542,7 +544,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
         // Text Editor
         setState(
           () {
-            frameModel.isEditMode = true;
+            frameModel.setIsEditMode(true);
             // 편집모드에서도, 선택했던 프레임이 다시 선택되어 있어야 한다.
             BookMainPage.containeeNotifier!.setFrameClick(true);
             DraggableStickers.frameSelectNotifier?.set(sticker.id);
