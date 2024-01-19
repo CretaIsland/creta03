@@ -179,10 +179,8 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    _screenWidth == null ||
-            (_screenWidth != null && _screenWidth! < MediaQuery.sizeOf(context).width)
-        ? _screenWidth = MediaQuery.sizeOf(context).width
-        : _screenWidth = _screenWidth;
+
+    _screenWidth = _screenWidth == null ? 1600 : _screenWidth! < MediaQuery.sizeOf(context).width ? MediaQuery.sizeOf(context).width : _screenWidth;
 
     return Scaffold(
       backgroundColor: Colors.white,

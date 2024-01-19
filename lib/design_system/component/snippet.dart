@@ -26,7 +26,6 @@ import '../../routes.dart';
 import '../creta_color.dart';
 import '../creta_font.dart';
 import '../buttons/creta_button_wrapper.dart';
-import '../menu/creta_drop_down.dart';
 import '../menu/creta_popup_menu.dart';
 import '../../pages/login/login_dialog.dart';
 import '../../pages/login/creta_account_manager.dart';
@@ -350,45 +349,45 @@ class Snippet {
       title: title,
       toolbarHeight: 60,
       actions: [
-        SizedBox(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 44,
-                height: 36,
-                child: Icon(
-                  Icons.notifications_outlined,
-                  color: Colors.grey[700],
-                  size: 20,
-                ),
-              )
-            ],
-          ),
-        ),
-        SizedBox(
-            child: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                  decoration:
-                      BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
-                  clipBehavior: Clip.hardEdge,
-                  child: Container(color: Colors.green))
-            ],
-          ),
-        )),
-        SizedBox(width: 8),
-        CretaDropDown(
-            width: 130,
-            height: 40,
-            items: const ["사용자 닉네임1", "사용자 닉네임2", "사용자 닉네임3"],
-            defaultValue: "사용자 닉네임1",
-            onSelected: (value) {
-              logger.finest(value);
-            }),
-        SizedBox(width: 40)
+        // SizedBox(
+        //   child: Column(
+        //     mainAxisAlignment: MainAxisAlignment.center,
+        //     children: [
+        //       SizedBox(
+        //         width: 44,
+        //         height: 36,
+        //         child: Icon(
+        //           Icons.notifications_outlined,
+        //           color: Colors.grey[700],
+        //           size: 20,
+        //         ),
+        //       )
+        //     ],
+        //   ),
+        // ),
+        // SizedBox(
+        //     child: Center(
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.center,
+        //     children: [
+        //       Container(
+        //           decoration:
+        //               BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
+        //           clipBehavior: Clip.hardEdge,
+        //           child: Container(color: Colors.green))
+        //     ],
+        //   ),
+        // )),
+        // SizedBox(width: 8),
+        // CretaDropDown(
+        //     width: 130,
+        //     height: 40,
+        //     items: const ["사용자 닉네임1", "사용자 닉네임2", "사용자 닉네임3"],
+        //     defaultValue: "사용자 닉네임1",
+        //     onSelected: (value) {
+        //       logger.finest(value);
+        //     }),
+        //SizedBox(width: 40)
       ],
     );
   }
