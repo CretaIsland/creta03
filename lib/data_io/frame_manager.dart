@@ -291,6 +291,17 @@ class FrameManager extends CretaManager {
 
   Map<String, ContentsManager> contentsManagerMap = {};
 
+  int updateContents(ContentsModel model) {
+    int retval = 0;
+    for (ContentsManager contentsManager in contentsManagerMap.values) {
+      if (contentsManager.updateModel(model)) {
+        //print('${model.name} matched !!!');
+        retval++;
+      }
+    }
+    return retval;
+  }
+
   bool _initFrameComplete = false;
   bool get initFrameComplete => _initFrameComplete;
 

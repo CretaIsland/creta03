@@ -545,6 +545,8 @@ class BookManager extends CretaManager {
         if (newFileModel != null) {
           ele.key.remoteUrl = newFileModel.url;
           ele.key.thumbnailUrl = newFileModel.thumbnailUrl;
+
+          BookMainPage.pageManagerHolder?.updateContents(ele.key);
           //print('skpark ele.key.remoteUrl=${ele.key.remoteUrl}');
           setToDB(ele.key);
         }

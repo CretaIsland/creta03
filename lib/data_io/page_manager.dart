@@ -12,6 +12,7 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/database/abs_database.dart';
 import '../lang/creta_lang.dart';
 import '../model/book_model.dart';
+import '../model/contents_model.dart';
 import '../model/creta_model.dart';
 import '../model/frame_model.dart';
 import '../model/page_model.dart';
@@ -33,6 +34,15 @@ class PageManager extends CretaManager {
   Map<String, FrameManager?> frameManagerMap = {};
   //Map<String, GlobalObjectKey> thumbKeyMap = {};
   Map<String, GlobalObjectKey> pageKeyMap = {};
+
+  int updateContents(ContentsModel model) {
+    int retval = 0;
+    for (FrameManager? frameManager in frameManagerMap.values) {
+      if (frameManager == null) continue;
+      retval += frameManager.updateContents(model);
+    }
+    return retval;
+  }
 
 /////////////////////////////////////////////////////////
 // thumnKeyHandler area start
@@ -749,7 +759,7 @@ class PageManager extends CretaManager {
   }
 
   String toJson() {
-     BookManager.contentsUrlMap.clear();
+    BookManager.contentsUrlMap.clear();
     if (getAvailLength() == 0) {
       return ',\n\t"pages" : []\n';
     }
