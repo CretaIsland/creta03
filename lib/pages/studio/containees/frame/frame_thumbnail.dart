@@ -346,6 +346,10 @@ class FrameThumbnailState extends CretaState<FrameThumbnail> with ContaineeMixin
       return Image.asset('quote_BG.jpg');
     }
 
+    if (model.isCurrencyXchangeType()) {
+      return Image.asset('money-exchange.png');
+    }
+
     // if (_contentsManager!.length() == 0) {
     //   // print('No contents in this frame');
     //   return const SizedBox.shrink();

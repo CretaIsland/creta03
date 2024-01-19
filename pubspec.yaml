@@ -247,6 +247,7 @@ flutter:
 
     - assets/social/
     - assets/giphy_official_logo.png
+    - assets/money-exchange.png
 
     - assets/landing_page/image/arrow_1.png
     - assets/landing_page/image/arrow_2.png

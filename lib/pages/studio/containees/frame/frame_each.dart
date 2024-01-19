@@ -619,8 +619,7 @@ class FrameEachState extends CretaState<FrameEach> with ContaineeMixin, FramePla
     return ClipRect(
       clipBehavior: Clip.hardEdge,
       child: ContentsMain(
-        key: frameManager!
-                .registerContentMainKeyHandlerKey(widget.pageModel.mid, widget.model.mid),
+        key: frameManager!.registerContentMainKeyHandlerKey(widget.pageModel.mid, widget.model.mid),
         frameModel: model,
         frameOffset: widget.frameOffset,
         pageModel: widget.pageModel,

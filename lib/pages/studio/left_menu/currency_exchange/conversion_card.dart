@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/creta_color.dart';
+import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
@@ -31,9 +32,10 @@ class _ConversionCardState extends State<ConversionCard> with FramePlayMixin {
   String dropDownValue1 = "USD";
   String dropDownValue2 = "KRW";
   String conversion = '';
-
-  List<String> defaultBasedCurrency = ["USD", "GBP", "JPY", "EUR", "CNY", "VND"];
-  List<String> defaultFinalCurrency = ["KRW", "KRW", "KRW", "KRW", "KRW", "KRW"];
+  // List<String> defaultBasedCurrency = ["USD", "GBP", "JPY", "EUR", "CNY", "VND"];
+  // List<String> defaultFinalCurrency = ["KRW", "KRW", "KRW", "KRW", "KRW", "KRW"];
+  List<String> defaultBasedCurrency = CretaStudioLang.firstCurrency;
+  List<String> defaultFinalCurrency = CretaStudioLang.secondCurrency;
 
   Map<String, String> conversionResults = {};
   bool isLoading = false;
@@ -141,9 +143,10 @@ class _ConversionCardState extends State<ConversionCard> with FramePlayMixin {
                 String baseCurrency = defaultBasedCurrency[index];
                 String finalCurrency = defaultFinalCurrency[index];
                 XchangeEle xChangeEle = XchangeEle(
-                    baseCurrency: baseCurrency,
-                    finalCurrency: finalCurrency,
-                    conversion: conversionResults[baseCurrency] ?? '');
+                  baseCurrency: baseCurrency,
+                  finalCurrency: finalCurrency,
+                );
+                // conversion: conversionResults[baseCurrency] ?? '');
                 return GestureDetector(
                   onLongPressDown: (d) {
                     toggleSelectedState(index);
@@ -167,7 +170,6 @@ class _ConversionCardState extends State<ConversionCard> with FramePlayMixin {
               },
             ),
           ),
-          // const SizedBox(height: 20),
           const Center(child: Text('Currency Rates by Open Exchange Rates')),
         ],
       ),

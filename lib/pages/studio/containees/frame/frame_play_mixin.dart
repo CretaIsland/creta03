@@ -364,23 +364,11 @@ mixin FramePlayMixin {
   }
 
   XchangeEle getCurrencyCard(int subType) {
-    // if (subType >= 0 && subType < rateEle.length) {
-    //   return XchangeEle(
-    //     baseCurrency: rateEle[subType],
-    //     finalCurrency: rateEle[subType],
-    //     conversion: rateEle[subType],
-    //   );
-    // } else {
-    //   return XchangeEle(
-    //     baseCurrency: 'USD',
-    //     finalCurrency: 'KRW',
-    //     conversion: '123.00',
-    //   );
-    // }
+    List<String> frontEle = CretaStudioLang.firstCurrency;
+    List<String> latterEle = CretaStudioLang.secondCurrency;
     return XchangeEle(
-      baseCurrency: 'USD',
-      finalCurrency: 'KRW',
-      conversion: '123.00',
+      baseCurrency: frontEle[subType],
+      finalCurrency: latterEle[subType],
     );
   }
 

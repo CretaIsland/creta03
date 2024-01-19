@@ -130,6 +130,24 @@ class CretaStudioLang {
     "코멘트",
   ];
 
+  static List<String> firstCurrency = [
+    "USD",
+    "GBP",
+    "JPY",
+    "EUR",
+    "CNY",
+    "VND",
+  ];
+
+  static List<String> secondCurrency = [
+    "KRW",
+    "KRW",
+    "KRW",
+    "KRW",
+    "KRW",
+    "KRW",
+  ];
+
   static List<IconData> menuIconList = [
     Icons.library_books_outlined, //Icons.dynamic_feed_outlined, //MaterialIcons.dynamic_feed,
     Icons.insert_drive_file_outlined, //MaterialIcons.insert_drive_file,
