@@ -749,6 +749,7 @@ class PageManager extends CretaManager {
   }
 
   String toJson() {
+     BookManager.contentsUrlMap.clear();
     if (getAvailLength() == 0) {
       return ',\n\t"pages" : []\n';
     }

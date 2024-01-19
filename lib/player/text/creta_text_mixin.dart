@@ -119,11 +119,13 @@ mixin CretaTextMixin {
       (frameWidth, frameHeight) = CretaUtils.getTextBoxSize(
         uri,
         model.autoSizeType.value,
+        
         realSize.width,
         realSize.height,
         style,
         model.align.value,
         padding,
+        model.outLineWidth.value,
       );
       //print('new frame size $frameHeight');
       //realSize = Size(frameWidth, frameHeight);

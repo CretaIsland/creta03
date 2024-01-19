@@ -58,6 +58,7 @@ class InstantEditorState extends CretaState<InstantEditor> {
   // double _textLineHeight = 0;
   // double _textLineWidth = 0;
   TextStyle? _style;
+  double _outlineWidth = 0;
   TextAlign? _align;
   ContentsManager? _contentsManager;
   double _padding = 0;
@@ -237,6 +238,8 @@ class InstantEditorState extends CretaState<InstantEditor> {
     _style = style;
     //}
     _align = model.align.value;
+
+    _outlineWidth = model.outLineWidth.value;
 
     // print('Editor sticker.postion=${widget.sticker.position}');
     // print('Editor  BookMainPage.pageOffset=${BookMainPage.pageOffset}');
@@ -629,6 +632,7 @@ class InstantEditorState extends CretaState<InstantEditor> {
       _style,
       _align,
       _padding,
+      _outlineWidth,
     );
 
     if (autoSizeType == AutoSizeType.noAutoSize || autoSizeType == AutoSizeType.autoFrameHeight) {

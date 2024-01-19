@@ -492,6 +492,7 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
           style,
           contentsModel.align.value,
           StudioConst.defaultTextPadding * StudioVariables.applyScale,
+          contentsModel.outLineWidth.value,
         );
         //print('AutoSizeType.autoFrameSize after  $frameHeight --> $newFrameHeight ($uri)');
         //model.width.set(frameWidth / StudioVariables.applyScale, noUndo: true);

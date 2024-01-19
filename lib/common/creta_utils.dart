@@ -807,7 +807,8 @@ class CretaUtils {
     double boxHeight,
     TextStyle? style,
     TextAlign? align,
-    double padding, {
+    double padding,
+    double outlineWidth, {
     double adjust = 2.0,
   }) {
     //print('text lenght = ${text.length}----------------');
@@ -854,8 +855,9 @@ class CretaUtils {
       textLineCount += ele;
     }
 
-    double width = textLineWidth + (padding * 2);
-    double height = (textLineHeight * textLineCount.toDouble()) + (padding * 2);
+    double width = textLineWidth + (padding * 2) + (outlineWidth * 2);
+    double height =
+        (textLineHeight * textLineCount.toDouble()) + (padding * 2) + (outlineWidth * 2);
 
     //print('textLineCount=$textLineCount, textLineHeight=$textLineHeight, height=$height');
 
@@ -1099,6 +1101,4 @@ class CretaUtils {
 
     return textPainter.size;
   }
-
-  
 }

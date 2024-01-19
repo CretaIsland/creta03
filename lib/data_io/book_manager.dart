@@ -315,7 +315,6 @@ class BookManager extends CretaManager {
 
   String? toJson(PageManager? pageManager, BookModel book) {
     String bookStr = book.toJson();
-    BookManager.contentsUrlMap.clear();
     if (pageManager != null) {
       bookStr += pageManager.toJson();
     }
@@ -392,9 +391,9 @@ class BookManager extends CretaManager {
       }; // 'appwrite' or 'firebase'
 
       Response? res = await CretaUtils.post(url, body, onError: (code) {
-        showSnackBar(context, '${CretaStudioLang.zipCompleteFailed}($code)');
+        showSnackBar(context, '1.${CretaStudioLang.zipCompleteFailed}($code)');
       }, onException: (e) {
-        showSnackBar(context, '${CretaStudioLang.zipCompleteFailed}($e)');
+        showSnackBar(context, '2.${CretaStudioLang.zipCompleteFailed}($e)');
       });
 
       if (res == null) {
@@ -407,11 +406,11 @@ class BookManager extends CretaManager {
       String? fileId = responseBody['fileId']; // API 응답에서 URL 추출
 
       if (status == null || status != 'success') {
-        showSnackBar(context, '${CretaStudioLang.zipCompleteFailed}(status=$status)');
+        showSnackBar(context, '3.${CretaStudioLang.zipCompleteFailed}(status=$status)');
         return;
       }
       if (fileId == null || fileId.isEmpty) {
-        showSnackBar(context, '${CretaStudioLang.zipCompleteFailed}($fileId is null)');
+        showSnackBar(context, '4.${CretaStudioLang.zipCompleteFailed}($fileId is null)');
         return;
       }
 
@@ -532,21 +531,21 @@ class BookManager extends CretaManager {
     // 쎔네일도 바꾸어야 한다.
     BookMainPage.pageManagerHolder?.toJson();
 
-    print('skpark BookManager.contentsUrlMap.entries=${BookManager.contentsUrlMap.entries.length}');
+    //print('skpark BookManager.contentsUrlMap.entries=${BookManager.contentsUrlMap.entries.length}');
     for (var ele in BookManager.contentsUrlMap.entries) {
       // <-- moveFile 로 변경해야함.
-      print('skpark url=${ele.value}');
-      print(
-          'skpark targetThumbnailUrl=${ele.key.thumbnailUrl != null ? ele.key.thumbnailUrl! : ""}');
+      //print('skpark url=${ele.value}');
+      //print(
+      //    'skpark targetThumbnailUrl=${ele.key.thumbnailUrl != null ? ele.key.thumbnailUrl! : ""}');
 
       Map<String, String> urlParse = HycopFactory.storage!.parseFileUrl(ele.value);
       HycopFactory.storage!
-          .copyFile(urlParse["bucketId"]!, urlParse["fileId"]!)
+          .moveFile(urlParse["bucketId"]!, urlParse["fileId"]!)
           .then((newFileModel) {
         if (newFileModel != null) {
           ele.key.remoteUrl = newFileModel.url;
           ele.key.thumbnailUrl = newFileModel.thumbnailUrl;
-          print('skpark ele.key.remoteUrl=${ele.key.remoteUrl}');
+          //print('skpark ele.key.remoteUrl=${ele.key.remoteUrl}');
           setToDB(ele.key);
         }
         return null;
