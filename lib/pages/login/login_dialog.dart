@@ -25,7 +25,7 @@ import '../../model/app_enums.dart';
 import '../../model/user_property_model.dart';
 import '../../model/team_model.dart';
 import '../../model/channel_model.dart';
-//import 'creta_account_manager.dart';
+import '../../common/creta_utils.dart';
 
 enum LoginPageState {
   login, // 로그인
@@ -345,10 +345,10 @@ class _LoginDialogState extends State<LoginDialog> {
       return;
     }
 
-    AccountManager.resetPassword(email).then((value) {
-      //
-      // success
-      //
+    AccountManager.resetPassword(email).then((value) async {
+      String userId = value.$1;
+      String secret = value.$2;
+      CretaUtils.sendResetPasswordEmail(context, email, userId, secret);
     }).onError((error, stackTrace) {
       String errMsg;
       if (error is HycopException) {
