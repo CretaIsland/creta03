@@ -1986,7 +1986,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     }
     //resize(context);
     CommunityRightChannelPane.lastDropdownMenuCount = _getLeftDropdownMenuOnBanner().length;
-    String logoUrl = (CretaAccountManager.currentLoginUser.isLoginedUser) ? AppRoutes.intro : AppRoutes.communityHome;
+    String logoUrl = (CretaAccountManager.currentLoginUser.isLoginedUser) ? AppRoutes.communityHome : AppRoutes.intro;
     return Snippet.CretaScaffoldOfCommunity(
       //title: Text('Community page'),
       title: Row(

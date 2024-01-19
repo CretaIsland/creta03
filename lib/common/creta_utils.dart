@@ -1101,4 +1101,37 @@ class CretaUtils {
 
     return textPainter.size;
   }
+
+  static Future<bool> sendResetPasswordEmail(
+      BuildContext context,
+      String email,
+      String userId,
+      String secret,
+      ) async {
+    String base = Uri.base.origin;
+    //print('---------------base=$base');
+
+    String url = '${CretaAccountManager.getEnterprise!.mediaApiUrl}/sendEmail';
+    String option = '''{
+        "subject": "[크레타] 계정의 비밀번호 초기화 요청이 있습니다",        
+        "content": "비밀번호 초기화를 원하시면 아래 링크를 클릭하시고\\n그렇지 않으시면 무시하세요.\\n\\n$base${AppRoutes.resetPasswordConfirm}?userId=$userId&secret=$secret\\n\\n크레타 팀으로부터."
+    }''';
+    Map<String, dynamic> body = {
+      "receiverEmail": ['"$email"'], // 수신인
+      "emailType": '"resetPassword"',
+      "emailOption": option,
+    };
+
+    Response? res = await CretaUtils.post(url, body, onError: (code) {
+      showSnackBar(context, '${CretaStudioLang.inviteEmailFailed}($code)');
+    }, onException: (e) {
+      showSnackBar(context, '${CretaStudioLang.inviteEmailFailed}($e)');
+    });
+
+    if (res != null) {
+      showSnackBar(context, '비밀벊');
+      return true;
+    }
+    return false;
+  }
 }
