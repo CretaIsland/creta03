@@ -1,5 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/common/undo/undo.dart';
@@ -169,7 +171,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
             pageModel: widget.page,
           ),
           _pageDropZone(widget.book.mid),
-          if (StudioVariables.isPreview == false) _pageController(),
+          if (StudioVariables.isPreview == false && StudioVariables.applyScale >= 0.245)
+            _pageController(),
           for (final sticker in stickers) _drawEachStiker(sticker),
           if (StudioVariables.isPreview == false) _drawMiniMenu(),
         ],
@@ -178,90 +181,99 @@ class _DraggableStickersState extends State<DraggableStickers> {
   }
 
   // 페이지 footer , header 부분
+  // _pageController 는 안쓰는 걸로 !!!
+  // ignore: unused_element
   Widget _pageController() {
     int pageIndex = BookMainPage.pageManagerHolder!.getPageIndex(widget.page.mid);
     return Align(
       alignment: Alignment.center,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: widget.pageWidth,
-            height: 36,
-            padding: const EdgeInsets.only(bottom: 8.0),
-            // StudioConst.pageControlHeight = 32.0
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  width: 360 * StudioVariables.applyScale,
-                  child: Text(
-                      'P ${(pageIndex + 1).toString().padLeft(2, '0')} | ${widget.page.name.value}',
-                      overflow: TextOverflow.ellipsis,
-                      style: CretaFont.titleSmall),
-                ),
-                BTN.fill_gray_i_s(
-                  iconSize: 16,
-                  bgColor: LayoutConst.studioBGColor,
-                  onPressed: () {
-                    BookMainPage.pageManagerHolder?.gotoPrev();
-                  },
-                  icon: Icons.keyboard_arrow_up_outlined,
-                ),
-                SizedBox(
-                  width: 360 * StudioVariables.applyScale,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      BTN.fill_gray_i_s(
-                          iconSize: 16,
-                          bgColor: LayoutConst.studioBGColor,
-                          tooltip: CretaStudioLang.copy,
-                          tooltipBg: CretaColor.text[700]!,
-                          icon: Icons.content_copy_outlined,
-                          onPressed: () {
-                            BookMainPage.pageManagerHolder?.copyPage(widget.page);
-                            setState(() {});
-                          }),
-                      BTN.fill_gray_image_m(
-                        iconSize: 16,
-                        buttonColor: CretaButtonColor.transparent,
-                        tooltip: CretaStudioLang.tooltipDelete,
-                        tooltipBg: CretaColor.text[700]!,
-                        iconImageFile: "assets/delete.svg",
-                        onPressed: () {
-                          // Delete Page
-                          logger.fine('remove page');
-                          BookMainPage.pageManagerHolder?.removePage(widget.page);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          RepaintBoundary(
-            child: IgnorePointer(
-              child: Container(
-                color: Colors.transparent,
-                width: widget.pageWidth,
-                height: widget.pageHeight,
+      child: SizedBox(
+        width: widget.pageWidth,
+        height: widget.pageHeight + 2 * 36,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Positioned(
+              top: 16,
+              left: 2,
+              child: SizedBox(
+                width: 360 * StudioVariables.applyScale,
+                child: Text(
+                    //'P ${(pageIndex + 1).toString().padLeft(2, '0')} | ${widget.page.name.value}',
+                    'Page ${(pageIndex + 1).toString().padLeft(2, '0')}',
+                    overflow: TextOverflow.ellipsis,
+                    style: CretaFont.titleSmall),
               ),
             ),
-          ),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
+            Positioned(
+              top: 0,
               child: BTN.fill_gray_i_s(
                 iconSize: 16,
                 bgColor: LayoutConst.studioBGColor,
                 onPressed: () {
-                  BookMainPage.pageManagerHolder?.gotoNext();
+                  BookMainPage.pageManagerHolder?.gotoPrev();
                 },
-                icon: Icons.keyboard_arrow_down_outlined,
+                icon: Icons.keyboard_arrow_up_outlined,
               ),
             ),
+            // RepaintBoundary(
+            //   child: IgnorePointer(
+            //     child: Container(
+            //       //color: Colors.red.withOpacity(0.1),
+            //       color: Colors.transparent,
+            //       width: widget.pageWidth,
+            //       height: widget.pageHeight,
+            //     ),
+            //   ),
+            // ),
+            Positioned(
+              top: widget.pageHeight + 36,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: BTN.fill_gray_i_s(
+                  iconSize: 16,
+                  bgColor: LayoutConst.studioBGColor,
+                  onPressed: () {
+                    BookMainPage.pageManagerHolder?.gotoNext();
+                  },
+                  icon: Icons.keyboard_arrow_down_outlined,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ignore: unused_element
+  Widget _pageButtons() {
+    return SizedBox(
+      width: max<double>(360 * StudioVariables.applyScale, 60),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          BTN.fill_gray_i_s(
+              iconSize: 16,
+              bgColor: LayoutConst.studioBGColor,
+              tooltip: CretaStudioLang.copy,
+              tooltipBg: CretaColor.text[700]!,
+              icon: Icons.content_copy_outlined,
+              onPressed: () {
+                BookMainPage.pageManagerHolder?.copyPage(widget.page);
+                setState(() {});
+              }),
+          BTN.fill_gray_image_m(
+            iconSize: 16,
+            buttonColor: CretaButtonColor.transparent,
+            tooltip: CretaStudioLang.tooltipDelete,
+            tooltipBg: CretaColor.text[700]!,
+            iconImageFile: "assets/delete.svg",
+            onPressed: () {
+              // Delete Page
+              logger.fine('remove page');
+              BookMainPage.pageManagerHolder?.removePage(widget.page);
+            },
           ),
         ],
       ),
@@ -301,7 +313,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                       setState(
                         () {
                           //_isEditorAlreadyExist = false;
-                          frameModel.isEditMode = false;
+                          frameModel.setIsEditMode(false);
                         },
                       );
                       //widget.frameManager?.notify();
@@ -530,7 +542,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
         // Text Editor
         setState(
           () {
-            frameModel.isEditMode = true;
+            frameModel.setIsEditMode(true);
             // 편집모드에서도, 선택했던 프레임이 다시 선택되어 있어야 한다.
             BookMainPage.containeeNotifier!.setFrameClick(true);
             DraggableStickers.frameSelectNotifier?.set(sticker.id);

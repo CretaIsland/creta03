@@ -44,6 +44,19 @@ class _CrossScrollBarState extends State<CrossScrollBar> {
   Offset? initHandToolPoint;
 
   @override
+  void didUpdateWidget(CrossScrollBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialScrollOffsetX != widget.initialScrollOffsetX) {
+      //print('initialScrollOffsetX changed ${widget.initialScrollOffsetX}');
+      horizontalScroll.jumpTo(widget.initialScrollOffsetX);
+    }
+    if (oldWidget.initialScrollOffsetY != widget.initialScrollOffsetY) {
+      //print('initialScrollOffsetY changed {widget.initialScrollOffsetY}');
+      verticalScroll.jumpTo(widget.initialScrollOffsetY);
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
 

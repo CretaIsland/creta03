@@ -208,7 +208,6 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
               width: StudioVariables.virtualWidth,
               height: StudioVariables.virtualHeight,
               color: LayoutConst.studioBGColor,
-              //color: Colors.amber,
               child: Center(
                 child: StudioVariables.isHandToolMode == false
                     ? GestureDetector(

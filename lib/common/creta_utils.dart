@@ -1099,4 +1099,6 @@ class CretaUtils {
 
     return textPainter.size;
   }
+
+  
 }

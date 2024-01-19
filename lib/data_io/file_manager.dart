@@ -19,7 +19,7 @@ class FileManager extends ChangeNotifier {
     debugPrint("----Start obtaining image list----");
     imgFileList = [];
 
-    final res = (await HycopFactory.storage!.getFileList(search: "content/image/"));
+    final res = (await HycopFactory.storage!.getMultiFileData(search: "content/image/"));
     for (var element in res!) {
       imgFileList.add(FileModel(
             id: element.id,
@@ -38,7 +38,7 @@ class FileManager extends ChangeNotifier {
     debugPrint("----Start obtaining video list----");
     videoFileList = [];
 
-    final res = await HycopFactory.storage!.getFileList(search: "content/video/");
+    final res = await HycopFactory.storage!.getMultiFileData(search: "content/video/");
     for (var element in res!) {
       imgFileList.add(FileModel(
             id: element.id,
@@ -55,7 +55,7 @@ class FileManager extends ChangeNotifier {
   Future<void> getEtcFileList() async {
     etcFileList = [];
 
-    final res = await HycopFactory.storage!.getFileList(search: "content/etc/");
+    final res = await HycopFactory.storage!.getMultiFileData(search: "content/etc/");
     for (var element in res!) {
       imgFileList.add(FileModel(
             id: element.id,

@@ -877,7 +877,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     );
 
     return Consumer<FontSizeChangingNotifier>(builder: (context, fontSizeNotifier, child) {
-      //print('fontSize changing ${fontSizeNotifier.isChanging}');
+      //print('fontSize changing ${_frameModel.isEditMode}, ${fontSizeNotifier.isChanging}');
       Widget retval = _frameModel.isEditMode == false && fontSizeNotifier.isChanging == false
           ? autoSizeTypeWidget
           : Stack(
