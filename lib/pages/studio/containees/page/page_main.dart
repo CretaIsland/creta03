@@ -82,7 +82,7 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
     // frame 을 init 하는 것은, bookMain 에서 하는 것으로 바뀌었다.
     // 여기서 frameManager 는 사실상 null 일수 가 없다. ( 신규로 frame 을 만드는 경우를 빼고)
     if (frameManager == null) {
-      logger.severe('_frameManager not found, something wierd');
+      //logger.severe('PageMainState _frameManager not found, something wierd');
       setFrameManager(BookMainPage.pageManagerHolder!.newFrameManager(
         widget.bookModel,
         widget.pageModel,
@@ -282,11 +282,11 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
   Widget _textureBox() {
     bool useColor = textureType != TextureType.glass;
 
-    GlobalObjectKey currentKey =
-        BookMainPage.pageManagerHolder!.createPageKey(widget.pageModel.mid);
+    // GlobalObjectKey currentKey =
+    //     BookMainPage.pageManagerHolder!.createPageKey(widget.pageModel.mid);
 
     Widget current = PageRealMain(
-      pageKey: currentKey,
+      pageKey: BookMainPage.pageManagerHolder!.registerPage(widget.pageModel.mid),
       bookModel: widget.bookModel,
       pageModel: widget.pageModel,
       pageWidth: BookMainPage.pageWidth,

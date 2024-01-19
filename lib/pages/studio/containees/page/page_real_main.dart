@@ -9,6 +9,7 @@ import 'package:hycop/common/util/logger.dart';
 
 ////import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
+import '../../../../data_io/key_handler.dart';
 //import '../../../../data_io/link_manager.dart';
 //import '../../../../design_system/component/polygon_connection_painter.dart';
 import '../../../../model/app_enums.dart';
@@ -56,13 +57,13 @@ class PageRealMain extends StatefulWidget {
   State<PageRealMain> createState() => PageRealMainState();
 }
 
-class PageRealMainState extends State<PageRealMain> with ContaineeMixin {
+class PageRealMainState extends CretaState<PageRealMain> with ContaineeMixin {
   bool _onceDBGetComplete = false;
   late PageModel _pageModel;
 
-  void invalidate() {
-    setState(() {});
-  }
+  // void invalidate() {
+  //   setState(() {});
+  // }
 
   @override
   void initState() {

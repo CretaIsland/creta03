@@ -33,7 +33,6 @@ class PageManager extends CretaManager {
   BookModel? bookModel;
   Map<String, FrameManager?> frameManagerMap = {};
   //Map<String, GlobalObjectKey> thumbKeyMap = {};
-  Map<String, GlobalObjectKey> pageKeyMap = {};
 
   int updateContents(ContentsModel model) {
     int retval = 0;
@@ -77,20 +76,43 @@ class PageManager extends CretaManager {
 // thumnKeyHandler area end
 /////////////////////////////////////////////////////////
 
-  GlobalObjectKey createPageKey(String mid) {
-    String key = 'PageRealMainKey$mid';
-    GlobalObjectKey? retval = pageKeyMap[key];
-    if (retval != null) {
-      return retval;
-    }
-    retval = GlobalObjectKey(key);
-    pageKeyMap[key] = retval;
-    return retval;
+/////////////////////////////////////////////////////////
+// pageKeyHandler area start
+/////////////////////////////////////////////////////////
+  KeyHandler pageKeyHandler = KeyHandler();
+
+  String pageKeyMangler(String pageMid) {
+    return 'PageRealMainKey$pageMid';
   }
 
-  GlobalObjectKey? findPageKey(String mid) {
-    return pageKeyMap['PageRealMainKey$mid'];
+  GlobalObjectKey<CretaState<StatefulWidget>> registerPage(String pageMid) {
+    String keyString = pageKeyMangler(pageMid);
+    return pageKeyHandler.registerKey(keyString);
   }
+
+  bool invalidatPage(String pageMid) {
+    return pageKeyHandler.invalidate(pageKeyMangler(pageMid));
+  }
+/////////////////////////////////////////////////////////
+// pageKeyHandler area start
+/////////////////////////////////////////////////////////
+
+  // Map<String, GlobalObjectKey> pageKeyMap = {};
+
+  // GlobalObjectKey createPageKey(String mid) {
+  //   String key = 'PageRealMainKey$mid';
+  //   GlobalObjectKey? retval = pageKeyMap[key];
+  //   if (retval != null) {
+  //     return retval;
+  //   }
+  //   retval = GlobalObjectKey(key);
+  //   pageKeyMap[key] = retval;
+  //   return retval;
+  // }
+
+  // GlobalObjectKey? findPageKey(String mid) {
+  //   return pageKeyMap['PageRealMainKey$mid'];
+  // }
 
   PageModel? _prevModel;
   PageModel? get prevModel => _prevModel;
@@ -295,6 +317,7 @@ class PageManager extends CretaManager {
     defaultPage.isRemoved.set(false, noUndo: true, save: false);
     await createToDB(defaultPage);
     insert(defaultPage, postion: getLength());
+    //reOrdering();
     //selectedMid = defaultPage.mid;
     setSelectedMid(defaultPage.mid);
     return defaultPage;
@@ -305,6 +328,7 @@ class PageManager extends CretaManager {
     defaultPage.isRemoved.set(false, noUndo: true, save: false);
     await setToDB(defaultPage);
     insert(defaultPage, postion: getLength());
+    //reOrdering();
     //selectedMid = defaultPage.mid;
     setSelectedMid(defaultPage.mid);
     return defaultPage;
@@ -318,6 +342,7 @@ class PageManager extends CretaManager {
     }
     // 반드시 gotoPrev 하고 나서 remove 해야 함.
     remove(old);
+    //reOrdering();
     await setToDB(old);
     return old;
   }

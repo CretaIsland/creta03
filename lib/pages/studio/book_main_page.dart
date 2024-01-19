@@ -1082,7 +1082,7 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   void _resize() {
-    double pageDisplayRate = 0.8;
+    double pageDisplayRate = 0.70;
     // if (_bookModel!.width.value <= _bookModel!.height.value) {
     //   pageDisplayRate = 0.8;
     // }
@@ -1110,7 +1110,7 @@ class _BookMainPageState extends State<BookMainPage> {
     StudioVariables.applyScale = StudioVariables.scale / StudioVariables.fitScale;
     if (StudioVariables.autoScale == true || scaleChanged == true) {
       StudioVariables.virtualWidth = StudioVariables.workWidth * StudioVariables.applyScale;
-      StudioVariables.virtualHeight = StudioVariables.workHeight * StudioVariables.applyScale;
+      StudioVariables.virtualHeight = StudioVariables.workHeight * StudioVariables.applyScale * 3;
     }
     // print('autoScale = ${StudioVariables.autoScale}');
     // print('workWidth = ${StudioVariables.workWidth}');

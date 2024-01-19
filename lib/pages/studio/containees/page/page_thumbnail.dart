@@ -60,7 +60,7 @@ class PageThumbnailState extends CretaState<PageThumbnail> with ContaineeMixin {
   GradationType gradationType = GradationType.none;
   TextureType textureType = TextureType.none;
 
-  bool _buildComplete = false;
+  //bool _buildComplete = false;
 
   @override
   void initState() {
@@ -75,9 +75,21 @@ class PageThumbnailState extends CretaState<PageThumbnail> with ContaineeMixin {
     afterBuild();
   }
 
+  @override
+  void didUpdateWidget(PageThumbnail oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.pageIndex != widget.pageIndex) {
+      widget.changeEventReceived.call(widget.pageModel.mid);
+      //setState(() {});
+    }
+  }
+
   Future<void> afterBuild() async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _buildComplete = true;
+      //_buildComplete = true;
+      //if (_buildComplete) {
+      widget.changeEventReceived.call(widget.pageModel.mid);
+      //}
     });
   }
 
@@ -88,7 +100,7 @@ class PageThumbnailState extends CretaState<PageThumbnail> with ContaineeMixin {
     // frame 을 init 하는 것은, bookMain 에서 하는 것으로 바뀌었다.
     // 여기서 frameManager 는 사실상 null 일수 가 없다. ( 신규로 frame 을 만드는 경우를 빼고)
     if (_frameManager == null) {
-      logger.severe('_frameManager not found, something wierd');
+      logger.severe('PageThumbnailState _frameManager not found, something wierd');
       _frameManager = BookMainPage.pageManagerHolder!.newFrameManager(
         widget.bookModel,
         widget.pageModel,
@@ -97,6 +109,11 @@ class PageThumbnailState extends CretaState<PageThumbnail> with ContaineeMixin {
     }
 
     _onceDBGetComplete = true;
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    if (mounted) super.setState(fn);
   }
 
   @override
@@ -279,9 +296,7 @@ class PageThumbnailState extends CretaState<PageThumbnail> with ContaineeMixin {
       //           logger.fine('_receiveEventFromProperty-----Unknown Model');
       //         }
       //       }
-      if (_buildComplete) {
-        widget.changeEventReceived.call(widget.pageModel.mid);
-      }
+
       BookMainPage.thumbnailChanged = true;
       //print('-----------------------------------------------');
       return Stack(

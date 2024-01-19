@@ -19,6 +19,7 @@ import '../../../../../design_system/creta_color.dart';
 import '../../../../../design_system/creta_font.dart';
 import '../../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import '../../../../../design_system/menu/creta_popup_menu.dart';
+import '../../../../../lang/creta_lang.dart';
 import '../../../../../lang/creta_studio_lang.dart';
 import '../../../../../model/app_enums.dart';
 import '../../../../../model/book_model.dart';
@@ -208,6 +209,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
             Positioned(
               top: 0,
               child: BTN.fill_gray_i_s(
+                tooltip: CretaLang.prev,
                 iconSize: 16,
                 bgColor: LayoutConst.studioBGColor,
                 onPressed: () {
@@ -231,6 +233,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
               child: Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: BTN.fill_gray_i_s(
+                  tooltip: CretaLang.next,
                   iconSize: 16,
                   bgColor: LayoutConst.studioBGColor,
                   onPressed: () {

@@ -192,7 +192,7 @@ final routesLoggedOut = RouteMap(
           return const Redirect(AppRoutes.intro);
         }
         StudioVariables.selectedBookMid = '';
-        logger.severe('체험하기.....start (${StudioVariables.selectedBookMid}) ');
+        //logger.severe('체험하기.....start (${StudioVariables.selectedBookMid}) ');
         // 체험하기의 경우.
         // 체험하기버튼 => http://locahost/book
         if (StudioVariables.selectedBookMid == '') {
@@ -203,7 +203,7 @@ final routesLoggedOut = RouteMap(
             logger.severe('Book created');
           });
         }
-        logger.severe('체험하기.....end : (${StudioVariables.selectedBookMid})');
+        //logger.severe('체험하기.....end : (${StudioVariables.selectedBookMid})');
         return TransitionPage(
             child:
                 BookMainPage(bookKey: GlobalObjectKey('Book${StudioVariables.selectedBookMid}')));
