@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:creta03/pages/studio/left_menu/currency_exchange/currency_api.dart';
 import 'package:flutter/material.dart';
 
@@ -26,15 +28,26 @@ class RateResult extends StatefulWidget {
 
 class _RateResultState extends State<RateResult> {
   late Future<RatesModel> ratesModel;
+  late Map? currentRate;
 
   @override
   void initState() {
     super.initState();
     _fetchData();
+    _startTimer();
   }
 
   Future<void> _fetchData() async {
     ratesModel = fetchRates();
+  }
+
+  void _startTimer() {
+    const Duration updateInterval = Duration(hours: 1);
+
+    Timer.periodic(updateInterval, (Timer timer) {
+      // Fetch new data every hour
+      _fetchData();
+    });
   }
 
   @override
@@ -47,6 +60,7 @@ class _RateResultState extends State<RateResult> {
             child: Snippet.showWaitSign(),
           );
         } else {
+          currentRate = snapshot.data?.rates;
           return Container(
             width: widget.width,
             height: widget.height,
@@ -56,7 +70,7 @@ class _RateResultState extends State<RateResult> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('${widget.xChangeEle.baseCurrency} / ${widget.xChangeEle.finalCurrency}'),
-                conversionResult(snapshot.data!.rates),
+                conversionResult(currentRate),
               ],
             ),
           );

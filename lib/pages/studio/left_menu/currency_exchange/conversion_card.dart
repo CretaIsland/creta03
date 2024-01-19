@@ -32,8 +32,7 @@ class _ConversionCardState extends State<ConversionCard> with FramePlayMixin {
   String dropDownValue1 = "USD";
   String dropDownValue2 = "KRW";
   String conversion = '';
-  // List<String> defaultBasedCurrency = ["USD", "GBP", "JPY", "EUR", "CNY", "VND"];
-  // List<String> defaultFinalCurrency = ["KRW", "KRW", "KRW", "KRW", "KRW", "KRW"];
+
   List<String> defaultBasedCurrency = CretaStudioLang.firstCurrency;
   List<String> defaultFinalCurrency = CretaStudioLang.secondCurrency;
 
@@ -41,6 +40,10 @@ class _ConversionCardState extends State<ConversionCard> with FramePlayMixin {
   bool isLoading = false;
   int selectedCard = -1;
   late List<bool> isSelected;
+
+  double x = 150.0;
+  double y = 150.0;
+  int frameCount = 0;
 
   @override
   void initState() {
@@ -183,8 +186,8 @@ class _ConversionCardState extends State<ConversionCard> with FramePlayMixin {
     double width = pageModel.width.value * 0.2;
     double height = pageModel.height.value * 0.2;
 
-    double x = 150.0;
-    double y = 150.0;
+    x += 20.0 * frameCount;
+    y += 20.0 * frameCount;
 
     FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
     if (frameManager == null) {
@@ -202,6 +205,8 @@ class _ConversionCardState extends State<ConversionCard> with FramePlayMixin {
       type: frameType,
       subType: defaultSubType,
     );
+
+    frameCount++;
     mychangeStack.endTrans();
   }
 
