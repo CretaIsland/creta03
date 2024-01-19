@@ -73,7 +73,7 @@ class ContentsMainState extends CretaState<ContentsMain> {
 
   @override
   Widget build(BuildContext context) {
-    //print('ContentsMain');
+    //print('ContentsMain build');
     if (_onceDBGetComplete) {
       logger.finest('already _onceDBGetComplete contentsMain');
       return _consumerFunc();
@@ -115,9 +115,12 @@ class ContentsMainState extends CretaState<ContentsMain> {
                 logger.fine('current model is null');
                 return SizedBox.shrink();
               }
-              ContentsModel? model = playTimer.getCurrentModel();
+              //skpark 2024.01.19 현재 돌고 있는 것을 가져오면 안되고, contentsManager 에서 가져와야 한다.
+              //ContentsModel? model = playTimer.getCurrentModel();
+              ContentsModel? model = contentsManager.getSelected() as ContentsModel?;
+              model ??= playTimer.getCurrentModel(); // null 인경우는 playTimer 에서 가져온다.
               if (model != null && isURINotNull(model)) {
-                logger.fine('event received =======================${model.name}=');
+                //print('event received (1)=======================${model.autoSizeType.value}=');
                 LinkManager? linkManager = contentsManager.findLinkManager(model.mid);
                 if (linkManager != null) {
                   //if (linkManager != null && linkManager.getAvailLength() > 0) {
@@ -152,9 +155,10 @@ class ContentsMainState extends CretaState<ContentsMain> {
                 }
                 return _mainBuild(model, playTimer);
               }
-              //print('current url is empty');
+
               // ignore: sized_box_for_whitespace
               if (model != null && model.isText() == true) {
+                //print('event received (2) =======================${model.autoSizeType.value}=');
                 if (model.isAutoFontSize()) {
                   logger.info('ContentsMain fontSizeNotifier');
                   CretaAutoSizeText.fontSizeNotifier?.stop(); // rightMenu 에 전달

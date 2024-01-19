@@ -48,6 +48,7 @@ class CretaTextPlayerWidgetState extends CretaState<CretaTextWidget> with CretaT
 
   @override
   Widget build(BuildContext context) {
+    //print('CretaTextPlayerWidgetState build');
     applyScale = StudioVariables.applyScale;
     final CretaTextPlayer player = widget.player as CretaTextPlayer;
 

@@ -861,15 +861,16 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         CretaStudioLang.noAutoSize: model.isNoAutoSize(),
       },
       onSelected: (title, value, nvMap) {
-        //print('onSelected !!!!!!!');
+        //('onSelected !!!!!!! $title');
         //mychangeStack.startTrans();
         AutoSizeType type = AutoSizeType.fromString(title);
         model.autoSizeType.set(type);
         //model.updateByAutoSize(null); // autoSize 를 초기화하거나 재설정한다.
         //mychangeStack.endTrans();
         _sendEvent!.sendEvent(_frameModel);
-        //  widget.contentsManager.notify();
-        //   DraggableStickers.frameSelectNotifier!.notify();
+        //widget.contentsManager.playTimer?.setCurrentModel(model); // 처음만든 Text 의 경우 이 모델이 바뀌지 않는다.
+        //widget.contentsManager.notify();
+        //DraggableStickers.frameSelectNotifier!.notify();
         //   widget.frameManager?.notify();
 
         setState(() {});

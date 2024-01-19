@@ -15,6 +15,7 @@ class FontSizeChangingNotifier extends ChangeNotifier {
   }
 
   void stop() {
+    //print('stop----------------------------');
     _isChanging = false;
     notify();
   }

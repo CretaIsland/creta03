@@ -106,6 +106,9 @@ mixin CretaTextMixin {
     // }
 
     double padding = StudioConst.defaultTextPadding * applyScale;
+
+    //print('playText ${model.autoSizeType.value}');
+
     if (model.isAutoFrameOrSide() && isThumbnail == false) {
       // 자동 프레임사이즈를 결정해 주어야 한다.
       //print('AutoSizeType.autoFrameSize before ${realSize.height}');

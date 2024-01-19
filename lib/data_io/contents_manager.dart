@@ -1562,7 +1562,7 @@ class ContentsManager extends CretaManager {
       return null;
     });
     jsonStr += '\n\t\t\t]\n';
-    //('skpark=$jsonStr');
+    print('skpark=$jsonStr');
     return jsonStr;
   }
 

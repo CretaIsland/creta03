@@ -138,7 +138,10 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
           if (snapshot.data != null && snapshot.data is FrameModel) {
             FrameModel model = snapshot.data! as FrameModel;
             //findFrameManager(model);
-            frameManager!.updateModel(model);
+            //print("_receiveEvent 'frame-property-to-main'");
+            if (!frameManager!.updateModel(model)) {
+              //print('updateModel failed(${model.name.value})');
+            }
           }
           //return CretaManager.waitReorder(manager: frameManager!, child: showFrame());
           return showFrame();
@@ -524,7 +527,7 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
     bool isMain = (model.isMain.value || _mainFrameCandiator == model.mid);
 
     return Sticker(
-      key:  frameManager!.registerStickerKey(_pageModel.mid, model.mid),
+      key: frameManager!.registerStickerKey(_pageModel.mid, model.mid),
       //frameKey: frameKey,
       frameManager: frameManager!,
       isOverlay: model.isOverlay.value,

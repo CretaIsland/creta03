@@ -340,7 +340,7 @@ class CretaPlayTimer extends ChangeNotifier {
     final String key = contentsManager.keyMangler(model);
     CretaAbsPlayer? player = contentsManager.getPlayer(key);
     if (player != null) {
-      //print('player already exist ${model.remoteUrl}');
+      //print('player already exist ${model.autoSizeType.value}');
       player.model!.updateFrom(model); // 모델이 달라졌을수 있다.
       _currentPlayer = player;
       return player;
