@@ -104,14 +104,14 @@ class PageRealMainState extends CretaState<PageRealMain> with ContaineeMixin {
 
     Widget pageWidget = Stack(
       children: [
-        Align(
-          alignment: Alignment.center,
-          child: Container(
-            decoration: useColor ? _pageDeco() : null,
-            width: widget.pageWidth,
-            height: widget.pageHeight, // - LayoutConst.miniMenuArea,
-          ),
-        ),
+        // Align(
+        //   alignment: Alignment.center,
+        //   child: Container(
+        //     decoration: useColor ? _pageDeco() : null,
+        //     width: widget.pageWidth,
+        //     height: widget.pageHeight, // - LayoutConst.miniMenuArea,
+        //   ),
+        // ),
         SizedBox(
           width: StudioVariables.virtualWidth,
           height: StudioVariables.virtualHeight,
@@ -126,6 +126,7 @@ class PageRealMainState extends CretaState<PageRealMain> with ContaineeMixin {
     return pageWidget;
   }
 
+  // ignore: unused_element
   BoxDecoration _pageDeco() {
     Color c1 = widget.opacity == 1 ? widget.bgColor1 : widget.bgColor1.withOpacity(widget.opacity);
     Color c2 = widget.opacity == 1 ? widget.bgColor2 : widget.bgColor2.withOpacity(widget.opacity);

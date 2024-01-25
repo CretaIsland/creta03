@@ -22,6 +22,7 @@ import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/filter_model.dart';
 import '../../book_main_page.dart';
+import '../../studio_variables.dart';
 import '../property_mixin.dart';
 
 class BookPageProperty extends StatefulWidget {
@@ -252,6 +253,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
                     mychangeStack.endTrans();
                     //});
                     logger.finest('notify');
+                    StudioVariables.autoScale = true; // 가로세로 전환은 autoScale 상태에서만 가능하다.
                     BookMainPage.bookManagerHolder?.notify();
                   }),
             ],

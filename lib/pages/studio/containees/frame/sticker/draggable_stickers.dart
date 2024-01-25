@@ -34,6 +34,7 @@ import '../../../left_menu/depot/depot_display.dart';
 import '../../../left_menu/left_menu_page.dart';
 import '../../../studio_constant.dart';
 import '../../../studio_getx_controller.dart';
+import '../../../studio_snippet.dart';
 import '../../../studio_variables.dart';
 import '../../containee_nofifier.dart';
 import 'draggable_resizable.dart';
@@ -62,52 +63,58 @@ class DraggableStickers extends StatefulWidget {
   static FrameSelectNotifier? frameSelectNotifier;
 
   //List of stickers (elements)
+  final bool isSelected;
   final BookModel book;
-  final PageModel page;
   final double pageWidth;
   final double pageHeight;
+
+  final PageModel page;
+
   final FrameManager? frameManager;
-  final List<Sticker> stickerList;
-  final void Function(DragUpdate, String) onUpdate;
-  final void Function(String) onFrameDelete;
+
+  final List<Sticker>? stickerList;
+
+  final void Function(DragUpdate, String)? onUpdate;
+  final void Function(String)? onFrameDelete;
   //final void Function(String, double) onFrameRotate;
   //final void Function(String) onFrameLink;
-  final void Function(String, String) onFrameBack;
-  final void Function(String, String) onFrameFront;
-  final void Function(String) onFrameCopy;
-  final void Function(String) onFrameMain;
-  final void Function(String) onFrameShowUnshow;
+  final void Function(String, String)? onFrameBack;
+  final void Function(String, String)? onFrameFront;
+  final void Function(String)? onFrameCopy;
+  final void Function(String)? onFrameMain;
+  final void Function(String)? onFrameShowUnshow;
   final void Function(String)? onTap;
-  final void Function() onResizeButtonTap;
-  final void Function(String) onComplete;
-  final void Function(String) onScaleStart;
-  final void Function(List<ContentsModel>) onDropPage;
-  final void Function(bool) onFrontBackHover;
+  final void Function()? onResizeButtonTap;
+  final void Function(String)? onComplete;
+  final void Function(String)? onScaleStart;
+  final void Function(List<ContentsModel>)? onDropPage;
+  final void Function(bool)? onFrontBackHover;
   //final void Function(String, ContentsModel) onDropFrame;
 
   const DraggableStickers({
     super.key,
+    required this.isSelected,
     required this.book,
-    required this.page,
     required this.pageWidth,
     required this.pageHeight,
+    required this.page,
     required this.frameManager,
     required this.stickerList,
-    required this.onUpdate,
-    required this.onFrameDelete,
+    this.onUpdate,
+    this.onFrameDelete,
     //required this.onFrameRotate,
     //required this.onFrameLink,
-    required this.onFrameBack,
-    required this.onFrameFront,
-    required this.onFrameCopy,
-    required this.onFrameMain,
-    required this.onFrameShowUnshow,
-    required this.onTap,
-    required this.onComplete,
-    required this.onScaleStart,
-    required this.onResizeButtonTap,
-    required this.onDropPage,
-    required this.onFrontBackHover,
+    this.onFrameBack,
+    this.onFrameFront,
+    this.onFrameCopy,
+    this.onFrameMain,
+    this.onFrameShowUnshow,
+    this.onTap,
+    this.onComplete,
+    this.onScaleStart,
+    this.onResizeButtonTap,
+    this.onDropPage,
+    this.onFrontBackHover,
     //required this.onDropFrame,
   });
   @override
@@ -118,7 +125,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
   // initial scale of sticker
   //final _initialStickerScale = 5.0;
   FrameEventController? _sendEvent;
-  List<Sticker> stickers = [];
+  List<Sticker>? stickers = [];
   late GlobalObjectKey<PageBottomLayerState> pageBottomLayerKey;
 
   //bool _isEditorAlreadyExist = false;
@@ -146,7 +153,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
   @override
   Widget build(BuildContext context) {
     stickers = widget.stickerList;
-
+    bool useColor = (widget.page.textureType.value != TextureType.glass);
     //print('_DraggableStickersState build-----------------------------------');
     return MultiProvider(
       providers: [
@@ -156,6 +163,14 @@ class _DraggableStickersState extends State<DraggableStickers> {
       ],
       child: Stack(
         children: [
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              decoration: useColor ? _pageDeco() : null,
+              width: widget.pageWidth,
+              height: widget.pageHeight, // - LayoutConst.miniMenuArea,
+            ),
+          ),
           // Positioned(
           //   left: BookMainPage.pageOffset.dx,
           //   top: BookMainPage.pageOffset.dy,
@@ -165,19 +180,41 @@ class _DraggableStickersState extends State<DraggableStickers> {
           //     height: widget.pageHeight, // - LayoutConst.miniMenuArea,
           //   ),
           // ),
-          PageBottomLayer(
-            key: pageBottomLayerKey,
-            pageWidth: widget.pageWidth,
-            pageHeight: widget.pageHeight,
-            pageModel: widget.page,
-          ),
-          _pageDropZone(widget.book.mid),
-          if (StudioVariables.isPreview == false && StudioVariables.applyScale >= 0.245)
-            _pageController(),
-          for (final sticker in stickers) _drawEachStiker(sticker),
-          if (StudioVariables.isPreview == false) _drawMiniMenu(),
+          if (widget.isSelected)
+            PageBottomLayer(
+              key: pageBottomLayerKey,
+              pageWidth: widget.pageWidth,
+              pageHeight: widget.pageHeight,
+              pageModel: widget.page,
+            ),
+          if (widget.isSelected) _pageDropZone(widget.book.mid),
+          // if (widget.isSelected &&
+          //     StudioVariables.isPreview == false &&
+          //     StudioVariables.applyScale >= 0.245)
+          //   _pageController(),
+          if (stickers != null)
+            for (final sticker in stickers!) _drawEachStiker(sticker),
+          if (widget.isSelected && StudioVariables.isPreview == false) _drawMiniMenu(),
         ],
       ),
+    );
+  }
+
+  BoxDecoration _pageDeco() {
+    Color c1 = widget.page.opacity.value == 1
+        ? widget.page.bgColor1.value
+        : widget.page.bgColor1.value.withOpacity(widget.page.opacity.value);
+    Color c2 = widget.page.opacity.value == 1
+        ? widget.page.bgColor2.value
+        : widget.page.bgColor2.value.withOpacity(widget.page.opacity.value);
+
+    return BoxDecoration(
+      color: c1,
+      boxShadow: StudioSnippet.basicShadow(),
+      gradient: (widget.page.bgColor1.value != Colors.transparent &&
+              widget.page.bgColor2.value != Colors.transparent)
+          ? StudioSnippet.gradient(widget.page.gradationType.value, c1, c2)
+          : null,
     );
   }
 
@@ -188,9 +225,16 @@ class _DraggableStickersState extends State<DraggableStickers> {
     int pageIndex = BookMainPage.pageManagerHolder!.getPageIndex(widget.page.mid);
     return Align(
       alignment: Alignment.center,
-      child: SizedBox(
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: CretaColor.text[300]!,
+            width: 2,
+          ),
+          //color: CretaColor.text[300]!,
+        ),
         width: widget.pageWidth,
-        height: widget.pageHeight + 2 * 36,
+        height: widget.pageHeight, // + 2 * LayoutConst.pageControllerHeight,
         child: Stack(
           alignment: Alignment.center,
           children: [
@@ -229,7 +273,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
             //   ),
             // ),
             Positioned(
-              top: widget.pageHeight + 36,
+              top: widget.pageHeight, // + LayoutConst.pageControllerHeight,
               child: Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: BTN.fill_gray_i_s(
@@ -351,8 +395,6 @@ class _DraggableStickersState extends State<DraggableStickers> {
         }
       }
     }
-    //print('editor not selected');
-
     return _dragableResizable(sticker, frameModel!, isVerticalResiable, isHorizontalResiable);
   }
 
@@ -377,12 +419,13 @@ class _DraggableStickersState extends State<DraggableStickers> {
       // pageMid: sticker.pageMid,
       // angle: sticker.angle,
       // borderWidth: sticker.borderWidth,
-      // isMain: sticker.isMain,
+      // isSelected: sticker.isSelected,
       // frameSize: sticker.isText == true
       //     ? Size(64 * _initialStickerScale / 3, 64 * _initialStickerScale / 3)
       //     : sticker.frameSize,
       //position: sticker.position + BookMainPage.pageOffset,
       realPosition: Offset(posX, posY),
+      //realPosition: const Offset(0, 0),
       frameModel: frameModel,
       pageWidth: widget.pageWidth,
       pageHeight: widget.pageHeight, // - LayoutConst.miniMenuArea,
@@ -399,7 +442,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
         sticker.angle = update.angle;
         sticker.frameSize = update.size;
         sticker.position = update.position;
-        widget.onUpdate.call(update, mid);
+        widget.onUpdate?.call(update, mid);
         logger.finest("saved");
       },
       // draggable_point 로 이사갔음.
@@ -410,13 +453,13 @@ class _DraggableStickersState extends State<DraggableStickers> {
       onComplete: () {
         logger.fine('onComplete : from DraggableResizable...');
         //setState(() {
-        widget.onComplete.call(sticker.id);
+        widget.onComplete?.call(sticker.id);
         //});
       },
       onScaleStart: () {
         //print('DraggableResizable onScaleStart --------------------------');
 
-        widget.onScaleStart.call(sticker.id);
+        widget.onScaleStart?.call(sticker.id);
 
         FrameModel? frameModel = widget.frameManager!.getModel(sticker.id) as FrameModel?;
         if (frameModel != null && frameModel.isTextType()) {
@@ -432,13 +475,14 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
       // To update the layer (manage position of widget in stack)
       onLayerTapped: () {
-        var listLength = stickers.length;
-        var ind = stickers.indexOf(sticker);
-        stickers.remove(sticker);
+        if (stickers == null) return;
+        var listLength = stickers!.length;
+        var ind = stickers!.indexOf(sticker);
+        stickers!.remove(sticker);
         if (ind == listLength - 1) {
-          stickers.insert(0, sticker);
+          stickers!.insert(0, sticker);
         } else {
-          stickers.insert(listLength - 1, sticker);
+          stickers!.insert(listLength - 1, sticker);
         }
         DraggableStickers.frameSelectNotifier?.set(sticker.id, doNotify: false);
         logger.finest('onLayerTapped');
@@ -451,8 +495,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
       // To Delete the sticker
       onFrameDelete: () async {
         {
-          stickers.remove(sticker);
-          widget.onFrameDelete.call(sticker.id);
+          stickers?.remove(sticker);
+          widget.onFrameDelete?.call(sticker.id);
           setState(() {});
         }
       },
@@ -646,7 +690,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                 frameModel.isShow.set(!frameModel.isShow.value);
                 frameModel.changeOrderByIsShow(widget.frameManager!);
                 mychangeStack.endTrans();
-                widget.onFrameShowUnshow.call(frameModel.mid);
+                widget.onFrameShowUnshow?.call(frameModel.mid);
                 if (frameModel.isOverlay.value == true) {
                   BookMainPage.pageManagerHolder!.notify();
                 }
@@ -666,7 +710,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
               onPressed: () {
                 frameModel.isRemoved.set(true);
                 StudioVariables.cropFrame(frameModel, widget.frameManager!);
-                widget.onFrameShowUnshow.call(frameModel.mid);
+                widget.onFrameShowUnshow?.call(frameModel.mid);
               }),
         if (StudioVariables.isPreview == false &&
             frameModel.isTextType() &&
@@ -846,7 +890,10 @@ class _DraggableStickersState extends State<DraggableStickers> {
         DraggableStickers.frameSelectNotifier!.selectedAssetId == null) {
       return null;
     }
-    for (Sticker sticker in widget.stickerList) {
+    if (stickers == null) {
+      return null;
+    }
+    for (Sticker sticker in stickers!) {
       if (sticker.id == DraggableStickers.frameSelectNotifier!.selectedAssetId!) {
         return sticker;
       }
@@ -863,24 +910,25 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
       Sticker? selectedSticker = _getSelectedSticker();
       if (selectedSticker == null) {
+        logger.severe('Selected sticker is null');
         return const SizedBox.shrink();
       }
 
       FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
       if (frameManager == null) {
-        logger.warning('Selected frameManager is null');
+        logger.severe('Selected frameManager is null');
         return const SizedBox.shrink();
       }
 
       FrameModel? frameModel = frameManager.getModel(selectedSticker.id) as FrameModel?;
       if (frameModel == null) {
-        logger.warning('Selected frameModel is null');
+        logger.severe('Selected frameModel is null');
         return const SizedBox.shrink();
       }
 
       ContentsManager? contentsManager = frameManager.getContentsManager(frameModel.mid);
       if (contentsManager == null) {
-        logger.warning('Selected ConterntsManager is null');
+        logger.severe('Selected ConterntsManager is null');
         return const SizedBox.shrink();
       }
       // if (_isContents) {
@@ -894,14 +942,18 @@ class _DraggableStickersState extends State<DraggableStickers> {
       //     return const SizedBox.shrink();
       //   }
       // }
-      //print('MiniMenu---------------');
+
+      //print('Draw MiniMenu---------------');
+      // int keyValue1 = (frameModel.posX.value * frameModel.posY.value).round();
+      // int keyValue2 = (frameModel.width.value * frameModel.height.value).round();
       return
 
           //  BookMainPage.miniMenuNotifier!.isShow == false
           //     ? const SizedBox.shrink()
           //     :
           MiniMenu(
-        key: GlobalObjectKey('MiniMenu${selectedSticker.pageMid}/${selectedSticker.id}'),
+        // key: GlobalObjectKey(
+        //     'MiniMenu${selectedSticker.pageMid}/${selectedSticker.id}$keyValue1$keyValue2${BookMainPage.miniMenuNotifier!.isShow}'),
         contentsManager: contentsManager,
         frameManager: frameManager,
         sticker: selectedSticker,
@@ -909,54 +961,57 @@ class _DraggableStickersState extends State<DraggableStickers> {
         frameModel: frameModel,
         onFrameDelete: () {
           logger.fine('onFrameDelete');
-          stickers.remove(selectedSticker);
-          widget.onFrameDelete.call(selectedSticker.id);
+          stickers?.remove(selectedSticker);
+          widget.onFrameDelete?.call(selectedSticker.id);
           //setState(() {});
         },
         onFrameBack: () {
           logger.fine('onFrameBack');
-          var ind = stickers.indexOf(selectedSticker);
+
+          if (stickers == null) return;
+          var ind = stickers!.indexOf(selectedSticker);
           int newIndex = _getPrevIndex(ind, selectedSticker.isOverlay);
           if (newIndex >= 0) {
             // 제일 뒤에 있는것은 제외한다.
             // 뒤로 빼는 것이므로, 현재 보다 한숫자 작은 인덱스로 보내야 한다.
-            stickers.remove(selectedSticker);
-            stickers.insert(newIndex, selectedSticker);
-            Sticker target = stickers[ind];
-            widget.onFrameBack.call(selectedSticker.id, target.id);
+            stickers!.remove(selectedSticker);
+            stickers!.insert(newIndex, selectedSticker);
+            Sticker target = stickers![ind];
+            widget.onFrameBack?.call(selectedSticker.id, target.id);
             setState(() {});
           }
         },
         onFrontBackHover: widget.onFrontBackHover,
         onFrameFront: () {
           logger.fine('onFrameFront');
-          var ind = stickers.indexOf(selectedSticker);
+          if (stickers == null) return;
+          var ind = stickers!.indexOf(selectedSticker);
           int newIndex = _getNextIndex(ind, selectedSticker.isOverlay);
           if (newIndex > 0) {
             // 제일 앞에 있는것은 제외한다.
             // 앞으로 빼는 것이므로, 현재 보다 한숫자 큰 인덱스로 보내야 한다.
-            stickers.remove(selectedSticker);
-            stickers.insert(newIndex, selectedSticker);
-            Sticker target = stickers[ind];
-            widget.onFrameFront.call(selectedSticker.id, target.id);
+            stickers!.remove(selectedSticker);
+            stickers!.insert(newIndex, selectedSticker);
+            Sticker target = stickers![ind];
+            widget.onFrameFront?.call(selectedSticker.id, target.id);
             setState(() {});
           }
         },
         onFrameMain: () {
           logger.fine('onFrameMain');
           selectedSticker.isMain = true;
-          widget.onFrameMain.call(selectedSticker.id);
+          widget.onFrameMain?.call(selectedSticker.id);
           //setState(() {});
         },
         onFrameShowUnshow: () {
           logger.fine('onFrameShowUnshow');
-          //selectedSticker.isMain = true;
-          widget.onFrameShowUnshow.call(selectedSticker.id);
+          //selectedSticker.isSelected = true;
+          widget.onFrameShowUnshow?.call(selectedSticker.id);
           //setState(() {});
         },
         onFrameCopy: () {
           logger.fine('onFrameCopy');
-          widget.onFrameCopy.call(selectedSticker.id);
+          widget.onFrameCopy?.call(selectedSticker.id);
           //setState(() {});
         },
         // onFrameRotate: () {
@@ -1001,10 +1056,11 @@ class _DraggableStickersState extends State<DraggableStickers> {
   }
 
   int _getNextIndex(int currentIndex, bool isOverlay) {
-    var listLength = stickers.length;
+    if (stickers == null) return -1;
+    var listLength = stickers!.length;
     if (currentIndex >= listLength - 1) return -1;
     for (int i = currentIndex + 1; i < listLength; i++) {
-      if (stickers[i].isOverlay == isOverlay) {
+      if (stickers![i].isOverlay == isOverlay) {
         return i;
       }
     }
@@ -1013,8 +1069,9 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
   int _getPrevIndex(int currentIndex, bool isOverlay) {
     if (currentIndex < 1) return -1;
+    if (stickers == null) return -1;
     for (int i = currentIndex - 1; i >= 0; i--) {
-      if (stickers[i].isOverlay == isOverlay) {
+      if (stickers![i].isOverlay == isOverlay) {
         return i;
       }
     }
@@ -1084,7 +1141,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
           onDroppedFile: (modelList) {
             //logger.fine('page dropZone contents added ${model.mid}');
             //model.isDynamicSize.set(true, save: false, noUndo: true);
-            widget.onDropPage(modelList); // 동영상에 맞게 frame size 를 조절하라는 뜻
+            widget.onDropPage?.call(modelList); // 동영상에 맞게 frame size 를 조절하라는 뜻
           },
         );
       },
@@ -1119,14 +1176,14 @@ class _DraggableStickersState extends State<DraggableStickers> {
           if (depotManager != null) {
             ContentsModel? newModel = await depotManager.copyContents(data);
             if (newModel != null) {
-              widget.onDropPage([newModel]);
+              widget.onDropPage?.call([newModel]);
             }
           }
           widget.page.dragOnMove = false;
           pageBottomLayerKey.currentState?.invalidate();
         } else if (data is ContentsModel) {
           //print('drop gifModel =${data}');
-          widget.onDropPage([data]);
+          widget.onDropPage?.call([data]);
         }
       },
       onWillAccept: (data) {

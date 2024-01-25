@@ -91,8 +91,7 @@ class BookMainPage extends StatefulWidget {
   static ClickEventHandler clickEventHandler = ClickEventHandler();
 
   static bool thumbnailChanged = false;
-  static double pageWidth = 0;
-  static double pageHeight = 0;
+
   static Offset pageOffset = Offset.zero;
 
   static void warningNeedToLogin(BuildContext context) {
@@ -1082,16 +1081,25 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   void _resize() {
-    double pageDisplayRate = 0.70;
-    // if (_bookModel!.width.value <= _bookModel!.height.value) {
-    //   pageDisplayRate = 0.8;
-    // }
+    // display :  웹화면에서 주소창을 제외한 전체 사이즈
+    // work : 앱바, 톱메뉴, 스택메뉴를 제외한 전체 사이즈
+    // virtua :  workWidth 에 현재 scale 적용한 영역, 실제 객체가 존재할 수 있는 Width
+    //  virtualWidth :  workWidth 에 현재 scale 적용한 영역,
+    //  virtualHeightPerPage :  workHeight 에 scale 을 적용한 영역, 하나의 페이지가 들어갈 수 영역
+    //  virtualHeight :  3개의 페이지가 들어갈 수 있는 영역
+    //  avail :  virtual 에 pageDisplayRate 0.85 를 곱한 영역,  실제로 사용할 수 있는 영역
+    //  drawable :  가로 세로 영역을
+
+    // widthRatio :  availWidth 와 실제 페이지 width(절대값) 의 비율. 클수록, 페이지가 가로로 좁은 것이다.
+    // heightRatio :  avaliHeight 와 실제 페이지 hegight(절대값)의 비요류 클루록 페이작 납작한 것이다.
+    //  widthRatio > heightRatio 라는 것은 세로형이라는 뜻이다.
+    //  widthRatio < heightRatio 라는 것은 가로형이라는 뜻이다.
 
     if (StudioVariables.isPreview) {
       StudioVariables.topMenuBarHeight = 0;
       StudioVariables.menuStickWidth = 0;
       StudioVariables.appbarHeight = 0;
-      pageDisplayRate = 1;
+      StudioVariables.pageDisplayRate = 1;
     } else {
       StudioVariables.topMenuBarHeight = LayoutConst.topMenuBarHeight;
       StudioVariables.menuStickWidth = LayoutConst.menuStickWidth;
@@ -1105,45 +1113,50 @@ class _BookMainPageState extends State<BookMainPage> {
     StudioVariables.workHeight = StudioVariables.displayHeight -
         StudioVariables.appbarHeight -
         StudioVariables.topMenuBarHeight;
-    StudioVariables.workRatio = StudioVariables.workHeight / StudioVariables.workWidth;
 
-    StudioVariables.applyScale = StudioVariables.scale / StudioVariables.fitScale;
-    if (StudioVariables.autoScale == true || scaleChanged == true) {
-      StudioVariables.virtualWidth = StudioVariables.workWidth * StudioVariables.applyScale;
-      StudioVariables.virtualHeight = StudioVariables.workHeight * StudioVariables.applyScale * 3;
-    }
-    // print('autoScale = ${StudioVariables.autoScale}');
-    // print('workWidth = ${StudioVariables.workWidth}');
-    // print('virtualWidth = ${StudioVariables.virtualWidth}');
-    scaleChanged = false;
+    if (StudioVariables.autoScale == true || scaleChanged) {
+      scaleChanged = false;
 
-    StudioVariables.availWidth = StudioVariables.virtualWidth * pageDisplayRate;
-    StudioVariables.availHeight = StudioVariables.virtualHeight * pageDisplayRate;
+      widthRatio =
+          (StudioVariables.workWidth * StudioVariables.pageDisplayRate / _bookModel!.width.value);
+      heightRatio =
+          (StudioVariables.workHeight * StudioVariables.pageDisplayRate / _bookModel!.height.value);
+      heightWidthRatio = _bookModel!.height.value / _bookModel!.width.value;
 
-    widthRatio = StudioVariables.availWidth / _bookModel!.width.value;
-    heightRatio = StudioVariables.availHeight / _bookModel!.height.value;
-    heightWidthRatio = _bookModel!.height.value / _bookModel!.width.value;
-
-    if (widthRatio < heightRatio) {
-      BookMainPage.pageWidth = StudioVariables.availWidth;
-      BookMainPage.pageHeight = BookMainPage.pageWidth * heightWidthRatio;
-      if (StudioVariables.autoScale == true) {
+      if (widthRatio < heightRatio) {
+        //print('세로형');
         StudioVariables.fitScale = widthRatio; // 화면에 꽉찾을때의 최적의 값
         StudioVariables.scale = widthRatio;
-      }
-    } else {
-      BookMainPage.pageHeight = StudioVariables.availHeight;
-      BookMainPage.pageWidth = BookMainPage.pageHeight / heightWidthRatio;
-      if (StudioVariables.autoScale == true) {
+      } else {
+        //print('가로형 또는 정방형');
         StudioVariables.fitScale = heightRatio; // 화면에 꽉찾을때의 최적의 값
         StudioVariables.scale = heightRatio;
       }
+      StudioVariables.applyScale = StudioVariables.scale * StudioVariables.pageDisplayRate;
+    } else {
+      StudioVariables.applyScale = StudioVariables.scale * StudioVariables.pageDisplayRate;
     }
+
+    double workScale = StudioVariables.scale / StudioVariables.fitScale;
+
+    //int pageLength = BookMainPage.pageManagerHolder!.getAvailLength();
+    int pageLength = 1;
+
+    StudioVariables.availWidth = StudioVariables.workWidth * workScale;
+    StudioVariables.availHeight = StudioVariables.workHeight * workScale;
+
+    StudioVariables.virtualWidth = StudioVariables.availWidth;
+    StudioVariables.virtualHeight = StudioVariables.availHeight * pageLength;
+
+    //print('pageLength=$pageLength, StudioVariables.virtualHeight=${StudioVariables.virtualHeight}');
+
     // virtual width 에서, 페이지 부분이 얼마나 떨어져 있는지 나타냄.
-    BookMainPage.pageOffset = Offset(
-      (StudioVariables.virtualWidth - BookMainPage.pageWidth) / 2,
-      (StudioVariables.virtualHeight - BookMainPage.pageHeight) / 2,
-    );
+    // BookMainPage.pageOffset = Offset(
+    //   (StudioVariables.virtualWidth - (_bookModel!.width.value * StudioVariables.applyScale)) / 2,
+    //   (StudioVariables.virtualHeight - (_bookModel!.height.value * StudioVariables.applyScale)) / 2,
+    // );
+
+    BookMainPage.pageOffset = BookMainPage.bookManagerHolder!.getPageIndexOffset();
 
     padding = 16 * (StudioVariables.displayWidth / 1920);
     if (padding < 2) {
@@ -1154,6 +1167,15 @@ class _BookMainPageState extends State<BookMainPage> {
     logger.fine(
         "height=${StudioVariables.virtualHeight}, width=${StudioVariables.virtualWidth}, scale=${StudioVariables.fitScale}}");
   }
+
+  // Offset getPageIndexOffset(int pageIndex) {
+  //   return Offset(
+  //     (StudioVariables.virtualWidth - (_bookModel!.width.value * StudioVariables.applyScale)) / 2,
+  //     (StudioVariables.availHeight * pageIndex -
+  //             (_bookModel!.height.value * StudioVariables.applyScale)) /
+  //         2,
+  //   );
+  // }
 
   Widget _workArea() {
     return Stack(
@@ -1221,7 +1243,7 @@ class _BookMainPageState extends State<BookMainPage> {
       padding: padding,
       onManualScale: () {
         setState(() {
-          scaleChanged = true;
+          scaleChanged = false;
         });
       },
       onAutoScale: () {
@@ -1783,8 +1805,8 @@ class _BookMainPageState extends State<BookMainPage> {
       pageKey: GlobalObjectKey('PageKey${pageModel.mid}'),
       bookModel: _bookModel!,
       pageModel: pageModel,
-      pageWidth: BookMainPage.pageWidth,
-      pageHeight: BookMainPage.pageHeight, // + LayoutConst.miniMenuArea,
+      pageWidth: StudioVariables.availWidth,
+      pageHeight: StudioVariables.availHeight, // + LayoutConst.miniMenuArea,
     );
   }
 

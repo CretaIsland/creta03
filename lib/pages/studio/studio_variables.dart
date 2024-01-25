@@ -18,7 +18,9 @@ enum ClickToCreateEnum {
 }
 
 class StudioVariables {
- 
+  static double pageDisplayRate = 0.92;
+  static double pageVertivalPadding = 10;
+
   static String selectedBookMid = ''; // selected book mid
   static double topMenuBarHeight = LayoutConst.topMenuBarHeight;
   static double menuStickWidth = LayoutConst.menuStickWidth;
@@ -27,8 +29,8 @@ class StudioVariables {
   static double verticalScrollOffset = 0;
   static double horizontalScrollOffset = 0;
 
-  static double fitScale = 1.0;
-  static double scale = 1.0;
+  static double fitScale = 1.0; // autoFit 의 scale  값.
+  static double scale = 1.0; // TopMenu 에 보이는 배율
   static bool autoScale = true;
   static bool allowMutilUser = true;
 
@@ -40,11 +42,14 @@ class StudioVariables {
   static double workHeight = 961;
   static double workRatio = 1;
 
-  static double availWidth = 0; // work width의 90% 영역
-  static double availHeight = 0; // work height의 90% 영역
+  // static double availWidth = 0; // work width의 90% 영역
+  // static double availHeight = 0; // work height의 90% 영역
 
-  static double virtualWidth = 1920 - 80;
-  static double virtualHeight = 961;
+  static double virtualWidth = workWidth;
+  static double virtualHeight = workHeight;
+
+  static double availWidth = workWidth;
+  static double availHeight = workHeight;
 
   static bool isHandToolMode = false;
   //static ClickToCreateEnum clickToCreateMode = ClickToCreateEnum.normal;

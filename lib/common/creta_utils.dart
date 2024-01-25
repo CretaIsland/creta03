@@ -942,15 +942,26 @@ class CretaUtils {
   }
 
   // localPosition 을 페이지내의 position 으로 바꿔줌
-  static Offset positionInPage(Offset localPosition, double? applyScale) {
-    applyScale ??= StudioVariables.applyScale;
-    double dx = (localPosition.dx - BookMainPage.pageOffset.dx + (LayoutConst.stikerOffset / 2)) /
-        applyScale;
-    double dy = (localPosition.dy - BookMainPage.pageOffset.dy + (LayoutConst.stikerOffset / 2)) /
-        applyScale;
+  // static Offset positionInPage(Offset localPosition, double? applyScale, int pageIndex,
+  //     {bool isLocal = true, bool dontApplyStickerOffset = true}) {
+  //   print('pageIndex=$pageIndex');
+  //   applyScale ??= StudioVariables.applyScale;
+  //   double dx = (localPosition.dx -
+  //           BookMainPage.pageOffset.dx +
+  //           //((isLocal && dontApplyStickerOffset) ? 0 : (LayoutConst.stikerOffset / 2))) /
+  //           (LayoutConst.stikerOffset / 2)) /
+  //       applyScale;
+  //   double dy = (localPosition.dy -
+  //           (isLocal ? BookMainPage.localPageOffset.dy * pageIndex : BookMainPage.pageOffset.dy) +
+  //           //(((isLocal && dontApplyStickerOffset) ? 0 : (LayoutConst.stikerOffset / 2)))) /
+  //           (LayoutConst.stikerOffset / 2)) /
+  //       applyScale;
 
-    return Offset(dx, dy);
-  }
+  //   print('localPosition.dy=${localPosition.dy}');
+  //   print('dy=$dy');
+
+  //   return Offset(dx, dy);
+  // }
 
   // 커서모양을 정해주는 함수
   static MouseCursor getCursorShape() {
@@ -1103,11 +1114,11 @@ class CretaUtils {
   }
 
   static Future<bool> sendResetPasswordEmail(
-      BuildContext context,
-      String email,
-      String userId,
-      String secret,
-      ) async {
+    BuildContext context,
+    String email,
+    String userId,
+    String secret,
+  ) async {
     String base = Uri.base.origin;
     //print('---------------base=$base');
 

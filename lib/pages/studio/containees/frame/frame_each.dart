@@ -41,7 +41,7 @@ class FrameEach extends StatefulWidget {
   final FrameManager frameManager;
   final PageModel pageModel;
   final FrameModel model;
-  final double applyScale;
+  //final double applyScale;
   final double width;
   final double height;
   final Offset frameOffset;
@@ -50,7 +50,7 @@ class FrameEach extends StatefulWidget {
     required this.frameManager,
     required this.pageModel,
     required this.model,
-    required this.applyScale,
+    //required this.applyScale,
     required this.width,
     required this.height,
     required this.frameOffset,
@@ -61,8 +61,6 @@ class FrameEach extends StatefulWidget {
 }
 
 class FrameEachState extends CretaState<FrameEach> with ContaineeMixin, FramePlayMixin {
-  double applyScale = 1;
-
   ContentsManager? _contentsManager;
   CretaPlayTimer? _playTimer;
   late double _width;
@@ -140,7 +138,6 @@ class FrameEachState extends CretaState<FrameEach> with ContaineeMixin, FramePla
 
     _width = widget.width;
 
-    applyScale = widget.applyScale;
     if (_playTimer == null) {
       logger.severe('_playTimer is null');
     }
@@ -429,21 +426,21 @@ class FrameEachState extends CretaState<FrameEach> with ContaineeMixin, FramePla
       mid: model.mid,
       shapeType: model.shape.value,
       offset: CretaUtils.getShadowOffset(
-          model.shadowDirection.value, model.shadowOffset.value * applyScale),
+          model.shadowDirection.value, model.shadowOffset.value * StudioVariables.applyScale),
       shadowBlur: model.shadowBlur.value,
-      shadowSpread: model.shadowSpread.value * applyScale,
+      shadowSpread: model.shadowSpread.value * StudioVariables.applyScale,
       shadowOpacity: model.isNoShadow() ? 0 : model.shadowOpacity.value,
       shadowColor: model.isNoShadow() ? Colors.transparent : model.shadowColor.value,
       // width: _width,
       // height: widget.height,
-      strokeWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
+      strokeWidth: (model.borderWidth.value * StudioVariables.applyScale).ceilToDouble(),
       strokeColor: model.borderColor.value,
-      radiusLeftBottom: model.getRealradiusLeftBottom(applyScale),
-      radiusLeftTop: model.getRealradiusLeftTop(applyScale),
-      radiusRightBottom: model.getRealradiusRightBottom(applyScale),
-      radiusRightTop: model.getRealradiusRightTop(applyScale),
+      radiusLeftBottom: model.getRealradiusLeftBottom(StudioVariables.applyScale),
+      radiusLeftTop: model.getRealradiusLeftTop(StudioVariables.applyScale),
+      radiusRightBottom: model.getRealradiusRightBottom(StudioVariables.applyScale),
+      radiusRightTop: model.getRealradiusRightTop(StudioVariables.applyScale),
       borderCap: model.borderCap.value,
-      applyScale: applyScale,
+      applyScale: StudioVariables.applyScale,
       glowSize: model.glowSize.value,
     );
   }
@@ -625,7 +622,7 @@ class FrameEachState extends CretaState<FrameEach> with ContaineeMixin, FramePla
         pageModel: widget.pageModel,
         frameManager: frameManager!,
         contentsManager: _contentsManager!,
-        applyScale: applyScale,
+        applyScale: StudioVariables.applyScale,
       ),
     );
   }

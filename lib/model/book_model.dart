@@ -408,8 +408,9 @@ class BookModel extends CretaModel with BookMixin {
     _isEditable = owners.contains(loginUser);
     String publicCopyable = '<${PermissionType.writer.name}>public';
     String privateCopyable = '<${PermissionType.writer.name}>$loginUser';
-    _isCopyable = writers.contains(publicCopyable) | writers.contains(privateCopyable) | _isEditable;
+    _isCopyable =
+        writers.contains(publicCopyable) | writers.contains(privateCopyable) | _isEditable;
   }
 
-  
+ 
 }

@@ -55,6 +55,7 @@ class LayoutConst {
   static const double rightMenuTitleHeight = 76;
   static const double innerMenuBarHeight = 36;
   static const double contentsListHeight = 24;
+  static const double pageControllerHeight = 36;
 
   // stick page
   static const double leftPageWidth = 210;

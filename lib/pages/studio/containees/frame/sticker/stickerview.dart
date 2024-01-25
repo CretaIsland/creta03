@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import '../../../../../data_io/frame_manager.dart';
 import '../../../../../data_io/key_handler.dart';
+import '../../../../../data_io/page_manager.dart';
+import '../../../../../design_system/creta_color.dart';
 import '../../../../../model/book_model.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
@@ -22,7 +24,17 @@ enum ImageQuality { low, medium, high }
 /// You can pass any widget to it as Sticker's child
 ///
 class StickerView extends StatefulWidget {
+  final BookModel book;
+  final double height; // height of the editor view
+  final double width; // width of the editor view
+
+  final FrameManager? frameManager;
+  final PageModel page;
   final List<Sticker> stickerList;
+
+  final List<PageInfo>? prevPageInfos;
+  final List<PageInfo>? nextPageInfos;
+
   final void Function(DragUpdate, String) onUpdate;
   final void Function(String) onFrameDelete;
   final void Function(String, String) onFrameBack;
@@ -41,16 +53,15 @@ class StickerView extends StatefulWidget {
 
   //final void Function(String, ContentsModel) onDropFrame;
 
-  final double height; // height of the editor view
-  final double width; // width of the editor view
-  final FrameManager? frameManager;
-  final PageModel page;
-  final BookModel book;
-
   const StickerView({
     super.key,
     required this.book,
+    required this.height,
+    required this.width,
     required this.page,
+    required this.prevPageInfos,
+    required this.nextPageInfos,
+    required this.frameManager,
     required this.stickerList,
     required this.onUpdate,
     required this.onFrameDelete,
@@ -65,9 +76,6 @@ class StickerView extends StatefulWidget {
     required this.onComplete,
     required this.onScaleStart,
     required this.onResizeButtonTap,
-    required this.height,
-    required this.width,
-    required this.frameManager,
     required this.onDropPage,
     required this.onFrontBackHover,
     //required this.onDropFrame,
@@ -114,13 +122,9 @@ class StickerView extends StatefulWidget {
 
 class StickerViewState extends State<StickerView> {
   // You have to pass the List of Sticker
-  List<Sticker>? stickerList;
 
   @override
   void initState() {
-    // setState(() {
-    //  stickerList = widget.stickerList;
-    // });
     super.initState();
   }
 
@@ -128,52 +132,139 @@ class StickerViewState extends State<StickerView> {
   Widget build(BuildContext context) {
     logger.fine('StickerViewState build');
 
-    stickerList = widget.stickerList;
-    if (stickerList != null) {
-      return RepaintBoundary(
-        key: GlobalKey(),
-        child:
-            // OverflowBox(
-            //   minHeight: widget.height,
-            //   maxHeight: widget.height * 2.5,
-            //   minWidth: widget.width,
-            //   maxWidth: widget.width * 2.5,
-            //   Container(
-            // color: Colors.amber,
-            // height: widget.height,
-            // width: widget.width,
-            // child:
-            DraggableStickers(
-          //DraggableStickers class in which stickerList is passed
-          book: widget.book,
-          page: widget.page,
-          pageWidth: widget.width,
-          pageHeight: widget.height,
-          frameManager: widget.frameManager,
-          stickerList: stickerList!,
-          onUpdate: widget.onUpdate,
-          onFrameDelete: widget.onFrameDelete,
-          onFrameBack: widget.onFrameBack,
-          onFrameFront: widget.onFrameFront,
-          onFrameCopy: widget.onFrameCopy,
-          onFrameMain: widget.onFrameMain,
-          onFrameShowUnshow: widget.onFrameShowUnshow,
-          //onFrameRotate: widget.onFrameRotate,
-          //onFrameLink: widget.onFrameLink,
-          onTap: widget.onTap,
-          onResizeButtonTap: widget.onResizeButtonTap,
-          onComplete: widget.onComplete,
-          onScaleStart: widget.onScaleStart,
-          onDropPage: widget.onDropPage,
-          onFrontBackHover: widget.onFrontBackHover,
-
-          //onDropFrame: widget.onDropFrame,
-        ),
-        //),
-      );
-    } else {
+    if (widget.stickerList.isEmpty) {
       return const CircularProgressIndicator();
     }
+
+    double pageWidth = widget.book.width.value * StudioVariables.applyScale;
+    double pageHeight = widget.book.height.value * StudioVariables.applyScale;
+
+    //const double selectedBorderWidth = 4;
+
+    Widget selected =
+        // Container(
+        //   width: widget.width,
+        //   height: widget.height, // + (LayoutConst.pageControllerHeight * 2),
+        //   color: CretaColor.secondary,
+        //   // + (LayoutConst.pa
+        //   child:
+        Center(
+      child: DraggableStickers(
+        isSelected: true,
+        book: widget.book,
+        pageWidth: pageWidth,
+        pageHeight: pageHeight,
+        // pageWidth: widget.width,
+        // pageHeight: widget.height,
+        page: widget.page,
+        frameManager: widget.frameManager,
+        stickerList: widget.stickerList,
+        onUpdate: widget.onUpdate,
+        onFrameDelete: widget.onFrameDelete,
+        onFrameBack: widget.onFrameBack,
+        onFrameFront: widget.onFrameFront,
+        onFrameCopy: widget.onFrameCopy,
+        onFrameMain: widget.onFrameMain,
+        onFrameShowUnshow: widget.onFrameShowUnshow,
+        //onFrameRotate: widget.onFrameRotate,
+        //onFrameLink: widget.onFrameLink,
+        onTap: widget.onTap,
+        onResizeButtonTap: widget.onResizeButtonTap,
+        onComplete: widget.onComplete,
+        onScaleStart: widget.onScaleStart,
+        onDropPage: widget.onDropPage,
+        onFrontBackHover: widget.onFrontBackHover,
+
+        //onDropFrame: widget.onDropFrame,
+      ),
+      //),
+    );
+
+    List<Widget> pageList = [];
+
+    if (widget.prevPageInfos != null) {
+      for (var pageInfo in widget.prevPageInfos!) {
+        Widget prev = Container(
+          width: widget.width,
+          height: widget.height,
+          color: CretaColor.secondary[200]!,
+          child: Center(
+            child: DraggableStickers(
+              isSelected: false,
+              book: widget.book,
+              pageWidth: pageWidth,
+              pageHeight: pageHeight,
+              // pageWidth: widget.width,
+              // pageHeight: widget.height,
+              page: pageInfo.pageModel,
+              frameManager: pageInfo.frameManager,
+              stickerList: pageInfo.stickerList,
+            ),
+          ),
+        );
+        pageList.add(prev);
+      }
+    }
+    pageList.add(selected);
+
+    if (widget.nextPageInfos != null) {
+      for (var pageInfo in widget.nextPageInfos!) {
+        Widget next = Container(
+          width: widget.width,
+          height: widget.height,
+          color: CretaColor.secondary[200]!,
+          child: Center(
+            child: DraggableStickers(
+              isSelected: false,
+              book: widget.book,
+              pageWidth: pageWidth,
+              pageHeight: pageHeight,
+              // pageWidth: widget.width,
+              // pageHeight: widget.height,
+              page: pageInfo.pageModel,
+              frameManager: pageInfo.frameManager,
+              stickerList: pageInfo.stickerList,
+            ),
+          ),
+        );
+        pageList.add(next);
+      }
+    }
+
+    return selected;
+
+    // return RepaintBoundary(
+    //   key: GlobalKey(),
+    //   child: main,
+    // );
+
+    // return ListView.builder(
+    //   itemCount: pageList.length,
+    //   itemBuilder: (BuildContext context, int listIndex) {
+    //     return Center(
+    //       child: pageList[listIndex],
+    //     );
+    //     // return Padding(
+    //     //   padding: EdgeInsets.symmetric(vertical: StudioVariables.pageVertivalPadding),
+    //     //   child: pageList[listIndex],
+    //     // );
+    //   },
+    // );
+
+    // return Column(
+    //   mainAxisAlignment: MainAxisAlignment.center,
+    //   children: [main],
+    // );
+
+    // if (next != null) return next;
+    // if (prev != null) return prev;
+    // return Stack(
+    //   alignment: Alignment.center,
+    //   children: [
+    //     main,
+    //   ],
+    // );
+    //return main;
   }
 }
 

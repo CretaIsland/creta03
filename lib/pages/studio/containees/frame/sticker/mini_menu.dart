@@ -22,7 +22,7 @@ import 'draggable_stickers.dart';
 import 'stickerview.dart';
 
 class MiniMenu extends StatefulWidget {
-  final ContentsManager contentsManager;
+  final ContentsManager? contentsManager;
   final FrameManager frameManager;
 
   static bool _showFrame = false;
@@ -43,7 +43,7 @@ class MiniMenu extends StatefulWidget {
 
   final void Function() onFrameShowUnshow;
   final void Function() onFrameMain;
-  final void Function(bool) onFrontBackHover;
+  final void Function(bool)? onFrontBackHover;
   final void Function() onContentsFlip;
   final void Function() onContentsRotate;
   final void Function() onContentsCrop;
@@ -66,7 +66,7 @@ class MiniMenu extends StatefulWidget {
 
     required this.onFrameShowUnshow,
     required this.onFrameMain,
-    required this.onFrontBackHover,
+    this.onFrontBackHover,
     required this.onContentsFlip,
     required this.onContentsRotate,
     required this.onContentsCrop,
@@ -85,6 +85,21 @@ class MiniMenuState extends State<MiniMenu> {
   //OffsetEventController? _linkSendEvent;
 
   late bool isFirstTime;
+  late FrameModel _frameModel;
+  late Sticker _sticker;
+
+  @override
+  void didUpdateWidget(MiniMenu oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.frameModel != widget.frameModel) {
+      //print('frameModel changed');
+      _frameModel = widget.frameModel;
+    }
+    if (oldWidget.sticker != widget.sticker) {
+      //print('sticker changed');
+      _sticker = widget.sticker;
+    }
+  }
 
   @override
   void dispose() {
@@ -100,6 +115,9 @@ class MiniMenuState extends State<MiniMenu> {
     //_linkSendEvent = linkSendEvent;
     isFirstTime = true;
     //print('MiniMenu initState isFirstTime=$isFirstTime');
+
+    _frameModel = widget.frameModel;
+    _sticker = widget.sticker;
   }
 
   @override
@@ -108,26 +126,35 @@ class MiniMenuState extends State<MiniMenu> {
 
     // Offset stickerOffset = Offset.zero;
     // if (isFirstTime == true) {
-    //   stickerOffset = widget.sticker.position + BookMainPage.pageOffset;
+    //   stickerOffset = _sticker.position + BookMainPage.pageOffset;
     //   isFirstTime = false;
     // } else {
-    //   stickerOffset = widget.sticker.position;
+    //   stickerOffset = _sticker.position;
     // }
-    // double centerX = stickerOffset.dx + (widget.sticker.frameSize.width + LayoutConst.stikerOffset) / 2;
+    // double centerX = stickerOffset.dx + (_sticker.frameSize.width + LayoutConst.stikerOffset) / 2;
 
     // double left = centerX - LayoutConst.miniMenuWidth / 2;
     // double top = stickerOffset.dy +
-    //     widget.sticker.frameSize.height +
+    //     _sticker.frameSize.height +
     //     LayoutConst.miniMenuGap +
     //     LayoutConst.dragHandle;
 
-    double posX = widget.frameModel.getRealPosX();
-    double posY = widget.frameModel.getRealPosY();
+    double posX = _frameModel.getRealPosX();
+    double posY = _frameModel.getRealPosY();
 
-    double centerX = posX + (widget.sticker.frameSize.width + LayoutConst.stikerOffset) / 2;
-    double left = centerX - LayoutConst.miniMenuWidth / 2;
+    //print('pos=$posX, $posY');
+
+    //double centerX = posX + (_sticker.frameSize.width + LayoutConst.stikerOffset) / 2;
+    //double left = centerX - LayoutConst.miniMenuWidth / 2;
+    double left = posX +
+        ((_sticker.frameSize.width - LayoutConst.miniMenuWidth) / 2) +
+        LayoutConst.stikerOffset / 2;
     double top =
-        posY + widget.sticker.frameSize.height + LayoutConst.miniMenuGap + LayoutConst.dragHandle;
+        posY + _sticker.frameSize.height + LayoutConst.miniMenuGap + LayoutConst.dragHandle; // +
+    //LayoutConst.stikerOffset / 2;
+
+    //print('_sticker.frameSize.height=${_sticker.frameSize.height}');
+    //print('left,top=$left, $top');
 
     // if (top + LayoutConst.miniMenuHeight > widget.pageHeight) {
     //   // 화면의 영역을 벗어나면 어쩔 것인가...
@@ -139,13 +166,17 @@ class MiniMenuState extends State<MiniMenu> {
     //       LayoutConst.miniMenuHeight +
     //       LayoutConst.dragHandle;
     // }
-
-    bool hasContents = widget.contentsManager.hasContents();
+    bool hasContents = false;
+    if (widget.contentsManager != null) {
+      hasContents = widget.contentsManager!.hasContents();
+    }
 
     ContentsModel? model;
     if (hasContents) {
-      model = widget.contentsManager.getSelected() as ContentsModel?;
+      model = widget.contentsManager!.getSelected() as ContentsModel?;
     }
+
+    //print('MiniMenu ${BookMainPage.miniMenuNotifier!.isShow} ......');
 
     return Visibility(
       visible: BookMainPage.miniMenuNotifier!.isShow,
@@ -216,17 +247,16 @@ class MiniMenuState extends State<MiniMenu> {
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.showUnshow,
           tooltipFg: CretaColor.text,
-          icon: widget.frameModel.isShow.value
-              ? Icons.visibility_outlined
-              : Icons.visibility_off_outlined,
+          icon:
+              _frameModel.isShow.value ? Icons.visibility_outlined : Icons.visibility_off_outlined,
           decoType: CretaButtonDeco.opacity,
           iconColor: CretaColor.primary,
           buttonColor: CretaButtonColor.primary,
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
             logger.fine("MinuMenu onShowUnshow");
-            widget.frameModel.isShow.set(!widget.frameModel.isShow.value);
-            widget.frameModel.changeOrderByIsShow(widget.frameManager);
+            _frameModel.isShow.set(!_frameModel.isShow.value);
+            _frameModel.changeOrderByIsShow(widget.frameManager);
             widget.onFrameShowUnshow.call();
             LeftMenuPage.treeInvalidate();
             setState(() {});
@@ -253,9 +283,7 @@ class MiniMenuState extends State<MiniMenu> {
           iconColor: CretaColor.primary,
           buttonColor: CretaButtonColor.primary,
           noHoverEffect: true,
-          onHover: (hover) {
-            widget.onFrontBackHover(hover);
-          },
+          onHover: widget.onFrontBackHover,
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
             logger.fine("MinuMenu onFrameFront");
@@ -270,9 +298,7 @@ class MiniMenuState extends State<MiniMenu> {
           iconColor: CretaColor.primary,
           buttonColor: CretaButtonColor.primary,
           noHoverEffect: true,
-          onHover: (hover) {
-            widget.onFrontBackHover(hover);
-          },
+          onHover: widget.onFrontBackHover,
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
             logger.fine("MinuMenu onFrameBack");
@@ -318,12 +344,12 @@ class MiniMenuState extends State<MiniMenu> {
               LinkParams.isLinkNewMode = !LinkParams.isLinkNewMode;
             });
             if (LinkParams.isLinkNewMode) {
-              if (LinkParams.linkNew(widget.frameModel)) {
+              if (LinkParams.linkNew(_frameModel)) {
                 //_linkSendEvent?.sendEvent(const Offset(1, 1));
                 BookMainPage.bookManagerHolder!.notify();
               }
             } else {
-              LinkParams.linkCancel(widget.frameModel);
+              LinkParams.linkCancel(_frameModel);
             }
           }),
 
@@ -415,7 +441,7 @@ class MiniMenuState extends State<MiniMenu> {
             BookMainPage.containeeNotifier!.setFrameClick(true);
             logger.fine("MinuMenu onFrameMain");
             model!.isFlip.set(!model.isFlip.value);
-            widget.contentsManager.notify();
+            widget.contentsManager?.notify();
             widget.onContentsFlip.call();
             setState(() {});
           }),
@@ -435,7 +461,7 @@ class MiniMenuState extends State<MiniMenu> {
             logger.fine("MinuMenu onFrameFront");
             double newAngle = (((model.angle.value / 15).floor() + 1) * 15) % 360;
             model.angle.set(newAngle);
-            widget.contentsManager.notify();
+            widget.contentsManager?.notify();
             widget.onContentsRotate.call();
           }),
       // 콘텐츠 크롭
@@ -468,12 +494,12 @@ class MiniMenuState extends State<MiniMenu> {
               return;
             }
             model.setNextFit();
-            widget.contentsManager.notify();
+            widget.contentsManager?.notify();
             widget.onContentsFullscreen.call();
             setState(() {});
           }),
       // 콘텐츠 삭제
-      if (widget.contentsManager.iamBusy == false)
+      if (widget.contentsManager != null && widget.contentsManager!.iamBusy == false)
         BTN.fill_blue_image_menu(
             tooltipFg: CretaColor.text,
             tooltip: CretaStudioLang.deleteConTooltip,

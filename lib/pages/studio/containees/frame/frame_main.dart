@@ -16,6 +16,7 @@ import '../../../../common/creta_constant.dart';
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
+import '../../../../data_io/page_manager.dart';
 import '../../../../design_system/component/creta_popup.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/book_model.dart';
@@ -60,7 +61,6 @@ class FrameMain extends StatefulWidget {
 
 class FrameMainState extends State<FrameMain> with FramePlayMixin {
   //int _randomIndex = 0;
-  double applyScale = 1;
   // ignore: unused_field
   FrameEventController? _receiveEvent;
   FrameEventController? _sendEvent;
@@ -69,14 +69,22 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
   String _mainFrameCandiator = ''; // frame 중에 콘텐츠가 있으면서, order 가 가장 높은것.  즉, mainFrame 의 1번 후보자.
   late PageModel _pageModel;
 
+  List<PageInfo> _prevPageInfos = [];
+  List<PageInfo> _nextPageInfos = [];
+
   //final Offset _pageOffset = Offset.zero;
   @override
   void didUpdateWidget(FrameMain oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.pageModel.mid != widget.pageModel.mid) {
-      _pageModel = widget.pageModel;
-      //setState(() {});
+      _updatePage();
     }
+  }
+
+  void _updatePage() {
+    _pageModel = widget.pageModel;
+    _prevPageInfos = BookMainPage.pageManagerHolder!.getPrevList(_pageModel.mid, _getStickerList);
+    _nextPageInfos = BookMainPage.pageManagerHolder!.getNextList(_pageModel.mid, _getStickerList);
   }
 
   @override
@@ -95,33 +103,30 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
 
     // final OffsetEventController linkReceiveEvent = Get.find(tag: 'frame-each-to-on-link');
     // _linkReceiveEvent = linkReceiveEvent;
-    _pageModel = widget.pageModel;
+    _updatePage();
     afterBuild();
   }
 
   Future<void> afterBuild() async {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      // final RenderBox? box = widget.frameMainKey.currentContext?.findRenderObject() as RenderBox?;
-      // if (box != null) {
-      //   logger.fine('box.size=${box.size}');
-      //   Offset pageOffset = box.localToGlobal(Offset.zero);
-      //   frameManager?.setPageOffset(pageOffset);
-      //   logger.fine('box.position=$pageOffset');
-      // }
-      //frameManager?.setFrameMainKey(widget.frameMainKey);
-    });
+    //WidgetsBinding.instance.addPostFrameCallback((_) async {
+    // final RenderBox? box = widget.frameMainKey.currentContext?.findRenderObject() as RenderBox?;
+    // if (box != null) {
+    //   logger.fine('box.size=${box.size}');
+    //   Offset pageOffset = box.localToGlobal(Offset.zero);
+    //   frameManager?.setPageOffset(pageOffset);
+    //   logger.fine('box.position=$pageOffset');
+    // }
+    //frameManager?.setFrameMainKey(widget.frameMainKey);
+    //});
   }
 
   @override
   Widget build(BuildContext context) {
     //applyScale = StudioVariables.scale / StudioVariables.fitScale;
     // print('FrameMain build');
-    //applyScale = widget.bookModel.width.value / StudioVariables.availWidth;
+    //StudioVariables.applyScale = widget.bookModel.width.value / StudioVariables.availWidth;
 
-    applyScale = widget.pageWidth / widget.bookModel.width.value;
-    StudioVariables.applyScale = applyScale;
-    logger.fine('model.width=${widget.bookModel.width.value}, realWidth=${widget.pageWidth}');
-    //applyScaleH = widget.bookModel.height.value / StudioVariables.availHeight;
+    //BookMainPage.resetScale(widget.bookModel);
 
     logger.fine('parentPage= ${_pageModel.name.value}, =${_pageModel.mid}');
     FrameManager? founded = BookMainPage.pageManagerHolder!.findFrameManager(_pageModel.mid);
@@ -167,9 +172,12 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
       //key: ValueKey('StickerView-${_pageModel.mid}'),
       book: widget.bookModel,
       page: _pageModel,
+      prevPageInfos: _prevPageInfos,
+      nextPageInfos: _nextPageInfos,
       width: widget.pageWidth,
       height: widget.pageHeight,
       frameManager: frameManager,
+      stickerList: _getStickerList(frameManager!, _pageModel),
       // List of Stickers
       onUpdate: (update, mid) {
         //print('onUpdate ${update.hint}--------------------');
@@ -379,13 +387,12 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
         logger.fine('onDropPage(${modelList.length})');
         await createNewFrameAndContents(modelList, _pageModel);
       },
-
-      stickerList: _getStickerList(),
     );
   }
 
-  Future<void> _invokeNotify() async {
-    await Future.delayed(const Duration(milliseconds: 100));
+  //Future<void> _invokeNotify() async {
+  void _invokeNotify() {
+    //await Future.delayed(const Duration(milliseconds: 100));
     // 속도 향상을 위해, miniMenuNotifier  와 containeeNotifier 를 이곳에서 한다.
     //print('5 before set and notify MiniMenuNotifier : ${CretaUtils.timeLap()}');
     BookMainPage.miniMenuNotifier!.set(true, doNoti: true);
@@ -421,16 +428,16 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
   //   return _getOverLayList(stickerList);
   // }
 
-  List<Sticker> _getStickerList() {
+  List<Sticker> _getStickerList(FrameManager manager, PageModel pageModel) {
     //frameManager!.stickerKeyMap.clear();
 
-    frameManager!.eliminateOverlay();
-    frameManager!.mergeOverlay();
+    manager.eliminateOverlay();
+    manager.mergeOverlay();
 
-    frameManager!.reOrdering();
-    _mainFrameCandiator = frameManager!.getMainFrameCandidator();
+    manager.reOrdering();
+    _mainFrameCandiator = manager.getMainFrameCandidator();
 
-    return frameManager!.orderMapIterator((e) {
+    return manager.orderMapIterator((e) {
       //_randomIndex += 10;
       FrameModel model = e as FrameModel;
       BookMainPage.clickEventHandler.subscribeList(
@@ -440,7 +447,7 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
         null,
       );
 
-      return _createSticker(model);
+      return _createSticker(model, manager, pageModel);
     });
   }
 
@@ -458,11 +465,13 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
   //   return retval;
   // }
 
-  Sticker _createSticker(FrameModel model) {
-    double frameWidth = (model.width.value /* + model.shadowSpread.value */) * applyScale;
-    double frameHeight = (model.height.value /* + model.shadowSpread.value */) * applyScale;
-    double posX = model.posX.value * applyScale - LayoutConst.stikerOffset / 2;
-    double posY = model.posY.value * applyScale - LayoutConst.stikerOffset / 2;
+  Sticker _createSticker(FrameModel model, FrameManager manager, PageModel pageModel) {
+    double frameWidth =
+        (model.width.value /* + model.shadowSpread.value */) * StudioVariables.applyScale;
+    double frameHeight =
+        (model.height.value /* + model.shadowSpread.value */) * StudioVariables.applyScale;
+    double posX = model.posX.value * StudioVariables.applyScale - LayoutConst.stikerOffset / 2;
+    double posY = model.posY.value * StudioVariables.applyScale - LayoutConst.stikerOffset / 2;
 
     // GlobalKey<StickerState>? stickerKey;
     // if (widget.isPrevious == false) {
@@ -473,7 +482,7 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
 
     // Text Type 의 경우 사이즈 계산을 위해서
     //print('7 : ${model.name.value}');
-    ContentsModel? contentsModel = frameManager!.getFirstContents(model.mid);
+    ContentsModel? contentsModel = manager.getFirstContents(model.mid);
     if (contentsModel != null && contentsModel.isText()) {
       if (contentsModel.isAutoFrameOrSide()) {
         // 자동 프레임사이즈를 결정해 주어야 한다.
@@ -515,11 +524,11 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
     // GlobalKey<FrameEachState> frameKey = GlobalObjectKey<FrameEachState>(frameKeyStr);
 
     Widget eachFrame = FrameEach(
-      key: frameManager!.registerFrameEachKey(_pageModel.mid, model.mid),
+      key: manager.registerFrameEachKey(pageModel.mid, model.mid),
       model: model,
-      pageModel: _pageModel,
-      frameManager: frameManager!,
-      applyScale: applyScale,
+      pageModel: pageModel,
+      frameManager: manager,
+      //applyScale: StudioVariables.applyScale,
       width: frameWidth,
       height: frameHeight,
       frameOffset: Offset(posX, posY),
@@ -528,17 +537,17 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
     bool isMain = (model.isMain.value || _mainFrameCandiator == model.mid);
 
     return Sticker(
-      key: frameManager!.registerStickerKey(_pageModel.mid, model.mid),
+      key: manager.registerStickerKey(pageModel.mid, model.mid),
       //frameKey: frameKey,
-      frameManager: frameManager!,
+      frameManager: manager,
       isOverlay: model.isOverlay.value,
       model: model,
-      pageMid: _pageModel.mid,
+      pageMid: pageModel.mid,
       //id: model.mid,
       position: Offset(posX, posY),
       angle: model.angle.value * (pi / 180),
       frameSize: Size(frameWidth, frameHeight),
-      borderWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
+      borderWidth: (model.borderWidth.value * StudioVariables.applyScale).ceilToDouble(),
       isMain: isMain,
       //child: Visibility(
       //visible: _isVisible(model), child: _applyAnimate(model)), //skpark Visibility 는 나중에 빼야함.
@@ -566,16 +575,21 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
       if (item.mid != mid) continue;
       FrameModel model = item as FrameModel;
 
-      //logger.finest('before save widthxheight = ${model.width.value}x${model.height.value}');
-      Offset pos = CretaUtils.positionInPage(update.position, applyScale);
+      //print('before save widthxheight = ${model.width.value}x${model.height.value}');
+      Offset pos = BookMainPage.bookManagerHolder!.positionInPage(
+        update.position,
+        StudioVariables.applyScale,
+      );
 
       model.angle.set(update.angle * (180 / pi), save: false);
       model.posX.set(pos.dx, save: false);
       model.posY.set(pos.dy, save: false);
-      model.width.set((update.size.width / applyScale).roundToDouble(), save: false);
+      model.width
+          .set((update.size.width / StudioVariables.applyScale).roundToDouble(), save: false);
 
       //print('setItem...................................');
-      model.height.set((update.size.height / applyScale).roundToDouble(), save: false);
+      model.height
+          .set((update.size.height / StudioVariables.applyScale).roundToDouble(), save: false);
       //model.save();
 
       //logger.finest('after save widthxheight = ${model.width.value}x${model.height.value}');

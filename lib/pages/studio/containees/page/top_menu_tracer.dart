@@ -12,7 +12,9 @@ import '../../book_main_page.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../../studio_variables.dart';
+import '../containee_nofifier.dart';
 import '../frame/frame_play_mixin.dart';
+import '../frame/sticker/draggable_stickers.dart';
 
 class TopMenuTracer extends StatefulWidget {
   final FrameManager frameManager;
@@ -146,12 +148,28 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
         (LayoutConst.defaultFrameSize.width / 2) * StudioVariables.applyScale,
         (LayoutConst.defaultFrameSize.height / 2) * StudioVariables.applyScale,
       );
-      Offset pos = CretaUtils.positionInPage(details.localPosition - center, null);
+      Offset pos = BookMainPage.bookManagerHolder!.positionInPage(
+        details.localPosition - center,
+        null,
+        applyStickerOffset: false,
+      );
+      //Offset pos = Offset(details.localPosition.dx - center.dx, details.localPosition.dy - center.dy);
       frameManager!.createNextFrame(pos: pos, size: LayoutConst.defaultFrameSize).then((value) {
-        BookMainPage.pageManagerHolder!.invalidatThumbnail(frameManager!.pageModel.mid);
-        _sendEvent?.sendEvent(value);
+        //print('start ==================================================');
 
-        ///frameManager!.notify();
+        frameManager?.setSelectedMid(value.mid, doNotify: true);
+        BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true);
+        DraggableStickers.frameSelectNotifier?.set(value.mid);
+
+        _sendEvent?.sendEvent(value);
+        BookMainPage.pageManagerHolder!.invalidatThumbnail(frameManager!.pageModel.mid);
+        //Future.delayed(const Duration(milliseconds: 200), () {
+        //print('miniMenu show');
+        BookMainPage.miniMenuNotifier?.set(true, doNoti: true);
+        BookMainPage.bookManagerHolder!.notify();
+        //});
+
+        //print('end ==================================================');
         _isBusy = false;
         return null;
       });

@@ -23,6 +23,8 @@ import '../model/team_model.dart';
 import '../pages/login/creta_account_manager.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
+import '../pages/studio/studio_constant.dart';
+import '../pages/studio/studio_variables.dart';
 import 'creta_manager.dart';
 import 'page_manager.dart';
 //import 'frame_manager.dart';
@@ -572,5 +574,36 @@ class BookManager extends CretaManager {
       //   return null;
       // });
     }
+  }
+
+  Offset getPageIndexOffset() {
+    BookModel? book = onlyOne() as BookModel?;
+    if (book == null) {
+      return Offset.zero;
+    }
+    //int pageIndex = BookMainPage.pageManagerHolder!.getSelectedPageIndex();
+    // const int pageIndex = 1;
+    // if (pageIndex < 0) {
+    //   return Offset.zero;
+    // }
+    //print('pageIndex=$pageIndex');
+    return Offset(
+      (StudioVariables.virtualWidth - (book.width.value * StudioVariables.applyScale)) / 2,
+      (StudioVariables.virtualHeight - (book.height.value * StudioVariables.applyScale)) / 2,
+      //StudioVariables.availHeight * pageIndex +
+      //((StudioVariables.availHeight - (book.height.value * StudioVariables.applyScale)) / 2),
+    );
+  }
+
+  Offset positionInPage(Offset localPosition, double? applyScale,
+      {bool applyStickerOffset = true}) {
+    applyScale ??= StudioVariables.applyScale;
+    double margin = applyStickerOffset ? (LayoutConst.stikerOffset / 2) : 0;
+    double dx = (localPosition.dx - BookMainPage.pageOffset.dx + margin) / applyScale;
+    double dy = (localPosition.dy - BookMainPage.pageOffset.dy + margin) / applyScale;
+    //print('localPosition.dy=${localPosition.dy}');
+    //print('dy=$dy');
+
+    return Offset(dx, dy);
   }
 }

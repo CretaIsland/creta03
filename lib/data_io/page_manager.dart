@@ -19,6 +19,7 @@ import '../model/page_model.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
 //import '../pages/studio/containees/page/page_main.dart';
+import '../pages/studio/containees/frame/sticker/stickerview.dart';
 import '../pages/studio/left_menu/left_menu_page.dart';
 import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_variables.dart';
@@ -28,6 +29,13 @@ import 'frame_manager.dart';
 import 'key_handler.dart';
 
 //PageManager? pageManagerHolder;
+
+class PageInfo {
+  final PageModel pageModel;
+  final FrameManager? frameManager;
+  final List<Sticker>? stickerList;
+  PageInfo(this.pageModel, this.frameManager, this.stickerList);
+}
 
 class PageManager extends CretaManager {
   BookModel? bookModel;
@@ -154,6 +162,7 @@ class PageManager extends CretaManager {
     clearAll();
     addRealTimeListen(bookModel.mid);
     await getPages();
+    reOrdering();
     setSelected(0);
     subcribe();
   }
@@ -417,11 +426,11 @@ class PageManager extends CretaManager {
     return null;
   }
 
-  String? getNextMid({bool loop = true}) {
-    double selectedOrder = getSelectedOrder();
-    String? retval = _getNextMid(selectedOrder, false);
-    if (retval != null) {
-      return retval;
+  PageModel? getNextPage({bool loop = true, double? selectedOrder}) {
+    selectedOrder ??= getSelectedOrder();
+    PageModel? page = _getNextPage(selectedOrder, false);
+    if (page != null) {
+      return page;
     }
     // 처음부터 다시 시작한다.
     if (loop) {
@@ -429,12 +438,20 @@ class PageManager extends CretaManager {
         onGotoNextBook?.call();
         return null;
       }
-      return _getNextMid(-1, true);
+      return _getNextPage(-1, true);
     }
     return null;
   }
 
-  String? _getNextMid(double selectedOrder, bool startToFirst) {
+  String? getNextMid({bool loop = true}) {
+    PageModel? page = getNextPage(loop: loop);
+    if (page != null) {
+      return page.mid;
+    }
+    return null;
+  }
+
+  PageModel? _getNextPage(double selectedOrder, bool startToFirst) {
     bool matched = startToFirst;
     logger.fine('selectedOrder=$selectedOrder');
     // if (selectedOrder < 0) {
@@ -459,8 +476,8 @@ class PageManager extends CretaManager {
             continue;
           }
         }
-
-        return getNthMid(ele);
+        return pageModel;
+        //return getNth(ele) as PageModel?;
       }
       if (selectedOrder > 0 && ele == selectedOrder) {
         matched = true;
@@ -475,11 +492,53 @@ class PageManager extends CretaManager {
     return null;
   }
 
-  String? getPrevMid({bool loop = true}) {
-    double selectedOrder = getSelectedOrder();
-    String? retval = _getPrevMid(selectedOrder, false);
-    if (retval != null) {
-      return retval;
+  List<PageInfo> getPrevList(
+    String mid,
+    List<Sticker> Function(FrameManager, PageModel)? getStickerList,
+  ) {
+    List<PageInfo> retval = [];
+    Iterable<CretaModel> keys = orderValues().toList();
+    for (var ele in keys) {
+      if (ele.mid == mid) break;
+      FrameManager? manager = findFrameManager(ele.mid);
+      List<Sticker>? stickers;
+      if (getStickerList != null && manager != null) {
+        stickers = getStickerList(manager, ele as PageModel);
+      }
+      retval.add(PageInfo(ele as PageModel, manager, stickers));
+    }
+    return retval;
+  }
+
+  List<PageInfo> getNextList(
+    String mid,
+    List<Sticker> Function(FrameManager, PageModel)? getStickerList,
+  ) {
+    List<PageInfo> retval = [];
+    Iterable<CretaModel> keys = orderValues().toList();
+    bool start = false;
+    for (var ele in keys) {
+      if (ele.mid == mid) {
+        start = true;
+        continue;
+      }
+      if (start) {
+        FrameManager? manager = findFrameManager(ele.mid);
+        List<Sticker>? stickers;
+        if (getStickerList != null && manager != null) {
+          stickers = getStickerList(manager, ele as PageModel);
+        }
+        retval.add(PageInfo(ele as PageModel, manager, stickers));
+      }
+    }
+    return retval;
+  }
+
+  PageModel? getPrevPage({bool loop = true, double? selectedOrder}) {
+    selectedOrder ??= getSelectedOrder();
+    PageModel? page = _getPrevPage(selectedOrder, false);
+    if (page != null) {
+      return page;
     }
     // 마지막으로 돌아간다
     if (loop) {
@@ -487,12 +546,23 @@ class PageManager extends CretaManager {
         onGotoPrevBook?.call();
         return null;
       }
-      return _getPrevMid(-1, true);
+      page = _getPrevPage(-1, true);
+      if (page != null) {
+        return page;
+      }
     }
     return null;
   }
 
-  String? _getPrevMid(double selectedOrder, bool startToFirst) {
+  String? getPrevMid({bool loop = true}) {
+    PageModel? page = getPrevPage(loop: loop);
+    if (page != null) {
+      return page.mid;
+    }
+    return null;
+  }
+
+  PageModel? _getPrevPage(double selectedOrder, bool startToFirst) {
     bool matched = startToFirst;
     //double selectedOrder = getSelectedOrder();
     // if (selectedOrder < 0) {
@@ -512,7 +582,7 @@ class PageManager extends CretaManager {
         if (pageModel.isShow.value == false) {
           continue;
         }
-        return pageModel.mid;
+        return pageModel;
       }
       if (selectedOrder > 0 && ele == selectedOrder) {
         matched = true;
@@ -847,6 +917,15 @@ class PageManager extends CretaManager {
     // });
 
     return;
+  }
+
+  int getSelectedPageIndex() {
+    PageModel? model = getSelected() as PageModel?;
+    if (model == null) {
+      logger.severe('selected page is null');
+      return -1;
+    }
+    return getPageIndex(model.mid);
   }
 
   int getPageIndex(String pageMid) {

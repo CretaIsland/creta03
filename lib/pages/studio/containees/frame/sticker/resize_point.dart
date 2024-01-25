@@ -35,7 +35,7 @@ class ResizePoint extends StatefulWidget {
       {Key? key,
       required this.onDrag,
       required this.type,
-      required this.onTap,
+      this.onTap,
       required this.onComplete,
       this.enable = true,
       // ignore: unused_element
@@ -49,7 +49,7 @@ class ResizePoint extends StatefulWidget {
   final ValueSetter<double>? onScaleUpdate;
   final ResizePointType type;
   final IconData? iconData;
-  final void Function() onTap;
+  final void Function()? onTap;
   final void Function() onComplete;
   final bool enable;
 

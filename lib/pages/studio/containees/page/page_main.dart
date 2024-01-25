@@ -208,6 +208,7 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
               width: StudioVariables.virtualWidth,
               height: StudioVariables.virtualHeight,
               color: LayoutConst.studioBGColor,
+              //color: Colors.blueAccent,
               child: Center(
                 child: StudioVariables.isHandToolMode == false
                     ? GestureDetector(
@@ -289,8 +290,8 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
       pageKey: BookMainPage.pageManagerHolder!.registerPage(widget.pageModel.mid),
       bookModel: widget.bookModel,
       pageModel: widget.pageModel,
-      pageWidth: BookMainPage.pageWidth,
-      pageHeight: BookMainPage.pageHeight, // + LayoutConst.miniMenuArea,);
+      pageWidth: widget.pageWidth,
+      pageHeight: widget.pageHeight, // + LayoutConst.miniMenuArea,);
       useColor: useColor,
       bgColor1: bgColor1,
       bgColor2: bgColor2,
@@ -310,8 +311,8 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
     //   pageKey: previousKey,
     //   bookModel: widget.bookModel,
     //   pageModel: pageModel,
-    //   pageWidth: BookMainPage.pageWidth,
-    //   pageHeight: BookMainPage.pageHeight, // + LayoutConst.miniMenuArea,);
+    //   pageWidth: StudioVariables.drawableWidth,
+    //   pageHeight: StudioVariables.drawableHeight, // + LayoutConst.miniMenuArea,);
     //   useColor: useColor,
     //   bgColor1: pageModel.bgColor1.value,
     //   bgColor2: pageModel.bgColor2.value,

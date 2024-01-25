@@ -249,6 +249,8 @@ class InstantEditorState extends CretaState<InstantEditor> {
     _posX = widget.frameModel.getRealPosX() + (LayoutConst.stikerOffset / 2);
     _posY = widget.frameModel.getRealPosY() + (LayoutConst.stikerOffset / 2);
 
+    //print('_pos instantEditor = $_posX, $_posY');
+
     _textController.text = uri;
 
     // 커서를 원래 위치로 이동
@@ -422,10 +424,6 @@ class InstantEditorState extends CretaState<InstantEditor> {
       strutStyle: const StrutStyle(forceStrutHeight: true, height: 1.0),
       decoration: const InputDecoration(
         border: InputBorder.none,
-
-        // contentPadding: model.isAutoFontSize()
-        //     ? EdgeInsets.symmetric(vertical: _padding / 3, horizontal: _padding * 0.9)
-        //     : EdgeInsets.all(_padding),
         contentPadding: EdgeInsets.zero,
         isDense: true,
         filled: true,

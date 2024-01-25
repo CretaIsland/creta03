@@ -22,7 +22,6 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:weather_animation/weather_animation.dart';
 
-import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/component/clock/analog_clock.dart';
@@ -500,8 +499,11 @@ mixin FramePlayMixin {
         (StudioConst.defaultTextPadding * 2); // 모델상의 크기다. 실제 크기가 아니다.
     double width = height * 7;
     //print('localPostion= ${details.localPosition}, width= $width');
-
-    Offset pos = CretaUtils.positionInPage(details /*.localPosition*/, null);
+    Offset pos = BookMainPage.bookManagerHolder!.positionInPage(
+      details,
+      null,
+    );
+    //Offset pos = CretaUtils.positionInPage(details /*.localPosition*/, null);
     // 커서의 크기가 있어서, 조금 빼주어야 텍스트 박스가 커서 위치에 맞게 나온다.
     double posOffset = LayoutConst.topMenuCursorSize / StudioVariables.applyScale;
     pos = Offset((pos.dx - posOffset > 0 ? pos.dx - posOffset : 0),

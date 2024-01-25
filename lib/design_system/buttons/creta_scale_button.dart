@@ -66,7 +66,7 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
   bool _isClickedAuto = false;
   bool _isHoverAuto = false;
 
-  List<double> scalePlot = [10, 25, 50, 75, 100, 125, 150, 200, 250, 300];
+  List<double> scalePlot = [20, 40, 60, 80, 100, 125, 150, 200, 250, 300];
 
   String _scaleText = '';
 
@@ -124,7 +124,7 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
             setState(() {
               _isClickedAuto = false;
               StudioVariables.autoScale = true;
-              StudioVariables.scale = StudioVariables.fitScale;
+              StudioVariables.scale = StudioVariables.fitScale * StudioVariables.pageDisplayRate;
             });
             widget.onAutoScale.call();
           },

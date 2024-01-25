@@ -27,7 +27,7 @@ class SelectedBox extends StatefulWidget {
   final void Function(Offset) onDragDown;
   final void Function(Offset) onDragLeft;
 
-  final void Function() onResizeButtonTap;
+  final void Function()? onResizeButtonTap;
   final void Function() onComplete;
 
   final FrameModel? frameModel;
@@ -47,7 +47,7 @@ class SelectedBox extends StatefulWidget {
     required this.onDragRight,
     required this.onDragDown,
     required this.onDragLeft,
-    required this.onResizeButtonTap,
+    this.onResizeButtonTap,
     required this.onComplete,
     required this.frameModel,
     this.isResiable = true,
