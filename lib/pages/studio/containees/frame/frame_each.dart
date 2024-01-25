@@ -596,8 +596,16 @@ class FrameEachState extends CretaState<FrameEach> with ContaineeMixin, FramePla
       );
     }
 
-    if (model.isQuoteType()) {
+    if (model.isDailyQuoteType()) {
       return dailyQuoteFrame(
+        frameModel: model,
+        width: _width,
+        height: widget.height,
+      );
+    }
+
+    if (model.isDailyWordType()) {
+      return dailyWordFrame(
         frameModel: model,
         width: _width,
         height: widget.height,

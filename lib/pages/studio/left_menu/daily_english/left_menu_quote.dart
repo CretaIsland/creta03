@@ -1,3 +1,4 @@
+import 'package:creta03/lang/creta_studio_lang.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/undo.dart';
 import '../../../../data_io/frame_manager.dart';
@@ -38,30 +39,44 @@ class _LeftMenuQuoteState extends State<LeftMenuQuote> {
         ),
         Padding(
           padding: const EdgeInsets.only(top: 12.0, left: 24.0),
-          child: LeftMenuEleButton(
-            width: 90.0,
-            height: 90.0,
-            onPressed: () async {
-              _createQuote(FrameType.quote);
-              BookMainPage.pageManagerHolder!.notify();
-            },
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Image.asset('quote_BG.jpg'),
-                Container(
-                  color: Colors.black45,
-                ),
-                const Text(
-                  "오늘의\n 명언",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
-                ),
-              ],
-            ),
+          child: Wrap(
+            spacing: 6.0,
+            runSpacing: 12.0,
+            children: [
+              _getElement(FrameType.dailyQuote, CretaStudioLang.dailyQuote),
+              _getElement(FrameType.dailyWord, CretaStudioLang.dailyWord),
+            ],
           ),
         ),
       ],
+    );
+  }
+
+  Widget _getElement(FrameType frameType, String type) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 4.0),
+      child: LeftMenuEleButton(
+        width: 90.0,
+        height: 90.0,
+        onPressed: () async {
+          _createQuote(frameType);
+          BookMainPage.pageManagerHolder!.notify();
+        },
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+              color: Colors.black45,
+            ),
+            Text(
+              type,
+              textAlign: TextAlign.center,
+              style:
+                  const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -69,7 +84,6 @@ class _LeftMenuQuoteState extends State<LeftMenuQuote> {
     PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
     if (pageModel == null) return;
 
-    //페이지폭의 50% 로 만든다. 세로는 가로의 1/6 이다.
     double width = pageModel.width.value * 0.4;
     double height = pageModel.height.value;
 

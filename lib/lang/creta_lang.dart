@@ -98,6 +98,11 @@ class CretaLang {
     "끝",
   ];
 
+  static List<String> dailyEnglish = [
+    '오늘의\n 명언',
+    '오늘의\n 단어',
+  ];
+
   static const String deleteConfirmTitle = '삭제 확인';
   static const String deleteConfirm = '정말로 삭제하시겠습니까 ?';
   static const String contentsDeleted = ' 콘텐츠가 삭제되었습니다';
