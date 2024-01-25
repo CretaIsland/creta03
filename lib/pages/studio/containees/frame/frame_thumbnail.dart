@@ -342,8 +342,12 @@ class FrameThumbnailState extends CretaState<FrameThumbnail> with ContaineeMixin
       );
     }
 
-    if (model.isQuoteType()) {
+    if (model.isDailyQuoteType()) {
       return Image.asset('quote_BG.jpg');
+    }
+
+    if (model.isDailyWordType()) {
+      return Image.asset('word_BG.jpg');
     }
 
     if (model.isCurrencyXchangeType()) {

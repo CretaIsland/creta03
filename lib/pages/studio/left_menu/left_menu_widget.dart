@@ -13,7 +13,7 @@ import '../../../design_system/text_field/creta_search_bar.dart';
 import '../studio_constant.dart';
 import 'clock/left_menu_clock.dart';
 import 'currency_exchange/left_menu_currency.dart';
-import 'daily_quotes/left_menu_quote.dart';
+import 'daily_english/left_menu_quote.dart';
 import 'google_map/left_menu_google_map.dart';
 import 'date_time/left_menu_date.dart';
 import 'left_template_mixin.dart';
@@ -282,7 +282,7 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
     }
     if (_selectedType == type[12]) {
       return LeftMenuQuote(
-        title: CretaStudioLang.dailyQuote,
+        title: CretaStudioLang.dailyEnglish,
         titleStyle: titleStyle,
         dataStyle: dataStyle,
       );

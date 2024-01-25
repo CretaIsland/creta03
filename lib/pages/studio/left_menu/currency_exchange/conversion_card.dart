@@ -82,11 +82,9 @@ class _ConversionCardState extends State<ConversionCard> with FramePlayMixin {
         updatedConversionResults[basedCurrency] = '';
       }
     }
-
     setState(() {
       conversionResults = updatedConversionResults;
     });
-
     stopLoading();
   }
 
@@ -149,7 +147,6 @@ class _ConversionCardState extends State<ConversionCard> with FramePlayMixin {
                   baseCurrency: baseCurrency,
                   finalCurrency: finalCurrency,
                 );
-                // conversion: conversionResults[baseCurrency] ?? '');
                 return GestureDetector(
                   onLongPressDown: (d) {
                     toggleSelectedState(index);

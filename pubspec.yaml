@@ -243,11 +243,11 @@ flutter:
     - assets/timeline_samples/
     - assets/weather_sticker/
     - assets/weather_sticker/weather_icon_vector/
-    # - assets/weather_sticker/구름많음.svg
 
     - assets/social/
     - assets/giphy_official_logo.png
     - assets/money-exchange.png
+    - assets/word_BG.jpg
 
     - assets/landing_page/image/arrow_1.png
     - assets/landing_page/image/arrow_2.png

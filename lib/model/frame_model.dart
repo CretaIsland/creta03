@@ -182,8 +182,12 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     return (frameType == FrameType.currencyXchange);
   }
 
-  bool isQuoteType() {
-    return (frameType == FrameType.quote);
+  bool isDailyQuoteType() {
+    return (frameType == FrameType.dailyQuote);
+  }
+
+  bool isDailyWordType() {
+    return (frameType == FrameType.dailyWord);
   }
 
   bool isTextType() {
