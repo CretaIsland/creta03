@@ -99,8 +99,8 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         // 당분간 _texture 는 사용하지 않을 예정.
         // _texture(),
         // propertyDivider(),
-        //_pageTransition(),  // 페이지 전환 효과는 일단 막아둔다. 나중에 다시 작업할 예정
-        //propertyDivider(),
+        _pageTransition(), // 페이지 전환 효과는 일단 막아둔다. 나중에 다시 작업할 예정
+        propertyDivider(),
         effect(
           _model!.effect.value.name,
           padding: horizontalPadding,
@@ -300,63 +300,75 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                width: 160,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      CretaStudioLang.whenOpenPage,
-                      style: CretaFont.titleSmall,
-                    ),
-                    Divider(endIndent: 15),
-                    CretaRadioButton(
-                      onSelected: (title, value) {
-                        setState(() {
-                          _model!.transitionEffect.set(value);
-                        });
-                        BookMainPage.pageManagerHolder!.notify();
-                      },
-                      valueMap: CretaStudioLang.pageTransitionType,
-                      defaultTitle:
-                          PageTransitionType.getTitleFromInt(_model!.transitionEffect.value),
-                      //spacebetween: 10,
-                      padding: EdgeInsets.zero,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                width: 160,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      CretaStudioLang.whenClosePage,
-                      style: CretaFont.titleSmall,
-                    ),
-                    Divider(endIndent: 15),
-                    CretaRadioButton(
-                      onSelected: (title, value) {
-                        setState(() {
-                          _model!.transitionEffect2.set(value);
-                        });
-                        BookMainPage.pageManagerHolder!.notify();
-                      },
-                      valueMap: CretaStudioLang.pageTransitionType2,
-                      defaultTitle:
-                          PageTransitionType.getTitleFromInt2(_model!.transitionEffect2.value),
-                      //spacebetween: 10,
-                      padding: EdgeInsets.zero,
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          CretaRadioButton(
+            onSelected: (title, value) {
+              setState(() {
+                _model!.transitionEffect.set(value);
+              });
+              BookMainPage.pageManagerHolder!.notify();
+            },
+            valueMap: CretaStudioLang.pageTransitionType,
+            defaultTitle: PageTransitionType.getTitleFromInt(_model!.transitionEffect.value),
+            //spacebetween: 10,
+            padding: EdgeInsets.zero,
           ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     SizedBox(
+          //       width: 160,
+          //       child: Column(
+          //         crossAxisAlignment: CrossAxisAlignment.start,
+          //         children: [
+          //           Text(
+          //             CretaStudioLang.whenOpenPage,
+          //             style: CretaFont.titleSmall,
+          //           ),
+          //           Divider(endIndent: 15),
+          //           CretaRadioButton(
+          //             onSelected: (title, value) {
+          //               setState(() {
+          //                 _model!.transitionEffect.set(value);
+          //               });
+          //               BookMainPage.pageManagerHolder!.notify();
+          //             },
+          //             valueMap: CretaStudioLang.pageTransitionType,
+          //             defaultTitle:
+          //                 PageTransitionType.getTitleFromInt(_model!.transitionEffect.value),
+          //             //spacebetween: 10,
+          //             padding: EdgeInsets.zero,
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //     SizedBox(
+          //       width: 160,
+          //       child: Column(
+          //         crossAxisAlignment: CrossAxisAlignment.start,
+          //         children: [
+          //           Text(
+          //             CretaStudioLang.whenClosePage,
+          //             style: CretaFont.titleSmall,
+          //           ),
+          //           Divider(endIndent: 15),
+          //           CretaRadioButton(
+          //             onSelected: (title, value) {
+          //               setState(() {
+          //                 _model!.transitionEffect2.set(value);
+          //               });
+          //               BookMainPage.pageManagerHolder!.notify();
+          //             },
+          //             valueMap: CretaStudioLang.pageTransitionType2,
+          //             defaultTitle:
+          //                 PageTransitionType.getTitleFromInt2(_model!.transitionEffect2.value),
+          //             //spacebetween: 10,
+          //             padding: EdgeInsets.zero,
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //   ],
+          // ),
           CretaPropertySlider(
             // page transition duration
             key: GlobalKey(),

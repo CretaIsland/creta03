@@ -4,12 +4,12 @@ import 'package:hycop/common/util/logger.dart';
 import '../../../../../data_io/frame_manager.dart';
 import '../../../../../data_io/key_handler.dart';
 import '../../../../../data_io/page_manager.dart';
-import '../../../../../design_system/creta_color.dart';
 import '../../../../../model/book_model.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
 import '../../../../../model/page_model.dart';
 import '../../../../../player/music/creta_music_mixin.dart';
+import '../../../book_main_page.dart';
 import '../../../studio_variables.dart';
 //import '../frame_each.dart';
 import 'draggable_resizable.dart';
@@ -132,9 +132,9 @@ class StickerViewState extends State<StickerView> {
   Widget build(BuildContext context) {
     logger.fine('StickerViewState build');
 
-    if (widget.stickerList.isEmpty) {
-      return const CircularProgressIndicator();
-    }
+    // if (widget.stickerList.isEmpty) {
+    //   return const SizedBox.shrink();
+    // }
 
     double pageWidth = widget.book.width.value * StudioVariables.applyScale;
     double pageHeight = widget.book.height.value * StudioVariables.applyScale;
@@ -182,56 +182,70 @@ class StickerViewState extends State<StickerView> {
 
     List<Widget> pageList = [];
 
-    if (widget.prevPageInfos != null) {
-      for (var pageInfo in widget.prevPageInfos!) {
-        Widget prev = Container(
-          width: widget.width,
-          height: widget.height,
-          color: CretaColor.secondary[200]!,
-          child: Center(
-            child: DraggableStickers(
-              isSelected: false,
-              book: widget.book,
-              pageWidth: pageWidth,
-              pageHeight: pageHeight,
-              // pageWidth: widget.width,
-              // pageHeight: widget.height,
-              page: pageInfo.pageModel,
-              frameManager: pageInfo.frameManager,
-              stickerList: pageInfo.stickerList,
-            ),
-          ),
-        );
-        pageList.add(prev);
-      }
+    Widget? prev;
+    if (widget.prevPageInfos != null && widget.prevPageInfos!.isNotEmpty) {
+      //for (var pageInfo in widget.prevPageInfos!) {
+      PageInfo pageInfo = widget.prevPageInfos!.last;
+      prev = Center(
+        child: DraggableStickers(
+          isSelected: false,
+          book: widget.book,
+          pageWidth: pageWidth,
+          pageHeight: pageHeight,
+          // pageWidth: widget.width,
+          // pageHeight: widget.height,
+          page: pageInfo.pageModel,
+          frameManager: pageInfo.frameManager,
+          stickerList: pageInfo.stickerList,
+        ),
+      );
+      pageList.add(prev);
+      //}
     }
     pageList.add(selected);
 
-    if (widget.nextPageInfos != null) {
-      for (var pageInfo in widget.nextPageInfos!) {
-        Widget next = Container(
-          width: widget.width,
-          height: widget.height,
-          color: CretaColor.secondary[200]!,
-          child: Center(
-            child: DraggableStickers(
-              isSelected: false,
-              book: widget.book,
-              pageWidth: pageWidth,
-              pageHeight: pageHeight,
-              // pageWidth: widget.width,
-              // pageHeight: widget.height,
-              page: pageInfo.pageModel,
-              frameManager: pageInfo.frameManager,
-              stickerList: pageInfo.stickerList,
-            ),
-          ),
-        );
-        pageList.add(next);
-      }
+    Widget? next;
+    if (widget.nextPageInfos != null && widget.nextPageInfos!.isNotEmpty) {
+      //for (var pageInfo in widget.nextPageInfos!) {
+      PageInfo pageInfo = widget.nextPageInfos!.first;
+      next = Center(
+        child: DraggableStickers(
+          isSelected: false,
+          book: widget.book,
+          pageWidth: pageWidth,
+          pageHeight: pageHeight,
+          // pageWidth: widget.width,
+          // pageHeight: widget.height,
+          page: pageInfo.pageModel,
+          frameManager: pageInfo.frameManager,
+          stickerList: pageInfo.stickerList,
+        ),
+      );
+      pageList.add(next);
+      //}
     }
 
+    //print('widget.page.transitionEffect.value=${widget.page.transitionEffect.value}');
+    if (widget.page.transitionEffect.value > 0) {
+      return AnimatedSwitcher(
+        duration: const Duration(seconds: 1),
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          const begin = Offset(0.0, 1.0);
+          const end = Offset.zero;
+          const curve = Curves.easeInOut;
+
+          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+          return SlideTransition(
+            position: tween.animate(animation),
+            child: child,
+          );
+        },
+        child: BookMainPage.pageManagerHolder!.transitForward ? selected : prev ?? selected,
+      );
+    }
     return selected;
+    //return selected;
 
     // return RepaintBoundary(
     //   key: GlobalKey(),

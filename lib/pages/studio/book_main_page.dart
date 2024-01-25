@@ -6,6 +6,7 @@ import 'dart:async';
 
 import 'package:creta03/no_authority.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hycop/common/undo/save_manager.dart';
@@ -33,6 +34,7 @@ import '../../data_io/frame_manager.dart';
 import '../../data_io/page_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_label_text_editor.dart';
+import '../../design_system/buttons/creta_scale_button.dart';
 import '../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import '../../design_system/component/autoSizeText/font_size_changing_notifier.dart';
 import '../../design_system/component/creta_popup.dart';
@@ -1611,6 +1613,30 @@ class _BookMainPageState extends State<BookMainPage> {
     //});
   }
 
+// Ctrl + Mouse Wheel action
+  void _onMouseWheelScroll(PointerScaleEvent event) {
+    //print('_onMouseWheelScroll move...${event.kind}, ${event.buttons}');
+    if (event.kind == PointerDeviceKind.mouse && event.buttons == 0) {
+      double delta = event.scale > 1 ? 0.15 : -0.15;
+
+      //print('wheel move.222222..$delta, $aaa');
+      setState(() {
+        // StudioVariables.scale = (StudioVariables.scale + delta).clamp(
+        //   CretaScaleButton.scalePlot.first / 100,
+        //   CretaScaleButton.scalePlot.last / 100,
+        // );
+        //print('before StudioVariables.scale=${StudioVariables.scale}');
+        StudioVariables.scale += delta;
+        StudioVariables.scale = StudioVariables.scale.clamp(
+          CretaScaleButton.scalePlot.first / 100,
+          CretaScaleButton.scalePlot.last / 100,
+        );
+        StudioVariables.autoScale = false;
+        //print('after StudioVariables.scale=${StudioVariables.scale}');
+      });
+    }
+  }
+
   Widget scrollBox(double totalWidth, double marginX, double marginY) {
     //print('----------scrollbaox---------------');
 
@@ -1642,11 +1668,21 @@ class _BookMainPageState extends State<BookMainPage> {
           },
           initialScrollOffsetX: initialOffsetX,
           initialScrollOffsetY: initialOffsetY,
-          child: Center(child: Consumer<PageManager>(builder: (context, pageManager, child) {
-            pageManager.reOrdering();
-            PageModel? pageModel = pageManager.getSelected() as PageModel?;
-            return _drawPage(context, pageModel);
-          })),
+          child: Listener(
+            onPointerSignal: (pointerSignal) {
+              //print('wheel move...$pointerSignal');
+              if (StudioVariables.isCtrlPressed) {
+                if (pointerSignal is PointerScaleEvent) {
+                  _onMouseWheelScroll(pointerSignal);
+                } // Ctrl + Mouse Wheel
+              }
+            },
+            child: Center(child: Consumer<PageManager>(builder: (context, pageManager, child) {
+              pageManager.reOrdering();
+              PageModel? pageModel = pageManager.getSelected() as PageModel?;
+              return _drawPage(context, pageModel);
+            })),
+          ),
         ),
       ),
     );

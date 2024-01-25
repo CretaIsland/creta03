@@ -115,6 +115,7 @@ class PageRealMainState extends CretaState<PageRealMain> with ContaineeMixin {
         SizedBox(
           width: StudioVariables.virtualWidth,
           height: StudioVariables.virtualHeight,
+
           // width: widget.pageWidth,
           // height: widget.pageHeight,
           child: _waitFrame(),

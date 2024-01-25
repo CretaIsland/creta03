@@ -1,7 +1,5 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/common/undo/undo.dart';
@@ -11,11 +9,9 @@ import 'package:hycop/common/util/logger.dart';
 import '../../../../../data_io/contents_manager.dart';
 import '../../../../../data_io/depot_manager.dart';
 import '../../../../../data_io/frame_manager.dart';
-import '../../../../../design_system/buttons/creta_button.dart';
 import '../../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import '../../../../../design_system/component/creta_right_mouse_menu.dart';
-import '../../../../../design_system/creta_color.dart';
 import '../../../../../design_system/creta_font.dart';
 import '../../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import '../../../../../design_system/menu/creta_popup_menu.dart';
@@ -150,6 +146,47 @@ class _DraggableStickersState extends State<DraggableStickers> {
         GlobalObjectKey<PageBottomLayerState>('PageBottomLayerKey${widget.page.mid}');
   }
 
+  Widget _prevButton() {
+    return BTN.fill_gray_i_s(
+      tooltip: CretaLang.prev,
+      iconSize: 16,
+      bgColor: LayoutConst.studioBGColor,
+      onPressed: () {
+        BookMainPage.pageManagerHolder?.gotoPrev();
+      },
+      icon: Icons.keyboard_arrow_up_outlined,
+    );
+  }
+
+  Widget _nextButton() {
+    return BTN.fill_gray_i_s(
+      tooltip: CretaLang.next,
+      iconSize: 16,
+      bgColor: LayoutConst.studioBGColor,
+      onPressed: () {
+        BookMainPage.pageManagerHolder?.gotoNext();
+      },
+      icon: Icons.keyboard_arrow_down_outlined,
+    );
+  }
+
+  Widget _pageNo() {
+    int pageIndex = BookMainPage.pageManagerHolder!.getPageIndex(widget.page.mid);
+
+    return Positioned(
+      top: ((StudioVariables.availHeight - widget.pageHeight) / 2) - 20,
+      left: (StudioVariables.availWidth - widget.pageWidth) / 2,
+      child: SizedBox(
+        width: 270 * StudioVariables.applyScale,
+        child: Text(
+            //'P ${(pageIndex + 1).toString().padLeft(2, '0')} | ${widget.page.name.value}',
+            'Page ${(pageIndex + 1).toString().padLeft(2, '0')}',
+            overflow: TextOverflow.ellipsis,
+            style: CretaFont.titleSmall),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     stickers = widget.stickerList;
@@ -163,12 +200,22 @@ class _DraggableStickersState extends State<DraggableStickers> {
       ],
       child: Stack(
         children: [
+          _pageNo(),
           Align(
             alignment: Alignment.center,
-            child: Container(
-              decoration: useColor ? _pageDeco() : null,
-              width: widget.pageWidth,
-              height: widget.pageHeight, // - LayoutConst.miniMenuArea,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (StudioVariables.scale > 0.25) _prevButton(),
+                const SizedBox(height: 5),
+                Container(
+                  decoration: useColor ? _pageDeco() : null,
+                  width: widget.pageWidth,
+                  height: widget.pageHeight, // - LayoutConst.miniMenuArea,
+                ),
+                const SizedBox(height: 5),
+                if (StudioVariables.scale > 0.25) _nextButton(),
+              ],
             ),
           ),
           // Positioned(
@@ -215,115 +262,6 @@ class _DraggableStickersState extends State<DraggableStickers> {
               widget.page.bgColor2.value != Colors.transparent)
           ? StudioSnippet.gradient(widget.page.gradationType.value, c1, c2)
           : null,
-    );
-  }
-
-  // 페이지 footer , header 부분
-  // _pageController 는 안쓰는 걸로 !!!
-  // ignore: unused_element
-  Widget _pageController() {
-    int pageIndex = BookMainPage.pageManagerHolder!.getPageIndex(widget.page.mid);
-    return Align(
-      alignment: Alignment.center,
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: CretaColor.text[300]!,
-            width: 2,
-          ),
-          //color: CretaColor.text[300]!,
-        ),
-        width: widget.pageWidth,
-        height: widget.pageHeight, // + 2 * LayoutConst.pageControllerHeight,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Positioned(
-              top: 16,
-              left: 2,
-              child: SizedBox(
-                width: 360 * StudioVariables.applyScale,
-                child: Text(
-                    //'P ${(pageIndex + 1).toString().padLeft(2, '0')} | ${widget.page.name.value}',
-                    'Page ${(pageIndex + 1).toString().padLeft(2, '0')}',
-                    overflow: TextOverflow.ellipsis,
-                    style: CretaFont.titleSmall),
-              ),
-            ),
-            Positioned(
-              top: 0,
-              child: BTN.fill_gray_i_s(
-                tooltip: CretaLang.prev,
-                iconSize: 16,
-                bgColor: LayoutConst.studioBGColor,
-                onPressed: () {
-                  BookMainPage.pageManagerHolder?.gotoPrev();
-                },
-                icon: Icons.keyboard_arrow_up_outlined,
-              ),
-            ),
-            // RepaintBoundary(
-            //   child: IgnorePointer(
-            //     child: Container(
-            //       //color: Colors.red.withOpacity(0.1),
-            //       color: Colors.transparent,
-            //       width: widget.pageWidth,
-            //       height: widget.pageHeight,
-            //     ),
-            //   ),
-            // ),
-            Positioned(
-              top: widget.pageHeight, // + LayoutConst.pageControllerHeight,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: BTN.fill_gray_i_s(
-                  tooltip: CretaLang.next,
-                  iconSize: 16,
-                  bgColor: LayoutConst.studioBGColor,
-                  onPressed: () {
-                    BookMainPage.pageManagerHolder?.gotoNext();
-                  },
-                  icon: Icons.keyboard_arrow_down_outlined,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ignore: unused_element
-  Widget _pageButtons() {
-    return SizedBox(
-      width: max<double>(360 * StudioVariables.applyScale, 60),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          BTN.fill_gray_i_s(
-              iconSize: 16,
-              bgColor: LayoutConst.studioBGColor,
-              tooltip: CretaStudioLang.copy,
-              tooltipBg: CretaColor.text[700]!,
-              icon: Icons.content_copy_outlined,
-              onPressed: () {
-                BookMainPage.pageManagerHolder?.copyPage(widget.page);
-                setState(() {});
-              }),
-          BTN.fill_gray_image_m(
-            iconSize: 16,
-            buttonColor: CretaButtonColor.transparent,
-            tooltip: CretaStudioLang.tooltipDelete,
-            tooltipBg: CretaColor.text[700]!,
-            iconImageFile: "assets/delete.svg",
-            onPressed: () {
-              // Delete Page
-              logger.fine('remove page');
-              BookMainPage.pageManagerHolder?.removePage(widget.page);
-            },
-          ),
-        ],
-      ),
     );
   }
 

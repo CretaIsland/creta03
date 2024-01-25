@@ -166,7 +166,6 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
         //Future.delayed(const Duration(milliseconds: 200), () {
         //print('miniMenu show');
         BookMainPage.miniMenuNotifier?.set(true, doNoti: true);
-        BookMainPage.bookManagerHolder!.notify();
         //});
 
         //print('end ==================================================');

@@ -29,6 +29,8 @@ class CretaScaleButton extends StatefulWidget {
   final String? tooltip;
   final Widget? extended;
 
+  static List<double> scalePlot = [20, 40, 60, 80, 100, 125, 150, 200, 250, 300];
+
   CretaScaleButton({
     super.key,
     this.width = 200,
@@ -65,8 +67,6 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
   bool _isHoverPlus = false;
   bool _isClickedAuto = false;
   bool _isHoverAuto = false;
-
-  List<double> scalePlot = [20, 40, 60, 80, 100, 125, 150, 200, 250, 300];
 
   String _scaleText = '';
 
@@ -160,10 +160,10 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
               value: _scaleText,
               hintText: _scaleText,
               onEditComplete: (valStr) {
-                double max = StudioVariables.scale * 100 > scalePlot[scalePlot.length - 1]
+                double max = StudioVariables.scale * 100 > CretaScaleButton.scalePlot.last
                     ? StudioVariables.scale * 100
-                    : scalePlot[scalePlot.length - 1];
-                double min = scalePlot[0];
+                    : CretaScaleButton.scalePlot.last;
+                double min = CretaScaleButton.scalePlot.first;
                 logger.fine('scale = $valStr');
                 double val = 100;
                 try {
@@ -274,31 +274,31 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
 
   void _plusScale() {
     int index = 0;
-    for (double ele in scalePlot) {
+    for (double ele in CretaScaleButton.scalePlot) {
       if (ele > StudioVariables.scale * 100) {
         break;
       }
       index++;
     }
-    if (index < 0 || index >= scalePlot.length) return;
+    if (index < 0 || index >= CretaScaleButton.scalePlot.length) return;
 
-    if (scalePlot[index] > StudioVariables.scale * 100) {
-      StudioVariables.scale = scalePlot[index] / 100;
+    if (CretaScaleButton.scalePlot[index] > StudioVariables.scale * 100) {
+      StudioVariables.scale = CretaScaleButton.scalePlot[index] / 100;
     }
     StudioVariables.autoScale = false;
   }
 
   void _minusScale() {
-    int index = scalePlot.length - 1;
-    for (double ele in scalePlot.reversed) {
+    int index = CretaScaleButton.scalePlot.length - 1;
+    for (double ele in CretaScaleButton.scalePlot.reversed) {
       if (ele < StudioVariables.scale * 100) {
         break;
       }
       index--;
     }
-    if (index < 0 || index >= scalePlot.length) return;
-    if (scalePlot[index] < StudioVariables.scale * 100) {
-      StudioVariables.scale = scalePlot[index] / 100;
+    if (index < 0 || index >= CretaScaleButton.scalePlot.length) return;
+    if (CretaScaleButton.scalePlot[index] < StudioVariables.scale * 100) {
+      StudioVariables.scale = CretaScaleButton.scalePlot[index] / 100;
     }
     StudioVariables.autoScale = false;
   }
