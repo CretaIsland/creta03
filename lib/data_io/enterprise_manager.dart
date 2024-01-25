@@ -63,6 +63,7 @@ class EnterpriseManager extends CretaManager {
       String giphyApiKey = '',
       String newsApiKey = '',
       String currencyXchangeApi = '',
+      String dailyWordApi = '',
       String socketUrl = '',
       String mediaApiUrl = '',
       String webrtcUrl = ''}) async {
@@ -74,6 +75,7 @@ class EnterpriseManager extends CretaManager {
         openWeatherApiKey: openWeatherApiKey,
         giphyApiKey: giphyApiKey,
         newsApiKey: newsApiKey,
+        dailyWordApi: dailyWordApi,
         currencyXchangeApi: currencyXchangeApi,
         socketUrl: socketUrl,
         mediaApiUrl: mediaApiUrl,

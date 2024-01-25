@@ -97,7 +97,7 @@ class _LeftMenuQuoteState extends State<LeftMenuQuote> {
     mychangeStack.startTrans();
     await frameManager.createNextFrame(
       doNotify: false,
-      size: frameType == FrameType.dailyWord ? Size(width * 0.8, height / 3) : Size(width, height),
+      size: Size(width, height),
       pos: Offset(x, y),
       bgColor1: Colors.transparent,
       type: frameType,
