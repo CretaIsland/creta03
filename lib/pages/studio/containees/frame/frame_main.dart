@@ -67,24 +67,17 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
   FrameEachEventController? _showOrderSendEvent;
 
   String _mainFrameCandiator = ''; // frame 중에 콘텐츠가 있으면서, order 가 가장 높은것.  즉, mainFrame 의 1번 후보자.
-  late PageModel _pageModel;
 
   List<PageInfo> _prevPageInfos = [];
   List<PageInfo> _nextPageInfos = [];
 
   //final Offset _pageOffset = Offset.zero;
-  @override
-  void didUpdateWidget(FrameMain oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.pageModel.mid != widget.pageModel.mid) {
-      _updatePage();
-    }
-  }
 
   void _updatePage() {
-    _pageModel = widget.pageModel;
-    _prevPageInfos = BookMainPage.pageManagerHolder!.getPrevList(_pageModel.mid, _getStickerList);
-    _nextPageInfos = BookMainPage.pageManagerHolder!.getNextList(_pageModel.mid, _getStickerList);
+    _prevPageInfos =
+        BookMainPage.pageManagerHolder!.getPrevList(widget.pageModel.mid, _getStickerList);
+    _nextPageInfos =
+        BookMainPage.pageManagerHolder!.getNextList(widget.pageModel.mid, _getStickerList);
   }
 
   @override
@@ -103,7 +96,6 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
 
     // final OffsetEventController linkReceiveEvent = Get.find(tag: 'frame-each-to-on-link');
     // _linkReceiveEvent = linkReceiveEvent;
-    _updatePage();
     afterBuild();
   }
 
@@ -122,19 +114,21 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
 
   @override
   Widget build(BuildContext context) {
+    _updatePage();
+
     //applyScale = StudioVariables.scale / StudioVariables.fitScale;
     // print('FrameMain build');
     //StudioVariables.applyScale = widget.bookModel.width.value / StudioVariables.availWidth;
 
     //BookMainPage.resetScale(widget.bookModel);
 
-    logger.fine('parentPage= ${_pageModel.name.value}, =${_pageModel.mid}');
-    FrameManager? founded = BookMainPage.pageManagerHolder!.findFrameManager(_pageModel.mid);
+    logger.fine('parentPage= ${widget.pageModel.name.value}, =${widget.pageModel.mid}');
+    FrameManager? founded = BookMainPage.pageManagerHolder!.findFrameManager(widget.pageModel.mid);
     if (founded != null) {
       setFrameManager(founded);
     } else {
       logger.severe('something wiered, frameManager not found !!!');
-      resetFrameManager(_pageModel.mid);
+      resetFrameManager(widget.pageModel.mid);
     }
 
     return StreamBuilder<AbsExModel>(
@@ -158,7 +152,7 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
 
     BookMainPage.containeeNotifier!.set(ContaineeEnum.Page, doNoti: true);
     _sendEvent?.sendEvent(model);
-    BookMainPage.pageManagerHolder?.invalidatThumbnail(_pageModel.mid);
+    BookMainPage.pageManagerHolder?.invalidatThumbnail(widget.pageModel.mid);
     setState(() {});
     LeftMenuPage.initTreeNodes();
     LeftMenuPage.treeInvalidate();
@@ -169,15 +163,15 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
     //logger.fine('showFrame $applyScale  ${StudioVariables.applyScale}');
     //print('showFrame----------------------------------');
     return StickerView(
-      //key: ValueKey('StickerView-${_pageModel.mid}'),
+      //key: ValueKey('StickerView-${widget.pageModel.mid}'),
       book: widget.bookModel,
-      page: _pageModel,
+      page: widget.pageModel,
       prevPageInfos: _prevPageInfos,
       nextPageInfos: _nextPageInfos,
       width: widget.pageWidth,
       height: widget.pageHeight,
       frameManager: frameManager,
-      stickerList: _getStickerList(frameManager!, _pageModel),
+      stickerList: _getStickerList(frameManager!, widget.pageModel),
       // List of Stickers
       onUpdate: (update, mid) {
         //print('onUpdate ${update.hint}--------------------');
@@ -342,7 +336,7 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
           frameManager?.setToDB(model); // save()로 저장하게되면, 나중에 백그라운드 저장되면서 느려진다.
           //model.save();
           _sendEvent?.sendEvent(model);
-          if (false == BookMainPage.pageManagerHolder?.invalidatThumbnail(_pageModel.mid)) {
+          if (false == BookMainPage.pageManagerHolder?.invalidatThumbnail(widget.pageModel.mid)) {
             logger.severe('notify to thumbnail failed');
           }
 
@@ -385,7 +379,7 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
       },
       onDropPage: (modelList) async {
         logger.fine('onDropPage(${modelList.length})');
-        await createNewFrameAndContents(modelList, _pageModel);
+        await createNewFrameAndContents(modelList, widget.pageModel);
       },
     );
   }
@@ -455,7 +449,7 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
   //   List<Sticker> retval = stickerList;
   //   for (FrameModel model in BookMainPage.overlayList()) {
   //     // overlay 중에 원본 overlay 는 이미 스티커가 만들어져 있으므로 만들지 않는다.
-  //     if (model.parentMid.value != _pageModel.mid) {
+  //     if (model.parentMid.value != widget.pageModel.mid) {
   //       retval.add(_createSticker(model));
   //       frameManager!.modelList.add(model);
   //     }
@@ -475,7 +469,7 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
 
     // GlobalKey<StickerState>? stickerKey;
     // if (widget.isPrevious == false) {
-    //   stickerKey = frameManager!.stickerKeyGen(_pageModel.mid, model.mid);
+    //   stickerKey = frameManager!.stickerKeyGen(widget.pageModel.mid, model.mid);
     // } else {
     //   stickerKey = GlobalKey<StickerState>();
     // }
@@ -519,8 +513,8 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
     }
 
     // String frameKeyStr =
-    //     //'FrameEach${model.width.value}${frameManager!.stickerKeyMangler(_pageModel.mid, model.mid)}';
-    //     frameManager!.frameKeyMangler(_pageModel.mid, model.mid);
+    //     //'FrameEach${model.width.value}${frameManager!.stickerKeyMangler(widget.pageModel.mid, model.mid)}';
+    //     frameManager!.frameKeyMangler(widget.pageModel.mid, model.mid);
     // GlobalKey<FrameEachState> frameKey = GlobalObjectKey<FrameEachState>(frameKeyStr);
 
     Widget eachFrame = FrameEach(

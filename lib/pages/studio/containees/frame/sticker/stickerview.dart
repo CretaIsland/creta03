@@ -4,6 +4,7 @@ import 'package:hycop/common/util/logger.dart';
 import '../../../../../data_io/frame_manager.dart';
 import '../../../../../data_io/key_handler.dart';
 import '../../../../../data_io/page_manager.dart';
+import '../../../../../model/app_enums.dart';
 import '../../../../../model/book_model.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
@@ -120,21 +121,93 @@ class StickerView extends StatefulWidget {
 //GlobalKey is defined for capturing screenshot
 //final GlobalKey stickGlobalKey = GlobalKey();
 
-class StickerViewState extends State<StickerView> {
+class StickerViewState extends State<StickerView> with SingleTickerProviderStateMixin {
   // You have to pass the List of Sticker
+  AnimationController? _controller;
+  Animation<Offset>? _offsetAnimation;
+  Animation<double>? _scaleAnimation;
+  Animation<double>? _fadeAnimation;
+
+  @override
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
+
+    _controller = AnimationController(
+      duration: Duration(seconds: widget.page.duration.value.clamp(1, 5)),
+      vsync: this,
+      //);
+      //)..repeat(reverse: true);
+    )..forward();
+  }
+
+  void _initTransionEffect() {
+    //print('widget.page.duration.value = ${widget.page.duration.value}...........................');
+    _controller!.duration = Duration(seconds: widget.page.duration.value.clamp(1, 5));
+
+    PageTransitionType aniType = PageTransitionType.fromInt(widget.page.transitionEffect.value);
+    //print('aniType = $aniType');
+    switch (aniType) {
+      case PageTransitionType.fade:
+        _fadeAnimation = Tween<double>(
+          begin: 0.2, // 투명한 상태
+          end: 1.0, // 완전히 불투명한 상태
+        ).animate(CurvedAnimation(
+          parent: _controller!,
+          curve: Curves.easeInOut,
+        ));
+        break;
+      case PageTransitionType.scale:
+        _scaleAnimation = Tween<double>(
+          begin: 0.1, // 시작 크기 (작은 크기)
+          end: 1.0, // 최종 크기 (원래 확대)
+        ).animate(CurvedAnimation(
+          parent: _controller!,
+          curve: Curves.easeInOut,
+        ));
+        break;
+      case PageTransitionType.slidingX:
+        _offsetAnimation = Tween<Offset>(
+          end: Offset.zero,
+          begin: const Offset(1.0, 0.0),
+        ).animate(CurvedAnimation(
+          parent: _controller!,
+          curve: Curves.elasticOut,
+        ));
+        break;
+      case PageTransitionType.slidingY:
+        _offsetAnimation = Tween<Offset>(
+          end: Offset.zero,
+          begin: const Offset(0.0, 1.0),
+        ).animate(CurvedAnimation(
+          parent: _controller!,
+          curve: Curves.elasticOut,
+        ));
+        break;
+      default:
+        _offsetAnimation = Tween<Offset>(
+          end: Offset.zero,
+          begin: const Offset(1.0, 0.0),
+        ).animate(CurvedAnimation(
+          parent: _controller!,
+          curve: Curves.elasticOut,
+        ));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     logger.fine('StickerViewState build');
 
-    // if (widget.stickerList.isEmpty) {
-    //   return const SizedBox.shrink();
-    // }
+    if (widget.page.hasTransitionEffect()) {
+      _initTransionEffect();
+    }
 
     double pageWidth = widget.book.width.value * StudioVariables.applyScale;
     double pageHeight = widget.book.height.value * StudioVariables.applyScale;
@@ -150,6 +223,7 @@ class StickerViewState extends State<StickerView> {
         //   child:
         Center(
       child: DraggableStickers(
+        key: BookMainPage.pageManagerHolder!.registerDraggableSticker(widget.page.mid),
         isSelected: true,
         book: widget.book,
         pageWidth: pageWidth,
@@ -188,6 +262,7 @@ class StickerViewState extends State<StickerView> {
       PageInfo pageInfo = widget.prevPageInfos!.last;
       prev = Center(
         child: DraggableStickers(
+          key: BookMainPage.pageManagerHolder!.registerDraggableSticker(pageInfo.pageModel.mid),
           isSelected: false,
           book: widget.book,
           pageWidth: pageWidth,
@@ -210,6 +285,7 @@ class StickerViewState extends State<StickerView> {
       PageInfo pageInfo = widget.nextPageInfos!.first;
       next = Center(
         child: DraggableStickers(
+          key: BookMainPage.pageManagerHolder!.registerDraggableSticker(pageInfo.pageModel.mid),
           isSelected: false,
           book: widget.book,
           pageWidth: pageWidth,
@@ -226,23 +302,53 @@ class StickerViewState extends State<StickerView> {
     }
 
     //print('widget.page.transitionEffect.value=${widget.page.transitionEffect.value}');
-    if (widget.page.transitionEffect.value > 0) {
-      return AnimatedSwitcher(
-        duration: const Duration(seconds: 1),
-        transitionBuilder: (Widget child, Animation<double> animation) {
-          const begin = Offset(0.0, 1.0);
-          const end = Offset.zero;
-          const curve = Curves.easeInOut;
+    if (widget.page.hasTransitionEffect()) {
+      //print('widget.page.transitionEffect.value=${widget.page.transitionEffect.value}');
+      // return AnimatedSwitcher(
+      //   duration: const Duration(seconds: 1),
+      //   transitionBuilder: (Widget child, Animation<double> animation) {
+      //     const begin = Offset(0.0, 1.0);
+      //     const end = Offset.zero;
+      //     const curve = Curves.easeInOut;
 
-          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      //     var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
-          return SlideTransition(
-            position: tween.animate(animation),
-            child: child,
-          );
-        },
-        child: BookMainPage.pageManagerHolder!.transitForward ? selected : prev ?? selected,
-      );
+      //     return SlideTransition(
+      //       position: tween.animate(animation),
+      //       child: child,
+      //     );
+
+      //     // return SlideTransition(
+      //     //   position: Tween<Offset>(
+      //     //     begin: const Offset(0.0, -1.0),
+      //     //     end: const Offset(0.0, 0.0),
+      //     //   ).animate(animation),
+      //     //   child: child,
+      //     // );
+      //   },
+      //   //child: BookMainPage.pageManagerHolder!.transitForward ? selected : prev ?? selected,
+      //   child: selected,
+      // );
+
+      if (widget.page.isSliding()) {
+        //print('isSliding-------------------------------------');
+        return SlideTransition(
+          position: _offsetAnimation!,
+          child: selected,
+        );
+      }
+      if (widget.page.isScale()) {
+        return ScaleTransition(
+          scale: _scaleAnimation!,
+          child: selected,
+        );
+      }
+      if (widget.page.isFade()) {
+        return FadeTransition(
+          opacity: _fadeAnimation!,
+          child: selected,
+        );
+      }
     }
     return selected;
     //return selected;

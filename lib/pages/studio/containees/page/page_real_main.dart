@@ -25,7 +25,7 @@ import '../containee_mixin.dart';
 import '../frame/frame_main.dart';
 
 class PageRealMain extends StatefulWidget {
-  final GlobalObjectKey pageKey;
+  //final GlobalObjectKey pageKey;
   final BookModel bookModel;
   final PageModel pageModel;
   final double pageWidth;
@@ -39,7 +39,9 @@ class PageRealMain extends StatefulWidget {
   final bool onceDBGetComplete;
 
   const PageRealMain({
-    required this.pageKey,
+    //
+    //required this.pageKey,
+    super.key,
     required this.bookModel,
     required this.pageModel,
     required this.pageWidth,
@@ -51,7 +53,7 @@ class PageRealMain extends StatefulWidget {
     required this.gradationType,
     required this.frameManager,
     required this.onceDBGetComplete,
-  }) : super(key: pageKey);
+  });
 
   @override
   State<PageRealMain> createState() => PageRealMainState();
@@ -59,8 +61,6 @@ class PageRealMain extends StatefulWidget {
 
 class PageRealMainState extends CretaState<PageRealMain> with ContaineeMixin {
   bool _onceDBGetComplete = false;
-  late PageModel _pageModel;
-
   // void invalidate() {
   //   setState(() {});
   // }
@@ -69,25 +69,21 @@ class PageRealMainState extends CretaState<PageRealMain> with ContaineeMixin {
   void initState() {
     super.initState();
     _onceDBGetComplete = widget.onceDBGetComplete;
-    _pageModel = widget.pageModel;
   }
 
   @override
   void didUpdateWidget(PageRealMain oldWidget) {
-    super.didUpdateWidget(oldWidget);
     if (oldWidget.onceDBGetComplete != widget.onceDBGetComplete) {
       _onceDBGetComplete = widget.onceDBGetComplete;
     }
-    if (oldWidget.pageModel.mid != widget.pageModel.mid) {
-      _pageModel = widget.pageModel;
-    }
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
   void dispose() {
     // logger.severe('dispose');
     // frameManager?.removeRealTimeListen();
-    // saveManagerHolder?.unregisterManager('frame', postfix: _pageModel.mid);
+    // saveManagerHolder?.unregisterManager('frame', postfix: widget.pageModel.mid);
     super.dispose();
   }
 
@@ -181,9 +177,9 @@ class PageRealMainState extends CretaState<PageRealMain> with ContaineeMixin {
   }
 
   Widget _pageEffect() {
-    if (_pageModel.effect.value != EffectType.none) {
+    if (widget.pageModel.effect.value != EffectType.none) {
       return Stack(alignment: Alignment.center, children: [
-        effectWidget(_pageModel),
+        effectWidget(widget.pageModel),
         _drawFrames(),
         //_pageController(),
       ]);
@@ -200,7 +196,7 @@ class PageRealMainState extends CretaState<PageRealMain> with ContaineeMixin {
       //         frameMainKey: GlobalKey(),
       //         pageWidth: widget.pageWidth,
       //         pageHeight: widget.pageHeight,
-      //         pageModel: _pageModel,
+      //         pageModel: widget.pageModel,
       //         bookModel: widget.bookModel,
       //       ),
       //       _drawLinks(manager),
@@ -208,10 +204,10 @@ class PageRealMainState extends CretaState<PageRealMain> with ContaineeMixin {
       //   );
       // }
       return FrameMain(
-        frameMainKey: GlobalObjectKey('FrameMain${_pageModel.mid}'),
+        frameMainKey: GlobalObjectKey('FrameMain${widget.pageModel.mid}'),
         pageWidth: widget.pageWidth,
         pageHeight: widget.pageHeight,
-        pageModel: _pageModel,
+        pageModel: widget.pageModel,
         bookModel: widget.bookModel,
       );
     });
@@ -270,7 +266,7 @@ class PageRealMainState extends CretaState<PageRealMain> with ContaineeMixin {
   //       ...linkList,
   //       ...linkManager.orderMapIterator((ele) {
   //         LinkModel model = ele as LinkModel;
-  //         //model.stickerKey = manager.findStickerKey(_pageModel.mid, model.connectedMid);
+  //         //model.stickerKey = manager.findStickerKey(widget.pageModel.mid, model.connectedMid);
   //         return model;
   //       }).toList()
   //     ];

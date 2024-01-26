@@ -49,12 +49,6 @@ class PageMain extends StatefulWidget {
 class PageMainState extends State<PageMain> with FramePlayMixin {
   //FrameManager? frameManager;  <-- move to FramePlayMixin
 
-  // ignore: unused_field
-  bool _transitionIndicator = false;
-  void setTransitionIdicator(val) {
-    _transitionIndicator = val;
-  }
-
   double opacity = 1;
   Color bgColor1 = Colors.transparent;
   Color bgColor2 = Colors.transparent;
@@ -62,12 +56,6 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
   TextureType textureType = TextureType.none;
   PageEventController? _receiveEvent;
   bool _onceDBGetComplete = false;
-
-  bool _hasTransitionEffect = false;
-  // ignore: unused_field
-  int _transitionEffect = 0;
-  // ignore: unused_field
-  int _transitionEffect2 = 0;
 
   void invalidate() {
     setState(() {});
@@ -104,22 +92,8 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
     //_receiveEventFromProperty = receiveEventFromProperty;
     //final BoolEventController lineDrawReceiveEvent = Get.find(tag: 'draw-link');
     //_lineDrawReceiveEvent = lineDrawReceiveEvent;
-    _hasTransitionEffect = widget.pageModel.hasTransitionEffect();
-    _transitionEffect = widget.pageModel.transitionEffect.value;
-    _transitionEffect2 = widget.pageModel.transitionEffect2.value;
 
     afterBuild();
-  }
-
-  @override
-  void didUpdateWidget(PageMain oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.pageModel.transitionEffect.value != oldWidget.pageModel.transitionEffect.value ||
-        widget.pageModel.transitionEffect2.value != oldWidget.pageModel.transitionEffect2.value) {
-      _hasTransitionEffect = widget.pageModel.hasTransitionEffect();
-      _transitionEffect = widget.pageModel.transitionEffect.value;
-      _transitionEffect2 = widget.pageModel.transitionEffect2.value;
-    }
   }
 
   Future<void> afterBuild() async {
@@ -134,11 +108,6 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
         LinkParams.connectedMid = '';
         LinkParams.connectedName = '';
       }
-      if (_hasTransitionEffect) {
-        setState(() {
-          _transitionIndicator = true;
-        });
-      }
     });
   }
 
@@ -152,7 +121,7 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
 
   @override
   Widget build(BuildContext context) {
-    //print('pageMain build transitionIndicator=$_transitionIndicator');
+    //print('-------pageMain build transitionIndicator=${widget.pageModel.transitionEffect.value}');
     return Stack(
       children: [
         _build(context),
@@ -287,7 +256,8 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
     //     BookMainPage.pageManagerHolder!.createPageKey(widget.pageModel.mid);
 
     Widget current = PageRealMain(
-      pageKey: BookMainPage.pageManagerHolder!.registerPage(widget.pageModel.mid),
+      //pageKey: BookMainPage.pageManagerHolder!.registerPage(widget.pageModel.mid),
+      key: ValueKey('PageRealMain${widget.pageModel.mid}'),
       bookModel: widget.bookModel,
       pageModel: widget.pageModel,
       pageWidth: widget.pageWidth,

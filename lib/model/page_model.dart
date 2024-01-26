@@ -8,6 +8,7 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 
 import '../lang/creta_studio_lang.dart';
+import 'app_enums.dart';
 import 'book_model.dart';
 import 'creta_model.dart';
 import 'creta_style_mixin.dart';
@@ -133,8 +134,22 @@ class PageModel extends CretaModel with CretaStyleMixin {
     return true;
   }
 
-    bool hasTransitionEffect() {
+  bool hasTransitionEffect() {
     return (transitionEffect.value > 0 || transitionEffect2.value > 0);
   }
 
+  bool isFade() {
+    PageTransitionType type = PageTransitionType.fromInt(transitionEffect.value);
+    return (type == PageTransitionType.fade);
+  }
+
+  bool isSliding() {
+    PageTransitionType type = PageTransitionType.fromInt(transitionEffect.value);
+    return (type == PageTransitionType.slidingX || type == PageTransitionType.slidingY);
+  }
+
+  bool isScale() {
+    PageTransitionType type = PageTransitionType.fromInt(transitionEffect.value);
+    return (type == PageTransitionType.scale);
+  }
 }

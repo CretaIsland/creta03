@@ -87,19 +87,19 @@ class PageManager extends CretaManager {
 /////////////////////////////////////////////////////////
 // pageKeyHandler area start
 /////////////////////////////////////////////////////////
-  KeyHandler pageKeyHandler = KeyHandler();
+  KeyHandler draggableStickerKeyHandler = KeyHandler();
 
-  String pageKeyMangler(String pageMid) {
-    return 'PageRealMainKey$pageMid';
+  String draggableStickerKeyMangler(String pageMid) {
+    return 'DraggableStickers$pageMid';
   }
 
-  GlobalObjectKey<CretaState<StatefulWidget>> registerPage(String pageMid) {
-    String keyString = pageKeyMangler(pageMid);
-    return pageKeyHandler.registerKey(keyString);
+  GlobalObjectKey<CretaState<StatefulWidget>> registerDraggableSticker(String pageMid) {
+    String keyString = draggableStickerKeyMangler(pageMid);
+    return draggableStickerKeyHandler.registerKey(keyString);
   }
 
-  bool invalidatPage(String pageMid) {
-    return pageKeyHandler.invalidate(pageKeyMangler(pageMid));
+  bool invalidatDraggableSticker(String pageMid) {
+    return draggableStickerKeyHandler.invalidate(draggableStickerKeyMangler(pageMid));
   }
 /////////////////////////////////////////////////////////
 // pageKeyHandler area start
@@ -369,7 +369,8 @@ class PageManager extends CretaManager {
 
   bool gotoNext({bool loop = true}) {
     _prevModel = getSelected() as PageModel?;
-    _transitForward = true;
+    //print('gotoNext');
+    _transitForward = !_transitForward;
 
     String? mid = getNextMid(loop: loop);
     return _movePage(mid);
@@ -377,7 +378,8 @@ class PageManager extends CretaManager {
 
   bool gotoPrev({bool loop = true}) {
     _prevModel = getSelected() as PageModel?;
-    _transitForward = false;
+    //print('gotoPrev');
+    _transitForward = !_transitForward;
 
     String? mid = getPrevMid(loop: loop);
     return _movePage(mid);
