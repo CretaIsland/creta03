@@ -1350,6 +1350,7 @@ class BTN {
     required Function onPressed,
     double? width,
     double height = 34,
+    TextStyle? textStyle,
   }) {
     return CretaElevatedButton(
       width: width,
@@ -1357,7 +1358,7 @@ class BTN {
       radius: height / 2 - 1,
       onPressed: onPressed,
       caption: text,
-      captionStyle: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]!),
+      captionStyle: textStyle ?? CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]!),
       bgColor: Colors.white,
       bgHoverColor: CretaColor.primary[100]!,
       bgHoverSelectedColor: CretaColor.primary[100]!, //CretaColor.primary[300]!,

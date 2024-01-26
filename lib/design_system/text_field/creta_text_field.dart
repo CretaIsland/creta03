@@ -95,6 +95,8 @@ class CretaTextField extends LastClickable {
   final bool autofocus;
   final bool readOnly;
 
+  final Color? fixedOutlineColor;
+
   static FocusNode? mainFocusNode;
 
   CretaTextField({
@@ -126,6 +128,7 @@ class CretaTextField extends LastClickable {
     this.style,
     this.autofocus = false,
     this.readOnly = false,
+    this.fixedOutlineColor,
   }) : super(key: textFieldKey);
 
   CretaTextField.xshortNumber({
@@ -157,6 +160,7 @@ class CretaTextField extends LastClickable {
     this.style,
     this.autofocus = false,
     this.readOnly = false,
+    this.fixedOutlineColor,
   }) : super(key: textFieldKey);
 
   CretaTextField.double({
@@ -188,6 +192,7 @@ class CretaTextField extends LastClickable {
     this.style,
     this.autofocus = false,
     this.readOnly = false,
+    this.fixedOutlineColor,
   }) : super(key: textFieldKey);
 
   CretaTextField.shortNumber({
@@ -219,6 +224,7 @@ class CretaTextField extends LastClickable {
     this.style,
     this.autofocus = false,
     this.readOnly = false,
+    this.fixedOutlineColor,
   }) : super(key: textFieldKey);
 
   CretaTextField.colorText({
@@ -250,6 +256,7 @@ class CretaTextField extends LastClickable {
     this.style,
     this.autofocus = false,
     this.readOnly = false,
+    this.fixedOutlineColor,
   }) : super(key: textFieldKey);
 
   CretaTextField.short({
@@ -281,6 +288,7 @@ class CretaTextField extends LastClickable {
     this.style,
     this.autofocus = false,
     this.readOnly = false,
+    this.fixedOutlineColor,
   }) : super(key: textFieldKey);
 
   CretaTextField.long({
@@ -312,6 +320,7 @@ class CretaTextField extends LastClickable {
     this.style,
     this.autofocus = false,
     this.readOnly = false,
+    this.fixedOutlineColor,
   }) : super(key: textFieldKey);
 
   CretaTextField.small({
@@ -343,6 +352,7 @@ class CretaTextField extends LastClickable {
     this.style,
     this.autofocus = false,
     this.readOnly = false,
+    this.fixedOutlineColor,
   }) : super(key: textFieldKey);
 
   @override
@@ -745,6 +755,14 @@ class CretaTextFieldState extends State<CretaTextField> {
   }
 
   BoxDecoration _basicDecoBox() {
+    BoxBorder border = (widget.fixedOutlineColor != null)
+        ? Border.all(color: widget.fixedOutlineColor!)
+        : _clicked
+        ? Border.all(color: CretaColor.primary)
+        : _hovered
+        ? Border.all(color: CretaColor.text[300]!)
+        // ? Border.all(color: Colors.red)
+        : widget.defaultBorder ?? Border.all(color: CretaColor.text[200]!);
     return BoxDecoration(
       //color: _clicked ? Colors.white : CretaColor.text[100]!,
       color: Colors.white,
@@ -752,12 +770,7 @@ class CretaTextFieldState extends State<CretaTextField> {
       //     ? CretaColor.text[200]!
       //     : CretaColor.text[100]!,
       //border: _clicked ? Border.all(color: CretaColor.primary) : widget.defaultBorder,
-      border: _clicked
-          ? Border.all(color: CretaColor.primary)
-          : _hovered
-              ? Border.all(color: CretaColor.text[300]!)
-              //? Border.all(color: Colors.red)
-              : widget.defaultBorder ?? Border.all(color: CretaColor.text[200]!),
+      border: border,
       borderRadius: BorderRadius.circular(widget.radius),
     );
   }
