@@ -155,7 +155,8 @@ dependencies:
   quoter: ^0.0.1
   carousel_slider: ^4.2.1
   expandable_slider: ^2.0.0
-  
+  email_validator: ^2.1.17
+
 
 dev_dependencies:
   flutter_test:
