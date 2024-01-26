@@ -1106,6 +1106,7 @@ class _BookMainPageState extends State<BookMainPage> {
       StudioVariables.topMenuBarHeight = LayoutConst.topMenuBarHeight;
       StudioVariables.menuStickWidth = LayoutConst.menuStickWidth;
       StudioVariables.appbarHeight = CretaConstant.appbarHeight;
+      StudioVariables.pageDisplayRate = 0.849;
     }
 
     StudioVariables.displayWidth = widget.size?.width ?? MediaQuery.of(context).size.width;

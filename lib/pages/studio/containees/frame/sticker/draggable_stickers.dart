@@ -147,34 +147,44 @@ class _DraggableStickersState extends State<DraggableStickers> {
   }
 
   Widget _prevButton() {
-    return BTN.fill_gray_i_s(
-      tooltip: CretaLang.prev,
-      iconSize: 16,
-      bgColor: LayoutConst.studioBGColor,
-      onPressed: () {
-        BookMainPage.pageManagerHolder?.gotoPrev();
-      },
-      icon: Icons.keyboard_arrow_up_outlined,
+    double scale = StudioVariables.applyScale / StudioVariables.fitScale;
+    return Padding(
+      padding: EdgeInsets.only(bottom: 5 * scale),
+      child: BTN.fill_gray_i_s(
+        tooltip: CretaLang.prev,
+        iconSize: 16 * scale,
+        buttonSize: 28 * scale,
+        bgColor: LayoutConst.studioBGColor,
+        onPressed: () {
+          BookMainPage.pageManagerHolder?.gotoPrev();
+        },
+        icon: Icons.keyboard_arrow_up_outlined,
+      ),
     );
   }
 
   Widget _nextButton() {
-    return BTN.fill_gray_i_s(
-      tooltip: CretaLang.next,
-      iconSize: 16,
-      bgColor: LayoutConst.studioBGColor,
-      onPressed: () {
-        BookMainPage.pageManagerHolder?.gotoNext();
-      },
-      icon: Icons.keyboard_arrow_down_outlined,
+    double scale = StudioVariables.applyScale / StudioVariables.fitScale;
+    return Padding(
+      padding: EdgeInsets.only(top: 5.0 * scale),
+      child: BTN.fill_gray_i_s(
+        tooltip: CretaLang.next,
+        iconSize: 16 * scale,
+        buttonSize: 28 * scale,
+        bgColor: LayoutConst.studioBGColor,
+        onPressed: () {
+          BookMainPage.pageManagerHolder?.gotoNext();
+        },
+        icon: Icons.keyboard_arrow_down_outlined,
+      ),
     );
   }
 
   Widget _pageNo() {
     int pageIndex = BookMainPage.pageManagerHolder!.getPageIndex(widget.page.mid);
-
+    double scale = StudioVariables.applyScale / StudioVariables.fitScale;
     return Positioned(
-      top: ((StudioVariables.availHeight - widget.pageHeight) / 2) - 20,
+      top: ((StudioVariables.availHeight - widget.pageHeight) / 2) - 12 - (8 * scale),
       left: (StudioVariables.availWidth - widget.pageWidth) / 2,
       child: SizedBox(
         width: 270 * StudioVariables.applyScale,
@@ -200,21 +210,23 @@ class _DraggableStickersState extends State<DraggableStickers> {
       ],
       child: Stack(
         children: [
-          _pageNo(),
+          if (StudioVariables.isPreview == false) _pageNo(),
           Align(
             alignment: Alignment.center,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (StudioVariables.scale > 0.25) _prevButton(),
-                const SizedBox(height: 5),
+                if (StudioVariables.isPreview == false) _prevButton(),
+                // if (StudioVariables.isPreview == false && StudioVariables.scale > 0.25)
+                //   const SizedBox(height: 5),
                 Container(
                   decoration: useColor ? _pageDeco() : null,
                   width: widget.pageWidth,
                   height: widget.pageHeight, // - LayoutConst.miniMenuArea,
                 ),
-                const SizedBox(height: 5),
-                if (StudioVariables.scale > 0.25) _nextButton(),
+                // if (StudioVariables.isPreview == false && StudioVariables.scale > 0.25)
+                //   const SizedBox(height: 5),
+                if (StudioVariables.isPreview == false) _nextButton(),
               ],
             ),
           ),
