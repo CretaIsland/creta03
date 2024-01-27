@@ -5,6 +5,10 @@ abstract class CretaState<T extends StatefulWidget> extends State<T> {
   void invalidate() {
     setState(() {});
   }
+
+  bool doSomething(dynamic param) {
+    return true;
+  }
 }
 
 class KeyHandler {
@@ -97,6 +101,20 @@ class KeyHandler {
     if (key != null) {
       if (key.currentState != null) {
         key.currentState!.invalidate();
+        return true;
+      }
+    } else {
+      logger.severe('missing keyString $keyString');
+    }
+    logger.severe('invalidate failed $keyString');
+    return false;
+  }
+
+   bool doSomething(String keyString, dynamic params) {
+    GlobalObjectKey<CretaState<StatefulWidget>>? key = findKey(keyString);
+    if (key != null) {
+      if (key.currentState != null) {
+        key.currentState!.doSomething(params);
         return true;
       }
     } else {

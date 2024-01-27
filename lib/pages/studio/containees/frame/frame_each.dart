@@ -141,7 +141,16 @@ class FrameEachState extends CretaState<FrameEach> with ContaineeMixin, FramePla
     if (_playTimer == null) {
       logger.severe('_playTimer is null');
     }
-    _playTimer?.start();
+    if (StudioVariables.isPreview) {
+      if (widget.pageModel.mid == BookMainPage.pageManagerHolder!.getSelectedMid()) {
+        // 현재 선택된 페이지만 start 한다.
+        _playTimer?.start();
+      } else {
+        _playTimer?.stop();
+      }
+    } else {
+      _playTimer?.start();
+    }
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<ContentsManager>.value(

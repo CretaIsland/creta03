@@ -33,8 +33,7 @@ class StickerView extends StatefulWidget {
   final PageModel page;
   final List<Sticker> stickerList;
 
-  final List<PageInfo>? prevPageInfos;
-  final List<PageInfo>? nextPageInfos;
+  final List<PageInfo>? allPageInfos;
 
   final void Function(DragUpdate, String) onUpdate;
   final void Function(String) onFrameDelete;
@@ -60,8 +59,7 @@ class StickerView extends StatefulWidget {
     required this.height,
     required this.width,
     required this.page,
-    required this.prevPageInfos,
-    required this.nextPageInfos,
+    this.allPageInfos,
     required this.frameManager,
     required this.stickerList,
     required this.onUpdate,
@@ -121,17 +119,31 @@ class StickerView extends StatefulWidget {
 //GlobalKey is defined for capturing screenshot
 //final GlobalKey stickGlobalKey = GlobalKey();
 
-class StickerViewState extends State<StickerView> with SingleTickerProviderStateMixin {
+class StickerViewState extends CretaState<StickerView> with SingleTickerProviderStateMixin {
+  static final Map<String, DraggableStickers> _pageWidgetMap = {};
+
   // You have to pass the List of Sticker
   AnimationController? _controller;
   Animation<Offset>? _offsetAnimation;
   Animation<double>? _scaleAnimation;
   Animation<double>? _fadeAnimation;
 
-  @override
+  //PageController? _pageController;
+
+  // String? selectedMid;
+  // @override
+  // bool doSomething(dynamic param) {
+  //   super.doSomething(param);
+  //   setState(() {
+  //     selectedMid = param as String;
+  //   });
+  //   return true;
+  // }
+
   @override
   void dispose() {
     _controller?.dispose();
+    //_pageController?.dispose();
     super.dispose();
   }
 
@@ -139,16 +151,22 @@ class StickerViewState extends State<StickerView> with SingleTickerProviderState
   void initState() {
     super.initState();
 
+    //if (widget.page.hasTransitionEffect()) {
     _controller = AnimationController(
       duration: Duration(seconds: widget.page.duration.value.clamp(1, 5)),
       vsync: this,
       //);
       //)..repeat(reverse: true);
     )..forward();
+    //}
+
+    if (StudioVariables.isPreview) {
+      //_pageController = PageController();
+      _pageWidgetMap.clear();
+    }
   }
 
-  void _initTransionEffect() {
-    //print('widget.page.duration.value = ${widget.page.duration.value}...........................');
+  void _initTransitionEffect() {
     _controller!.duration = Duration(seconds: widget.page.duration.value.clamp(1, 5));
 
     PageTransitionType aniType = PageTransitionType.fromInt(widget.page.transitionEffect.value);
@@ -206,30 +224,26 @@ class StickerViewState extends State<StickerView> with SingleTickerProviderState
     logger.fine('StickerViewState build');
 
     if (widget.page.hasTransitionEffect()) {
-      _initTransionEffect();
+      _initTransitionEffect();
     }
 
     double pageWidth = widget.book.width.value * StudioVariables.applyScale;
     double pageHeight = widget.book.height.value * StudioVariables.applyScale;
 
-    //const double selectedBorderWidth = 4;
+    if (StudioVariables.isPreview) {
+      return _previewMode(pageWidth, pageHeight);
+    }
+    return _editMode(pageWidth, pageHeight);
+  }
 
-    Widget selected =
-        // Container(
-        //   width: widget.width,
-        //   height: widget.height, // + (LayoutConst.pageControllerHeight * 2),
-        //   color: CretaColor.secondary,
-        //   // + (LayoutConst.pa
-        //   child:
-        Center(
+  Widget _editMode(double pageWidth, double pageHeight) {
+    Widget selected = Center(
       child: DraggableStickers(
         key: BookMainPage.pageManagerHolder!.registerDraggableSticker(widget.page.mid),
         isSelected: true,
         book: widget.book,
         pageWidth: pageWidth,
         pageHeight: pageHeight,
-        // pageWidth: widget.width,
-        // pageHeight: widget.height,
         page: widget.page,
         frameManager: widget.frameManager,
         stickerList: widget.stickerList,
@@ -240,68 +254,59 @@ class StickerViewState extends State<StickerView> with SingleTickerProviderState
         onFrameCopy: widget.onFrameCopy,
         onFrameMain: widget.onFrameMain,
         onFrameShowUnshow: widget.onFrameShowUnshow,
-        //onFrameRotate: widget.onFrameRotate,
-        //onFrameLink: widget.onFrameLink,
         onTap: widget.onTap,
         onResizeButtonTap: widget.onResizeButtonTap,
         onComplete: widget.onComplete,
         onScaleStart: widget.onScaleStart,
         onDropPage: widget.onDropPage,
         onFrontBackHover: widget.onFrontBackHover,
-
-        //onDropFrame: widget.onDropFrame,
       ),
-      //),
+    );
+    return _applyTransitionEffect(selected);
+  }
+
+  Widget _previewMode(double pageWidth, double pageHeight) {
+    if ( // widget.page.hasTransitionEffect() ||
+        widget.allPageInfos == null || widget.allPageInfos!.isEmpty) {
+      return _editMode(pageWidth, pageHeight);
+    }
+
+    String selectedMid = widget.page.mid;
+
+    for (var pageInfo in widget.allPageInfos!) {
+      if (_pageWidgetMap[pageInfo.pageModel.mid] == null) {
+        //print('input mid= ${pageInfo.pageModel.mid} ${pageInfo.pageModel.name.value}');
+        DraggableStickers eachPage = DraggableStickers(
+          key: BookMainPage.pageManagerHolder!.registerDraggableSticker(pageInfo.pageModel.mid),
+          isSelected: selectedMid == pageInfo.pageModel.mid,
+          book: widget.book,
+          pageWidth: pageWidth,
+          pageHeight: pageHeight,
+          page: pageInfo.pageModel,
+          frameManager: pageInfo.frameManager,
+          stickerList: pageInfo.stickerList,
+        );
+        _pageWidgetMap[pageInfo.pageModel.mid] = eachPage;
+      }
+    }
+
+    //("select ${widget.page.name.value}");
+    return Stack(
+      children: [
+        for (DraggableStickers dsticker in _pageWidgetMap.values)
+          Offstage(
+            offstage: selectedMid != dsticker.page.mid,
+            child: Center(
+              child: _applyTransitionEffect(dsticker),
+            ),
+          ),
+      ],
     );
 
-    List<Widget> pageList = [];
-
-    Widget? prev;
-    if (widget.prevPageInfos != null && widget.prevPageInfos!.isNotEmpty) {
-      //for (var pageInfo in widget.prevPageInfos!) {
-      PageInfo pageInfo = widget.prevPageInfos!.last;
-      prev = Center(
-        child: DraggableStickers(
-          key: BookMainPage.pageManagerHolder!.registerDraggableSticker(pageInfo.pageModel.mid),
-          isSelected: false,
-          book: widget.book,
-          pageWidth: pageWidth,
-          pageHeight: pageHeight,
-          // pageWidth: widget.width,
-          // pageHeight: widget.height,
-          page: pageInfo.pageModel,
-          frameManager: pageInfo.frameManager,
-          stickerList: pageInfo.stickerList,
-        ),
-      );
-      pageList.add(prev);
-      //}
-    }
-    pageList.add(selected);
-
-    Widget? next;
-    if (widget.nextPageInfos != null && widget.nextPageInfos!.isNotEmpty) {
-      //for (var pageInfo in widget.nextPageInfos!) {
-      PageInfo pageInfo = widget.nextPageInfos!.first;
-      next = Center(
-        child: DraggableStickers(
-          key: BookMainPage.pageManagerHolder!.registerDraggableSticker(pageInfo.pageModel.mid),
-          isSelected: false,
-          book: widget.book,
-          pageWidth: pageWidth,
-          pageHeight: pageHeight,
-          // pageWidth: widget.width,
-          // pageHeight: widget.height,
-          page: pageInfo.pageModel,
-          frameManager: pageInfo.frameManager,
-          stickerList: pageInfo.stickerList,
-        ),
-      );
-      pageList.add(next);
-      //}
-    }
-
     //print('widget.page.transitionEffect.value=${widget.page.transitionEffect.value}');
+  }
+
+  Widget _applyTransitionEffect(Widget selected) {
     if (widget.page.hasTransitionEffect()) {
       //print('widget.page.transitionEffect.value=${widget.page.transitionEffect.value}');
       // return AnimatedSwitcher(
@@ -331,7 +336,6 @@ class StickerViewState extends State<StickerView> with SingleTickerProviderState
       // );
 
       if (widget.page.isSliding()) {
-        //print('isSliding-------------------------------------');
         return SlideTransition(
           position: _offsetAnimation!,
           child: selected,
@@ -351,43 +355,8 @@ class StickerViewState extends State<StickerView> with SingleTickerProviderState
       }
     }
     return selected;
-    //return selected;
-
-    // return RepaintBoundary(
-    //   key: GlobalKey(),
-    //   child: main,
-    // );
-
-    // return ListView.builder(
-    //   itemCount: pageList.length,
-    //   itemBuilder: (BuildContext context, int listIndex) {
-    //     return Center(
-    //       child: pageList[listIndex],
-    //     );
-    //     // return Padding(
-    //     //   padding: EdgeInsets.symmetric(vertical: StudioVariables.pageVertivalPadding),
-    //     //   child: pageList[listIndex],
-    //     // );
-    //   },
-    // );
-
-    // return Column(
-    //   mainAxisAlignment: MainAxisAlignment.center,
-    //   children: [main],
-    // );
-
-    // if (next != null) return next;
-    // if (prev != null) return prev;
-    // return Stack(
-    //   alignment: Alignment.center,
-    //   children: [
-    //     main,
-    //   ],
-    // );
-    //return main;
   }
 }
-
 // Sticker class
 
 // ignore: must_be_immutable

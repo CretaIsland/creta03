@@ -16,7 +16,6 @@ import '../../../../common/creta_constant.dart';
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
-import '../../../../data_io/page_manager.dart';
 import '../../../../design_system/component/creta_popup.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/book_model.dart';
@@ -68,16 +67,12 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
 
   String _mainFrameCandiator = ''; // frame 중에 콘텐츠가 있으면서, order 가 가장 높은것.  즉, mainFrame 의 1번 후보자.
 
-  List<PageInfo> _prevPageInfos = [];
-  List<PageInfo> _nextPageInfos = [];
-
   //final Offset _pageOffset = Offset.zero;
 
   void _updatePage() {
-    _prevPageInfos =
-        BookMainPage.pageManagerHolder!.getPrevList(widget.pageModel.mid, _getStickerList);
-    _nextPageInfos =
-        BookMainPage.pageManagerHolder!.getNextList(widget.pageModel.mid, _getStickerList);
+    if (BookMainPage.allPageInfos.isEmpty) {
+      BookMainPage.allPageInfos = BookMainPage.pageManagerHolder!.getPageInfoList(_getStickerList);
+    }
   }
 
   @override
@@ -93,6 +88,10 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
 
     final FrameEachEventController showOrderSendEvent = Get.find(tag: 'to-FrameEach');
     _showOrderSendEvent = showOrderSendEvent;
+
+    if (StudioVariables.isPreview) {
+      _updatePage();
+    }
 
     // final OffsetEventController linkReceiveEvent = Get.find(tag: 'frame-each-to-on-link');
     // _linkReceiveEvent = linkReceiveEvent;
@@ -114,8 +113,6 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
 
   @override
   Widget build(BuildContext context) {
-    _updatePage();
-
     //applyScale = StudioVariables.scale / StudioVariables.fitScale;
     // print('FrameMain build');
     //StudioVariables.applyScale = widget.bookModel.width.value / StudioVariables.availWidth;
@@ -163,16 +160,16 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
     //logger.fine('showFrame $applyScale  ${StudioVariables.applyScale}');
     //print('showFrame----------------------------------');
     return StickerView(
-      //key: ValueKey('StickerView-${widget.pageModel.mid}'),
+      // key: (StudioVariables.isPreview)
+      //     ? BookMainPage.pageManagerHolder?.registerStickerView()
+      //     : null,
       book: widget.bookModel,
       page: widget.pageModel,
-      prevPageInfos: _prevPageInfos,
-      nextPageInfos: _nextPageInfos,
+      allPageInfos: (StudioVariables.isPreview) ? BookMainPage.allPageInfos : null,
       width: widget.pageWidth,
       height: widget.pageHeight,
       frameManager: frameManager,
-      stickerList: _getStickerList(frameManager!, widget.pageModel),
-      // List of Stickers
+      stickerList: _getStickerList(frameManager!, widget.pageModel), // List of Stickers
       onUpdate: (update, mid) {
         //print('onUpdate ${update.hint}--------------------');
         _setItem(update, mid);

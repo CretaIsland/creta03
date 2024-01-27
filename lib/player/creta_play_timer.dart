@@ -111,7 +111,7 @@ class CretaPlayTimer extends ChangeNotifier {
 
   void start() {
     if (_timer == null) {
-      //logger.fine("==========================timer start================");
+      //print("==========================timer start================");
       _timer = Timer.periodic(Duration(milliseconds: _timeGap), _timerExpired);
       _initComplete = true;
     }

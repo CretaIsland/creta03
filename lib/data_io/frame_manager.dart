@@ -943,6 +943,11 @@ class FrameManager extends CretaManager {
     if (StudioVariables.isPreview == false) {
       return;
     }
+    // stopPagin 이면 다음 페이지로 넘어가지 않는다.
+    if (StudioVariables.stopPaging == true) {
+      return;
+    }
+
     // ignore: unused_local_variable
     BookModel? book = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
     if (book != null && book.isAutoPlay.value == false) {

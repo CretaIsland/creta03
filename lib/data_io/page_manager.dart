@@ -102,6 +102,39 @@ class PageManager extends CretaManager {
     return draggableStickerKeyHandler.invalidate(draggableStickerKeyMangler(pageMid));
   }
 /////////////////////////////////////////////////////////
+// pageKeyHandler area end
+/////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////
+// pageKeyHandler area start
+/////////////////////////////////////////////////////////
+  KeyHandler stickerViewKeyHandler = KeyHandler();
+
+  String stickerViewKeyMangler() {
+    return 'StickerViewKey';
+  }
+
+  GlobalObjectKey<CretaState<StatefulWidget>> registerStickerView() {
+    String keyString = stickerViewKeyMangler();
+    return stickerViewKeyHandler.registerKey(keyString);
+  }
+
+  bool invalidatStickerView() {
+    return stickerViewKeyHandler.invalidate(stickerViewKeyMangler());
+  }
+
+  bool gotoNextStickers(String mid) {
+    return stickerViewKeyHandler.doSomething(stickerViewKeyMangler(), mid);
+  }
+
+  bool gotoPrevStickers(String mid) {
+    return stickerViewKeyHandler.doSomething(stickerViewKeyMangler(), mid);
+  }
+/////////////////////////////////////////////////////////
+// pageKeyHandler area end
+/////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////
 // pageKeyHandler area start
 /////////////////////////////////////////////////////////
 
@@ -133,6 +166,7 @@ class PageManager extends CretaManager {
   final Function? onGotoNextBook;
 
   static Map<String, String> oldNewMap = {}; // linkCopy 시에 필요하다.
+  static bool isGotoNext = true;
 
   PageManager({
     String tableName = 'creta_page',
@@ -371,18 +405,22 @@ class PageManager extends CretaManager {
     _prevModel = getSelected() as PageModel?;
     //print('gotoNext');
     _transitForward = !_transitForward;
-
     String? mid = getNextMid(loop: loop);
-    return _movePage(mid);
+    bool retval = _movePage(mid);
+    //if (StudioVariables.isPreview && mid != null) gotoNextStickers(mid);
+    return retval;
   }
 
   bool gotoPrev({bool loop = true}) {
     _prevModel = getSelected() as PageModel?;
     //print('gotoPrev');
     _transitForward = !_transitForward;
+    PageManager.isGotoNext = false;
 
     String? mid = getPrevMid(loop: loop);
-    return _movePage(mid);
+    bool retval = _movePage(mid);
+    //if (StudioVariables.isPreview && mid != null) gotoPrevStickers(mid);
+    return retval;
   }
 
   bool _movePage(String? mid) {
@@ -492,6 +530,22 @@ class PageManager extends CretaManager {
       return null;
     }
     return null;
+  }
+
+  List<PageInfo> getPageInfoList(
+    List<Sticker> Function(FrameManager, PageModel)? getStickerList,
+  ) {
+    List<PageInfo> retval = [];
+    Iterable<CretaModel> keys = orderValues().toList();
+    for (var ele in keys) {
+      FrameManager? manager = findFrameManager(ele.mid);
+      List<Sticker>? stickers;
+      if (getStickerList != null && manager != null) {
+        stickers = getStickerList(manager, ele as PageModel);
+      }
+      retval.add(PageInfo(ele as PageModel, manager, stickers));
+    }
+    return retval;
   }
 
   List<PageInfo> getPrevList(

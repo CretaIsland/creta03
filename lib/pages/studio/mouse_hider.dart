@@ -8,6 +8,8 @@ import 'studio_getx_controller.dart';
 import 'studio_variables.dart';
 
 class MouseHider extends StatefulWidget {
+  static DateTime? lastMouseMoveTime;
+
   final Widget child;
   final bool fromPriviewToMain;
   final void Function() onMouseHideChanged;
@@ -25,7 +27,7 @@ class MouseHider extends StatefulWidget {
 
 class MouseHiderState extends State<MouseHider> {
   int _mouseMoveCount = 0;
-  DateTime? _lastMouseMoveTime;
+
   Timer? _mouseMovetimer;
   OffsetEventController? _sendMouseEvent;
 
@@ -74,7 +76,7 @@ class MouseHiderState extends State<MouseHider> {
         },
         onHover: (pointerEvent) {
           _mouseMoveCount++;
-          _lastMouseMoveTime = DateTime.now();
+          MouseHider.lastMouseMoveTime = DateTime.now();
           if (_mouseMoveCount > 30) {
             //print('mouse hover');
             //SystemChannels.mouseCursor.invokeMethod('mouseCursor', 'auto');
@@ -106,9 +108,9 @@ class MouseHiderState extends State<MouseHider> {
       _mouseMovetimer = Timer.periodic(const Duration(seconds: 1), (t) {
         // 3초 동안 마우스 움직임이 없으면 커서를 숨김
         if (StudioVariables.isPreview == true) {
-          if (_lastMouseMoveTime != null) {
+          if (MouseHider.lastMouseMoveTime != null) {
             if (StudioVariables.hideMouse == false &&
-                DateTime.now().difference(_lastMouseMoveTime!).inSeconds >= 3) {
+                DateTime.now().difference(MouseHider.lastMouseMoveTime!).inSeconds >= 3) {
               logger.info('3 second passed');
               if (_fromPriviewToMain == false) {
                 // 페이지가 넘어가는 중에, setState 가 동작하면 안된다.

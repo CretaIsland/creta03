@@ -239,14 +239,15 @@ class _DraggableStickersState extends State<DraggableStickers> {
           //     height: widget.pageHeight, // - LayoutConst.miniMenuArea,
           //   ),
           // ),
-          if (widget.isSelected)
+          if (widget.isSelected && StudioVariables.isPreview == false)
             PageBottomLayer(
               key: pageBottomLayerKey,
               pageWidth: widget.pageWidth,
               pageHeight: widget.pageHeight,
               pageModel: widget.page,
             ),
-          if (widget.isSelected) _pageDropZone(widget.book.mid),
+          if (widget.isSelected && StudioVariables.isPreview == false)
+            _pageDropZone(widget.book.mid),
           // if (widget.isSelected &&
           //     StudioVariables.isPreview == false &&
           //     StudioVariables.applyScale >= 0.245)

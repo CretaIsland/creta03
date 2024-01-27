@@ -96,6 +96,8 @@ class BookMainPage extends StatefulWidget {
 
   static Offset pageOffset = Offset.zero;
 
+  static List<PageInfo> allPageInfos = [];
+
   static void warningNeedToLogin(BuildContext context) {
     CretaPopup.simple(
       context: context,
@@ -322,8 +324,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
     mouseTracerHolder = MouseTracer();
 
-    if ((widget.isPublishedMode ?? false) == false &&
-        AccountManager.currentLoginUser.isLoginedUser) {
+    if (_useSocket()) {
       client.initialize(CretaAccountManager.getEnterprise!.socketUrl);
       client.connectServer(StudioVariables.selectedBookMid);
     }
@@ -581,6 +582,12 @@ class _BookMainPageState extends State<BookMainPage> {
   //   }
   // }
 
+  bool _useSocket() {
+    return ((widget.isPublishedMode ?? false) == false &&
+        StudioVariables.isPreview == false &&
+        AccountManager.currentLoginUser.isLoginedUser);
+  }
+
   @override
   void dispose() {
     logger.severe('BookMainPage.dispose');
@@ -599,8 +606,7 @@ class _BookMainPageState extends State<BookMainPage> {
       _staticValuseDispose();
     }
 
-    if ((widget.isPublishedMode ?? false) == false &&
-        AccountManager.currentLoginUser.isLoginedUser) {
+    if (_useSocket()) {
       client.disconnect(notify: false);
     }
     if (webRTCClient != null) {
@@ -617,6 +623,8 @@ class _BookMainPageState extends State<BookMainPage> {
       BookMainPage.connectedUserHolder?.removeRealTimeListen();
     }
     BookMainPage.pageManagerHolder?.clearFrameManager();
+
+    BookMainPage.allPageInfos.clear();
 
     saveManagerHolder?.stopTimer();
     saveManagerHolder?.unregisterManager('book');
@@ -706,11 +714,12 @@ class _BookMainPageState extends State<BookMainPage> {
                   onHover: (pointerEvent) {
                     //if (StudioVariables.allowMutilUser == true) {
                     if (mouseTracerHolder!.mouseCursorList.isEmpty) return;
-                    if (AccountManager.currentLoginUser.isLoginedUser) {
+                    if (_useSocket()) {
                       if (lastEventTime.add(Duration(milliseconds: 100)).isBefore(DateTime.now())) {
                         client.changeCursorPosition(
                             pointerEvent.position.dx / screenWidthPercentage,
                             (pointerEvent.position.dy - 50) / screenHeightPrecentage);
+
                         lastEventTime = DateTime.now();
                       }
                     }
@@ -1750,9 +1759,11 @@ class _BookMainPageState extends State<BookMainPage> {
                   }
                 },
                 muteFunction: () {
+                  MouseHider.lastMouseMoveTime = DateTime.now();
                   StudioVariables.globalToggleMute(save: false);
                 },
                 playFunction: () {
+                  MouseHider.lastMouseMoveTime = DateTime.now();
                   //StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent,
                   setState(() {
                     StudioVariables.stopPaging = !StudioVariables.stopPaging;
@@ -1763,12 +1774,14 @@ class _BookMainPageState extends State<BookMainPage> {
                   // }
                 },
                 gotoNext: () {
+                  MouseHider.lastMouseMoveTime = DateTime.now();
                   BookPreviewMenu.previewMenuPressed = true;
                   StudioVariables.stopPaging = false;
                   StudioVariables.stopNextContents = false;
                   pageManager.gotoNext();
                 },
                 gotoPrev: () {
+                  MouseHider.lastMouseMoveTime = DateTime.now();
                   BookPreviewMenu.previewMenuPressed = true;
                   StudioVariables.stopPaging = false;
                   StudioVariables.stopNextContents = false;

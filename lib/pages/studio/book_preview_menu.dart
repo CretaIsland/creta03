@@ -89,7 +89,10 @@ class _BookPreviewMenuState extends State<BookPreviewMenu> {
                     Row(
                       children: [
                         CretaTrasparentButton(
-                          onPressed: widget.gotoPrev,
+                          onPressed: () {
+                            setState(() {});
+                            widget.gotoPrev();
+                          },
                           icon1: Icons.arrow_back_ios_new_outlined,
                           icon2: Icons.arrow_back_ios_new_outlined,
                           toggleValue: true,
@@ -101,7 +104,10 @@ class _BookPreviewMenuState extends State<BookPreviewMenu> {
                           style: CretaFont.buttonLarge.copyWith(color: Colors.white),
                         ),
                         CretaTrasparentButton(
-                          onPressed: widget.gotoNext,
+                          onPressed: () {
+                            setState(() {});
+                            widget.gotoNext();
+                          },
                           icon1: Icons.arrow_forward_ios_outlined,
                           icon2: Icons.arrow_forward_ios_outlined,
                           toggleValue: true,
@@ -124,7 +130,7 @@ class _BookPreviewMenuState extends State<BookPreviewMenu> {
                             doToggle: false,
                           )
                         : CretaTrasparentButton(
-                          tooltip: CretaStudioLang.gobackToStudio,
+                            tooltip: CretaStudioLang.gobackToStudio,
                             onPressed: widget.goBackProcess,
                             icon1: Icons.logout_outlined,
                             icon2: Icons.logout_outlined,
