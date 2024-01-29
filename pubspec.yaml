@@ -156,6 +156,7 @@ dependencies:
   carousel_slider: ^4.2.1
   expandable_slider: ^2.0.0
   email_validator: ^2.1.17
+  animate_icons: ^2.0.0
 
 
 dev_dependencies:

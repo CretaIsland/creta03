@@ -472,6 +472,27 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
                   children: [
                     Column(
                       children: [
+                        const Text('fill_white_iti_l   '),
+                        const SizedBox(height: 20),
+                        BTN.fill_white_iti_l(
+                          icon1: Icons.loop_outlined,
+                          text: '다운로드중 4/5',
+                          icon2: Icons.arrow_drop_down_outlined,
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Divider(
+                  thickness: 5,
+                  color: Colors.amber,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
                         const Text('expand_circle_up'),
                         const SizedBox(height: 20),
                         BTN.expand_circle_up(

@@ -19,6 +19,7 @@ enum ClickToCreateEnum {
 
 class StudioVariables {
   static double pageDisplayRate = 0.849;
+  static double maxMemoryPage = 5;
   static double pageVertivalPadding = 10;
 
   static String selectedBookMid = ''; // selected book mid

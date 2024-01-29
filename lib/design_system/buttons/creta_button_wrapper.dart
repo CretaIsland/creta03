@@ -1,9 +1,9 @@
 // ignore_for_file: non_constant_identifier_names
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-
 import '../../common/creta_utils.dart';
 import '../../lang/creta_studio_lang.dart';
+import '../component/creta_ani_icon.dart';
 import '../component/snippet.dart';
 import '../creta_color.dart';
 import '../creta_font.dart';
@@ -1215,6 +1215,60 @@ class BTN {
           ),
           Icon(
             icon,
+            size: 20,
+            color: Colors.white,
+          ),
+        ],
+      ),
+    );
+  }
+
+  static CretaButton fill_white_iti_l({
+    required String text,
+    TextStyle? textStyle,
+    required IconData icon1,
+    required IconData icon2,
+    required Function onPressed,
+    double? width = 172,
+    double? height = 40,
+    CretaButtonSidePadding? sidePadding,
+  }) {
+    textStyle ??= CretaFont.bodyMedium.copyWith(color: CretaColor.text[400]!);
+    return CretaButton(
+      textStyle: textStyle,
+      width: width,
+      height: height,
+      buttonType: CretaButtonType.child,
+      buttonColor: CretaButtonColor.blueAndWhite,
+      hasShadow: true,
+      onPressed: onPressed,
+      sidePadding: sidePadding,
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: CretaAniIcon(
+              startIcon: Icons.expand_more_outlined,
+              endIcon: Icons.file_download_outlined,
+              size: 16.0,
+              onPressed: () {},
+              duration: const Duration(milliseconds: 500),
+              startIconColor: Colors.deepPurple,
+              endIconColor: Colors.deepOrange,
+              clockwise: false,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(text, style: CretaFont.buttonLarge.copyWith(color: Colors.white)),
+              ],
+            ),
+          ),
+          Icon(
+            icon2,
             size: 20,
             color: Colors.white,
           ),

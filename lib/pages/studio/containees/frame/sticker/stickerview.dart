@@ -290,6 +290,29 @@ class StickerViewState extends CretaState<StickerView> with SingleTickerProvider
       }
     }
 
+    // while (_pageWidgetMap.length > StudioVariables.maxMemoryPage) {
+    //   print('over max memory page ${_pageWidgetMap.length}');
+    //   // 현재 위치에서 가장 멀리있는 페이지를 삭제한다.
+    //   // 현재 next 로 가고 있으면, prev 중에 가장 멀리 있는 놈을 삭제한다.
+    //   // 현재 prev 로 가고 있으면, next 중에 가장 멀리 있는 놈을 삭제한다.
+    //   List<String> keys = _pageWidgetMap.keys.toList();
+    //   if (BookMainPage.pageManagerHolder!.transitForward) {
+    //     if (selectedMid != keys.first) {
+    //       _pageWidgetMap.remove(keys.first);
+    //       print('first page removed ${_pageWidgetMap.length}');
+    //     } else {
+    //       break;
+    //     }
+    //   } else {
+    //     if (selectedMid != keys.last) {
+    //       _pageWidgetMap.remove(keys.last);
+    //       print('last page removed ${_pageWidgetMap.length}');
+    //     } else {
+    //       break;
+    //     }
+    //   }
+    // }
+
     //("select ${widget.page.name.value}");
     return Stack(
       children: [
