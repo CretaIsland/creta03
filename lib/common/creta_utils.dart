@@ -1114,7 +1114,6 @@ class CretaUtils {
   }
 
   static Future<bool> sendResetPasswordEmail(
-    BuildContext context,
     String email,
     String userId,
     String secret,
@@ -1125,7 +1124,7 @@ class CretaUtils {
     String url = '${CretaAccountManager.getEnterprise!.mediaApiUrl}/sendEmail';
     String option = '''{
         "subject": "[크레타] 계정의 비밀번호 초기화 요청이 있습니다",        
-        "content": "비밀번호 초기화를 원하시면 아래 링크를 클릭하시고\\n그렇지 않으시면 무시하세요.\\n\\n$base${AppRoutes.resetPasswordConfirm}?userId=$userId&secret=$secret\\n\\n크레타 팀으로부터."
+        "content": "비밀번호 초기화를 요청하셨다면 아래 링크를 클릭하시고\\n그렇지 않으시면 무시하세요.\\n\\n$base${AppRoutes.resetPasswordConfirm}?userId=$userId&secret=$secret\\n\\n크레타 팀으로부터."
     }''';
     Map<String, dynamic> body = {
       "receiverEmail": ['"$email"'], // 수신인
@@ -1134,13 +1133,41 @@ class CretaUtils {
     };
 
     Response? res = await CretaUtils.post(url, body, onError: (code) {
-      showSnackBar(context, '${CretaStudioLang.inviteEmailFailed}($code)');
+      //showSnackBar(context, '${CretaStudioLang.inviteEmailFailed}($code)');
     }, onException: (e) {
-      showSnackBar(context, '${CretaStudioLang.inviteEmailFailed}($e)');
+      //showSnackBar(context, '${CretaStudioLang.inviteEmailFailed}($e)');
     });
 
     if (res != null) {
-      showSnackBar(context, '비밀벊');
+      //showSnackBar(context, '비밀벊');
+      return true;
+    }
+    return false;
+  }
+
+  static Future<bool> sendVerifyEmail(String email, String secret) async {
+    String base = Uri.base.origin;
+    //print('---------------base=$base');
+
+    String url = '${CretaAccountManager.getEnterprise!.mediaApiUrl}/sendEmail';
+    String option = '''{
+        "subject": "[크레타] 가입을 환영합니다",        
+        "content": "크레타에 오신 것을 환영합니다\\n\\n아래 URL링크를 눌러서 회원가입을 완료해주세요.\\n\\n$base${AppRoutes.resetPasswordConfirm}?userId=$email&secret=$secret\\n\\n크레타 팀으로부터."
+    }''';
+    Map<String, dynamic> body = {
+      "receiverEmail": ['"$email"'], // 수신인
+      "emailType": '"resetPassword"',
+      "emailOption": option,
+    };
+
+    Response? res = await CretaUtils.post(url, body, onError: (code) {
+      //showSnackBar(context, '${CretaStudioLang.inviteEmailFailed}($code)');
+    }, onException: (e) {
+      //showSnackBar(context, '${CretaStudioLang.inviteEmailFailed}($e)');
+    });
+
+    if (res != null) {
+      //showSnackBar(context, '비밀벊');
       return true;
     }
     return false;

@@ -345,7 +345,7 @@ class _LoginDialogState extends State<LoginDialog> {
     AccountManager.resetPassword(email).then((value) async {
       String userId = value.$1;
       String secret = value.$2;
-      CretaUtils.sendResetPasswordEmail(context, email, userId, secret);
+      CretaUtils.sendResetPasswordEmail(email, userId, secret);
     }).onError((error, stackTrace) {
       String errMsg;
       if (error is HycopException) {
@@ -1287,11 +1287,8 @@ class LoginDialogEx extends StatefulWidget {
 }
 
 class _LoginDialogExState extends State<LoginDialogEx> {
-  late LoginPageState _currentPageState;
-  final Map<String, bool> _checkboxLoginValueMap = {
-    '로그인 상태 유지 ': true,
-  };
-
+  static const String materialIconEncrypted =
+      '<svg viewBox="0 0 94 118" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M38.2507 76.5003H55.7507L52.3965 57.6878C54.3409 56.7156 55.8722 55.3059 56.9902 53.4587C58.1083 51.6114 58.6673 49.5698 58.6673 47.3337C58.6673 44.1253 57.525 41.3788 55.2402 39.0941C52.9555 36.8094 50.209 35.667 47.0007 35.667C43.7923 35.667 41.0458 36.8094 38.7611 39.0941C36.4763 41.3788 35.334 44.1253 35.334 47.3337C35.334 49.5698 35.893 51.6114 37.0111 53.4587C38.1291 55.3059 39.6604 56.7156 41.6048 57.6878L38.2507 76.5003ZM47.0007 117.334C33.4868 113.931 22.3305 106.177 13.5319 94.0732C4.73329 81.9691 0.333984 68.5281 0.333984 53.7503V18.167L47.0007 0.666992L93.6673 18.167V53.7503C93.6673 68.5281 89.268 81.9691 80.4694 94.0732C71.6708 106.177 60.5145 113.931 47.0007 117.334ZM47.0007 105.084C57.1118 101.875 65.4729 95.4587 72.084 85.8337C78.6951 76.2087 82.0007 65.5142 82.0007 53.7503V26.1878L47.0007 13.0628L12.0007 26.1878V53.7503C12.0007 65.5142 15.3062 76.2087 21.9173 85.8337C28.5284 95.4587 36.8895 101.875 47.0007 105.084Z" fill="#E7EFFD"/></svg>';
   static const String stringAgreeTerms = '(필수) 크레타 이용약관 동의';
   static const String stringAgreeUsingMarketing = '(선택) 마케팅 정보 발송 동의';
 
@@ -1299,6 +1296,13 @@ class _LoginDialogExState extends State<LoginDialogEx> {
     stringAgreeTerms: false,
     stringAgreeUsingMarketing: false,
   };
+
+  final Map<String, bool> _checkboxLoginValueMap = {
+    '로그인 상태 유지 ': true,
+  };
+
+  final double _leftPaneWidth = 311;
+  double get _rightPaneWidth => (widget.size.width - 311);
 
   final _loginEmailTextEditingController = TextEditingController();
   final _loginPasswordTextEditingController = TextEditingController();
@@ -1310,12 +1314,18 @@ class _LoginDialogExState extends State<LoginDialogEx> {
 
   final _resetEmailTextEditingController = TextEditingController();
 
+  late LoginPageState _currentPageState;
   bool _isLoginProcessing = false;
   String _emailErrorMessage = '';
   String _loginErrorMessage = '';
   String _nicknameErrorMessage = '';
   String _passwordErrorMessage = '';
   String _requirementsErrorMessage = '';
+  String _snsLoginErrorMessage = '';
+
+  String _notVerifyUserId = '';
+  String _notVerifyEmail = '';
+  String _notVerifyNickname = '';
 
   @override
   void initState() {
@@ -1323,12 +1333,28 @@ class _LoginDialogExState extends State<LoginDialogEx> {
     _currentPageState = widget.loginPageState;
   }
 
-  void _clearErrorMessage() {
-    _emailErrorMessage = '';
-    _loginErrorMessage = '';
-    _nicknameErrorMessage = '';
-    _passwordErrorMessage = '';
-    _requirementsErrorMessage = '';
+  void _moveToPageState(LoginPageState newState) {
+    setState(() {
+      _setErrorMessage();
+      _currentPageState = newState;
+      _isLoginProcessing = false;
+    });
+  }
+
+  void _setErrorMessage({
+    String? emailErrorMessage,
+    String? loginErrorMessage,
+    String? nicknameErrorMessage,
+    String? passwordErrorMessage,
+    String? requirementsErrorMessage,
+    String? snsLoginErrorMessage,
+  }) {
+    _emailErrorMessage = emailErrorMessage ?? '';
+    _loginErrorMessage = loginErrorMessage ?? '';
+    _nicknameErrorMessage = nicknameErrorMessage ?? '';
+    _passwordErrorMessage = passwordErrorMessage ?? '';
+    _requirementsErrorMessage = requirementsErrorMessage ?? '';
+    _snsLoginErrorMessage = snsLoginErrorMessage ?? '';
   }
 
   Future<void> _login(String email, String password) async {
@@ -1355,7 +1381,8 @@ class _LoginDialogExState extends State<LoginDialogEx> {
       }
       //showSnackBar(widget.context, errMsg);
       setState(() {
-        _loginErrorMessage = errMsg;
+        _setErrorMessage(loginErrorMessage: errMsg);
+        _isLoginProcessing = false;
       });
       await CretaAccountManager.logout();
     });
@@ -1409,14 +1436,15 @@ class _LoginDialogExState extends State<LoginDialogEx> {
       if (error is HycopException) {
         HycopException ex = error;
         logger.severe(ex.message);
-        errMsg = '구글 계정으로 로그인에 실패하였습니다. 관리자에 문의하세요.';
+        errMsg = '구글 계정으로 로그인에 실패하였습니다.';
       } else {
         errMsg = 'Unknown DB Error !!!';
         logger.severe(errMsg);
       }
       //showSnackBar(widget.context, errMsg);
       setState(() {
-        _loginErrorMessage = errMsg;
+        _setErrorMessage(snsLoginErrorMessage: errMsg);
+        _isLoginProcessing = false;
       });
       await CretaAccountManager.logout();
     });
@@ -1427,7 +1455,8 @@ class _LoginDialogExState extends State<LoginDialogEx> {
     await AccountManager.isExistAccount(email).then((value) {
       if (value) {
         setState(() {
-          _emailErrorMessage = '이미 가입된 이메일입니다.';
+          _setErrorMessage(emailErrorMessage: '이미 가입된 이메일입니다.');
+          _isLoginProcessing = false;
         });
         return;
       }
@@ -1460,8 +1489,12 @@ class _LoginDialogExState extends State<LoginDialogEx> {
         await CretaAccountManager.teamManagerHolder.createTeam(teamModel);
         await CretaAccountManager.userPropertyManagerHolder.createUserProperty(createModel: userModel);
         await CretaAccountManager.initUserProperty();
-        LoginDialogEx.setShowExtraInfoDialog(true);
-        Navigator.of(widget.getBuildContext()).pop();
+        _notVerifyUserId = CretaAccountManager.currentLoginUser.userId;
+        _notVerifyEmail = CretaAccountManager.currentLoginUser.email;
+        _notVerifyNickname = CretaAccountManager.currentLoginUser.name;
+        _sendVerifyEmail(_notVerifyEmail);
+        await CretaAccountManager.logout();
+        _moveToPageState(LoginPageState.verifyEmail);
       }).onError((error, stackTrace) async {
         String errMsg;
         if (error is HycopException) {
@@ -1474,7 +1507,8 @@ class _LoginDialogExState extends State<LoginDialogEx> {
         }
         //showSnackBar(widget.getBuildContext.call(), errMsg);
         setState(() {
-          _loginErrorMessage = errMsg;
+          _setErrorMessage(loginErrorMessage: errMsg);
+          _isLoginProcessing = false;
         });
         await CretaAccountManager.logout();
       });
@@ -1490,7 +1524,8 @@ class _LoginDialogExState extends State<LoginDialogEx> {
       }
       //showSnackBar(widget.getBuildContext.call(), errMsg);
       setState(() {
-        _loginErrorMessage = errMsg;
+        _setErrorMessage(loginErrorMessage: errMsg);
+        _isLoginProcessing = false;
       });
       await CretaAccountManager.logout();
     });
@@ -1498,20 +1533,32 @@ class _LoginDialogExState extends State<LoginDialogEx> {
 
   Future<void> _resetPassword(String email) async {
     logger.finest('_resetPassword pressed');
-
     if (email.isEmpty) {
       String errMsg = 'email is empty !!!';
       //showSnackBar(widget.getBuildContext.call(), errMsg);
       setState(() {
-        _loginErrorMessage = errMsg;
+        _setErrorMessage(loginErrorMessage: errMsg);
+        _isLoginProcessing = false;
       });
       return;
     }
-
     AccountManager.resetPassword(email).then((value) async {
       String userId = value.$1;
       String secret = value.$2;
-      CretaUtils.sendResetPasswordEmail(context, email, userId, secret);
+      if (userId.isEmpty && secret.isEmpty) {
+        setState(() {
+          _setErrorMessage(emailErrorMessage: 'SNS계정으로 가입하신 회원입니다.');
+          _isLoginProcessing = false;
+        });
+      } else {
+        bool ret = await CretaUtils.sendResetPasswordEmail(email, userId, secret);
+        setState(() {
+          _setErrorMessage(
+            emailErrorMessage: ret ? '이메일을 발송하였으니 메일함을 확인하세요.' : '이메일 발송에 실패하였습니다.',
+          );
+          _isLoginProcessing = false;
+        });
+      }
     }).onError((error, stackTrace) {
       String errMsg;
       if (error is HycopException) {
@@ -1522,364 +1569,387 @@ class _LoginDialogExState extends State<LoginDialogEx> {
         errMsg = 'Unknown DB Error !!!';
         logger.severe(errMsg);
       }
-      //showSnackBar(widget.getBuildContext.call(), errMsg);
       setState(() {
-        _loginErrorMessage = errMsg;
+        _setErrorMessage(loginErrorMessage: errMsg);
+        _isLoginProcessing = false;
       });
     });
   }
 
-  List<Widget> _getSignupPage() {
-    return [Container()];
+  Future<bool> _sendVerifyEmail(String email) async {
+    logger.finest('_sendVerifyEmail');
+    CretaUtils.sendVerifyEmail(email, email).then((value) async {
+      setState(() {
+        _setErrorMessage(emailErrorMessage: '이메일 발송에 실패하였습니다.');
+        _isLoginProcessing = false;
+      });
+    }).onError((error, stackTrace) {
+      String errMsg;
+      if (error is HycopException) {
+        HycopException ex = error;
+        logger.severe(ex.message);
+        errMsg = '비밀번호를 초기화할 수 없습니다. 관리자에 문의하세요.';
+      } else {
+        errMsg = 'Unknown DB Error !!!';
+        logger.severe(errMsg);
+      }
+      setState(() {
+        _setErrorMessage(loginErrorMessage: errMsg);
+        _isLoginProcessing = false;
+      });
+    });
+    return true;
   }
-  
-  List<Widget> getBody(BuildContext context) {
-    switch (_currentPageState) {
-      case LoginPageState.singup: // 회원가입
-        return _getSignupPage();
-      // return [
-      //   CretaTextField(
-      //       textFieldKey: GlobalKey(),
-      //       controller: _signupNicknameTextEditingController,
-      //       width: 294,
-      //       height: 30,
-      //       value: '',
-      //       hintText: '닉네임',
-      //       onEditComplete: (value) {}),
-      //   const SizedBox(height: 20),
-      //   CretaTextField(
-      //       textFieldKey: GlobalKey(),
-      //       controller: _signupEmailTextEditingController,
-      //       width: 294,
-      //       height: 30,
-      //       value: '',
-      //       hintText: '이메일',
-      //       onEditComplete: (value) {}),
-      //   const SizedBox(height: 20),
-      //   CretaTextField(
-      //       textFieldKey: GlobalKey(),
-      //       controller: _signupPasswordTextEditingController,
-      //       width: 294,
-      //       height: 30,
-      //       value: '',
-      //       hintText: '비밀번호',
-      //       textType: CretaTextFieldType.password,
-      //       onEditComplete: (value) {}),
-      //   const SizedBox(height: 20),
-      //   CretaTextField(
-      //       textFieldKey: GlobalKey(),
-      //       controller: _signupPasswordConfirmTextEditingController,
-      //       width: 294,
-      //       height: 30,
-      //       value: '',
-      //       hintText: '비밀번호 확인',
-      //       textType: CretaTextFieldType.password,
-      //       onEditComplete: (value) {}),
-      //   const SizedBox(height: 20),
-      //   SizedBox(
-      //     width: 304,
-      //     child: CretaCheckbox(
-      //       density: 8,
-      //       valueMap: _checkboxSignupValueMap,
-      //       onSelected: (title, value, nvMap) {
-      //         logger.finest('selected $title=$value');
-      //       },
-      //     ),
-      //   ),
-      //   const SizedBox(height: 21),
-      //   BTN.line_blue_iti_m(
-      //     width: 294,
-      //     text: '회원가입',
-      //     buttonColor: CretaButtonColor.skyTitle,
-      //     decoType: CretaButtonDeco.fill,
-      //     textColor: Colors.white,
-      //     onPressed: () {
-      //       String nickname = _signupNicknameTextEditingController.text;
-      //       String email = _signupEmailTextEditingController.text;
-      //       String password = _signupPasswordTextEditingController.text;
-      //       String confirm = _signupPasswordConfirmTextEditingController.text;
-      //       nickname = nickname.trim();
-      //       email = email.trim();
-      //       password = password.trim();
-      //       confirm = confirm.trim();
-      //       if (nickname.isEmpty) {
-      //         showSnackBar(widget.getBuildContext.call(), '닉네임을 입력해주세요');
-      //         //widget.onErrorReport?.call('닉네임을 입력해주세요');
-      //         return;
-      //       }
-      //       if (email.isEmpty) {
-      //         showSnackBar(widget.getBuildContext.call(), '이메일을 입력해주세요');
-      //         //widget.onErrorReport?.call('이메일을 입력해주세요');
-      //         return;
-      //       }
-      //       if (password.isEmpty) {
-      //         showSnackBar(widget.getBuildContext.call(), '비밀번호를 입력해주세요');
-      //         //widget.onErrorReport?.call('비밀번호를 입력해주세요');
-      //         return;
-      //       }
-      //       if (password.compareTo(confirm) != 0) {
-      //         showSnackBar(widget.getBuildContext.call(), '비밀번호를 확인해주세요');
-      //         //widget.onErrorReport?.call('비밀번호를 확인해주세요');
-      //         return;
-      //       }
-      //       bool agreeTerms = _checkboxSignupValueMap[stringAgreeTerms] ?? false;
-      //       bool agreeUsingMarketing = _checkboxSignupValueMap[stringAgreeUsingMarketing] ?? false;
-      //       if (agreeTerms == false) {
-      //         showSnackBar(widget.getBuildContext.call(), '필수 항목을 동의해주세요');
-      //         //widget.onErrorReport?.call('필수 항목을 동의해주세요');
-      //         return;
-      //       }
-      //       _signup(nickname, email, password, agreeUsingMarketing);
-      //     },
-      //   ),
-      //   const SizedBox(height: 28),
-      //   Padding(
-      //     padding: const EdgeInsets.fromLTRB(116, 0, 117, 0),
-      //     child: Row(
-      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //       children: [
-      //         Text(
-      //           '이미 회원이신가요?',
-      //           style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
-      //         ),
-      //         Expanded(child: Container()),
-      //         InkWell(
-      //           onTap: () {
-      //             setState(() {
-      //               _currentPageState = LoginPageState.login;
-      //             });
-      //           },
-      //           child: Text(
-      //             '로그인하기',
-      //             style: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]),
-      //           ),
-      //         ),
-      //       ],
-      //     ),
-      //   ),
-      // ];
-      case LoginPageState.resetPassword:
-        return [
-          Text(
-            '가입한 이메일 주소로 임시 비밀번호를 알려드립니다.',
-            style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            '로그인 후 비밀번호를 꼭 변경해주세요.',
-            style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
-          ),
-          const SizedBox(height: 32),
-          CretaTextField(
-              textFieldKey: GlobalKey(),
-              controller: _resetEmailTextEditingController,
-              width: 294,
-              height: 30,
-              value: '',
-              hintText: '이메일',
-              onEditComplete: (value) {}),
-          const SizedBox(height: 24),
-          BTN.line_blue_iti_m(
-            width: 294,
-            text: '임시 비밀번호 전송',
-            buttonColor: CretaButtonColor.skyTitle,
-            decoType: CretaButtonDeco.fill,
-            textColor: Colors.white,
-            onPressed: () {
-              String email = _resetEmailTextEditingController.text;
-              email = email.trim();
-              if (email.isEmpty) {
-                //showSnackBar(widget.getBuildContext.call(), '이메일을 입력해주세요');
-                setState(() {
-                  _loginErrorMessage = '이메일을 입력해주세요.';
-                });
-                return;
-              }
-              _resetPassword(email);
-            },
-          ),
-          const SizedBox(height: 184),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(98, 0, 104, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '비밀번호가 기억나셨나요?',
-                  style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
-                ),
-                Expanded(child: Container()),
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      _currentPageState = LoginPageState.login;
-                    });
-                  },
-                  child: Text(
-                    '로그인하기',
-                    style: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ];
-      case LoginPageState.login:
-      default:
-        return [
-          BTN.line_blue_iti_m(
-            width: 294,
-            text: '구글로 로그인하기',
-            svgImg1: 'assets/google__g__logo.svg',
-            sidePadding: CretaButtonSidePadding(left: 0, right: 11),
-            onPressed: () {
-              _loginByGoogle();
-            },
-          ),
-          const SizedBox(height: 31),
-          Container(width: 294, height: 2, color: CretaColor.text[200]),
-          const SizedBox(height: 31),
-          CretaTextField(
-              textFieldKey: GlobalObjectKey('login-email'),
-              controller: _loginEmailTextEditingController,
-              width: 294,
-              height: 30,
-              value: '',
-              hintText: '이메일',
-              autofillHints: const [AutofillHints.username],
-              onEditComplete: (value) {}),
-          const SizedBox(height: 20),
-          CretaTextField(
-              textFieldKey: GlobalObjectKey('login-password'),
-              controller: _loginPasswordTextEditingController,
-              width: 294,
-              height: 30,
-              value: '',
-              hintText: '비밀번호',
-              autofillHints: const [AutofillHints.password],
-              textType: CretaTextFieldType.password,
-              onEditComplete: (value) {}),
-          const SizedBox(height: 24),
-          _isLoginProcessing
-              ? BTN.line_blue_iwi_m(
-                  width: 294,
-                  widget: Snippet.showWaitSign(color: Colors.white, size: 16),
-                  buttonColor: CretaButtonColor.skyTitle,
-                  decoType: CretaButtonDeco.fill,
-                  textColor: Colors.white,
-                  onPressed: () {
-                    TextInput.finishAutofillContext();
-                    String id = _loginEmailTextEditingController.text;
-                    String pwd = _loginPasswordTextEditingController.text;
-                    setState(() {
-                      _isLoginProcessing = true;
-                      _login(id, pwd);
-                    });
-                  },
-                )
-              : BTN.line_blue_iti_m(
-                  width: 294,
-                  text: '로그인하기',
-                  buttonColor: CretaButtonColor.skyTitle,
-                  decoType: CretaButtonDeco.fill,
-                  textColor: Colors.white,
-                  onPressed: () {
-                    TextInput.finishAutofillContext();
-                    String id = _loginEmailTextEditingController.text;
-                    String pwd = _loginPasswordTextEditingController.text;
-                    setState(() {
-                      _isLoginProcessing = true;
-                      _login(id, pwd);
-                    });
-                  },
-                ),
-          const SizedBox(height: 11),
-          SizedBox(
-            width: 304,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CretaCheckbox(
-                  valueMap: _checkboxLoginValueMap,
-                  onSelected: (title, value, nvMap) {
-                    logger.finest('selected $title=$value');
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-                  child: InkWell(
-                    onTap: () {
-                      setState(() {
-                        _currentPageState = LoginPageState.resetPassword;
-                      });
-                    },
-                    child: Text(
-                      '비밀번호 찾기',
-                      style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 64),
-          Padding(
-            padding: (!kDebugMode)
-                ? const EdgeInsets.fromLTRB(111, 0, 110, 0)
-                : const EdgeInsets.fromLTRB(111 - 20, 0, 110 - 20, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '아직 회원이 아니신가요?',
-                  style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
-                ),
-                //Expanded(child: Container()),
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      _currentPageState = LoginPageState.singup;
-                    });
-                  },
-                  child: Text(
-                    '회원가입',
-                    style: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]),
-                  ),
-                ),
-                if (kDebugMode)
-                  InkWell(
-                    onTap: () {
-                      String email = _loginEmailTextEditingController.text;
-                      List<String> emailList = [email];
-                      CretaAccountManager.userPropertyManagerHolder.getUserPropertyFromEmail(emailList).then((value) {
-                        if (value.isEmpty) {
-                          //showSnackBar(widget.context, '가입된 회원이 아닙니다');
-                          setState(() {
-                            _loginErrorMessage = '가입된 회원이 아닙니다';
-                          });
-                          return;
-                        }
-                        UserPropertyModel userModel = value[0];
-                        // creta_user_property
-                        CretaAccountManager.userPropertyManagerHolder.removeToDB(userModel.mid);
-                        // hycop_users
-                        String hycopUserId = 'user=${userModel.parentMid.value}';
-                        UserPropertyManager manager = UserPropertyManager(tableName: 'hycop_users');
-                        manager.removeToDB(hycopUserId);
-                      });
-                    },
-                    child: Text(
-                      '회원탈퇴',
-                      style: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ];
-    }
-    //return [];
-  }
+
+  // List<Widget> _getSignupPage() {
+  //   return [Container()];
+  // }
+  //
+  // List<Widget> getBody(BuildContext context) {
+  //   switch (_currentPageState) {
+  //     case LoginPageState.singup: // 회원가입
+  //       return _getSignupPage();
+  //     // return [
+  //     //   CretaTextField(
+  //     //       textFieldKey: GlobalKey(),
+  //     //       controller: _signupNicknameTextEditingController,
+  //     //       width: 294,
+  //     //       height: 30,
+  //     //       value: '',
+  //     //       hintText: '닉네임',
+  //     //       onEditComplete: (value) {}),
+  //     //   const SizedBox(height: 20),
+  //     //   CretaTextField(
+  //     //       textFieldKey: GlobalKey(),
+  //     //       controller: _signupEmailTextEditingController,
+  //     //       width: 294,
+  //     //       height: 30,
+  //     //       value: '',
+  //     //       hintText: '이메일',
+  //     //       onEditComplete: (value) {}),
+  //     //   const SizedBox(height: 20),
+  //     //   CretaTextField(
+  //     //       textFieldKey: GlobalKey(),
+  //     //       controller: _signupPasswordTextEditingController,
+  //     //       width: 294,
+  //     //       height: 30,
+  //     //       value: '',
+  //     //       hintText: '비밀번호',
+  //     //       textType: CretaTextFieldType.password,
+  //     //       onEditComplete: (value) {}),
+  //     //   const SizedBox(height: 20),
+  //     //   CretaTextField(
+  //     //       textFieldKey: GlobalKey(),
+  //     //       controller: _signupPasswordConfirmTextEditingController,
+  //     //       width: 294,
+  //     //       height: 30,
+  //     //       value: '',
+  //     //       hintText: '비밀번호 확인',
+  //     //       textType: CretaTextFieldType.password,
+  //     //       onEditComplete: (value) {}),
+  //     //   const SizedBox(height: 20),
+  //     //   SizedBox(
+  //     //     width: 304,
+  //     //     child: CretaCheckbox(
+  //     //       density: 8,
+  //     //       valueMap: _checkboxSignupValueMap,
+  //     //       onSelected: (title, value, nvMap) {
+  //     //         logger.finest('selected $title=$value');
+  //     //       },
+  //     //     ),
+  //     //   ),
+  //     //   const SizedBox(height: 21),
+  //     //   BTN.line_blue_iti_m(
+  //     //     width: 294,
+  //     //     text: '회원가입',
+  //     //     buttonColor: CretaButtonColor.skyTitle,
+  //     //     decoType: CretaButtonDeco.fill,
+  //     //     textColor: Colors.white,
+  //     //     onPressed: () {
+  //     //       String nickname = _signupNicknameTextEditingController.text;
+  //     //       String email = _signupEmailTextEditingController.text;
+  //     //       String password = _signupPasswordTextEditingController.text;
+  //     //       String confirm = _signupPasswordConfirmTextEditingController.text;
+  //     //       nickname = nickname.trim();
+  //     //       email = email.trim();
+  //     //       password = password.trim();
+  //     //       confirm = confirm.trim();
+  //     //       if (nickname.isEmpty) {
+  //     //         showSnackBar(widget.getBuildContext.call(), '닉네임을 입력해주세요');
+  //     //         //widget.onErrorReport?.call('닉네임을 입력해주세요');
+  //     //         return;
+  //     //       }
+  //     //       if (email.isEmpty) {
+  //     //         showSnackBar(widget.getBuildContext.call(), '이메일을 입력해주세요');
+  //     //         //widget.onErrorReport?.call('이메일을 입력해주세요');
+  //     //         return;
+  //     //       }
+  //     //       if (password.isEmpty) {
+  //     //         showSnackBar(widget.getBuildContext.call(), '비밀번호를 입력해주세요');
+  //     //         //widget.onErrorReport?.call('비밀번호를 입력해주세요');
+  //     //         return;
+  //     //       }
+  //     //       if (password.compareTo(confirm) != 0) {
+  //     //         showSnackBar(widget.getBuildContext.call(), '비밀번호를 확인해주세요');
+  //     //         //widget.onErrorReport?.call('비밀번호를 확인해주세요');
+  //     //         return;
+  //     //       }
+  //     //       bool agreeTerms = _checkboxSignupValueMap[stringAgreeTerms] ?? false;
+  //     //       bool agreeUsingMarketing = _checkboxSignupValueMap[stringAgreeUsingMarketing] ?? false;
+  //     //       if (agreeTerms == false) {
+  //     //         showSnackBar(widget.getBuildContext.call(), '필수 항목을 동의해주세요');
+  //     //         //widget.onErrorReport?.call('필수 항목을 동의해주세요');
+  //     //         return;
+  //     //       }
+  //     //       _signup(nickname, email, password, agreeUsingMarketing);
+  //     //     },
+  //     //   ),
+  //     //   const SizedBox(height: 28),
+  //     //   Padding(
+  //     //     padding: const EdgeInsets.fromLTRB(116, 0, 117, 0),
+  //     //     child: Row(
+  //     //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     //       children: [
+  //     //         Text(
+  //     //           '이미 회원이신가요?',
+  //     //           style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
+  //     //         ),
+  //     //         Expanded(child: Container()),
+  //     //         InkWell(
+  //     //           onTap: () {
+  //     //             setState(() {
+  //     //               _currentPageState = LoginPageState.login;
+  //     //             });
+  //     //           },
+  //     //           child: Text(
+  //     //             '로그인하기',
+  //     //             style: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]),
+  //     //           ),
+  //     //         ),
+  //     //       ],
+  //     //     ),
+  //     //   ),
+  //     // ];
+  //     case LoginPageState.resetPassword:
+  //       return [
+  //         Text(
+  //           '가입한 이메일 주소로 임시 비밀번호를 알려드립니다.',
+  //           style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
+  //         ),
+  //         const SizedBox(height: 8),
+  //         Text(
+  //           '로그인 후 비밀번호를 꼭 변경해주세요.',
+  //           style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
+  //         ),
+  //         const SizedBox(height: 32),
+  //         CretaTextField(
+  //             textFieldKey: GlobalKey(),
+  //             controller: _resetEmailTextEditingController,
+  //             width: 294,
+  //             height: 30,
+  //             value: '',
+  //             hintText: '이메일',
+  //             onEditComplete: (value) {}),
+  //         const SizedBox(height: 24),
+  //         BTN.line_blue_iti_m(
+  //           width: 294,
+  //           text: '임시 비밀번호 전송',
+  //           buttonColor: CretaButtonColor.skyTitle,
+  //           decoType: CretaButtonDeco.fill,
+  //           textColor: Colors.white,
+  //           onPressed: () {
+  //             String email = _resetEmailTextEditingController.text;
+  //             email = email.trim();
+  //             if (email.isEmpty) {
+  //               //showSnackBar(widget.getBuildContext.call(), '이메일을 입력해주세요');
+  //               setState(() {
+  //                 _setErrorMessage(loginErrorMessage: '이메일을 입력해주세요.');
+  //                 _isLoginProcessing = false;
+  //               });
+  //               return;
+  //             }
+  //             _resetPassword(email);
+  //           },
+  //         ),
+  //         const SizedBox(height: 184),
+  //         Padding(
+  //           padding: const EdgeInsets.fromLTRB(98, 0, 104, 0),
+  //           child: Row(
+  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //             children: [
+  //               Text(
+  //                 '비밀번호가 기억나셨나요?',
+  //                 style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
+  //               ),
+  //               Expanded(child: Container()),
+  //               InkWell(
+  //                 onTap: () {
+  //                   _moveToPageState(LoginPageState.login);
+  //                 },
+  //                 child: Text(
+  //                   '로그인하기',
+  //                   style: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ];
+  //     case LoginPageState.login:
+  //     default:
+  //       return [
+  //         BTN.line_blue_iti_m(
+  //           width: 294,
+  //           text: '구글로 로그인하기',
+  //           svgImg1: 'assets/google__g__logo.svg',
+  //           sidePadding: CretaButtonSidePadding(left: 0, right: 11),
+  //           onPressed: () {
+  //             _loginByGoogle();
+  //           },
+  //         ),
+  //         const SizedBox(height: 31),
+  //         Container(width: 294, height: 2, color: CretaColor.text[200]),
+  //         const SizedBox(height: 31),
+  //         CretaTextField(
+  //             textFieldKey: GlobalObjectKey('login-email'),
+  //             controller: _loginEmailTextEditingController,
+  //             width: 294,
+  //             height: 30,
+  //             value: '',
+  //             hintText: '이메일',
+  //             autofillHints: const [AutofillHints.username],
+  //             onEditComplete: (value) {}),
+  //         const SizedBox(height: 20),
+  //         CretaTextField(
+  //             textFieldKey: GlobalObjectKey('login-password'),
+  //             controller: _loginPasswordTextEditingController,
+  //             width: 294,
+  //             height: 30,
+  //             value: '',
+  //             hintText: '비밀번호',
+  //             autofillHints: const [AutofillHints.password],
+  //             textType: CretaTextFieldType.password,
+  //             onEditComplete: (value) {}),
+  //         const SizedBox(height: 24),
+  //         _isLoginProcessing
+  //             ? BTN.line_blue_iwi_m(
+  //                 width: 294,
+  //                 widget: Snippet.showWaitSign(color: Colors.white, size: 16),
+  //                 buttonColor: CretaButtonColor.skyTitle,
+  //                 decoType: CretaButtonDeco.fill,
+  //                 textColor: Colors.white,
+  //                 onPressed: () {
+  //                   // TextInput.finishAutofillContext();
+  //                   // String id = _loginEmailTextEditingController.text;
+  //                   // String pwd = _loginPasswordTextEditingController.text;
+  //                   // setState(() {
+  //                   //   _setErrorMessage();
+  //                   //   _isLoginProcessing = true;
+  //                   //   _login(id, pwd);
+  //                   // });
+  //                 },
+  //               )
+  //             : BTN.line_blue_iti_m(
+  //                 width: 294,
+  //                 text: '로그인하기',
+  //                 buttonColor: CretaButtonColor.skyTitle,
+  //                 decoType: CretaButtonDeco.fill,
+  //                 textColor: Colors.white,
+  //                 onPressed: () {
+  //                   TextInput.finishAutofillContext();
+  //                   String id = _loginEmailTextEditingController.text;
+  //                   String pwd = _loginPasswordTextEditingController.text;
+  //                   setState(() {
+  //                     _setErrorMessage();
+  //                     _isLoginProcessing = true;
+  //                     _login(id, pwd);
+  //                   });
+  //                 },
+  //               ),
+  //         const SizedBox(height: 11),
+  //         SizedBox(
+  //           width: 304,
+  //           child: Row(
+  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //             children: [
+  //               CretaCheckbox(
+  //                 valueMap: _checkboxLoginValueMap,
+  //                 onSelected: (title, value, nvMap) {
+  //                   logger.finest('selected $title=$value');
+  //                 },
+  //               ),
+  //               Padding(
+  //                 padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+  //                 child: InkWell(
+  //                   onTap: () {
+  //                     _moveToPageState(LoginPageState.resetPassword);
+  //                   },
+  //                   child: Text(
+  //                     '비밀번호 찾기',
+  //                     style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //         const SizedBox(height: 64),
+  //         Padding(
+  //           padding: (!kDebugMode)
+  //               ? const EdgeInsets.fromLTRB(111, 0, 110, 0)
+  //               : const EdgeInsets.fromLTRB(111 - 20, 0, 110 - 20, 0),
+  //           child: Row(
+  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //             children: [
+  //               Text(
+  //                 '아직 회원이 아니신가요?',
+  //                 style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
+  //               ),
+  //               //Expanded(child: Container()),
+  //               InkWell(
+  //                 onTap: () {
+  //                   _moveToPageState(LoginPageState.singup);
+  //                 },
+  //                 child: Text(
+  //                   '회원가입',
+  //                   style: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]),
+  //                 ),
+  //               ),
+  //               if (kDebugMode)
+  //                 InkWell(
+  //                   onTap: () {
+  //                     String email = _loginEmailTextEditingController.text;
+  //                     List<String> emailList = [email];
+  //                     CretaAccountManager.userPropertyManagerHolder.getUserPropertyFromEmail(emailList).then((value) {
+  //                       if (value.isEmpty) {
+  //                         //showSnackBar(widget.context, '가입된 회원이 아닙니다');
+  //                         setState(() {
+  //                           _setErrorMessage(loginErrorMessage: '가입된 회원이 아닙니다');
+  //                           _isLoginProcessing = false;
+  //                         });
+  //                         return;
+  //                       }
+  //                       UserPropertyModel userModel = value[0];
+  //                       // creta_user_property
+  //                       CretaAccountManager.userPropertyManagerHolder.removeToDB(userModel.mid);
+  //                       // hycop_users
+  //                       String hycopUserId = 'user=${userModel.parentMid.value}';
+  //                       UserPropertyManager manager = UserPropertyManager(tableName: 'hycop_users');
+  //                       manager.removeToDB(hycopUserId);
+  //                     });
+  //                   },
+  //                   child: Text(
+  //                     '회원탈퇴',
+  //                     style: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]),
+  //                   ),
+  //                 ),
+  //             ],
+  //           ),
+  //         ),
+  //       ];
+  //   }
+  //   //return [];
+  // }
 
   List<Widget> _getLeftPaneForCommonHeader() {
     return [
@@ -1947,7 +2017,7 @@ class _LoginDialogExState extends State<LoginDialogEx> {
 
   Widget _getLeftPaneForSignup() {
     return Container(
-      width: 311,
+      width: _leftPaneWidth,
       //height: ,
       color: CretaColor.text[100],
       child: Column(
@@ -1974,13 +2044,10 @@ class _LoginDialogExState extends State<LoginDialogEx> {
                 SizedBox(width: 8),
                 BTN.line_blue_t_m(
                   text: '로그인하기',
-                  width: 89 - 38 + 6,
+                  //width: 89 - 38 + 6,
                   height: 32,
                   onPressed: () {
-                    setState(() {
-                      _clearErrorMessage();
-                      _currentPageState = LoginPageState.login;
-                    });
+                    _moveToPageState(LoginPageState.login);
                   },
                 ),
               ],
@@ -2020,10 +2087,10 @@ class _LoginDialogExState extends State<LoginDialogEx> {
                 SizedBox(width: 8),
                 BTN.line_blue_t_m(
                   text: '회원가입',
-                  width: 77,
+                  //width: 77,
+                  height: 32,
                   onPressed: () {
-                    _clearErrorMessage();
-                    _currentPageState = LoginPageState.singup;
+                    _moveToPageState(LoginPageState.singup);
                   },
                 ),
               ],
@@ -2062,12 +2129,10 @@ class _LoginDialogExState extends State<LoginDialogEx> {
                 SizedBox(width: 8),
                 BTN.line_blue_t_m(
                   text: '이메일 회원가입',
-                  width: 82, // 114,
+                  //width: 82, // 114,
+                  height: 32,
                   onPressed: () {
-                    setState(() {
-                      _clearErrorMessage();
-                      _currentPageState = LoginPageState.singup;
-                    });
+                    _moveToPageState(LoginPageState.singup);
                   },
                 ),
               ],
@@ -2256,16 +2321,16 @@ class _LoginDialogExState extends State<LoginDialogEx> {
                       bool agreeTerms = _checkboxSignupValueMap[stringAgreeTerms] ?? false;
                       bool agreeUsingMarketing = _checkboxSignupValueMap[stringAgreeUsingMarketing] ?? false;
                       setState(() {
-                        _clearErrorMessage();
                         if (nickname.isEmpty) {
-                          _nicknameErrorMessage = '닉네임을 확인하세요.';
+                          _setErrorMessage(nicknameErrorMessage: '닉네임을 확인하세요.');
                         } else if (EmailValidator.validate(id) == false) {
-                          _emailErrorMessage = '올바른 이메일 주소를 입력하세요.';
+                          _setErrorMessage(emailErrorMessage: '올바른 이메일 주소를 입력하세요.');
                         } else if (pwd.isEmpty || pwd != pwdConf) {
-                          _passwordErrorMessage = '비밀번호를 확인하세요.';
+                          _setErrorMessage(passwordErrorMessage: '비밀번호를 확인하세요.');
                         } else if (agreeTerms == false) {
-                          _requirementsErrorMessage = '필수 항목을 동의해주세요.';
+                          _setErrorMessage(requirementsErrorMessage: '필수 항목을 동의해주세요.');
                         } else {
+                          _setErrorMessage();
                           _isLoginProcessing = true;
                           _signup(nickname, id, pwd, agreeUsingMarketing);
                         }
@@ -2279,8 +2344,13 @@ class _LoginDialogExState extends State<LoginDialogEx> {
   }
 
   Widget _getRightPaneForLogin() {
+    //return AutofillGroup(
+    // => 웹 자동완성을 활용하기 위해서 AutofillGroup 필요.
+    // => flutter 버그 때문인지 AutofillGroup를 사용하면
+    //    build시에 SearchTextField에서 onSubmitted가 호출되면서 setState가 호출되고 오류가 발생.
+    // => 위 버그가 해결되기 전까지 AutofillGroup 은 막아둠
     return SizedBox(
-      //width: ,
+      //width: _rightPaneWidth,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -2365,16 +2435,16 @@ class _LoginDialogExState extends State<LoginDialogEx> {
                     decoType: CretaButtonDeco.fill,
                     textColor: Colors.white,
                     onPressed: () {
-                      TextInput.finishAutofillContext();
                       String id = _loginEmailTextEditingController.text;
                       String pwd = _loginPasswordTextEditingController.text;
                       setState(() {
                         if (EmailValidator.validate(id)) {
+                          TextInput.finishAutofillContext();
+                          _setErrorMessage();
                           _isLoginProcessing = true;
-                          _clearErrorMessage();
                           _login(id, pwd);
                         } else {
-                          _emailErrorMessage = '올바른 이메일 주소를 입력하세요.';
+                          _setErrorMessage(emailErrorMessage: '올바른 이메일 주소를 입력하세요.');
                         }
                       });
                     },
@@ -2396,9 +2466,11 @@ class _LoginDialogExState extends State<LoginDialogEx> {
                   padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
                   child: InkWell(
                     onTap: () {
-                      setState(() {
-                        _currentPageState = LoginPageState.resetPassword;
-                      });
+                      _moveToPageState(LoginPageState.resetPassword);
+                      ////////////////////////////////////////////////////////////////////////////////////
+                      // _notVerifyNickname = '테스트';
+                      // _notVerifyEmail = 'test@ttt.com';
+                      // _moveToPageState(LoginPageState.verifyEmail);
                     },
                     child: Text(
                       '비밀번호 찾기',
@@ -2432,12 +2504,276 @@ class _LoginDialogExState extends State<LoginDialogEx> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Image(width: 32, height: 32, image: AssetImage('assets/social/facebook.png')),
-                  SvgPicture.asset('assets/google__g__logo.svg', fit: BoxFit.contain, width: 32, height: 32),
-                  Image(width: 32, height: 32, image: AssetImage('assets/social/kakaotalk.png')),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        _setErrorMessage(snsLoginErrorMessage: '아직 지원하지 않습니다.');
+                        _isLoginProcessing = false;
+                      });
+                    },
+                    child: Image(width: 32, height: 32, image: AssetImage('assets/social/facebook.png')),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      _loginByGoogle();
+                    },
+                    child: SvgPicture.asset('assets/google__g__logo.svg', fit: BoxFit.contain, width: 32, height: 32),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        _setErrorMessage(snsLoginErrorMessage: '아직 지원하지 않습니다.');
+                        _isLoginProcessing = false;
+                      });
+                    },
+                    child: Image(width: 32, height: 32, image: AssetImage('assets/social/kakaotalk.png')),
+                  ),
                 ],
               ),
             ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+            child: SizedBox(
+              width: _rightPaneWidth,
+              child: Center(
+                child: Text(
+                  _snsLoginErrorMessage,
+                  style: CretaFont.bodyESmall.copyWith(color: CretaColor.stateCritical),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _getRightPaneForVerifyEmail() {
+    return SizedBox(
+      //width: _rightPaneWidth,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(40, 40, 0, 0),
+            child: Text(
+              '이메일 인증',
+              style: CretaFont.titleLarge.copyWith(color: CretaColor.text[700]),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(40, 77, 0, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _notVerifyNickname,
+                      style: CretaFont.bodyESmall.copyWith(color: CretaColor.primary[400]),
+                    ),
+                    Text(
+                      ' 님, 안녕하세요',
+                      style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8),
+                Text(
+                  '크레타에 오신 것을 환영합니다.',
+                  style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
+                ),
+                SizedBox(height: 38),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _notVerifyEmail,
+                      style: CretaFont.bodyESmall.copyWith(color: CretaColor.primary[400]),
+                    ),
+                    Text(
+                      ' 주소로 인증 메일이 발송되었습니다.',
+                      style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8),
+                Text(
+                  '이메일의 인증 버튼을 눌러 메일 주소를 인증하시면',
+                  style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  '회원가입이 완료됩니다.',
+                  style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(134, 23, 0, 0),
+            child: Icon(
+              Icons.mark_email_read_outlined,
+              color: CretaColor.primary[100],
+              size: 140,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(95, 30, 0, 0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '메일이 도착하기 않으셨나요?',
+                  style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
+                ),
+                SizedBox(width: 16),
+                InkWell(
+                  onTap: () {
+                    _sendVerifyEmail(_notVerifyUserId);
+                  },
+                  child:
+                  Text(
+                    '재발송하기',
+                    style: CretaFont.bodyESmall.copyWith(color: CretaColor.primary[400]),
+                  ),
+                ),
+
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(40, 16, 0, 0),
+            child: BTN.line_blue_iti_m(
+              width: 326,
+              text: '로그인 하기',
+              buttonColor: CretaButtonColor.skyTitle,
+              decoType: CretaButtonDeco.fill,
+              textColor: Colors.white,
+              onPressed: () {
+                setState(() {
+                  _moveToPageState(LoginPageState.login);
+                });
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _getRightPaneForResetPassword() {
+    return SizedBox(
+      //width: _rightPaneWidth,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(40, 40, 0, 0),
+            child: Text(
+              '비밀번호 변경 URL 전송',
+              style: CretaFont.titleLarge.copyWith(color: CretaColor.text[700]),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 77, 0, 0),
+            child: SizedBox(
+              width: _rightPaneWidth,
+              //height: ,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '가입한 이메일 주소로 ',
+                        style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
+                      ),
+                      Text(
+                        '비밀번호 변경 URL',
+                        style: CretaFont.bodyESmall.copyWith(color: CretaColor.primary[400]),
+                      ),
+                      Text(
+                        '을 알려드립니다.',
+                        style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    '로그인 후 비밀번호를 꼭 변경해주세요.',
+                    style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(40, 22, 0, 0),
+            child: Text(
+              '이메일',
+              style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[400]),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(40, 7, 0, 0),
+            child: CretaTextField(
+              textFieldKey: GlobalObjectKey('reset-email'),
+              controller: _resetEmailTextEditingController,
+              width: 326,
+              height: 30,
+              value: '',
+              hintText: '이메일 주소 입력',
+              autofillHints: const [AutofillHints.email],
+              onEditComplete: (value) {},
+              fixedOutlineColor: _emailErrorMessage.isNotEmpty ? CretaColor.stateCritical : null,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(40, 8, 0, 0),
+            child: Text(
+              _emailErrorMessage,
+              style: CretaFont.bodyESmall.copyWith(color: CretaColor.stateCritical),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(156, 57 - 22, 0, 0),
+            child: SvgPicture.string(materialIconEncrypted, width: 94, height: 117),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(40, 72, 0, 0),
+            child: _isLoginProcessing
+                ? BTN.line_blue_iwi_m(
+                    width: 326,
+                    widget: Snippet.showWaitSign(color: Colors.white, size: 16),
+                    buttonColor: CretaButtonColor.skyTitle,
+                    decoType: CretaButtonDeco.fill,
+                    textColor: Colors.white,
+                    onPressed: () {},
+                  )
+                : BTN.line_blue_iti_m(
+                    width: 326,
+                    text: '전송',
+                    buttonColor: CretaButtonColor.skyTitle,
+                    decoType: CretaButtonDeco.fill,
+                    textColor: Colors.white,
+                    onPressed: () {
+                      String email = _resetEmailTextEditingController.text;
+                      setState(() {
+                        if (EmailValidator.validate(email)) {
+                          TextInput.finishAutofillContext();
+                          _setErrorMessage();
+                          _isLoginProcessing = true;
+                          _resetPassword(email);
+                        } else {
+                          _setErrorMessage(emailErrorMessage: '올바른 이메일 주소를 입력하세요.');
+                        }
+                      });
+                    },
+                  ),
           ),
         ],
       ),
@@ -2449,9 +2785,9 @@ class _LoginDialogExState extends State<LoginDialogEx> {
       case LoginPageState.singup:
         return _getRightPaneForSignup();
       case LoginPageState.verifyEmail:
-      //return _getRightPaneForVerigyEmail();
+        return _getRightPaneForVerifyEmail();
       case LoginPageState.resetPassword:
-      //return _getRightPaneForResetPassword();
+        return _getRightPaneForResetPassword();
       case LoginPageState.login:
         return _getRightPaneForLogin();
     }
@@ -2459,11 +2795,6 @@ class _LoginDialogExState extends State<LoginDialogEx> {
 
   @override
   Widget build(BuildContext context) {
-    //return AutofillGroup(
-    // => 웹 자동완성을 활용하기 위해서 AutofillGroup 필요.
-    // => flutter 버그 때문인지 AutofillGroup를 사용하면
-    //    build시에 SearchTextField에서 onSubmitted가 호출되면서 setState가 호출되고 오류가 발생.
-    // => 위 버그가 해결되기 전까지 AutofillGroup 은 막아둠
     return SizedBox(
       child: SizedBox(
         width: widget.size.width,
