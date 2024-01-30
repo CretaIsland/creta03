@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:creta03/data_io/book_published_manager.dart';
 import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
@@ -55,6 +57,9 @@ class _LandingPageState extends State<LandingPage> {
   late VideoPlayerController communityAnimationController;
   late VideoPlayerController signageAnimationController;
   late VideoPlayerController quickStartAnimationController;
+
+  final ValueNotifier<String> _animationLogoImgPath = ValueNotifier<String>("assets/landing_page/image/creta_animation_logo.png");
+
 
   // initalize video controller
   Future<void> initalizeVideoController() async {
@@ -163,6 +168,12 @@ class _LandingPageState extends State<LandingPage> {
         });
       }
     });
+
+    Timer.periodic(const Duration(seconds: 3), (timer) {
+      _animationLogoImgPath.value = (_animationLogoImgPath.value == "assets/landing_page/image/creta_animation_logo.png") 
+        ? "assets/landing_page/image/creta_animation_logo2.png" : "assets/landing_page/image/creta_animation_logo.png";
+    });
+
   }
 
   @override
@@ -394,12 +405,17 @@ class _LandingPageState extends State<LandingPage> {
                 borderRadius: BorderRadius.circular(40),
                 color: const Color(0xffF4F8FF).withOpacity(0.6)),
           )),
-          const Positioned(
+          Positioned(
               top: 50,
               child: Center(
-                child: Image(
-                  image: AssetImage("assets/landing_page/image/creta_animation_logo.png"),
-                ),
+                child: ValueListenableBuilder(
+                  valueListenable: _animationLogoImgPath, 
+                  builder: (context, animationImgPath, child) {
+                    return Image(
+                      image: AssetImage(animationImgPath)
+                    );
+                  },
+                )
               )),
           Center(
             child: Padding(
