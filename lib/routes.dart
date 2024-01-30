@@ -31,6 +31,7 @@ import 'pages/community/sub_pages/community_right_book_pane.dart';
 import 'pages/community/sub_pages/community_right_channel_pane.dart';
 import 'pages/community/sub_pages/community_right_playlist_detail_pane.dart';
 import 'pages/reset_password_confirm_page.dart';
+import 'pages/verify_email_page.dart';
 import 'pages/studio/studio_variables.dart';
 import 'wait_page.dart';
 //import 'pages/login/creta_account_manager.dart';
@@ -118,6 +119,7 @@ abstract class AppRoutes {
   static const String myPageTeamManage = '/mypage/teamManage';
 
   static const String resetPasswordConfirm = '/resetPasswordConfirm';
+  static const String verifyEmail = '/verifyEmail';
 
   static const String privacyPolicy = '/policy/privacy';
   static const String serviceTerms = '/terms/service';
@@ -424,6 +426,25 @@ final routesLoggedOut = RouteMap(
       return TransitionPage(
         child: ResetPasswordConfirmPage(
           key: GlobalObjectKey('$userId-$secret'),
+          userId: userId,
+          secretKey: secret,
+        ),
+      );
+    },
+    AppRoutes.verifyEmail: (routeData) {
+      Map<String, String> paramMap = routeData.queryParameters;
+      String userId = '';
+      String secret = '';
+      paramMap.forEach((key, value) {
+        if (key == 'userId') {
+          userId = value;
+        } else if (key == 'secret') {
+          secret = value;
+        }
+      });
+      return TransitionPage(
+        child: VerifyEmailPage(
+          key: GlobalObjectKey('VerifyEmailPage-$userId-$secret'),
           userId: userId,
           secretKey: secret,
         ),

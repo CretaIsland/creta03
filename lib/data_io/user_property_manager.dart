@@ -89,6 +89,7 @@ class UserPropertyManager extends CretaManager {
   //
   UserPropertyModel makeCurrentNewUserProperty({
     bool? agreeUsingMarketing,
+    bool? verified,
   }) {
     UserPropertyModel model = UserPropertyModel.withName(
       parentMid: AccountManager.currentLoginUser.userId,
@@ -129,11 +130,9 @@ class UserPropertyManager extends CretaManager {
         Colors.purple
       ],
       teams: const [],
+      agreeUsingMarketing: agreeUsingMarketing ?? false,
+      verified: verified ?? false,
     );
-
-    if (agreeUsingMarketing != null) {
-      model.agreeUsingMarketing = agreeUsingMarketing;
-    }
 
     return model;
   }
@@ -141,9 +140,13 @@ class UserPropertyManager extends CretaManager {
   Future<UserPropertyModel?> createUserProperty({
     UserPropertyModel? createModel,
     bool? agreeUsingMarketing,
+    bool? verified,
   }) async {
-    UserPropertyModel userModel =
-        createModel ?? makeCurrentNewUserProperty(agreeUsingMarketing: agreeUsingMarketing);
+    UserPropertyModel userModel = createModel ??
+        makeCurrentNewUserProperty(
+          agreeUsingMarketing: agreeUsingMarketing,
+          verified: verified,
+        );
 
     try {
       await createToDB(userModel);
