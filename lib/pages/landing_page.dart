@@ -204,7 +204,7 @@ class _LandingPageState extends State<LandingPage> {
                   appBar(),
                   SizedBox(
                     width: _screenWidth,
-                    height: MediaQuery.sizeOf(context).height - 138,
+                    height: MediaQuery.sizeOf(context).height - 117,
                     child: SingleChildScrollView(
                       controller: _verticalScroller,
                       child: Column(
@@ -1323,7 +1323,9 @@ class _LandingPageState extends State<LandingPage> {
                             height: 19, 
                             child: Text("이용약관", style: CretaFont.bodyMedium.copyWith(color: Colors.white)),
                             backgroundColor: Colors.black,
-                            onTap: () {}
+                            onTap: () {
+                              Routemaster.of(context).push(AppRoutes.serviceTerms);
+                            }
                           ),
                           customButton(
                             width: 115, 
