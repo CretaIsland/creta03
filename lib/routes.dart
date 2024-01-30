@@ -4,6 +4,7 @@
 //import 'package:creta03/model/contents_model.dart';
 import 'package:creta03/pages/landing_page.dart';
 import 'package:creta03/pages/mypage/mypage.dart';
+import 'package:creta03/pages/privacy_policy_page.dart';
 //import 'package:creta03/pages/studio/left_menu/word_pad/quill_appflowy.dart';
 // import 'package:creta03/pages/studio/left_menu/word_pad/quill_html_enhanced.daxt';
 import 'package:flutter/material.dart';
@@ -116,6 +117,8 @@ abstract class AppRoutes {
   static const String myPageTeamManage = '/mypage/teamManage';
 
   static const String resetPasswordConfirm = '/resetPasswordConfirm';
+
+  static const String privacyPolicy = '/policy/privacy';
 }
 
 //final menuKey = GlobalKey<DrawerMenuPageState>();
@@ -137,6 +140,7 @@ final routesLoggedOut = RouteMap(
           ? const Redirect(AppRoutes.communityHome)
           : const Redirect(AppRoutes.intro);
     },
+    AppRoutes.privacyPolicy: (_) => const TransitionPage(child: PrivacyPolicyPage()),
     AppRoutes.menuDemoPage: (_) => TransitionPage(child: MenuDemoPage()),
     AppRoutes.fontDemoPage: (_) => TransitionPage(child: FontDemoPage()),
     AppRoutes.buttonDemoPage: (_) => TransitionPage(child: ButtonDemoPage()),

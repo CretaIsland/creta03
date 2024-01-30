@@ -1228,25 +1228,31 @@ class _LandingPageState extends State<LandingPage> {
         color: Colors.black,
         child: Center(
           child: SizedBox(
-            width: 1574,
-            height: 280,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            width: 1360,
+            height: 127,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Image(
-                  image: AssetImage("assets/creta_logo_blue.png"),
-                  width: 136,
-                  height: 40,
-                  color: Colors.white,
-                ),
-                SizedBox(
-                  width: 219,
-                  height: 48,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      AccountManager.currentLoginUser.isLoginedUser
-                          ? customButton(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(left: 20.0),
+                      child: Image(
+                        image: AssetImage("assets/creta_logo_blue.png"),
+                        width: 136,
+                        height: 40,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 219,
+                      height: 48,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          AccountManager.currentLoginUser.isLoginedUser
+                            ? customButton(
                               width: 52,
                               height: 19,
                               child: Text("Logout", style: footerBTNStyle),
@@ -1256,29 +1262,70 @@ class _LandingPageState extends State<LandingPage> {
                                   CretaAccountManager.logout();
                                 });
                               })
-                          : customButton(
+                            : customButton(
                               width: 40,
                               height: 19,
                               child: Text("Login", style: footerBTNStyle),
                               backgroundColor: Colors.black,
                               onTap: () => LoginDialog.popupDialog(
                                   context: context, getBuildContext: getBuildContext)),
-                      customButton(
-                          width: 140,
-                          height: 48,
-                          child: Text("Sign up", style: footerBTNStyle),
-                          backgroundColor: Colors.black,
-                          onTap: () => LoginDialog.popupDialog(
+                          customButton(
+                            width: 140,
+                            height: 48,
+                            child: Text("Sign up", style: footerBTNStyle),
+                            backgroundColor: Colors.black,
+                            onTap: () => LoginDialog.popupDialog(
                               context: context,
                               getBuildContext: getBuildContext,
                               loginPageState: LoginPageState.singup),
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(6.6)),
-                    ],
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(6.6)),
+                        ],
+                      ),
+                    )
+                  ]
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 24, bottom: 24),
+                  child: Container(
+                    width: 1360,
+                    height: 1,
+                    color: Colors.white
                   ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: 251,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const SizedBox(width: 20),
+                          customButton(
+                            width: 56, 
+                            height: 19, 
+                            child: Text("이용약관", style: CretaFont.bodyMedium.copyWith(color: Colors.white)),
+                            backgroundColor: Colors.black,
+                            onTap: () {}
+                          ),
+                          customButton(
+                            width: 115, 
+                            height: 19, 
+                            child: Text("개인정보처리방침", style: CretaFont.bodyMedium.copyWith(color: Colors.white)),
+                            backgroundColor: Colors.black,
+                            onTap: () {
+                              Routemaster.of(context).push(AppRoutes.privacyPolicy);
+                            }
+                          )
+                        ],
+                      )
+                    ),
+                    Text("© 2024 SQISOFT All Rights Reserved", style: CretaFont.bodyESmall.copyWith(color: Colors.white.withOpacity(.2)))
+                  ],
                 )
-              ],
-            ),
+              ]
+            )
           ),
         ));
   }
