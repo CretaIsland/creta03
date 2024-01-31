@@ -1152,7 +1152,7 @@ class CretaUtils {
     String url = '${CretaAccountManager.getEnterprise!.mediaApiUrl}/sendEmail';
     String option = '''{
         "subject": "[크레타] 가입을 환영합니다",        
-        "content": "크레타에 오신 것을 환영합니다\\n\\n아래 URL링크를 눌러서 회원가입을 완료해주세요.\\n\\n$base${AppRoutes.resetPasswordConfirm}?userId=$userId&secret=$secret\\n\\n크레타 팀으로부터."
+        "content": "크레타에 오신 것을 환영합니다\\n\\n아래 URL링크를 눌러서 회원가입을 완료해주세요.\\n\\n$base${AppRoutes.verifyEmail}?userId=$userId&secret=$secret\\n\\n크레타 팀으로부터."
     }''';
     Map<String, dynamic> body = {
       "receiverEmail": ['"$email"'], // 수신인
