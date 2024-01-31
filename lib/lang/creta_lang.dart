@@ -57,6 +57,7 @@ class CretaLang {
   static const String addToPlayList = '재생목록에 추가';
   static const String share = '공유하기';
   static const String download = '다운로드';
+  static const String uploading = '업로드 중...';
   static const String copy = '사본만들기';
 
   static const String yearBefore = '년 전';

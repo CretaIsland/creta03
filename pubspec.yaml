@@ -158,7 +158,6 @@ dependencies:
   email_validator: ^2.1.17
   animate_icons: ^2.0.0
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

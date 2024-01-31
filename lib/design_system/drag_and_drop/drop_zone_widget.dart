@@ -2,6 +2,7 @@
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html;
 
+import 'package:creta03/design_system/uploading_popup.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
@@ -58,10 +59,12 @@ class DropZoneWidgetState extends State<DropZoneWidget> {
                 if (list == null) return;
                 logger.fine('onDropMultiple -------------- ${list.length}');
                 List<ContentsModel> contentsList = [];
+                UploadingPopup.setUploadFileCount(list.length);
                 for (var event in list.reversed) {
                   logger.fine('onDropMultiple -------------- ${event.name}');
                   contentsList.add(await uploadedFile(event, widget.bookMid));
                 }
+
                 widget.onDroppedFile(contentsList);
                 setState(() {
                   highlight = false;

@@ -9,6 +9,7 @@ import '../../data_io/contents_manager.dart';
 import '../../design_system/buttons/creta_label_text_editor.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
+import '../../design_system/uploading_popup.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
@@ -187,6 +188,8 @@ class StudioSnippet {
     //String initUrl = model.url;
     String uniqFileName = '${name}_${model.bytes}$ext';
 
+    UploadingPopup.uploadStart(model.name);
+
     FileModel? fileModel = await HycopFactory.storage!.uploadFile(uniqFileName, model.mime, blob);
 
     if (fileModel != null) {
@@ -217,6 +220,7 @@ class StudioSnippet {
     }
     logger.info('send event to property');
     logger.info('uploaded thumbnailUrl = ${model.thumbnailUrl}');
+    UploadingPopup.uploadEnd(model.name);
     contentsManager.sendEvent?.sendEvent(model);
   }
 

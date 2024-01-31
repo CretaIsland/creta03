@@ -44,6 +44,7 @@ import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
 import '../../design_system/dialog/creta_alert_dialog.dart';
 //import '../../design_system/dialog/creta_dialog.dart';
+import '../../design_system/uploading_popup.dart';
 import '../../design_system/text_field/creta_text_field.dart';
 import '../../lang/creta_lang.dart';
 import '../../model/book_model.dart';
@@ -98,7 +99,7 @@ class BookMainPage extends StatefulWidget {
 
   static List<PageInfo> allPageInfos = [];
 
-  static void warningNeedToLogin(BuildContext context) {
+   static void warningNeedToLogin(BuildContext context) {
     CretaPopup.simple(
       context: context,
       title: CretaLang.needToLoginTitle,
@@ -638,6 +639,7 @@ class _BookMainPageState extends State<BookMainPage> {
     if (AccountManager.currentLoginUser.isLoginedUser) {
       HycopFactory.realtime!.stop();
     }
+   
   }
 
   @override
@@ -1086,6 +1088,10 @@ class _BookMainPageState extends State<BookMainPage> {
             ],
           ),
           if (StudioVariables.isPreview == false) _topMenu(),
+          if (StudioVariables.isPreview == false)
+            UploadingPopup(
+              key: UploadingPopup.uploadPopupKey,
+            ),
         ],
       ),
     );
