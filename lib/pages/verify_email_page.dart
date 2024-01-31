@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 //import 'package:creta03/model/user_property_model.dart';
+import 'package:creta03/model/user_property_model.dart';
 import 'package:creta03/pages/login/creta_account_manager.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,65 +35,56 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   bool _isVerified = false;
   bool _error = false;
 
+
   @override
   void initState() {
     super.initState();
   }
+
 
   void _doVerifyEmail() {
     setState(() {
       _isJobProcessing = true;
     });
 
-    HycopFactory.dataBase!.getData('hycop_users', 'user=${widget.userId}').catchError((error, stackTrace) {
+    CretaAccountManager.userPropertyManagerHolder.addWhereClause('parentMid', QueryValue(value: widget.userId));
+    CretaAccountManager.userPropertyManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
+    CretaAccountManager.userPropertyManagerHolder.queryByAddedContitions().catchError((error, stackTrace) {
       setState(() {
         _isJobProcessing = false;
-        _error = false;
+        _error = true;
       });
-      return {'': ''};
-    }).then((value) {
-      if (value.isEmpty || value['email'] == null) {
+      throw HycopUtils.getHycopException(defaultMessage: 'verify email error !!!');
+    }).then((modelList) {
+      if (modelList.isEmpty) {
         setState(() {
           _isJobProcessing = false;
-          _error = false;
+          _error = true;
         });
       } else {
-        final email = value['email'];
-        CretaAccountManager.userPropertyManagerHolder.emailToModel(email).catchError((error, stackTrace) {
+        UserPropertyModel model = modelList[0] as UserPropertyModel;
+        model.verified = true;
+        CretaAccountManager.userPropertyManagerHolder.setToDB(model).catchError((error, stackTrace) {
+          setState(() {
+            _isJobProcessing = false;
+            _error = true;
+          });
+        }).then((value) {
           setState(() {
             _isJobProcessing = false;
             _error = false;
+            _isVerified = true;
           });
-          return null;
-        }).then((model) {
-          if (model == null) {
-            setState(() {
-              _isJobProcessing = false;
-              _error = false;
-            });
-          } else {
-            model.verified = true;
-            CretaAccountManager.userPropertyManagerHolder.setToDB(model).catchError((error, stackTrace) {
-              setState(() {
-                _isJobProcessing = false;
-                _error = false;
-              });
-            }).then((value) {
-              setState(() {
-                _isJobProcessing = false;
-                _error = false;
-                _isVerified = true;
-              });
-            });
-          }
         });
       }
     });
   }
 
+
   BuildContext getBuildContext() {
     return context;
   }
+
 
   Widget _getVerifyButton() {
     return _isJobProcessing
@@ -106,7 +98,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
           )
         : BTN.line_blue_iti_m(
             width: 200,
-            text: '회원 인증',
+            text: '회원 인증 하기',
             buttonColor: CretaButtonColor.skyTitle,
             decoType: CretaButtonDeco.fill,
             textColor: Colors.white,
@@ -114,16 +106,17 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
           );
   }
 
+
   Widget _getVerifiedBody() {
     return Center(
       child: SizedBox(
         width: 450,
-        height: 90,
+        height: 120,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text('회원 인증이 완료되었습니다.'),
-            Text('아래 버튼을 눌러 로그인 하세요.'),
+            Text('크레타 홈으로 이동한 후 로그인 하세요.'),
             BTN.line_blue_iti_m(
               width: 200,
               text: '크레타 홈으로 이동',
@@ -131,24 +124,27 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
               decoType: CretaButtonDeco.fill,
               textColor: Colors.white,
               onPressed: () {
-                Routemaster.of(context).push(AppRoutes.communityHome);
+                Routemaster.of(context).push(AppRoutes.intro);
               },
             ),
+            Text(''),
           ],
         ),
       ),
     );
   }
 
+
   Widget _getNotVerifiedBody() {
     return Center(
       child: SizedBox(
         width: 450,
-        height: 90,
+        height: 120,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text('아래 버튼을 눌러 인증을 완료하세요.'),
+            Text(''),
             _getVerifyButton(),
             Text(_error ? '에러가 발생하였습니다. 관리자에 문의하세요' : ''),
           ],
@@ -157,12 +153,14 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
     );
   }
 
+
   Widget _getBody() {
     if (_isVerified) {
       return _getVerifiedBody();
     }
     return _getNotVerifiedBody();
   }
+
 
   @override
   Widget build(BuildContext context) {

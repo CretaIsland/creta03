@@ -28,6 +28,7 @@ import '../../model/user_property_model.dart';
 import '../../model/team_model.dart';
 import '../../model/channel_model.dart';
 import '../../common/creta_utils.dart';
+import '../mypage/popup/popup_rateplan.dart';
 
 enum LoginPageState {
   login, // 로그인
@@ -36,704 +37,704 @@ enum LoginPageState {
   resetPassword, // 비번 찾기
 }
 
-class LoginDialog extends StatefulWidget {
-  const LoginDialog({
-    super.key,
-    required this.context,
-    required this.size,
-    // this.doAfterLogin,
-    // this.doAfterSignup,
-    // this.onErrorReport,
-    required this.getBuildContext,
-    this.loginPageState,
-  });
-  final BuildContext context;
-  final Size size;
-  // final Function? doAfterLogin;
-  // final Function? doAfterSignup;
-  // final Function(String)? onErrorReport;
-  final Function getBuildContext;
-  final LoginPageState? loginPageState;
-
-  @override
-  State<LoginDialog> createState() => _LoginDialogState();
-
-  static bool _showExtraInfoDialog = false;
-  static String nextPageAfterLoginSuccess = '';
-  static void setShowExtraInfoDialog(bool show) {
-    if (kDebugMode) print('setShowExtraInfoDialog($show)');
-    _showExtraInfoDialog = show;
-  }
-
-  static void popupDialog({
-    required BuildContext context,
-    // Function? doAfterLogin,
-    // Function? doAfterSignup,
-    // Function(String)? onErrorReport,
-    required Function getBuildContext,
-    LoginPageState loginPageState = LoginPageState.login,
-    String nextPageAfterLoginSuccess = '', //AppRoutes.communityHome,
-    Function? onAfterLogin, //skpark add
-  }) {
-    _showExtraInfoDialog = false;
-    LoginDialog.nextPageAfterLoginSuccess = nextPageAfterLoginSuccess;
-    showDialog(
-      context: context,
-      builder: (context) => CretaStackDialog(
-        key: GlobalObjectKey('LoginDialog.LoginDialog'),
-        width: 406.0,
-        height: 490.0,
-        //title: '',
-        //crossAxisAlign: CrossAxisAlignment.center,
-        //hideTopSplitLine: true,
-        content: LoginDialog(
-          context: context,
-          size: Size(406, 490 - 46),
-          // doAfterLogin: doAfterLogin,
-          // doAfterSignup: doAfterSignup,
-          // onErrorReport: onErrorReport,
-          getBuildContext: getBuildContext,
-          loginPageState: loginPageState,
-        ),
-      ),
-    ).then((value) {
-      CretaAccountManager.experienceWithoutLogin = false; //skpark add
-      if (kDebugMode) print('ExtraInfoDialog.popupDialog($_showExtraInfoDialog)');
-      if (_showExtraInfoDialog) {
-        if (kDebugMode) print('if(_showExtraInfoDialog)');
-        ExtraInfoDialog.popupDialog(
-          context: getBuildContext.call(),
-          // doAfterLogin: doAfterLogin,
-          // onErrorReport: onErrorReport,
-          getBuildContext: getBuildContext,
-        );
-        if (AccountManager.currentLoginUser.isLoginedUser) {
-          // 로그인에 성공했을때,  아래 변수를 초기화 해주어야 함.
-          CretaAccountManager.experienceWithoutLogin = false; //skpark add
-          onAfterLogin?.call();
-        }
-      } else {
-        //Routemaster.of(getBuildContext.call()).push(AppRoutes.intro);
-        if (AccountManager.currentLoginUser.isLoginedUser) {
-          // 로그인에 성공했을때,  아래 변수를 초기화 해주어야 함.
-          CretaAccountManager.experienceWithoutLogin = false; //skpark add
-          onAfterLogin?.call();
-          String path = LoginDialog.nextPageAfterLoginSuccess;
-          if (path.isEmpty) {
-            path = Uri.base.path;
-          }
-          Routemaster.of(getBuildContext.call()).push(path);
-        } else {
-          // do nothing
-        }
-      }
-    });
-  }
-}
-
-class _LoginDialogState extends State<LoginDialog> {
-  late LoginPageState _loginPageState;
-  final Map<String, bool> _checkboxLoginValueMap = {
-    '로그인 상태 유지 ': true,
-  };
-
-  static const String stringAgreeTerms = '(필수) 크레타 이용약관 동의';
-  static const String stringAgreeUsingMarketing = '(선택) 마케팅 정보 발송 동의';
-
-  final Map<String, bool> _checkboxSignupValueMap = {
-    stringAgreeTerms: false,
-    stringAgreeUsingMarketing: false,
-  };
-
-  final _loginEmailTextEditingController = TextEditingController();
-  final _loginPasswordTextEditingController = TextEditingController();
-
-  final _signupNicknameTextEditingController = TextEditingController();
-  final _signupEmailTextEditingController = TextEditingController();
-  final _signupPasswordTextEditingController = TextEditingController();
-  final _signupPasswordConfirmTextEditingController = TextEditingController();
-
-  final _resetEmailTextEditingController = TextEditingController();
-
-  bool _isLoginProcessing = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _loginPageState = widget.loginPageState ?? LoginPageState.login;
-  }
-
-  Future<void> _login(String email, String password) async {
-    logger.finest('_login pressed');
-    if (AccountManager.currentLoginUser.isGuestUser) {
-      await CretaAccountManager.logout(doGuestLogin: false);
-    }
-    AccountManager.login(email, password).then((value) async {
-      HycopFactory.setBucketId();
-      CretaAccountManager.initUserProperty().then((value) {
-        if (value) {
-          Navigator.of(widget.context).pop();
-          //Routemaster.of(widget.getBuildContext.call()).push(AppRoutes.intro);
-          //widget.doAfterLogin?.call();
-        } else {
-          throw HycopUtils.getHycopException(defaultMessage: 'Login failed !!!');
-        }
-      });
-    }).onError((error, stackTrace) {
-      String errMsg;
-      if (error is HycopException) {
-        HycopException ex = error;
-        logger.severe(ex.message);
-        errMsg = '로그인에 실패하였습니다. 가입된 정보를 확인해보세요.';
-      } else {
-        errMsg = 'Unknown DB Error !!!';
-        logger.severe(errMsg);
-      }
-      showSnackBar(widget.context, errMsg);
-      //widget.onErrorReport?.call(errMsg);
-    });
-  }
-
-  Future<void> _loginByGoogle() async {
-    logger.finest('_loginByGoogle pressed');
-
-    AccountManager.createAccountByGoogle(myConfig!.config.googleOAuthCliendId).then((value) {
-      HycopFactory.setBucketId();
-      CretaAccountManager.userPropertyManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-      CretaAccountManager.userPropertyManagerHolder
-          .addWhereClause('email', QueryValue(value: AccountManager.currentLoginUser.email));
-      CretaAccountManager.userPropertyManagerHolder.queryByAddedContitions().then((value) async {
-        bool isNewUser = value.isEmpty;
-        if (isNewUser) {
-          // create model objects
-          UserPropertyModel userModel =
-              CretaAccountManager.userPropertyManagerHolder.makeCurrentNewUserProperty(agreeUsingMarketing: true);
-          TeamModel teamModel = CretaAccountManager.teamManagerHolder.getNewTeam(
-            createAndSetToCurrent: true,
-            username: AccountManager.currentLoginUser.name,
-            userEmail: userModel.email,
-          );
-          ChannelModel teamChannelModel =
-              CretaAccountManager.channelManagerHolder.makeNewChannel(teamId: teamModel.mid);
-          ChannelModel myChannelModel =
-              CretaAccountManager.channelManagerHolder.makeNewChannel(userId: userModel.email);
-          userModel.channelId = myChannelModel.mid;
-          teamModel.channelId = teamChannelModel.mid;
-          userModel.channelId = myChannelModel.mid;
-          userModel.teams = [teamModel.mid];
-          // create to DB
-          await CretaAccountManager.channelManagerHolder.createChannel(teamChannelModel);
-          await CretaAccountManager.channelManagerHolder.createChannel(myChannelModel);
-          await CretaAccountManager.teamManagerHolder.createTeam(teamModel);
-          await CretaAccountManager.userPropertyManagerHolder.createUserProperty(createModel: userModel);
-          await CretaAccountManager.initUserProperty();
-          LoginDialog.setShowExtraInfoDialog(true);
-        }
-        CretaAccountManager.initUserProperty().then((value) {
-          if (value) {
-            Navigator.of(widget.context).pop();
-            //Routemaster.of(widget.getBuildContext.call()).push(AppRoutes.intro);
-            // if (isNewUser) {
-            //   print('_loginByGoogle.widget.doAfterSignup?.call()');
-            //   //widget.doAfterSignup?.call();
-            // } else {
-            //   print('_loginByGoogle.widget.doAfterLogin?.call()');
-            //   //widget.doAfterLogin?.call();
-            // }
-          } else {
-            throw HycopUtils.getHycopException(defaultMessage: 'Login failed !!!');
-          }
-        });
-      });
-    }).onError((error, stackTrace) {
-      String errMsg;
-      if (error is HycopException) {
-        HycopException ex = error;
-        logger.severe(ex.message);
-        errMsg = '구글 계정으로 로그인에 실패하였습니다. 관리자에 문의하세요.';
-      } else {
-        errMsg = 'Unknown DB Error !!!';
-        logger.severe(errMsg);
-      }
-      showSnackBar(widget.context, errMsg);
-      //widget.onErrorReport?.call(errMsg);
-    });
-  }
-
-  Future<void> _signup(String nickname, String email, String password, bool agreeUsingMarketing) async {
-    logger.finest('_signup pressed');
-
-    logger.finest('isExistAccount');
-    AccountManager.isExistAccount(email).then((value) {
-      AccountSignUpType accountSignUpType = value ?? AccountSignUpType.none;
-      if (accountSignUpType != AccountSignUpType.none) {
-        showSnackBar(widget.context, '이미 가입된 이메일입니다.');
-        //widget.onErrorReport?.call('이미 가입된 이메일입니다.');
-        return;
-      }
-      Map<String, dynamic> userData = {};
-      userData['name'] = nickname;
-      userData['email'] = email;
-      userData['password'] = password;
-      logger.finest('register start');
-      AccountManager.createAccount(userData).then((value) async {
-        logger.finest('register end');
-        // create model objects
-        UserPropertyModel userModel = CretaAccountManager.userPropertyManagerHolder
-            .makeCurrentNewUserProperty(agreeUsingMarketing: agreeUsingMarketing);
-        TeamModel teamModel = CretaAccountManager.teamManagerHolder.getNewTeam(
-          createAndSetToCurrent: true,
-          username: nickname,
-          userEmail: userModel.email,
-        );
-        ChannelModel teamChannelModel = CretaAccountManager.channelManagerHolder.makeNewChannel(teamId: teamModel.mid);
-        ChannelModel myChannelModel = CretaAccountManager.channelManagerHolder.makeNewChannel(userId: userModel.email);
-        userModel.channelId = myChannelModel.mid;
-        teamModel.channelId = teamChannelModel.mid;
-        userModel.channelId = myChannelModel.mid;
-        userModel.teams = [teamModel.mid];
-        // create to DB
-        await CretaAccountManager.channelManagerHolder.createChannel(teamChannelModel);
-        await CretaAccountManager.channelManagerHolder.createChannel(myChannelModel);
-        await CretaAccountManager.teamManagerHolder.createTeam(teamModel);
-        await CretaAccountManager.userPropertyManagerHolder.createUserProperty(createModel: userModel);
-        await CretaAccountManager.initUserProperty();
-        LoginDialog.setShowExtraInfoDialog(true);
-        if (kDebugMode) print('_signup.widget.doAfterSignup?.call()');
-        //widget.doAfterSignup?.call();
-        Navigator.of(widget.getBuildContext()).pop();
-        //Routemaster.of(widget.context).push(AppRoutes.intro);
-        logger.finest('goto user-info-page');
-      }).onError((error, stackTrace) {
-        String errMsg;
-        if (error is HycopException) {
-          HycopException ex = error;
-          logger.severe(ex.message);
-          errMsg = '계정 생성중 에러가 발생하였습니다. 관리자에 문의하세요.';
-        } else {
-          errMsg = 'Unknown DB Error !!!';
-          logger.severe(errMsg);
-        }
-        showSnackBar(widget.getBuildContext.call(), errMsg);
-        //widget.onErrorReport?.call(errMsg);
-      });
-    }).onError((error, stackTrace) {
-      String errMsg;
-      if (error is HycopException) {
-        HycopException ex = error;
-        logger.severe(ex.message);
-        errMsg = '계정을 확인할 수 없습니다. 관리자에 문의하세요.';
-      } else {
-        errMsg = 'Unknown DB Error !!!';
-        logger.severe(errMsg);
-      }
-      showSnackBar(widget.getBuildContext.call(), errMsg);
-      //widget.onErrorReport?.call(errMsg);
-    });
-  }
-
-  Future<void> _resetPassword(String email) async {
-    logger.finest('_resetPassword pressed');
-
-    if (email.isEmpty) {
-      String errMsg = 'email is empty !!!';
-      showSnackBar(widget.getBuildContext.call(), errMsg);
-      //widget.onErrorReport?.call(errMsg);
-      return;
-    }
-
-    AccountManager.resetPassword(email).then((value) async {
-      String userId = value.$1;
-      String secret = value.$2;
-      CretaUtils.sendResetPasswordEmail(email, userId, secret);
-    }).onError((error, stackTrace) {
-      String errMsg;
-      if (error is HycopException) {
-        HycopException ex = error;
-        logger.severe(ex.message);
-        errMsg = '비밀번호를 초기화할 수 없습니다. 관리자에 문의하세요.';
-      } else {
-        errMsg = 'Unknown DB Error !!!';
-        logger.severe(errMsg);
-      }
-      showSnackBar(widget.getBuildContext.call(), errMsg);
-      //widget.onErrorReport?.call(errMsg);
-    });
-  }
-
-  List<Widget> _getBody(BuildContext context) {
-    switch (_loginPageState) {
-      case LoginPageState.singup: // 회원가입
-        return [
-          CretaTextField(
-              textFieldKey: GlobalKey(),
-              controller: _signupNicknameTextEditingController,
-              width: 294,
-              height: 30,
-              value: '',
-              hintText: '닉네임',
-              onEditComplete: (value) {}),
-          const SizedBox(height: 20),
-          CretaTextField(
-              textFieldKey: GlobalKey(),
-              controller: _signupEmailTextEditingController,
-              width: 294,
-              height: 30,
-              value: '',
-              hintText: '이메일',
-              onEditComplete: (value) {}),
-          const SizedBox(height: 20),
-          CretaTextField(
-              textFieldKey: GlobalKey(),
-              controller: _signupPasswordTextEditingController,
-              width: 294,
-              height: 30,
-              value: '',
-              hintText: '비밀번호',
-              textType: CretaTextFieldType.password,
-              onEditComplete: (value) {}),
-          const SizedBox(height: 20),
-          CretaTextField(
-              textFieldKey: GlobalKey(),
-              controller: _signupPasswordConfirmTextEditingController,
-              width: 294,
-              height: 30,
-              value: '',
-              hintText: '비밀번호 확인',
-              textType: CretaTextFieldType.password,
-              onEditComplete: (value) {}),
-          const SizedBox(height: 20),
-          SizedBox(
-            width: 304,
-            child: CretaCheckbox(
-              density: 8,
-              valueMap: _checkboxSignupValueMap,
-              onSelected: (title, value, nvMap) {
-                logger.finest('selected $title=$value');
-              },
-            ),
-          ),
-          const SizedBox(height: 21),
-          BTN.line_blue_iti_m(
-            width: 294,
-            text: '회원가입',
-            buttonColor: CretaButtonColor.skyTitle,
-            decoType: CretaButtonDeco.fill,
-            textColor: Colors.white,
-            onPressed: () {
-              String nickname = _signupNicknameTextEditingController.text;
-              String email = _signupEmailTextEditingController.text;
-              String password = _signupPasswordTextEditingController.text;
-              String confirm = _signupPasswordConfirmTextEditingController.text;
-              nickname = nickname.trim();
-              email = email.trim();
-              password = password.trim();
-              confirm = confirm.trim();
-              if (nickname.isEmpty) {
-                showSnackBar(widget.getBuildContext.call(), '닉네임을 입력해주세요');
-                //widget.onErrorReport?.call('닉네임을 입력해주세요');
-                return;
-              }
-              if (email.isEmpty) {
-                showSnackBar(widget.getBuildContext.call(), '이메일을 입력해주세요');
-                //widget.onErrorReport?.call('이메일을 입력해주세요');
-                return;
-              }
-              if (password.isEmpty) {
-                showSnackBar(widget.getBuildContext.call(), '비밀번호를 입력해주세요');
-                //widget.onErrorReport?.call('비밀번호를 입력해주세요');
-                return;
-              }
-              if (password.compareTo(confirm) != 0) {
-                showSnackBar(widget.getBuildContext.call(), '비밀번호를 확인해주세요');
-                //widget.onErrorReport?.call('비밀번호를 확인해주세요');
-                return;
-              }
-              bool agreeTerms = _checkboxSignupValueMap[stringAgreeTerms] ?? false;
-              bool agreeUsingMarketing = _checkboxSignupValueMap[stringAgreeUsingMarketing] ?? false;
-              if (agreeTerms == false) {
-                showSnackBar(widget.getBuildContext.call(), '필수 항목을 동의해주세요');
-                //widget.onErrorReport?.call('필수 항목을 동의해주세요');
-                return;
-              }
-              _signup(nickname, email, password, agreeUsingMarketing);
-            },
-          ),
-          const SizedBox(height: 28),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(116, 0, 117, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '이미 회원이신가요?',
-                  style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
-                ),
-                Expanded(child: Container()),
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      _loginPageState = LoginPageState.login;
-                    });
-                  },
-                  child: Text(
-                    '로그인하기',
-                    style: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ];
-      case LoginPageState.resetPassword:
-        return [
-          Text(
-            '가입한 이메일 주소로 임시 비밀번호를 알려드립니다.',
-            style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            '로그인 후 비밀번호를 꼭 변경해주세요.',
-            style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
-          ),
-          const SizedBox(height: 32),
-          CretaTextField(
-              textFieldKey: GlobalKey(),
-              controller: _resetEmailTextEditingController,
-              width: 294,
-              height: 30,
-              value: '',
-              hintText: '이메일',
-              onEditComplete: (value) {}),
-          const SizedBox(height: 24),
-          BTN.line_blue_iti_m(
-            width: 294,
-            text: '임시 비밀번호 전송',
-            buttonColor: CretaButtonColor.skyTitle,
-            decoType: CretaButtonDeco.fill,
-            textColor: Colors.white,
-            onPressed: () {
-              String email = _resetEmailTextEditingController.text;
-              email = email.trim();
-              if (email.isEmpty) {
-                showSnackBar(widget.getBuildContext.call(), '이메일을 입력해주세요');
-                //widget.onErrorReport?.call('이메일을 입력해주세요');
-                return;
-              }
-              _resetPassword(email);
-            },
-          ),
-          const SizedBox(height: 184),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(98, 0, 104, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '비밀번호가 기억나셨나요?',
-                  style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
-                ),
-                Expanded(child: Container()),
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      _loginPageState = LoginPageState.login;
-                    });
-                  },
-                  child: Text(
-                    '로그인하기',
-                    style: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ];
-      case LoginPageState.login:
-      default:
-        return [
-          BTN.line_blue_iti_m(
-            width: 294,
-            text: '구글로 로그인하기',
-            svgImg1: 'assets/google__g__logo.svg',
-            sidePadding: CretaButtonSidePadding(left: 0, right: 11),
-            onPressed: () {
-              _loginByGoogle();
-            },
-          ),
-          const SizedBox(height: 31),
-          Container(width: 294, height: 2, color: CretaColor.text[200]),
-          const SizedBox(height: 31),
-          CretaTextField(
-              textFieldKey: GlobalObjectKey('login-email'),
-              controller: _loginEmailTextEditingController,
-              width: 294,
-              height: 30,
-              value: '',
-              hintText: '이메일',
-              autofillHints: const [AutofillHints.username],
-              onEditComplete: (value) {}),
-          const SizedBox(height: 20),
-          CretaTextField(
-              textFieldKey: GlobalObjectKey('login-password'),
-              controller: _loginPasswordTextEditingController,
-              width: 294,
-              height: 30,
-              value: '',
-              hintText: '비밀번호',
-              autofillHints: const [AutofillHints.password],
-              textType: CretaTextFieldType.password,
-              onEditComplete: (value) {}),
-          const SizedBox(height: 24),
-          _isLoginProcessing
-              ? BTN.line_blue_iwi_m(
-                  width: 294,
-                  widget: Snippet.showWaitSign(color: Colors.white, size: 16),
-                  buttonColor: CretaButtonColor.skyTitle,
-                  decoType: CretaButtonDeco.fill,
-                  textColor: Colors.white,
-                  onPressed: () {
-                    TextInput.finishAutofillContext();
-                    String id = _loginEmailTextEditingController.text;
-                    String pwd = _loginPasswordTextEditingController.text;
-                    setState(() {
-                      _isLoginProcessing = true;
-                      _login(id, pwd);
-                    });
-                  },
-                )
-              : BTN.line_blue_iti_m(
-                  width: 294,
-                  text: '로그인하기',
-                  buttonColor: CretaButtonColor.skyTitle,
-                  decoType: CretaButtonDeco.fill,
-                  textColor: Colors.white,
-                  onPressed: () {
-                    TextInput.finishAutofillContext();
-                    String id = _loginEmailTextEditingController.text;
-                    String pwd = _loginPasswordTextEditingController.text;
-                    setState(() {
-                      _isLoginProcessing = true;
-                      _login(id, pwd);
-                    });
-                  },
-                ),
-          const SizedBox(height: 11),
-          SizedBox(
-            width: 304,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CretaCheckbox(
-                  valueMap: _checkboxLoginValueMap,
-                  onSelected: (title, value, nvMap) {
-                    logger.finest('selected $title=$value');
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-                  child: InkWell(
-                    onTap: () {
-                      setState(() {
-                        _loginPageState = LoginPageState.resetPassword;
-                      });
-                    },
-                    child: Text(
-                      '비밀번호 찾기',
-                      style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 64),
-          Padding(
-            padding: (!kDebugMode)
-                ? const EdgeInsets.fromLTRB(111, 0, 110, 0)
-                : const EdgeInsets.fromLTRB(111 - 20, 0, 110 - 20, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '아직 회원이 아니신가요?',
-                  style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
-                ),
-                //Expanded(child: Container()),
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      _loginPageState = LoginPageState.singup;
-                    });
-                  },
-                  child: Text(
-                    '회원가입',
-                    style: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]),
-                  ),
-                ),
-                if (kDebugMode)
-                  InkWell(
-                    onTap: () {
-                      String email = _loginEmailTextEditingController.text;
-                      List<String> emailList = [email];
-                      CretaAccountManager.userPropertyManagerHolder.getUserPropertyFromEmail(emailList).then((value) {
-                        if (value.isEmpty) {
-                          showSnackBar(widget.context, '가입된 회원이 아닙니다');
-                          return;
-                        }
-                        UserPropertyModel userModel = value[0];
-                        // creta_user_property
-                        CretaAccountManager.userPropertyManagerHolder.removeToDB(userModel.mid);
-                        // hycop_users
-                        String hycopUserId = 'user=${userModel.parentMid.value}';
-                        UserPropertyManager manager = UserPropertyManager(tableName: 'hycop_users');
-                        manager.removeToDB(hycopUserId);
-                      });
-                    },
-                    child: Text(
-                      '회원탈퇴',
-                      style: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ];
-    }
-    //return [];
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    //return AutofillGroup(
-    // => 웹 자동완성을 활용하기 위해서 AutofillGroup 필요.
-    // => flutter 버그 때문인지 AutofillGroup를 사용하면
-    //    build시에 SearchTextField에서 onSubmitted가 호출되면서 setState가 호출되고 오류가 발생.
-    // => 위 버그가 해결되기 전까지 AutofillGroup 은 막아둠
-    return SizedBox(
-      child: SizedBox(
-        width: widget.size.width,
-        height: widget.size.height,
-        child: Column(
-          children: [
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
-              child: Image(
-                image: AssetImage("assets/creta_logo_blue.png"),
-                width: 100,
-                height: 26,
-              ),
-            ),
-            const SizedBox(height: 32),
-            ..._getBody(context),
-          ],
-        ),
-      ),
-    );
-  }
-}
+// class LoginDialog extends StatefulWidget {
+//   const LoginDialog({
+//     super.key,
+//     required this.context,
+//     required this.size,
+//     // this.doAfterLogin,
+//     // this.doAfterSignup,
+//     // this.onErrorReport,
+//     required this.getBuildContext,
+//     this.loginPageState,
+//   });
+//   final BuildContext context;
+//   final Size size;
+//   // final Function? doAfterLogin;
+//   // final Function? doAfterSignup;
+//   // final Function(String)? onErrorReport;
+//   final Function getBuildContext;
+//   final LoginPageState? loginPageState;
+//
+//   @override
+//   State<LoginDialog> createState() => _LoginDialogState();
+//
+//   static bool _showExtraInfoDialog = false;
+//   static String nextPageAfterLoginSuccess = '';
+//   static void setShowExtraInfoDialog(bool show) {
+//     if (kDebugMode) print('setShowExtraInfoDialog($show)');
+//     _showExtraInfoDialog = show;
+//   }
+//
+//   static void popupDialog({
+//     required BuildContext context,
+//     // Function? doAfterLogin,
+//     // Function? doAfterSignup,
+//     // Function(String)? onErrorReport,
+//     required Function getBuildContext,
+//     LoginPageState loginPageState = LoginPageState.login,
+//     String nextPageAfterLoginSuccess = '', //AppRoutes.communityHome,
+//     Function? onAfterLogin, //skpark add
+//   }) {
+//     _showExtraInfoDialog = false;
+//     LoginDialog.nextPageAfterLoginSuccess = nextPageAfterLoginSuccess;
+//     showDialog(
+//       context: context,
+//       builder: (context) => CretaStackDialog(
+//         key: GlobalObjectKey('LoginDialog.LoginDialog'),
+//         width: 406.0,
+//         height: 490.0,
+//         //title: '',
+//         //crossAxisAlign: CrossAxisAlignment.center,
+//         //hideTopSplitLine: true,
+//         content: LoginDialog(
+//           context: context,
+//           size: Size(406, 490 - 46),
+//           // doAfterLogin: doAfterLogin,
+//           // doAfterSignup: doAfterSignup,
+//           // onErrorReport: onErrorReport,
+//           getBuildContext: getBuildContext,
+//           loginPageState: loginPageState,
+//         ),
+//       ),
+//     ).then((value) {
+//       CretaAccountManager.experienceWithoutLogin = false; //skpark add
+//       if (kDebugMode) print('ExtraInfoDialog.popupDialog($_showExtraInfoDialog)');
+//       if (_showExtraInfoDialog) {
+//         if (kDebugMode) print('if(_showExtraInfoDialog)');
+//         ExtraInfoDialog.popupDialog(
+//           context: getBuildContext.call(),
+//           // doAfterLogin: doAfterLogin,
+//           // onErrorReport: onErrorReport,
+//           getBuildContext: getBuildContext,
+//         );
+//         if (AccountManager.currentLoginUser.isLoginedUser) {
+//           // 로그인에 성공했을때,  아래 변수를 초기화 해주어야 함.
+//           CretaAccountManager.experienceWithoutLogin = false; //skpark add
+//           onAfterLogin?.call();
+//         }
+//       } else {
+//         //Routemaster.of(getBuildContext.call()).push(AppRoutes.intro);
+//         if (AccountManager.currentLoginUser.isLoginedUser) {
+//           // 로그인에 성공했을때,  아래 변수를 초기화 해주어야 함.
+//           CretaAccountManager.experienceWithoutLogin = false; //skpark add
+//           onAfterLogin?.call();
+//           String path = LoginDialog.nextPageAfterLoginSuccess;
+//           if (path.isEmpty) {
+//             path = Uri.base.path;
+//           }
+//           Routemaster.of(getBuildContext.call()).push(path);
+//         } else {
+//           // do nothing
+//         }
+//       }
+//     });
+//   }
+// }
+//
+// class _LoginDialogState extends State<LoginDialog> {
+//   late LoginPageState _loginPageState;
+//   final Map<String, bool> _checkboxLoginValueMap = {
+//     '로그인 상태 유지 ': true,
+//   };
+//
+//   static const String stringAgreeTerms = '(필수) 크레타 이용약관 동의';
+//   static const String stringAgreeUsingMarketing = '(선택) 마케팅 정보 발송 동의';
+//
+//   final Map<String, bool> _checkboxSignupValueMap = {
+//     stringAgreeTerms: false,
+//     stringAgreeUsingMarketing: false,
+//   };
+//
+//   final _loginEmailTextEditingController = TextEditingController();
+//   final _loginPasswordTextEditingController = TextEditingController();
+//
+//   final _signupNicknameTextEditingController = TextEditingController();
+//   final _signupEmailTextEditingController = TextEditingController();
+//   final _signupPasswordTextEditingController = TextEditingController();
+//   final _signupPasswordConfirmTextEditingController = TextEditingController();
+//
+//   final _resetEmailTextEditingController = TextEditingController();
+//
+//   bool _isLoginProcessing = false;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//
+//     _loginPageState = widget.loginPageState ?? LoginPageState.login;
+//   }
+//
+//   Future<void> _login(String email, String password) async {
+//     logger.finest('_login pressed');
+//     if (AccountManager.currentLoginUser.isGuestUser) {
+//       await CretaAccountManager.logout(doGuestLogin: false);
+//     }
+//     AccountManager.login(email, password).then((value) async {
+//       HycopFactory.setBucketId();
+//       CretaAccountManager.initUserProperty().then((value) {
+//         if (value) {
+//           Navigator.of(widget.context).pop();
+//           //Routemaster.of(widget.getBuildContext.call()).push(AppRoutes.intro);
+//           //widget.doAfterLogin?.call();
+//         } else {
+//           throw HycopUtils.getHycopException(defaultMessage: 'Login failed !!!');
+//         }
+//       });
+//     }).onError((error, stackTrace) {
+//       String errMsg;
+//       if (error is HycopException) {
+//         HycopException ex = error;
+//         logger.severe(ex.message);
+//         errMsg = '로그인에 실패하였습니다. 가입된 정보를 확인해보세요.';
+//       } else {
+//         errMsg = 'Unknown DB Error !!!';
+//         logger.severe(errMsg);
+//       }
+//       showSnackBar(widget.context, errMsg);
+//       //widget.onErrorReport?.call(errMsg);
+//     });
+//   }
+//
+//   Future<void> _loginByGoogle() async {
+//     logger.finest('_loginByGoogle pressed');
+//
+//     AccountManager.createAccountByGoogle(myConfig!.config.googleOAuthCliendId).then((value) {
+//       HycopFactory.setBucketId();
+//       CretaAccountManager.userPropertyManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
+//       CretaAccountManager.userPropertyManagerHolder
+//           .addWhereClause('email', QueryValue(value: AccountManager.currentLoginUser.email));
+//       CretaAccountManager.userPropertyManagerHolder.queryByAddedContitions().then((value) async {
+//         bool isNewUser = value.isEmpty;
+//         if (isNewUser) {
+//           // create model objects
+//           UserPropertyModel userModel =
+//               CretaAccountManager.userPropertyManagerHolder.makeCurrentNewUserProperty(agreeUsingMarketing: true);
+//           TeamModel teamModel = CretaAccountManager.teamManagerHolder.getNewTeam(
+//             createAndSetToCurrent: true,
+//             username: AccountManager.currentLoginUser.name,
+//             userEmail: userModel.email,
+//           );
+//           ChannelModel teamChannelModel =
+//               CretaAccountManager.channelManagerHolder.makeNewChannel(teamId: teamModel.mid);
+//           ChannelModel myChannelModel =
+//               CretaAccountManager.channelManagerHolder.makeNewChannel(userId: userModel.email);
+//           userModel.channelId = myChannelModel.mid;
+//           teamModel.channelId = teamChannelModel.mid;
+//           userModel.channelId = myChannelModel.mid;
+//           userModel.teams = [teamModel.mid];
+//           // create to DB
+//           await CretaAccountManager.channelManagerHolder.createChannel(teamChannelModel);
+//           await CretaAccountManager.channelManagerHolder.createChannel(myChannelModel);
+//           await CretaAccountManager.teamManagerHolder.createTeam(teamModel);
+//           await CretaAccountManager.userPropertyManagerHolder.createUserProperty(createModel: userModel);
+//           await CretaAccountManager.initUserProperty();
+//           LoginDialog.setShowExtraInfoDialog(true);
+//         }
+//         CretaAccountManager.initUserProperty().then((value) {
+//           if (value) {
+//             Navigator.of(widget.context).pop();
+//             //Routemaster.of(widget.getBuildContext.call()).push(AppRoutes.intro);
+//             // if (isNewUser) {
+//             //   print('_loginByGoogle.widget.doAfterSignup?.call()');
+//             //   //widget.doAfterSignup?.call();
+//             // } else {
+//             //   print('_loginByGoogle.widget.doAfterLogin?.call()');
+//             //   //widget.doAfterLogin?.call();
+//             // }
+//           } else {
+//             throw HycopUtils.getHycopException(defaultMessage: 'Login failed !!!');
+//           }
+//         });
+//       });
+//     }).onError((error, stackTrace) {
+//       String errMsg;
+//       if (error is HycopException) {
+//         HycopException ex = error;
+//         logger.severe(ex.message);
+//         errMsg = '구글 계정으로 로그인에 실패하였습니다. 관리자에 문의하세요.';
+//       } else {
+//         errMsg = 'Unknown DB Error !!!';
+//         logger.severe(errMsg);
+//       }
+//       showSnackBar(widget.context, errMsg);
+//       //widget.onErrorReport?.call(errMsg);
+//     });
+//   }
+//
+//   Future<void> _signup(String nickname, String email, String password, bool agreeUsingMarketing) async {
+//     logger.finest('_signup pressed');
+//
+//     logger.finest('isExistAccount');
+//     AccountManager.isExistAccount(email).then((value) {
+//       AccountSignUpType accountSignUpType = value ?? AccountSignUpType.none;
+//       if (accountSignUpType != AccountSignUpType.none) {
+//         showSnackBar(widget.context, '이미 가입된 이메일입니다.');
+//         //widget.onErrorReport?.call('이미 가입된 이메일입니다.');
+//         return;
+//       }
+//       Map<String, dynamic> userData = {};
+//       userData['name'] = nickname;
+//       userData['email'] = email;
+//       userData['password'] = password;
+//       logger.finest('register start');
+//       AccountManager.createAccount(userData).then((value) async {
+//         logger.finest('register end');
+//         // create model objects
+//         UserPropertyModel userModel = CretaAccountManager.userPropertyManagerHolder
+//             .makeCurrentNewUserProperty(agreeUsingMarketing: agreeUsingMarketing);
+//         TeamModel teamModel = CretaAccountManager.teamManagerHolder.getNewTeam(
+//           createAndSetToCurrent: true,
+//           username: nickname,
+//           userEmail: userModel.email,
+//         );
+//         ChannelModel teamChannelModel = CretaAccountManager.channelManagerHolder.makeNewChannel(teamId: teamModel.mid);
+//         ChannelModel myChannelModel = CretaAccountManager.channelManagerHolder.makeNewChannel(userId: userModel.email);
+//         userModel.channelId = myChannelModel.mid;
+//         teamModel.channelId = teamChannelModel.mid;
+//         userModel.channelId = myChannelModel.mid;
+//         userModel.teams = [teamModel.mid];
+//         // create to DB
+//         await CretaAccountManager.channelManagerHolder.createChannel(teamChannelModel);
+//         await CretaAccountManager.channelManagerHolder.createChannel(myChannelModel);
+//         await CretaAccountManager.teamManagerHolder.createTeam(teamModel);
+//         await CretaAccountManager.userPropertyManagerHolder.createUserProperty(createModel: userModel);
+//         await CretaAccountManager.initUserProperty();
+//         LoginDialog.setShowExtraInfoDialog(true);
+//         if (kDebugMode) print('_signup.widget.doAfterSignup?.call()');
+//         //widget.doAfterSignup?.call();
+//         Navigator.of(widget.getBuildContext()).pop();
+//         //Routemaster.of(widget.context).push(AppRoutes.intro);
+//         logger.finest('goto user-info-page');
+//       }).onError((error, stackTrace) {
+//         String errMsg;
+//         if (error is HycopException) {
+//           HycopException ex = error;
+//           logger.severe(ex.message);
+//           errMsg = '계정 생성중 에러가 발생하였습니다. 관리자에 문의하세요.';
+//         } else {
+//           errMsg = 'Unknown DB Error !!!';
+//           logger.severe(errMsg);
+//         }
+//         showSnackBar(widget.getBuildContext.call(), errMsg);
+//         //widget.onErrorReport?.call(errMsg);
+//       });
+//     }).onError((error, stackTrace) {
+//       String errMsg;
+//       if (error is HycopException) {
+//         HycopException ex = error;
+//         logger.severe(ex.message);
+//         errMsg = '계정을 확인할 수 없습니다. 관리자에 문의하세요.';
+//       } else {
+//         errMsg = 'Unknown DB Error !!!';
+//         logger.severe(errMsg);
+//       }
+//       showSnackBar(widget.getBuildContext.call(), errMsg);
+//       //widget.onErrorReport?.call(errMsg);
+//     });
+//   }
+//
+//   Future<void> _resetPassword(String email) async {
+//     logger.finest('_resetPassword pressed');
+//
+//     if (email.isEmpty) {
+//       String errMsg = 'email is empty !!!';
+//       showSnackBar(widget.getBuildContext.call(), errMsg);
+//       //widget.onErrorReport?.call(errMsg);
+//       return;
+//     }
+//
+//     AccountManager.resetPassword(email).then((value) async {
+//       String userId = value.$1;
+//       String secret = value.$2;
+//       CretaUtils.sendResetPasswordEmail(email, userId, secret);
+//     }).onError((error, stackTrace) {
+//       String errMsg;
+//       if (error is HycopException) {
+//         HycopException ex = error;
+//         logger.severe(ex.message);
+//         errMsg = '비밀번호를 초기화할 수 없습니다. 관리자에 문의하세요.';
+//       } else {
+//         errMsg = 'Unknown DB Error !!!';
+//         logger.severe(errMsg);
+//       }
+//       showSnackBar(widget.getBuildContext.call(), errMsg);
+//       //widget.onErrorReport?.call(errMsg);
+//     });
+//   }
+//
+//   List<Widget> _getBody(BuildContext context) {
+//     switch (_loginPageState) {
+//       case LoginPageState.singup: // 회원가입
+//         return [
+//           CretaTextField(
+//               textFieldKey: GlobalKey(),
+//               controller: _signupNicknameTextEditingController,
+//               width: 294,
+//               height: 30,
+//               value: '',
+//               hintText: '닉네임',
+//               onEditComplete: (value) {}),
+//           const SizedBox(height: 20),
+//           CretaTextField(
+//               textFieldKey: GlobalKey(),
+//               controller: _signupEmailTextEditingController,
+//               width: 294,
+//               height: 30,
+//               value: '',
+//               hintText: '이메일',
+//               onEditComplete: (value) {}),
+//           const SizedBox(height: 20),
+//           CretaTextField(
+//               textFieldKey: GlobalKey(),
+//               controller: _signupPasswordTextEditingController,
+//               width: 294,
+//               height: 30,
+//               value: '',
+//               hintText: '비밀번호',
+//               textType: CretaTextFieldType.password,
+//               onEditComplete: (value) {}),
+//           const SizedBox(height: 20),
+//           CretaTextField(
+//               textFieldKey: GlobalKey(),
+//               controller: _signupPasswordConfirmTextEditingController,
+//               width: 294,
+//               height: 30,
+//               value: '',
+//               hintText: '비밀번호 확인',
+//               textType: CretaTextFieldType.password,
+//               onEditComplete: (value) {}),
+//           const SizedBox(height: 20),
+//           SizedBox(
+//             width: 304,
+//             child: CretaCheckbox(
+//               density: 8,
+//               valueMap: _checkboxSignupValueMap,
+//               onSelected: (title, value, nvMap) {
+//                 logger.finest('selected $title=$value');
+//               },
+//             ),
+//           ),
+//           const SizedBox(height: 21),
+//           BTN.line_blue_iti_m(
+//             width: 294,
+//             text: '회원가입',
+//             buttonColor: CretaButtonColor.skyTitle,
+//             decoType: CretaButtonDeco.fill,
+//             textColor: Colors.white,
+//             onPressed: () {
+//               String nickname = _signupNicknameTextEditingController.text;
+//               String email = _signupEmailTextEditingController.text;
+//               String password = _signupPasswordTextEditingController.text;
+//               String confirm = _signupPasswordConfirmTextEditingController.text;
+//               nickname = nickname.trim();
+//               email = email.trim();
+//               password = password.trim();
+//               confirm = confirm.trim();
+//               if (nickname.isEmpty) {
+//                 showSnackBar(widget.getBuildContext.call(), '닉네임을 입력해주세요');
+//                 //widget.onErrorReport?.call('닉네임을 입력해주세요');
+//                 return;
+//               }
+//               if (email.isEmpty) {
+//                 showSnackBar(widget.getBuildContext.call(), '이메일을 입력해주세요');
+//                 //widget.onErrorReport?.call('이메일을 입력해주세요');
+//                 return;
+//               }
+//               if (password.isEmpty) {
+//                 showSnackBar(widget.getBuildContext.call(), '비밀번호를 입력해주세요');
+//                 //widget.onErrorReport?.call('비밀번호를 입력해주세요');
+//                 return;
+//               }
+//               if (password.compareTo(confirm) != 0) {
+//                 showSnackBar(widget.getBuildContext.call(), '비밀번호를 확인해주세요');
+//                 //widget.onErrorReport?.call('비밀번호를 확인해주세요');
+//                 return;
+//               }
+//               bool agreeTerms = _checkboxSignupValueMap[stringAgreeTerms] ?? false;
+//               bool agreeUsingMarketing = _checkboxSignupValueMap[stringAgreeUsingMarketing] ?? false;
+//               if (agreeTerms == false) {
+//                 showSnackBar(widget.getBuildContext.call(), '필수 항목을 동의해주세요');
+//                 //widget.onErrorReport?.call('필수 항목을 동의해주세요');
+//                 return;
+//               }
+//               _signup(nickname, email, password, agreeUsingMarketing);
+//             },
+//           ),
+//           const SizedBox(height: 28),
+//           Padding(
+//             padding: const EdgeInsets.fromLTRB(116, 0, 117, 0),
+//             child: Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 Text(
+//                   '이미 회원이신가요?',
+//                   style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
+//                 ),
+//                 Expanded(child: Container()),
+//                 InkWell(
+//                   onTap: () {
+//                     setState(() {
+//                       _loginPageState = LoginPageState.login;
+//                     });
+//                   },
+//                   child: Text(
+//                     '로그인하기',
+//                     style: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ];
+//       case LoginPageState.resetPassword:
+//         return [
+//           Text(
+//             '가입한 이메일 주소로 임시 비밀번호를 알려드립니다.',
+//             style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
+//           ),
+//           const SizedBox(height: 8),
+//           Text(
+//             '로그인 후 비밀번호를 꼭 변경해주세요.',
+//             style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
+//           ),
+//           const SizedBox(height: 32),
+//           CretaTextField(
+//               textFieldKey: GlobalKey(),
+//               controller: _resetEmailTextEditingController,
+//               width: 294,
+//               height: 30,
+//               value: '',
+//               hintText: '이메일',
+//               onEditComplete: (value) {}),
+//           const SizedBox(height: 24),
+//           BTN.line_blue_iti_m(
+//             width: 294,
+//             text: '임시 비밀번호 전송',
+//             buttonColor: CretaButtonColor.skyTitle,
+//             decoType: CretaButtonDeco.fill,
+//             textColor: Colors.white,
+//             onPressed: () {
+//               String email = _resetEmailTextEditingController.text;
+//               email = email.trim();
+//               if (email.isEmpty) {
+//                 showSnackBar(widget.getBuildContext.call(), '이메일을 입력해주세요');
+//                 //widget.onErrorReport?.call('이메일을 입력해주세요');
+//                 return;
+//               }
+//               _resetPassword(email);
+//             },
+//           ),
+//           const SizedBox(height: 184),
+//           Padding(
+//             padding: const EdgeInsets.fromLTRB(98, 0, 104, 0),
+//             child: Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 Text(
+//                   '비밀번호가 기억나셨나요?',
+//                   style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
+//                 ),
+//                 Expanded(child: Container()),
+//                 InkWell(
+//                   onTap: () {
+//                     setState(() {
+//                       _loginPageState = LoginPageState.login;
+//                     });
+//                   },
+//                   child: Text(
+//                     '로그인하기',
+//                     style: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ];
+//       case LoginPageState.login:
+//       default:
+//         return [
+//           BTN.line_blue_iti_m(
+//             width: 294,
+//             text: '구글로 로그인하기',
+//             svgImg1: 'assets/google__g__logo.svg',
+//             sidePadding: CretaButtonSidePadding(left: 0, right: 11),
+//             onPressed: () {
+//               _loginByGoogle();
+//             },
+//           ),
+//           const SizedBox(height: 31),
+//           Container(width: 294, height: 2, color: CretaColor.text[200]),
+//           const SizedBox(height: 31),
+//           CretaTextField(
+//               textFieldKey: GlobalObjectKey('login-email'),
+//               controller: _loginEmailTextEditingController,
+//               width: 294,
+//               height: 30,
+//               value: '',
+//               hintText: '이메일',
+//               autofillHints: const [AutofillHints.username],
+//               onEditComplete: (value) {}),
+//           const SizedBox(height: 20),
+//           CretaTextField(
+//               textFieldKey: GlobalObjectKey('login-password'),
+//               controller: _loginPasswordTextEditingController,
+//               width: 294,
+//               height: 30,
+//               value: '',
+//               hintText: '비밀번호',
+//               autofillHints: const [AutofillHints.password],
+//               textType: CretaTextFieldType.password,
+//               onEditComplete: (value) {}),
+//           const SizedBox(height: 24),
+//           _isLoginProcessing
+//               ? BTN.line_blue_iwi_m(
+//                   width: 294,
+//                   widget: Snippet.showWaitSign(color: Colors.white, size: 16),
+//                   buttonColor: CretaButtonColor.skyTitle,
+//                   decoType: CretaButtonDeco.fill,
+//                   textColor: Colors.white,
+//                   onPressed: () {
+//                     TextInput.finishAutofillContext();
+//                     String id = _loginEmailTextEditingController.text;
+//                     String pwd = _loginPasswordTextEditingController.text;
+//                     setState(() {
+//                       _isLoginProcessing = true;
+//                       _login(id, pwd);
+//                     });
+//                   },
+//                 )
+//               : BTN.line_blue_iti_m(
+//                   width: 294,
+//                   text: '로그인하기',
+//                   buttonColor: CretaButtonColor.skyTitle,
+//                   decoType: CretaButtonDeco.fill,
+//                   textColor: Colors.white,
+//                   onPressed: () {
+//                     TextInput.finishAutofillContext();
+//                     String id = _loginEmailTextEditingController.text;
+//                     String pwd = _loginPasswordTextEditingController.text;
+//                     setState(() {
+//                       _isLoginProcessing = true;
+//                       _login(id, pwd);
+//                     });
+//                   },
+//                 ),
+//           const SizedBox(height: 11),
+//           SizedBox(
+//             width: 304,
+//             child: Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 CretaCheckbox(
+//                   valueMap: _checkboxLoginValueMap,
+//                   onSelected: (title, value, nvMap) {
+//                     logger.finest('selected $title=$value');
+//                   },
+//                 ),
+//                 Padding(
+//                   padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+//                   child: InkWell(
+//                     onTap: () {
+//                       setState(() {
+//                         _loginPageState = LoginPageState.resetPassword;
+//                       });
+//                     },
+//                     child: Text(
+//                       '비밀번호 찾기',
+//                       style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
+//                     ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//           const SizedBox(height: 64),
+//           Padding(
+//             padding: (!kDebugMode)
+//                 ? const EdgeInsets.fromLTRB(111, 0, 110, 0)
+//                 : const EdgeInsets.fromLTRB(111 - 20, 0, 110 - 20, 0),
+//             child: Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 Text(
+//                   '아직 회원이 아니신가요?',
+//                   style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
+//                 ),
+//                 //Expanded(child: Container()),
+//                 InkWell(
+//                   onTap: () {
+//                     setState(() {
+//                       _loginPageState = LoginPageState.singup;
+//                     });
+//                   },
+//                   child: Text(
+//                     '회원가입',
+//                     style: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]),
+//                   ),
+//                 ),
+//                 if (kDebugMode)
+//                   InkWell(
+//                     onTap: () {
+//                       String email = _loginEmailTextEditingController.text;
+//                       List<String> emailList = [email];
+//                       CretaAccountManager.userPropertyManagerHolder.getUserPropertyFromEmail(emailList).then((value) {
+//                         if (value.isEmpty) {
+//                           showSnackBar(widget.context, '가입된 회원이 아닙니다');
+//                           return;
+//                         }
+//                         UserPropertyModel userModel = value[0];
+//                         // creta_user_property
+//                         CretaAccountManager.userPropertyManagerHolder.removeToDB(userModel.mid);
+//                         // hycop_users
+//                         String hycopUserId = 'user=${userModel.parentMid.value}';
+//                         UserPropertyManager manager = UserPropertyManager(tableName: 'hycop_users');
+//                         manager.removeToDB(hycopUserId);
+//                       });
+//                     },
+//                     child: Text(
+//                       '회원탈퇴',
+//                       style: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]),
+//                     ),
+//                   ),
+//               ],
+//             ),
+//           ),
+//         ];
+//     }
+//     //return [];
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     //return AutofillGroup(
+//     // => 웹 자동완성을 활용하기 위해서 AutofillGroup 필요.
+//     // => flutter 버그 때문인지 AutofillGroup를 사용하면
+//     //    build시에 SearchTextField에서 onSubmitted가 호출되면서 setState가 호출되고 오류가 발생.
+//     // => 위 버그가 해결되기 전까지 AutofillGroup 은 막아둠
+//     return SizedBox(
+//       child: SizedBox(
+//         width: widget.size.width,
+//         height: widget.size.height,
+//         child: Column(
+//           children: [
+//             const SizedBox(height: 8),
+//             Padding(
+//               padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
+//               child: Image(
+//                 image: AssetImage("assets/creta_logo_blue.png"),
+//                 width: 100,
+//                 height: 26,
+//               ),
+//             ),
+//             const SizedBox(height: 32),
+//             ..._getBody(context),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
@@ -788,7 +789,7 @@ class ExtraInfoDialog extends StatefulWidget {
       //Routemaster.of(getBuildContext.call()).push(AppRoutes.intro);
       if (AccountManager.currentLoginUser.isLoginedUser) {
         //String path = Uri.base.path;
-        String path = LoginDialog.nextPageAfterLoginSuccess;
+        String path = LoginDialog._nextPageAfterLoginSuccess;
         if (path.isEmpty) {
           path = Uri.base.path;
         }
@@ -868,11 +869,11 @@ class _ExtraInfoDialogState extends State<ExtraInfoDialog> {
   }
 
   void _changeExtraInfo(int usingPurpose, int genderType, int birthYear) {
-    // LoginPage.userPropertyManagerHolder!.userPropertyModel!.usingPurpose = BookType.fromInt(usingPurpose);
-    // LoginPage.userPropertyManagerHolder!.userPropertyModel!.genderType = GenderType.fromInt(genderType);
-    // LoginPage.userPropertyManagerHolder!.userPropertyModel!.birthYear = birthYear;
-    // //LoginPage.userPropertyManagerHolder!.updateModel(LoginPage.userPropertyManagerHolder!.userPropertyModel!);
-    // LoginPage.userPropertyManagerHolder!.setToDB(LoginPage.userPropertyManagerHolder!.userPropertyModel!);
+    CretaAccountManager.getUserProperty!.usingPurpose = BookType.fromInt(usingPurpose);
+    CretaAccountManager.getUserProperty!.genderType = GenderType.fromInt(genderType);
+    CretaAccountManager.getUserProperty!.birthYear = birthYear;
+    //LoginPage.userPropertyManagerHolder!.updateModel(LoginPage.userPropertyManagerHolder!.userPropertyModel!);
+    CretaAccountManager.userPropertyManagerHolder.setToDB(CretaAccountManager.getUserProperty!);
     ExtraInfoDialog.setPopAfterClose(false);
     Navigator.of(widget.context).pop();
   }
@@ -1210,8 +1211,8 @@ class CretaStepper extends StatelessWidget {
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
 
-class LoginDialogEx extends StatefulWidget {
-  const LoginDialogEx({
+class LoginDialog extends StatefulWidget {
+  const LoginDialog({
     super.key,
     required this.context,
     required this.size,
@@ -1224,7 +1225,7 @@ class LoginDialogEx extends StatefulWidget {
   final LoginPageState loginPageState;
 
   @override
-  State<LoginDialogEx> createState() => _LoginDialogExState();
+  State<LoginDialog> createState() => _LoginDialogState();
 
   static bool _showExtraInfoDialog = false;
   static String _nextPageAfterLoginSuccess = '';
@@ -1251,7 +1252,7 @@ class LoginDialogEx extends StatefulWidget {
         //title: '',
         //crossAxisAlign: CrossAxisAlignment.center,
         //hideTopSplitLine: true,
-        content: LoginDialogEx(
+        content: LoginDialog(
           context: context,
           size: Size(717, 568),
           getBuildContext: getBuildContext,
@@ -1287,7 +1288,7 @@ class LoginDialogEx extends StatefulWidget {
   }
 }
 
-class _LoginDialogExState extends State<LoginDialogEx> {
+class _LoginDialogState extends State<LoginDialog> {
   static const String materialIconEncrypted =
       '<svg viewBox="0 0 94 118" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M38.2507 76.5003H55.7507L52.3965 57.6878C54.3409 56.7156 55.8722 55.3059 56.9902 53.4587C58.1083 51.6114 58.6673 49.5698 58.6673 47.3337C58.6673 44.1253 57.525 41.3788 55.2402 39.0941C52.9555 36.8094 50.209 35.667 47.0007 35.667C43.7923 35.667 41.0458 36.8094 38.7611 39.0941C36.4763 41.3788 35.334 44.1253 35.334 47.3337C35.334 49.5698 35.893 51.6114 37.0111 53.4587C38.1291 55.3059 39.6604 56.7156 41.6048 57.6878L38.2507 76.5003ZM47.0007 117.334C33.4868 113.931 22.3305 106.177 13.5319 94.0732C4.73329 81.9691 0.333984 68.5281 0.333984 53.7503V18.167L47.0007 0.666992L93.6673 18.167V53.7503C93.6673 68.5281 89.268 81.9691 80.4694 94.0732C71.6708 106.177 60.5145 113.931 47.0007 117.334ZM47.0007 105.084C57.1118 101.875 65.4729 95.4587 72.084 85.8337C78.6951 76.2087 82.0007 65.5142 82.0007 53.7503V26.1878L47.0007 13.0628L12.0007 26.1878V53.7503C12.0007 65.5142 15.3062 76.2087 21.9173 85.8337C28.5284 95.4587 36.8895 101.875 47.0007 105.084Z" fill="#E7EFFD"/></svg>';
   static const String stringAgreeTerms = '(필수) 크레타 이용약관 동의';
@@ -1329,22 +1330,29 @@ class _LoginDialogExState extends State<LoginDialogEx> {
   String _notVerifyNickname = '';
   String _notVerifySecret = '';
 
-
   @override
   void initState() {
     super.initState();
     _currentPageState = widget.loginPageState;
   }
 
+  bool _isAllRequirementsChecked() {
+    if (_checkboxSignupValueMap[stringAgreeTerms] == false) {
+      return false;
+    }
+    return true;
+  }
 
   void _moveToPageState(LoginPageState newState) {
     setState(() {
       _setErrorMessage();
       _currentPageState = newState;
       _isLoginProcessing = false;
+      _checkboxSignupValueMap.forEach((key, value) {
+        _checkboxSignupValueMap[key] = false;
+      });
     });
   }
-
 
   void _setErrorMessage({
     String? emailErrorMessage,
@@ -1362,7 +1370,6 @@ class _LoginDialogExState extends State<LoginDialogEx> {
     _snsLoginErrorMessage = snsLoginErrorMessage ?? '';
   }
 
-
   Future<void> _login(String email, String password) async {
     logger.finest('_login');
     await CretaAccountManager.logout(doGuestLogin: false);
@@ -1370,10 +1377,15 @@ class _LoginDialogExState extends State<LoginDialogEx> {
       HycopFactory.setBucketId();
       CretaAccountManager.initUserProperty().then((value) async {
         if (value) {
-          if (CretaAccountManager.getUserProperty?.verified ?? false) {
+          if (CretaAccountManager.getUserProperty!.verified) {
+            TextInput.finishAutofillContext();
+            if (CretaAccountManager.getUserProperty!.extraInfo == false) {
+              CretaAccountManager.getUserProperty!.extraInfo = true;
+              CretaAccountManager.userPropertyManagerHolder.setToDB(CretaAccountManager.getUserProperty!);
+              LoginDialog.setShowExtraInfoDialog(true);
+            }
             Navigator.of(widget.context).pop();
-          }
-          else {
+          } else {
             _notVerifyUserId = CretaAccountManager.currentLoginUser.userId;
             _notVerifyEmail = CretaAccountManager.currentLoginUser.email;
             _notVerifyNickname = CretaAccountManager.currentLoginUser.name;
@@ -1403,7 +1415,6 @@ class _LoginDialogExState extends State<LoginDialogEx> {
     });
   }
 
-
   Future<void> _loginByGoogle() async {
     logger.finest('_loginByGoogle');
     await CretaAccountManager.logout(doGuestLogin: false);
@@ -1416,11 +1427,10 @@ class _LoginDialogExState extends State<LoginDialogEx> {
         bool isNewUser = value.isEmpty;
         if (isNewUser) {
           // create model objects
-          UserPropertyModel userModel =
-              CretaAccountManager.userPropertyManagerHolder.makeCurrentNewUserProperty(
-                agreeUsingMarketing: true,
-                verified: true,
-              );
+          UserPropertyModel userModel = CretaAccountManager.userPropertyManagerHolder.makeCurrentNewUserProperty(
+            agreeUsingMarketing: true,
+            verified: true,
+          );
           TeamModel teamModel = CretaAccountManager.teamManagerHolder.getNewTeam(
             createAndSetToCurrent: true,
             username: AccountManager.currentLoginUser.name,
@@ -1440,7 +1450,7 @@ class _LoginDialogExState extends State<LoginDialogEx> {
           await CretaAccountManager.teamManagerHolder.createTeam(teamModel);
           await CretaAccountManager.userPropertyManagerHolder.createUserProperty(createModel: userModel);
           await CretaAccountManager.initUserProperty();
-          LoginDialogEx.setShowExtraInfoDialog(true);
+          LoginDialog.setShowExtraInfoDialog(true);
         }
         CretaAccountManager.initUserProperty().then((value) {
           if (value) {
@@ -1467,7 +1477,6 @@ class _LoginDialogExState extends State<LoginDialogEx> {
       await CretaAccountManager.logout();
     });
   }
-
 
   Future<void> _signup(String nickname, String email, String password, bool agreeUsingMarketing) async {
     logger.finest('_signup');
@@ -1516,6 +1525,7 @@ class _LoginDialogExState extends State<LoginDialogEx> {
         _notVerifySecret = CretaAccountManager.currentLoginUser.secret;
         _sendVerifyEmail(_notVerifyUserId, _notVerifyEmail, _notVerifySecret);
         await CretaAccountManager.logout();
+        TextInput.finishAutofillContext();
         _moveToPageState(LoginPageState.verifyEmail);
       }).onError((error, stackTrace) async {
         String errMsg;
@@ -1550,7 +1560,6 @@ class _LoginDialogExState extends State<LoginDialogEx> {
       await CretaAccountManager.logout();
     });
   }
-
 
   Future<void> _resetPassword(String email) async {
     logger.finest('_resetPassword pressed');
@@ -1595,7 +1604,6 @@ class _LoginDialogExState extends State<LoginDialogEx> {
     });
   }
 
-
   Future<bool> _sendVerifyEmail(String userId, String email, String secret) async {
     logger.finest('_sendVerifyEmail');
     await CretaUtils.sendVerifyEmail(userId, email, secret).then((value) {
@@ -1620,7 +1628,6 @@ class _LoginDialogExState extends State<LoginDialogEx> {
     });
     return true;
   }
-
 
   List<Widget> _getLeftPaneForCommonHeader() {
     return [
@@ -1648,7 +1655,6 @@ class _LoginDialogExState extends State<LoginDialogEx> {
       ),
     ];
   }
-
 
   List<Widget> _getLeftPaneForCommonBody() {
     return [
@@ -1681,12 +1687,16 @@ class _LoginDialogExState extends State<LoginDialogEx> {
           textStyle: CretaFont.buttonSmall.copyWith(color: CretaColor.text[400]),
           width: 89 - 38,
           height: 29,
-          onPressed: () {},
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) => PopUpRatePlan.ratePlanPopUp(context),
+            );
+          },
         ),
       ),
     ];
   }
-
 
   Widget _getLeftPaneForSignup() {
     return Container(
@@ -1731,7 +1741,6 @@ class _LoginDialogExState extends State<LoginDialogEx> {
     );
   }
 
-
   Widget _getLeftPaneForResetPassword() {
     return Container(
       width: 311,
@@ -1775,7 +1784,6 @@ class _LoginDialogExState extends State<LoginDialogEx> {
     );
   }
 
-
   Widget _getLeftPaneForLogin() {
     return Container(
       width: 311,
@@ -1818,7 +1826,6 @@ class _LoginDialogExState extends State<LoginDialogEx> {
     );
   }
 
-
   Widget _getLeftPane() {
     switch (_currentPageState) {
       case LoginPageState.singup:
@@ -1830,7 +1837,6 @@ class _LoginDialogExState extends State<LoginDialogEx> {
         return _getLeftPaneForLogin();
     }
   }
-
 
   Widget _getRightPaneForSignup() {
     return SizedBox(
@@ -1961,6 +1967,7 @@ class _LoginDialogExState extends State<LoginDialogEx> {
                 valueMap: _checkboxSignupValueMap,
                 onSelected: (title, value, nvMap) {
                   logger.finest('selected $title=$value');
+                  setState(() {});
                 },
               ),
             ),
@@ -1986,11 +1993,11 @@ class _LoginDialogExState extends State<LoginDialogEx> {
                 : BTN.line_blue_iti_m(
                     width: 326,
                     text: '회원가입',
-                    buttonColor: CretaButtonColor.skyTitle,
+                    buttonColor: _isAllRequirementsChecked() ? CretaButtonColor.skyTitle : CretaButtonColor.gray,
                     decoType: CretaButtonDeco.fill,
                     textColor: Colors.white,
                     onPressed: () {
-                      TextInput.finishAutofillContext();
+                      if (_isAllRequirementsChecked() == false) return;
                       String nickname = _signupNicknameTextEditingController.text;
                       String id = _signupEmailTextEditingController.text;
                       String pwd = _signupPasswordTextEditingController.text;
@@ -2007,6 +2014,7 @@ class _LoginDialogExState extends State<LoginDialogEx> {
                         } else if (agreeTerms == false) {
                           _setErrorMessage(requirementsErrorMessage: '필수 항목을 동의해주세요.');
                         } else {
+                          // all is valid
                           _setErrorMessage();
                           _isLoginProcessing = true;
                           _signup(nickname, id, pwd, agreeUsingMarketing);
@@ -2019,7 +2027,6 @@ class _LoginDialogExState extends State<LoginDialogEx> {
       ),
     );
   }
-
 
   Widget _getRightPaneForLogin() {
     //return AutofillGroup(
@@ -2117,7 +2124,6 @@ class _LoginDialogExState extends State<LoginDialogEx> {
                       String pwd = _loginPasswordTextEditingController.text;
                       setState(() {
                         if (EmailValidator.validate(id)) {
-                          TextInput.finishAutofillContext();
                           _setErrorMessage();
                           _isLoginProcessing = true;
                           _login(id, pwd);
@@ -2146,13 +2152,15 @@ class _LoginDialogExState extends State<LoginDialogEx> {
                     onTap: () {
                       String email = _loginEmailTextEditingController.text;
                       List<String> emailList = [email];
-                      CretaAccountManager.userPropertyManagerHolder.getUserPropertyFromEmail(emailList).then((value) async {
+                      CretaAccountManager.userPropertyManagerHolder
+                          .getUserPropertyFromEmail(emailList)
+                          .then((value) async {
                         if (value.isEmpty) {
                           showSnackBar(widget.context, '가입된 회원이 아닙니다');
                           return;
                         }
                         UserPropertyModel userModel = value[0];
-                        if(userModel.teams.isNotEmpty) {
+                        if (userModel.teams.isNotEmpty) {
                           AbsExModel? model = await CretaAccountManager.teamManagerHolder.getFromDB(userModel.teams[0]);
                           if (model != null) {
                             TeamModel teamModel = model as TeamModel;
@@ -2181,10 +2189,6 @@ class _LoginDialogExState extends State<LoginDialogEx> {
                   child: InkWell(
                     onTap: () {
                       _moveToPageState(LoginPageState.resetPassword);
-                      ////////////////////////////////////////////////////////////////////////////////////
-                      // _notVerifyNickname = '테스트';
-                      // _notVerifyEmail = 'test@ttt.com';
-                      // _moveToPageState(LoginPageState.verifyEmail);
                     },
                     child: Text(
                       '비밀번호 찾기',
@@ -2348,8 +2352,7 @@ class _LoginDialogExState extends State<LoginDialogEx> {
                   onTap: () {
                     _sendVerifyEmail(_notVerifyUserId, _notVerifyEmail, _notVerifySecret);
                   },
-                  child:
-                  Text(
+                  child: Text(
                     '재발송하기',
                     style: CretaFont.bodyESmall.copyWith(color: CretaColor.primary[400]),
                   ),
@@ -2475,7 +2478,7 @@ class _LoginDialogExState extends State<LoginDialogEx> {
                       String email = _resetEmailTextEditingController.text;
                       setState(() {
                         if (EmailValidator.validate(email)) {
-                          TextInput.finishAutofillContext();
+                          //TextInput.finishAutofillContext();
                           _setErrorMessage();
                           _isLoginProcessing = true;
                           _resetPassword(email);

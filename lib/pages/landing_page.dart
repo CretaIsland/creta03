@@ -352,7 +352,7 @@ class _LandingPageState extends State<LandingPage> {
                           width: 40,
                           height: 19,
                           child: Text("Login", style: appBarBTNStyle),
-                          onTap: () => LoginDialogEx.popupDialog(
+                          onTap: () => LoginDialog.popupDialog(
                             context: context,
                             getBuildContext: getBuildContext,
                           ),

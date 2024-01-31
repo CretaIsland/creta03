@@ -54,6 +54,7 @@ class UserPropertyModel extends CretaModel {
   late String channelId;
 
   late bool verified;
+  late bool extraInfo;
 
   @override
   String get getMid => email;
@@ -92,6 +93,7 @@ class UserPropertyModel extends CretaModel {
         birthYear,
         channelId,
         verified,
+        extraInfo,
       ];
 
   UserPropertyModel(String pmid) : super(pmid: pmid, type: ExModelType.user, parent: '') {
@@ -131,6 +133,7 @@ class UserPropertyModel extends CretaModel {
     birthYear = 1950;
     channelId = '';
     verified = false;
+    extraInfo = false;
   }
 
   UserPropertyModel.withName({
@@ -171,6 +174,7 @@ class UserPropertyModel extends CretaModel {
     this.birthYear = 1950,
     this.channelId = '',
     this.verified = false,
+    this.extraInfo = false,
   }) : super(pmid: '', type: ExModelType.user, parent: parentMid);
 
   @override
@@ -216,6 +220,7 @@ class UserPropertyModel extends CretaModel {
     birthYear = map['birthYear'] ?? 1950;
     channelId = map['channelId'] ?? '';
     verified = map['verified'] ?? false;
+    extraInfo = map['extraInfo'] ?? false;
   }
 
   @override
@@ -259,6 +264,7 @@ class UserPropertyModel extends CretaModel {
         'birthYear': birthYear,
         'channelId': channelId,
         'verified': verified,
+        'extraInfo': extraInfo,
       }.entries);
   }
 }
