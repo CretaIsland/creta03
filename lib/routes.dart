@@ -4,6 +4,8 @@
 //import 'package:creta03/model/contents_model.dart';
 import 'package:creta03/pages/landing_page.dart';
 import 'package:creta03/pages/mypage/mypage.dart';
+import 'package:creta03/pages/privacy_policy_page.dart';
+import 'package:creta03/pages/service_terms_page.dart';
 //import 'package:creta03/pages/studio/left_menu/word_pad/quill_appflowy.dart';
 // import 'package:creta03/pages/studio/left_menu/word_pad/quill_html_enhanced.daxt';
 import 'package:flutter/material.dart';
@@ -29,6 +31,7 @@ import 'pages/community/sub_pages/community_right_book_pane.dart';
 import 'pages/community/sub_pages/community_right_channel_pane.dart';
 import 'pages/community/sub_pages/community_right_playlist_detail_pane.dart';
 import 'pages/reset_password_confirm_page.dart';
+import 'pages/verify_email_page.dart';
 import 'pages/studio/studio_variables.dart';
 import 'wait_page.dart';
 //import 'pages/login/creta_account_manager.dart';
@@ -116,6 +119,10 @@ abstract class AppRoutes {
   static const String myPageTeamManage = '/mypage/teamManage';
 
   static const String resetPasswordConfirm = '/resetPasswordConfirm';
+  static const String verifyEmail = '/verifyEmail';
+
+  static const String privacyPolicy = '/policy/privacy';
+  static const String serviceTerms = '/terms/service';
 }
 
 //final menuKey = GlobalKey<DrawerMenuPageState>();
@@ -137,6 +144,8 @@ final routesLoggedOut = RouteMap(
           ? const Redirect(AppRoutes.communityHome)
           : const Redirect(AppRoutes.intro);
     },
+    AppRoutes.privacyPolicy: (_) => const TransitionPage(child: PrivacyPolicyPage()),
+    AppRoutes.serviceTerms: (_) => const TransitionPage(child: ServiceTermsPage()),
     AppRoutes.menuDemoPage: (_) => TransitionPage(child: MenuDemoPage()),
     AppRoutes.fontDemoPage: (_) => TransitionPage(child: FontDemoPage()),
     AppRoutes.buttonDemoPage: (_) => TransitionPage(child: ButtonDemoPage()),
@@ -417,6 +426,25 @@ final routesLoggedOut = RouteMap(
       return TransitionPage(
         child: ResetPasswordConfirmPage(
           key: GlobalObjectKey('$userId-$secret'),
+          userId: userId,
+          secretKey: secret,
+        ),
+      );
+    },
+    AppRoutes.verifyEmail: (routeData) {
+      Map<String, String> paramMap = routeData.queryParameters;
+      String userId = '';
+      String secret = '';
+      paramMap.forEach((key, value) {
+        if (key == 'userId') {
+          userId = value;
+        } else if (key == 'secret') {
+          secret = value;
+        }
+      });
+      return TransitionPage(
+        child: VerifyEmailPage(
+          key: GlobalObjectKey('VerifyEmailPage-$userId-$secret'),
           userId: userId,
           secretKey: secret,
         ),

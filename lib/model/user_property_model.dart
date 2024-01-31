@@ -53,6 +53,9 @@ class UserPropertyModel extends CretaModel {
 
   late String channelId;
 
+  late bool verified;
+  late bool extraInfo;
+
   @override
   String get getMid => email;
 
@@ -89,6 +92,8 @@ class UserPropertyModel extends CretaModel {
         usingPurpose,
         birthYear,
         channelId,
+        verified,
+        extraInfo,
       ];
 
   UserPropertyModel(String pmid) : super(pmid: pmid, type: ExModelType.user, parent: '') {
@@ -127,6 +132,8 @@ class UserPropertyModel extends CretaModel {
     usingPurpose = BookType.none;
     birthYear = 1950;
     channelId = '';
+    verified = false;
+    extraInfo = false;
   }
 
   UserPropertyModel.withName({
@@ -166,8 +173,9 @@ class UserPropertyModel extends CretaModel {
     this.usingPurpose = BookType.none,
     this.birthYear = 1950,
     this.channelId = '',
-  })
-  : super(pmid: '', type: ExModelType.user, parent: parentMid);
+    this.verified = false,
+    this.extraInfo = false,
+  }) : super(pmid: '', type: ExModelType.user, parent: parentMid);
 
   @override
   void fromMap(Map<String, dynamic> map) {
@@ -211,6 +219,8 @@ class UserPropertyModel extends CretaModel {
     usingPurpose = BookType.fromInt(map['usingPurpose'] ?? 0);
     birthYear = map['birthYear'] ?? 1950;
     channelId = map['channelId'] ?? '';
+    verified = map['verified'] ?? false;
+    extraInfo = map['extraInfo'] ?? false;
   }
 
   @override
@@ -247,12 +257,14 @@ class UserPropertyModel extends CretaModel {
         'latestUseColors': CretaUtils.colorList2String(latestUseColors),
         // 'teams' : CretaUtils.mapListToString(teams)
         'teams': teams,
-        'enterprise' : enterprise,
-        'genderType' : genderType.index,
-        'agreeUsingMarketing' : agreeUsingMarketing,
-        'usingPurpose' : usingPurpose.index,
+        'enterprise': enterprise,
+        'genderType': genderType.index,
+        'agreeUsingMarketing': agreeUsingMarketing,
+        'usingPurpose': usingPurpose.index,
         'birthYear': birthYear,
         'channelId': channelId,
+        'verified': verified,
+        'extraInfo': extraInfo,
       }.entries);
   }
 }
