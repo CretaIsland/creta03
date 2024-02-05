@@ -53,7 +53,7 @@ class _CretaVersionPopUpState extends State<CretaVersionPopUp> {
                   onPressed: () {
                     if(isFold) {
                       setState(() {
-                        getLastReleaseInfo("0.4.26");
+                        getLastReleaseInfo(IntroPage.cretaVersionList.first);
                         isFold = false;
                         widgetHeight = 292;
                       });
