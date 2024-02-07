@@ -1115,6 +1115,7 @@ class CretaUtils {
 
   static Future<bool> sendResetPasswordEmail(
     String email,
+    String nickname,
     String userId,
     String secret,
   ) async {
@@ -1122,9 +1123,13 @@ class CretaUtils {
     //print('---------------base=$base');
 
     String url = '${CretaAccountManager.getEnterprise!.mediaApiUrl}/sendEmail';
+    // String option = '''{
+    //     "subject": "[크레타] 계정의 비밀번호 초기화 요청이 있습니다",
+    //     "content": "비밀번호 초기화를 요청하셨다면 아래 링크를 클릭하시고\\n그렇지 않으시면 무시하세요.\\n\\n$base${AppRoutes.resetPasswordConfirm}?userId=$userId&secret=$secret\\n\\n크레타 팀으로부터."
+    // }''';
     String option = '''{
-        "subject": "[크레타] 계정의 비밀번호 초기화 요청이 있습니다",        
-        "content": "비밀번호 초기화를 요청하셨다면 아래 링크를 클릭하시고\\n그렇지 않으시면 무시하세요.\\n\\n$base${AppRoutes.resetPasswordConfirm}?userId=$userId&secret=$secret\\n\\n크레타 팀으로부터."
+        "resetPasswordUserName": "$nickname",        
+        "resetPasswordUrl": "$base${AppRoutes.resetPasswordConfirm}?userId=$userId&secret=$secret"        
     }''';
     Map<String, dynamic> body = {
       "receiverEmail": ['"$email"'], // 수신인
@@ -1139,24 +1144,28 @@ class CretaUtils {
     });
 
     if (res != null) {
-      //showSnackBar(context, '비밀벊');
+      //showSnackBar(context, '비밀번호 초기화 실패');
       return true;
     }
     return false;
   }
 
-  static Future<bool> sendVerifyEmail(String userId, String email, String secret) async {
+  static Future<bool> sendVerifyEmail(String nickname, String userId, String email, String secret) async {
     String base = Uri.base.origin;
     //print('---------------base=$base');
 
     String url = '${CretaAccountManager.getEnterprise!.mediaApiUrl}/sendEmail';
+    // String option = '''{
+    //     "subject": "[크레타] 가입을 환영합니다",
+    //     "content": "크레타에 오신 것을 환영합니다\\n\\n아래 URL링크를 눌러서 회원가입을 완료해주세요.\\n\\n$base${AppRoutes.verifyEmail}?userId=$userId&secret=$secret\\n\\n크레타 팀으로부터."
+    // }''';
     String option = '''{
-        "subject": "[크레타] 가입을 환영합니다",        
-        "content": "크레타에 오신 것을 환영합니다\\n\\n아래 URL링크를 눌러서 회원가입을 완료해주세요.\\n\\n$base${AppRoutes.verifyEmail}?userId=$userId&secret=$secret\\n\\n크레타 팀으로부터."
+        "verifyUserName": "$nickname",        
+        "verifyUserUrl": "$base${AppRoutes.verifyEmail}?userId=$userId&secret=$secret"        
     }''';
     Map<String, dynamic> body = {
       "receiverEmail": ['"$email"'], // 수신인
-      "emailType": '"resetPassword"',
+      "emailType": '"verify"',
       "emailOption": option,
     };
 
