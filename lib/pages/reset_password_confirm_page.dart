@@ -1,17 +1,20 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:creta03/pages/login/creta_account_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:url_launcher/link.dart';
 
+import '../pages/login/creta_account_manager.dart';
 import '../../routes.dart';
+import '../common/creta_utils.dart';
 import '../design_system/component/snippet.dart';
 import '../../design_system/text_field/creta_text_field.dart';
-//import '../design_system/creta_font.dart';
+import '../design_system/creta_font.dart';
+import '../design_system/creta_color.dart';
 import '../../design_system/buttons/creta_button.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
+import '../../design_system/dialog/creta_dialog.dart';
 
 class ResetPasswordConfirmPage extends StatefulWidget {
   const ResetPasswordConfirmPage({
@@ -28,10 +31,10 @@ class ResetPasswordConfirmPage extends StatefulWidget {
 }
 
 class _ResetPasswordConfirmPageState extends State<ResetPasswordConfirmPage> {
-  final _userIdTextEditingController = TextEditingController();
-  final _secretKeyTextEditingController = TextEditingController();
   final _newPasswordTextEditingController = TextEditingController();
   final _newPasswordConfirmTextEditingController = TextEditingController();
+  bool _newPasswordError = false;
+  bool _newPasswordConfirmError = false;
 
   bool _isJobProcessing = false;
   bool _successResetPassword = false;
@@ -42,8 +45,6 @@ class _ResetPasswordConfirmPageState extends State<ResetPasswordConfirmPage> {
   }
 
   void _doResetPasswordConfirm() {
-    String userId = _userIdTextEditingController.text;
-    String secretKey = _secretKeyTextEditingController.text;
     String newPassword = _newPasswordTextEditingController.text;
     if (HycopFactory.account == null) {
       showSnackBar(context, '내부 에러가 발생하였습니다. 관리자에게 문의해주세요.');
@@ -54,7 +55,7 @@ class _ResetPasswordConfirmPageState extends State<ResetPasswordConfirmPage> {
       _isJobProcessing = true;
       _successResetPassword = false;
     });
-    HycopFactory.account!.resetPasswordConfirm(userId, secretKey, newPassword).then((value) {
+    HycopFactory.account!.resetPasswordConfirm(widget.userId, widget.secretKey, newPassword).then((value) {
       setState(() {
         _isJobProcessing = false;
         _successResetPassword = true;
@@ -75,7 +76,7 @@ class _ResetPasswordConfirmPageState extends State<ResetPasswordConfirmPage> {
   Widget _getChangePasswordButton() {
     return _isJobProcessing
         ? BTN.line_blue_iwi_m(
-            width: 294,
+            width: 326,
             widget: Snippet.showWaitSign(color: Colors.white, size: 16),
             buttonColor: CretaButtonColor.skyTitle,
             decoType: CretaButtonDeco.fill,
@@ -83,21 +84,33 @@ class _ResetPasswordConfirmPageState extends State<ResetPasswordConfirmPage> {
             onPressed: () {},
           )
         : BTN.line_blue_iti_m(
-            width: 200,
-            text: _successResetPassword ? 'Password is changed' : 'Change password',
+            width: 326,
+            text: _successResetPassword ? '비밀번호가 변경되었습니다' : '비밀번호 변경',
             buttonColor: CretaButtonColor.skyTitle,
             decoType: CretaButtonDeco.fill,
             textColor: Colors.white,
             onPressed: () {
               String newPassword = _newPasswordTextEditingController.text;
               String newPasswordConfirm = _newPasswordConfirmTextEditingController.text;
-              if (newPassword != newPasswordConfirm) {
+              if (newPassword != newPasswordConfirm || !CretaUtils.checkPasswordStrength(newPassword)) {
                 showSnackBar(context, '비밀번호를 다시 확인해주세요');
                 return;
               }
               _doResetPasswordConfirm();
             },
           );
+  }
+
+  void checkPasswordStrength(String password) {
+    setState(() {
+      _newPasswordError = (password.isEmpty) ? false : !CretaUtils.checkPasswordStrength(password);
+    });
+  }
+
+  void checkPasswordConfirmStrength(String password) {
+    setState(() {
+      _newPasswordConfirmError = (password.isEmpty) ? false : !CretaUtils.checkPasswordStrength(password);
+    });
   }
 
   @override
@@ -132,108 +145,71 @@ class _ResetPasswordConfirmPageState extends State<ResetPasswordConfirmPage> {
       context: context,
       getBuildContext: getBuildContext,
       child: Center(
-          child: SizedBox(
-            width: 450,
-            height: 240,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: FittedBox(
+          fit: BoxFit.fitWidth,
+          child: CretaStackDialog(
+            width: 406,
+            height: 288,
+            showCloseButton: false,
+            elevation: 5,
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 150,
-                      child: Text('User ID'),
-                    ),
-                    CretaTextField(
-                      textFieldKey: GlobalObjectKey('ResetPasswordConfirmPage.userId'),
-                      controller: _userIdTextEditingController,
-                      width: 300,
-                      height: 30,
-                      value: widget.userId,
-                      hintText: '사용자ID',
-                      autofillHints: const [AutofillHints.username],
-                      onEditComplete: (value) {},
-                    ),
-                  ],
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 150,
-                      child: Text('Secret Key'),
-                    ),
-                    CretaTextField(
-                      textFieldKey: GlobalObjectKey('ResetPasswordConfirmPage.secretKey'),
-                      controller: _secretKeyTextEditingController,
-                      width: 300,
-                      height: 30,
-                      value: widget.secretKey,
-                      hintText: '비밀키',
-                      autofillHints: const [AutofillHints.photo],
-                      onEditComplete: (value) {},
-                    ),
-                  ],
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 150,
-                      child: Text('New password'),
-                    ),
-                    CretaTextField(
-                      textFieldKey: GlobalObjectKey('ResetPasswordConfirmPage.newPassword'),
-                      controller: _newPasswordTextEditingController,
-                      width: 300,
-                      height: 30,
-                      value: '',
-                      textType: CretaTextFieldType.password,
-                      hintText: '새 비밀번호',
-                      autofillHints: const [AutofillHints.photo],
-                      onEditComplete: (value) {},
-                    ),
-                  ],
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 150,
-                      child: Text('Confirm new password'),
-                    ),
-                    CretaTextField(
-                      textFieldKey: GlobalObjectKey('ResetPasswordConfirmPage.newPasswordConfirm'),
-                      controller: _newPasswordConfirmTextEditingController,
-                      width: 300,
-                      height: 30,
-                      value: '',
-                      textType: CretaTextFieldType.password,
-                      hintText: '새 비밀번호 확인',
-                      autofillHints: const [AutofillHints.photo],
-                      onEditComplete: (value) {},
-                    ),
-                  ],
-                ),
-                _getChangePasswordButton(),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                  child: BTN.line_blue_iti_m(
-                    width: 200,
-                    text: '크레타 홈으로 이동',
-                    buttonColor: CretaButtonColor.skyTitle,
-                    decoType: CretaButtonDeco.fill,
-                    textColor: Colors.white,
-                    onPressed: () {
-                      Routemaster.of(context).push(AppRoutes.communityHome);
-                    },
+                  padding: const EdgeInsets.fromLTRB(40, 40, 0, 0),
+                  child: Text(
+                    '비밀번호',
+                    style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[400]),
                   ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(40, 8, 0, 0),
+                  child: CretaTextField(
+                    textFieldKey: GlobalObjectKey('ResetPasswordConfirmPage.newPassword'),
+                    controller: _newPasswordTextEditingController,
+                    width: 326,
+                    height: 30,
+                    value: '',
+                    textType: CretaTextFieldType.password,
+                    hintText: '비밀번호 (6자~16자, 영문/숫자 필수)',
+                    autofillHints: const [AutofillHints.newPassword],
+                    onEditComplete: (value) {},
+                    onChanged: checkPasswordStrength,
+                    fixedOutlineColor: _newPasswordError ? CretaColor.stateCritical : null,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(40, 32, 0, 0),
+                  child: Text(
+                    '비밀번호 확인',
+                    style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[400]),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(40, 8, 0, 0),
+                  child: CretaTextField(
+                    textFieldKey: GlobalObjectKey('ResetPasswordConfirmPage.newPasswordConfirm'),
+                    controller: _newPasswordConfirmTextEditingController,
+                    width: 326,
+                    height: 30,
+                    value: '',
+                    textType: CretaTextFieldType.password,
+                    hintText: '비밀번호 (6자~16자, 영문/숫자 필수)',
+                    autofillHints: const [AutofillHints.newPassword],
+                    onEditComplete: (value) {},
+                    onChanged: checkPasswordConfirmStrength,
+                    fixedOutlineColor: _newPasswordConfirmError ? CretaColor.stateCritical : null,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(40, 44, 0, 0),
+                  child: _getChangePasswordButton(),
                 ),
               ],
             ),
           ),
         ),
+      ),
     );
   }
 }

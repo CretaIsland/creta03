@@ -72,6 +72,8 @@ class CretaStackDialog extends StatelessWidget {
     required this.height,
     this.title = '',
     this.hideTopSplitLine = true,
+    this.showCloseButton = true,
+    this.elevation,
     required this.content,
   });
 
@@ -79,12 +81,15 @@ class CretaStackDialog extends StatelessWidget {
   final double height;
   final String title;
   final bool hideTopSplitLine;
+  final bool showCloseButton;
+  final double? elevation;
   final Widget content;
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.white,
+      elevation: elevation,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
@@ -106,7 +111,8 @@ class CretaStackDialog extends StatelessWidget {
                           title,
                           style: CretaFont.titleMedium,
                         ),
-                        BTN.fill_gray_i_s(icon: Icons.close, onPressed: () => Navigator.of(context).pop())
+                        if (showCloseButton)
+                          BTN.fill_gray_i_s(icon: Icons.close, onPressed: () => Navigator.of(context).pop()),
                       ],
                     ),
                   ),

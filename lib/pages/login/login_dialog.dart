@@ -1333,6 +1333,9 @@ class _LoginDialogState extends State<LoginDialog> {
   String _notVerifyNickname = '';
   String _notVerifySecret = '';
 
+  bool _passwordError = false;
+  bool _passwordConfirmError = false;
+
   @override
   void initState() {
     super.initState();
@@ -1843,6 +1846,18 @@ class _LoginDialogState extends State<LoginDialog> {
     }
   }
 
+  void checkPasswordStrength(String password) {
+    setState(() {
+      _passwordError = (password.isEmpty) ? false : !CretaUtils.checkPasswordStrength(password);
+    });
+  }
+
+  void checkPasswordConfirmStrength(String password) {
+    setState(() {
+      _passwordConfirmError = (password.isEmpty) ? false : !CretaUtils.checkPasswordStrength(password);
+    });
+  }
+
   Widget _getRightPaneForSignup() {
     return SizedBox(
       //width: ,
@@ -1932,7 +1947,8 @@ class _LoginDialogState extends State<LoginDialog> {
               autofillHints: const [AutofillHints.password],
               textType: CretaTextFieldType.password,
               onEditComplete: (value) {},
-              fixedOutlineColor: _passwordErrorMessage.isNotEmpty ? CretaColor.stateCritical : null,
+              onChanged: checkPasswordStrength,
+              fixedOutlineColor: (_passwordError || _passwordErrorMessage.isNotEmpty) ? CretaColor.stateCritical : null,
             ),
           ),
           Padding(
@@ -1961,7 +1977,8 @@ class _LoginDialogState extends State<LoginDialog> {
               autofillHints: const [AutofillHints.password],
               textType: CretaTextFieldType.password,
               onEditComplete: (value) {},
-              fixedOutlineColor: _passwordErrorMessage.isNotEmpty ? CretaColor.stateCritical : null,
+              onChanged: checkPasswordConfirmStrength,
+              fixedOutlineColor: (_passwordConfirmError || _passwordErrorMessage.isNotEmpty) ? CretaColor.stateCritical : null,
             ),
           ),
           Padding(

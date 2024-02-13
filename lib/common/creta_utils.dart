@@ -1181,4 +1181,27 @@ class CretaUtils {
     }
     return false;
   }
+
+  static bool checkPasswordStrength(
+      String password, {
+        bool reqAlphabet = true,
+        bool reqMixCase = false,
+        bool reqNumber = true,
+        bool reqSpecialChar = false,
+        int minLength = 6,
+        int maxLength = 16,
+      }) {
+    String pattern = '^';
+    if (reqAlphabet) {
+      pattern += (reqMixCase) ? '(?=.*?[A-Z])(?=.*?[a-z])' : '(?=.*?[a-zA-Z])';
+    }
+    if (reqNumber) {
+      pattern += '(?=.*?[0-9])';
+    }
+    if (reqSpecialChar) {
+      pattern += '(?=.*?[!@#\$&*~])';
+    }
+    pattern += '.{$minLength,$maxLength}\$';
+    return RegExp(pattern).hasMatch(password);
+  }
 }
