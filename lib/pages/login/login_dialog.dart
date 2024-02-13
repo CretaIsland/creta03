@@ -1231,7 +1231,10 @@ class LoginDialog extends StatefulWidget {
   static String _nextPageAfterLoginSuccess = '';
   static void setShowExtraInfoDialog(bool show) {
     if (kDebugMode) print('setShowExtraInfoDialog($show)');
-    _showExtraInfoDialog = show;
+    //
+    // 2024-02-07 : 추가정보 기획이 재정립 될때까지 임시로 막아둠
+    //
+    //_showExtraInfoDialog = show;
   }
 
   static void popupDialog({
@@ -1523,7 +1526,7 @@ class _LoginDialogState extends State<LoginDialog> {
         _notVerifyEmail = CretaAccountManager.currentLoginUser.email;
         _notVerifyNickname = CretaAccountManager.currentLoginUser.name;
         _notVerifySecret = CretaAccountManager.currentLoginUser.secret;
-        _sendVerifyEmail(_notVerifyUserId, _notVerifyEmail, _notVerifySecret);
+        _sendVerifyEmail(_notVerifyNickname, _notVerifyUserId, _notVerifyEmail, _notVerifySecret);
         await CretaAccountManager.logout();
         TextInput.finishAutofillContext();
         _moveToPageState(LoginPageState.verifyEmail);
@@ -1579,7 +1582,9 @@ class _LoginDialogState extends State<LoginDialog> {
           _isLoginProcessing = false;
         });
       } else {
-        bool ret = (secret.isEmpty) ? true : await CretaUtils.sendResetPasswordEmail(email, userId, secret);
+        UserPropertyModel? model = await CretaAccountManager.userPropertyManagerHolder.emailToModel(email);
+        String nickname = model?.nickname ?? '';
+        bool ret = (secret.isEmpty) ? true : await CretaUtils.sendResetPasswordEmail(email, nickname, userId, secret);
         setState(() {
           _setErrorMessage(
             emailErrorMessage: ret ? '이메일을 발송하였으니 메일함을 확인하세요.' : '이메일 발송에 실패하였습니다.',
@@ -1604,9 +1609,9 @@ class _LoginDialogState extends State<LoginDialog> {
     });
   }
 
-  Future<bool> _sendVerifyEmail(String userId, String email, String secret) async {
+  Future<bool> _sendVerifyEmail(String nickname, String userId, String email, String secret) async {
     logger.finest('_sendVerifyEmail');
-    await CretaUtils.sendVerifyEmail(userId, email, secret).then((value) {
+    await CretaUtils.sendVerifyEmail(nickname, userId, email, secret).then((value) {
       setState(() {
         _setErrorMessage(emailErrorMessage: '이메일 발송에 실패하였습니다.');
         _isLoginProcessing = false;
@@ -1866,6 +1871,7 @@ class _LoginDialogState extends State<LoginDialog> {
               width: 326,
               height: 30,
               value: '',
+              limit: 32,
               hintText: '닉네임 입력',
               autofillHints: const [AutofillHints.name],
               onEditComplete: (value) {},
@@ -2041,9 +2047,17 @@ class _LoginDialogState extends State<LoginDialog> {
         children: [
           Padding(
             padding: EdgeInsets.fromLTRB(40, 40, 0, 0),
-            child: Text(
-              '로그인',
-              style: CretaFont.titleLarge.copyWith(color: CretaColor.text[700]),
+            child: Row(
+              children: [
+                Text(
+                  '로그인',
+                  style: CretaFont.titleLarge.copyWith(color: CretaColor.text[700]),
+                ),
+                Text(
+                  (kDebugMode) ? '  for ${ServerType.appwrite.name}' : '',
+                  style: CretaFont.titleLarge.copyWith(color: CretaColor.text[200]),
+                ),
+              ],
             ),
           ),
           Padding(
@@ -2192,7 +2206,7 @@ class _LoginDialogState extends State<LoginDialog> {
                     },
                     child: Text(
                       '비밀번호 찾기',
-                      style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
+                      style: CretaFont.bodyESmall.copyWith(color: CretaColor.primary[400]),
                     ),
                   ),
                 ),
@@ -2350,7 +2364,7 @@ class _LoginDialogState extends State<LoginDialog> {
                 SizedBox(width: 16),
                 InkWell(
                   onTap: () {
-                    _sendVerifyEmail(_notVerifyUserId, _notVerifyEmail, _notVerifySecret);
+                    _sendVerifyEmail(_notVerifyNickname, _notVerifyUserId, _notVerifyEmail, _notVerifySecret);
                   },
                   child: Text(
                     '재발송하기',
