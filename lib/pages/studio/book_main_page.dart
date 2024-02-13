@@ -614,6 +614,8 @@ class _BookMainPageState extends State<BookMainPage> {
       webRTCClient!.close();
     }
     super.dispose();
+
+    CretaTextField.mainFocusNode?.dispose();
     logger.info('BookMainPage.dispose end');
   }
 
@@ -639,7 +641,6 @@ class _BookMainPageState extends State<BookMainPage> {
     if (AccountManager.currentLoginUser.isLoginedUser) {
       HycopFactory.realtime!.stop();
     }
-   
   }
 
   @override
