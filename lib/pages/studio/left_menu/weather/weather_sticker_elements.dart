@@ -1,6 +1,6 @@
 import 'package:creta03/design_system/component/snippet.dart';
 import 'package:creta03/design_system/creta_color.dart';
-import 'package:creta03/model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import 'package:creta03/model/frame_model.dart';
 import 'package:flutter/material.dart';
 import 'package:weather_icons/weather_icons.dart';

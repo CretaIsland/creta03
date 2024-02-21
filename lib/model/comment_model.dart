@@ -10,8 +10,9 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 //import '../common/creta_utils.dart';
 //import '../pages/studio/studio_constant.dart';
-import 'app_enums.dart';
-import 'creta_model.dart';
+import 'package:creta_common/model/app_enums.dart';
+import 'package:creta_common/model/creta_model.dart';
+
 //import 'creta_style_mixin.dart';
 
 // ignore: camel_case_types

@@ -9,7 +9,6 @@ import 'package:hycop/hycop.dart';
 //import 'package:hycop/hycop.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 
-
 import '../creta_color.dart';
 import '../creta_font.dart';
 //import 'package:hycop/hycop.dart';
@@ -17,7 +16,7 @@ import '../creta_font.dart';
 //import 'package:outline_search_bar/outline_search_bar.dart';
 import '../../design_system/buttons/creta_button.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
-import '../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../model/comment_model.dart';
 
 class CretaCommentBar extends StatefulWidget {
@@ -311,7 +310,8 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
       padding: EdgeInsets.fromLTRB(64, 8, 0, 8),
       child: Row(
         children: [
-          (widget.data.parentId.isNotEmpty || AccountManager.currentLoginUser.isLoginedUser == false)
+          (widget.data.parentId.isNotEmpty ||
+                  AccountManager.currentLoginUser.isLoginedUser == false)
               ? Container()
               : Container(
                   padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
@@ -355,7 +355,8 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
     // tp.layout(maxWidth: textWidth);
     // final line = tp.computeLineMetrics().length;
     // -->
-    final line = CretaCommonUtils.getTextLineCount(widget.data.comment, CretaFont.bodyMedium, textWidth);
+    final line =
+        CretaCommonUtils.getTextLineCount(widget.data.comment, CretaFont.bodyMedium, textWidth);
 
     return Column(
       children: [

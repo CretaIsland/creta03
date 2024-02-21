@@ -1,7 +1,7 @@
 // import 'package:hycop/common/util/logger.dart';
 // import 'package:hycop/hycop/database/abs_database.dart';
 
-// import '../model/app_enums.dart';
+// import 'package:creta_common/model/app_enums.dart';
 // import '../model/frame_model.dart';
 // import 'frame_manager.dart';
 

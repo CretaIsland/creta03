@@ -31,7 +31,7 @@ import 'package:creta_common/lang/creta_lang.dart';
 import '../../data_io/book_manager.dart';
 import '../../data_io/favorites_manager.dart';
 import '../../data_io/subscription_manager.dart';
-import '../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../model/book_model.dart';
 //import '../../model/team_model.dart';
 import '../../model/user_property_model.dart';

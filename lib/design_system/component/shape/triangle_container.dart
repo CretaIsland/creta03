@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors_in_immutables
 
 import 'package:flutter/material.dart';
-import '../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import 'creta_clipper.dart';
 
 class TriangleContainer extends StatelessWidget {

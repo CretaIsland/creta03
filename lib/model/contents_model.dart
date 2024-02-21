@@ -15,8 +15,8 @@ import 'package:creta_common/common/creta_common_utils.dart';
 
 import '../design_system/creta_font.dart';
 import '../pages/studio/studio_variables.dart';
-import 'app_enums.dart';
-import 'creta_model.dart';
+import 'package:creta_common/model/app_enums.dart';
+import 'package:creta_common/model/creta_model.dart';
 
 class ExtraTextStyle {
   bool? isBold;

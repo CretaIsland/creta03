@@ -2,7 +2,7 @@
 
 import 'dart:math';
 
-import 'package:creta03/model/creta_model.dart';
+import 'package:creta03/data_io/creta_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routemaster/routemaster.dart';
@@ -276,7 +276,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     if (_onceDBGetComplete) {
       return consumerFunc();
     }
-    var retval = CretaModelSnippet.waitData(
+    var retval = CretaManager.waitData(
       manager: bookManagerHolder!,
       //userId: AccountManager.currentLoginUser.email,
       consumerFunc: consumerFunc,

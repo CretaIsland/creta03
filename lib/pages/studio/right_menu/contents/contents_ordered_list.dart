@@ -28,10 +28,10 @@ import '../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import '../../../../design_system/menu/creta_drop_down_button.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import '../../../../lang/creta_studio_lang.dart';
-import '../../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
-import '../../../../model/creta_model.dart';
+import 'package:creta_common/model/creta_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../book_main_page.dart';
 import '../../left_menu/left_menu_page.dart';
@@ -857,8 +857,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     Widget autoSizeTypeWidget = CretaCheckbox(
       // 창 크기에 맞춤
       valueMap: {
-        CretaStudioLang.autoFontSize: model.isAutoFontSize(),
-        CretaStudioLang.autoFrameHeight: model.isAutoFrameOrSide(),
+        CretaLang.autoFontSize: model.isAutoFontSize(),
+        CretaLang.autoFrameHeight: model.isAutoFrameOrSide(),
         CretaStudioLang.noAutoSize: model.isNoAutoSize(),
       },
       onSelected: (title, value, nvMap) {

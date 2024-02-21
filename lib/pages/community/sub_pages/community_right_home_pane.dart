@@ -44,10 +44,9 @@ import '../../../data_io/playlist_manager.dart';
 import '../../../data_io/team_manager.dart';
 import '../../../data_io/user_property_manager.dart';
 import '../../../data_io/watch_history_manager.dart';
-import '../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../../model/book_model.dart';
 import '../../../model/channel_model.dart';
-import '../../../model/creta_model.dart';
 import '../../../model/favorites_model.dart';
 import '../../../model/playlist_model.dart';
 import '../../../model/team_model.dart';
@@ -482,7 +481,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
     // }
     var retval = Scrollbar(
       controller: widget.scrollController,
-      child: CretaModelSnippet.waitDatum(
+      child: CretaManager.waitDatum(
         managerList: [
           bookPublishedManagerHolder,
           channelManagerHolder,

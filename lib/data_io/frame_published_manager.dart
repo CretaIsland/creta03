@@ -2,7 +2,7 @@ import 'package:creta03/data_io/book_published_manager.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/database/abs_database.dart';
 
-import '../model/creta_model.dart';
+import 'package:creta_common/model/creta_model.dart';
 import '../model/frame_model.dart';
 import 'contents_manager.dart';
 import 'contents_published_manager.dart';

@@ -9,7 +9,7 @@ import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/component/clock/analog_clock.dart';
 import '../../../../design_system/component/clock/digital_clock.dart';
-import '../../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';

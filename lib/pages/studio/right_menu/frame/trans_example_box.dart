@@ -5,7 +5,7 @@ import 'package:creta03/pages/studio/right_menu/frame/transition_types.dart';
 import 'package:flutter/material.dart';
 import '../../../../data_io/frame_manager.dart';
 //import '../../../../design_system/dialog/creta_alert_dialog.dart';
-import '../../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../../../model/frame_model.dart';
 
 class TransExampleBox extends StatefulWidget {

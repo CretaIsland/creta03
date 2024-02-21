@@ -8,9 +8,9 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 
 import '../lang/creta_studio_lang.dart';
-import 'app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
+import 'package:creta_common/model/creta_model.dart';
 import 'book_model.dart';
-import 'creta_model.dart';
 import 'creta_style_mixin.dart';
 import 'frame_model.dart';
 

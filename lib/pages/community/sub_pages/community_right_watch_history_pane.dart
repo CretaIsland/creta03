@@ -42,8 +42,7 @@ import '../../../data_io/book_manager.dart';
 import '../../../data_io/team_manager.dart';
 import '../../../data_io/user_property_manager.dart';
 import '../../../data_io/channel_manager.dart';
-import '../../../model/app_enums.dart';
-import '../../../model/creta_model.dart';
+import 'package:creta_common/model/app_enums.dart';
 //import '../../../design_system/component/snippet.dart';
 import '../../../model/book_model.dart';
 import '../../../model/watch_history_model.dart';
@@ -454,7 +453,7 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     // Widget retval = SizedBox.shrink();
     // if (_onceDBIDListGetComplete == false) {
     //   if (kDebugMode) print('---build-2');
-    //   retval = CretaModelSnippet.waitData(
+    //   retval = CretaManager.waitData(
     //     manager: watchHistoryManagerHolder!,
     //     consumerFunc: _waitSignWidget,
     //     completeFunc: _getDBDataList,
@@ -462,7 +461,7 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     // }
     // else if (_onceDBDataListGetComplete == false) {
     //   if (kDebugMode) print('---build-3');
-    //   retval = CretaModelSnippet.waitData(
+    //   retval = CretaManager.waitData(
     //     manager: bookPublishedManagerHolder!,
     //     consumerFunc: _getItemPane,
     //     completeFunc: () { _onceDBDataListGetComplete = true; },
@@ -496,7 +495,7 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     //   if (kDebugMode) print('---build-3');
     return Scrollbar(
       controller: widget.scrollController,
-      child: CretaModelSnippet.waitDatum(
+      child: CretaManager.waitDatum(
         managerList: [
           watchHistoryManagerHolder,
           bookPublishedManagerHolder,

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/undo.dart';
 
 import '../../../../data_io/frame_manager.dart';
-import '../../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
 import '../left_menu_ele_button.dart';

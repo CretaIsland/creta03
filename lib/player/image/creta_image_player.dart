@@ -5,7 +5,7 @@ import 'dart:ui';
 import 'package:hycop/common/util/logger.dart';
 import 'package:http/http.dart' as http;
 
-import '../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../creta_abs_player.dart';
 
 class CretaImagePlayer extends CretaAbsPlayer {

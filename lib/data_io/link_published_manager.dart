@@ -4,7 +4,7 @@ import 'package:hycop/hycop/database/abs_database.dart';
 
 import '../model/frame_model.dart';
 import '../model/link_model.dart';
-import '../model/creta_model.dart';
+import 'package:creta_common/model/creta_model.dart';
 import 'frame_published_manager.dart';
 import 'link_manager.dart';
 import 'creta_manager.dart';

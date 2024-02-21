@@ -353,35 +353,7 @@ class CretaStudioLang {
   static const String whenClosePage = "사라질 때";
 
   // 사라질때,
-  static Map<String, int> pageTransitionType2 = {
-    "없음": 0,
-    "서서히 사라지기": 1, // AnimatedOpacity
-    "점점 작아지기": 2, // AnimatedScale , ScaleTransition
-    "좌우 슬라이딩": 3, // AnimatedPositioned , SlideTransition
-    "상하 슬라이딩": 4, // AnimatedPositioned ,SlideTransition
-  };
-  // 나타날때,
-  static Map<String, int> pageTransitionType = {
-    "없음": 0,
-    "서서히 나타나기": 1, // AnimatedOpacity
-    "점점 커지기": 2, // AnimatedScale , ScaleTransition
-    "좌우 슬라이딩": 3, // AnimatedPositioned , SlideTransition
-    "상하 슬라이딩": 4, // AnimatedPositioned ,SlideTransition
-  };
-
-  static List<String> animationTypes = [
-    "없음",
-    "페이드 인",
-    "플립",
-    "흔들기",
-    "흐려지기",
-    "커지기",
-    "회전",
-    "좌우로 움직이기",
-    "상하로 움직이기",
-  ];
-
-  static List<String> nextContentTypes = [
+    static List<String> nextContentTypes = [
     "없음",
     "일반 캐로셀",
     "기울어진 캐로셀",
@@ -605,8 +577,6 @@ class CretaStudioLang {
     userDefineText: 40,
   };
 
-  static const String autoFontSize = '프레임 크기에 텍스트 크기 조절 ';
-  static const String autoFrameHeight = '텍스트 크기에 프레임 크기 조절 ';
   static const String noAutoSize = '자동 크기 조절 사용 안함 ';
   static const String tts = '음성으로 방송';
   static const String translate = '번역';

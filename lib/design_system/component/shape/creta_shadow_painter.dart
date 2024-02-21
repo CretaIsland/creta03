@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import '../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import 'shape_path.dart';
 
 class CretaShadowPainter extends CustomPainter {

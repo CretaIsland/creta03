@@ -19,9 +19,9 @@ import '../../../../data_io/key_handler.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../lang/creta_studio_lang.dart';
-import '../../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../../../model/contents_model.dart';
-import '../../../../model/creta_model.dart';
+import '../../../../data_io/creta_manager.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../../../player/text/creta_text_mixin.dart';
@@ -87,7 +87,7 @@ class ContentsThumbnailState extends CretaState<ContentsThumbnail>
       return _consumerFunc();
     }
     logger.fine('wait onceDBGetComplete');
-    var retval = CretaModelSnippet.waitDatum(
+    var retval = CretaManager.waitDatum(
       managerList: [widget.contentsManager],
       consumerFunc: _consumerFunc,
     );

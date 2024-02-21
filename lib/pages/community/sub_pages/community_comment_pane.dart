@@ -33,7 +33,7 @@ import 'package:hycop/hycop.dart';
 //import '../creta_playlist_ui_item.dart';
 import '../../../design_system/text_field/creta_comment_bar.dart';
 import '../../../design_system/component/custom_image.dart';
-import '../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../../model/comment_model.dart';
 import '../../../model/user_property_model.dart';
 import '../../../data_io/comment_manager.dart';

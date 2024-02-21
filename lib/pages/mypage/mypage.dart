@@ -15,7 +15,7 @@ import 'package:creta03/design_system/component/snippet.dart';
 import 'package:creta03/design_system/creta_color.dart';
 import 'package:creta03/design_system/menu/creta_popup_menu.dart';
 import 'package:creta03/lang/creta_mypage_lang.dart';
-import 'package:creta03/model/creta_model.dart';
+import 'package:creta03/data_io/creta_manager.dart';
 //import 'package:creta03/pages/login_page.dart';
 import 'package:creta03/pages/mypage/sub_page/my_page_account_manage.dart';
 import 'package:creta03/pages/mypage/sub_page/my_page_dashboard.dart';
@@ -164,7 +164,8 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
       case AppRoutes.myPageSettings:
         return MyPageSettings(width: rightPaneRect.width, height: rightPaneRect.height);
       case AppRoutes.myPageTeamManage:
-        return MyPageTeamManage(width: rightPaneRect.width, height: rightPaneRect.height, replaceColor: replaceColor);
+        return MyPageTeamManage(
+            width: rightPaneRect.width, height: rightPaneRect.height, replaceColor: replaceColor);
       default:
         return MyPageDashBoard(
             width: rightPaneRect.width, height: rightPaneRect.height, replaceColor: replaceColor);
@@ -184,7 +185,7 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
         SizedBox(
             width: rightPaneRect.childWidth,
             height: rightPaneRect.childHeight + LayoutConst.cretaBannerMinHeight,
-            child: CretaModelSnippet.waitData(
+            child: CretaManager.waitData(
                 consumerFunc: rightArea, manager: CretaAccountManager.enterpriseManagerHolder))
       ],
     );
@@ -198,9 +199,11 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
     resize(context);
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<UserPropertyManager>.value(value: CretaAccountManager.userPropertyManagerHolder),
+        ChangeNotifierProvider<UserPropertyManager>.value(
+            value: CretaAccountManager.userPropertyManagerHolder),
         ChangeNotifierProvider<TeamManager>.value(value: CretaAccountManager.teamManagerHolder),
-        ChangeNotifierProvider<ChannelManager>.value(value: CretaAccountManager.channelManagerHolder),
+        ChangeNotifierProvider<ChannelManager>.value(
+            value: CretaAccountManager.channelManagerHolder),
       ],
       child: Snippet.CretaScaffoldOfMyPage(
           title: Container(

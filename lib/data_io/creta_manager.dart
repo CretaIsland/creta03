@@ -9,8 +9,8 @@ import 'package:mutex/mutex.dart';
 
 import '../design_system/component/snippet.dart';
 import '../design_system/menu/creta_popup_menu.dart';
-import '../model/app_enums.dart';
-import '../model/creta_model.dart';
+import 'package:creta_common/model/app_enums.dart';
+import 'package:creta_common/model/creta_model.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
 import '../pages/studio/studio_constant.dart';
@@ -31,6 +31,85 @@ abstract class CretaManager extends AbsExModelManager {
   static const int maxTotalLimit = 500;
   static const int maxPageLimit = 200;
   static const int defaultPageLimit = 50;
+
+  static FutureBuilder<List<AbsExModel>> waitData({
+    required CretaManager manager,
+    //required String userId,
+    required Widget Function()? consumerFunc,
+    Function()? waitFunc,
+    Function()? completeFunc,
+    Future<List<AbsExModel>>? dbComplete,
+  }) {
+    return FutureBuilder<List<AbsExModel>>(
+        future: dbComplete ?? manager.isGetListFromDBComplete(),
+        builder: (context, AsyncSnapshot<List<AbsExModel>> snapshot) {
+          if (snapshot.hasError) {
+            //error가 발생하게 될 경우 반환하게 되는 부분
+            logger.severe("data fetch error(WaitDatat)");
+            return const Center(child: Text('data fetch error(WaitDatat)'));
+          }
+          if (snapshot.hasData == false) {
+            logger.finest("wait data ...(WaitDatat)");
+            return Center(
+              child: waitFunc?.call() ?? Snippet.showWaitSign(),
+            );
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            logger.finest("founded ${snapshot.data!.length}");
+            // if (snapshot.data!.isEmpty) {
+            //   return const Center(child: Text('no book founded'));
+            // }
+            completeFunc?.call();
+            // if (consumerFunc != null) {
+            //   return consumerFunc();
+            // }
+            // return const SizedBox.shrink();
+            return consumerFunc?.call() ?? const SizedBox.shrink();
+          }
+          return Container();
+        });
+  }
+
+  static FutureBuilder<bool> waitDatum({
+    required List<CretaManager> managerList,
+    required Widget Function()? consumerFunc,
+    Widget Function()? waitFunc,
+    ScrollController? scrollController,
+    double? initScreenHeight,
+    Future<bool>? dbComplete,
+  }) {
+    return FutureBuilder<bool>(
+        //future: CretaManager._waitUntilAllManager(managerList),
+        future: dbComplete ?? CretaManager._waitUntilAllManager(managerList),
+        builder: (context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.hasError) {
+            //error가 발생하게 될 경우 반환하게 되는 부분
+            logger.severe("data fetch error(WaitDatum)");
+            return const Center(child: Text('data fetch error(WaitDatum)'));
+          }
+          if (snapshot.hasData == false) {
+            logger.finest("wait data ...(WaitData)");
+            return Center(
+              child: waitFunc?.call() ?? Snippet.showWaitSign(),
+            );
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            logger.finest("founded ${snapshot.data!}");
+            // if (snapshot.data!.isEmpty) {
+            //   return const Center(child: Text('no book founded'));
+            // }
+            return consumerFunc?.call() ?? const SizedBox.shrink();
+          }
+          return Container();
+        });
+  }
+
+  static Future<bool> _waitUntilAllManager(List<CretaManager> managerList) async {
+    for (var manager in managerList) {
+      await manager.isGetListFromDBComplete();
+    }
+    return true;
+  }
 
   CretaModel cloneModel(CretaModel src);
 

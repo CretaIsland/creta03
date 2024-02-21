@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_final_fields
 import 'dart:math' as math;
 import 'package:creta03/pages/studio/right_menu/frame/trans_example_box.dart';
+import 'package:creta_common/lang/creta_lang.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/common/undo/undo.dart';
@@ -26,7 +27,7 @@ import '../../../../design_system/creta_font.dart';
 import '../../../../design_system/menu/creta_widget_drop_down.dart';
 import '../../../../design_system/text_field/creta_text_field.dart';
 import '../../../../lang/creta_studio_lang.dart';
-import '../../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
@@ -1281,7 +1282,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       if (trails.isNotEmpty) {
         trails += "+";
       }
-      trails += CretaStudioLang.animationTypes[ele.index];
+      trails += CretaLang.animationTypes[ele.index];
     }
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
@@ -1327,7 +1328,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                 AniExampleBox(
                     key: ValueKey('frame=${AnimationType.values[i].name}+${_isSelect(i)}'),
                     model: widget.model,
-                    name: CretaStudioLang.animationTypes[i],
+                    name: CretaLang.animationTypes[i],
                     aniType: AnimationType.values[i],
                     selected: _isSelect(i),
                     onSelected: () {

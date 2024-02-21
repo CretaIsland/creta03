@@ -6,11 +6,11 @@ import 'package:hycop/hycop.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 
 import 'package:creta03/data_io/creta_manager.dart';
-import 'package:creta03/model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 //import 'package:creta03/model/frame_model.dart';
 import 'package:creta03/model/user_property_model.dart';
 //import 'package:creta03/pages/studio/studio_constant.dart';
-import 'package:creta03/model/creta_model.dart';
+import 'package:creta_common/model/creta_model.dart';
 import '../design_system/creta_font.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import '../model/team_model.dart';

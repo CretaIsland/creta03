@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
-import '../../../../model/creta_model.dart';
+import 'package:creta_common/model/creta_model.dart';
 import '../../../../pages/studio/containees/containee_nofifier.dart';
 import '../../../../pages/studio/left_menu/left_menu_page.dart';
 import '../../../../pages/studio/studio_variables.dart';

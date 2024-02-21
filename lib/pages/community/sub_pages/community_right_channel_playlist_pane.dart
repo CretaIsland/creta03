@@ -38,10 +38,9 @@ import '../../../data_io/playlist_manager.dart';
 import '../../../data_io/team_manager.dart';
 import '../../../data_io/user_property_manager.dart';
 import '../../../data_io/watch_history_manager.dart';
-import '../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../../model/book_model.dart';
 import '../../../model/channel_model.dart';
-import '../../../model/creta_model.dart';
 //import '../../../model/favorites_model.dart';
 import '../../../model/playlist_model.dart';
 import '../../../model/subscription_model.dart';
@@ -86,7 +85,8 @@ class CommunityRightChannelPlaylistPane extends StatefulWidget {
   final ChannelModel? currentChannelModel;
 
   @override
-  State<CommunityRightChannelPlaylistPane> createState() => _CommunityRightChannelPlaylistPaneState();
+  State<CommunityRightChannelPlaylistPane> createState() =>
+      _CommunityRightChannelPlaylistPaneState();
 }
 
 class _CommunityRightChannelPlaylistPaneState extends State<CommunityRightChannelPlaylistPane> {
@@ -99,7 +99,8 @@ class _CommunityRightChannelPlaylistPaneState extends State<CommunityRightChanne
   late BookPublishedManager bookPublishedManagerHolder;
   late WatchHistoryManager dummyManagerHolder;
   ChannelModel? _currentChannelModel;
-  final Map<String, UserPropertyModel> _userPropertyMap = {}; // <UserPropertyModel.email, UserPropertyModel>
+  final Map<String, UserPropertyModel> _userPropertyMap =
+      {}; // <UserPropertyModel.email, UserPropertyModel>
   final Map<String, TeamModel> _teamMap = {}; // <TeamModel.mid, TeamModel>
   final List<PlaylistModel> _playlistModelList = [];
   final Map<String, BookModel> _playlistsBooksMap = {}; // <Book.mid, Playlists.books>
@@ -139,7 +140,8 @@ class _CommunityRightChannelPlaylistPaneState extends State<CommunityRightChanne
       CretaManager.startQueries(
         joinList: [
           QuerySet(playlistManagerHolder, _getPlaylistsFromDB, _resultPlaylistsFromDB),
-          QuerySet(bookPublishedManagerHolder, _getPlaylistsBooksFromDB, _resultPlaylistsBooksFromDB),
+          QuerySet(
+              bookPublishedManagerHolder, _getPlaylistsBooksFromDB, _resultPlaylistsBooksFromDB),
           QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
         ],
         completeFunc: () {
@@ -165,7 +167,8 @@ class _CommunityRightChannelPlaylistPaneState extends State<CommunityRightChanne
   }
 
   void _scrollListener() {
-    CommunityRightChannelPane.lastScreenHeight = MediaQuery.of(context).size.height + widget.scrollController.position.maxScrollExtent - 60;
+    CommunityRightChannelPane.lastScreenHeight =
+        MediaQuery.of(context).size.height + widget.scrollController.position.maxScrollExtent - 60;
     CommunityRightChannelPane.lastScrollPosition = widget.scrollController.offset;
     if (kDebugMode) {
       print('lastScreenHeight=${CommunityRightChannelPane.lastScreenHeight}');
@@ -175,7 +178,8 @@ class _CommunityRightChannelPlaylistPaneState extends State<CommunityRightChanne
 
   void _getCurrentChannelFromDB(List<AbsExModel> modelList) {
     channelManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    channelManagerHolder.addWhereClause('mid', QueryValue(value: CommunityRightChannelPane.channelId));
+    channelManagerHolder.addWhereClause(
+        'mid', QueryValue(value: CommunityRightChannelPane.channelId));
     channelManagerHolder.queryByAddedContitions();
   }
 
@@ -223,7 +227,8 @@ class _CommunityRightChannelPlaylistPaneState extends State<CommunityRightChanne
       return;
     }
     playlistManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    playlistManagerHolder.addWhereClause('channelId', QueryValue(value: CommunityRightChannelPane.channelId));
+    playlistManagerHolder.addWhereClause(
+        'channelId', QueryValue(value: CommunityRightChannelPane.channelId));
     playlistManagerHolder.queryByAddedContitions();
   }
 
@@ -253,7 +258,8 @@ class _CommunityRightChannelPlaylistPaneState extends State<CommunityRightChanne
       return;
     }
     bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: bookAllList, operType: OperType.whereIn));
+    bookPublishedManagerHolder.addWhereClause(
+        'mid', QueryValue(value: bookAllList, operType: OperType.whereIn));
     bookPublishedManagerHolder.queryByAddedContitions();
   }
 
@@ -348,10 +354,15 @@ class _CommunityRightChannelPlaylistPaneState extends State<CommunityRightChanne
     // }
     var retval = Scrollbar(
       controller: widget.scrollController,
-      child: CretaModelSnippet.waitDatum(
+      child: CretaManager.waitDatum(
         initScreenHeight: CommunityRightChannelPane.lastScreenHeight,
         managerList: (widget.currentChannelModel == null)
-            ? [channelManagerHolder, userPropertyManagerHolder, teamManagerHolder, dummyManagerHolder]
+            ? [
+                channelManagerHolder,
+                userPropertyManagerHolder,
+                teamManagerHolder,
+                dummyManagerHolder
+              ]
             : [playlistManagerHolder, bookPublishedManagerHolder, dummyManagerHolder],
         //userId: AccountManager.currentLoginUser.email,
         consumerFunc: _getItemPane,

@@ -5,7 +5,7 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 
 import '../../../data_io/page_manager.dart';
-import '../../../model/creta_model.dart';
+import 'package:creta_common/model/creta_model.dart';
 import '../book_main_page.dart';
 import '../studio_getx_controller.dart';
 import 'containee_nofifier.dart';

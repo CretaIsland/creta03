@@ -10,7 +10,7 @@ import 'package:starsview/config/StarsConfig.dart';
 import 'package:starsview/starsview.dart';
 
 import '../../../design_system/effect/confetti.dart';
-import '../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../../model/creta_style_mixin.dart';
 import '../studio_variables.dart';
 

@@ -12,8 +12,8 @@ import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 
 import '../pages/studio/studio_constant.dart';
-import 'app_enums.dart';
-import 'creta_model.dart';
+import 'package:creta_common/model/app_enums.dart';
+import 'package:creta_common/model/creta_model.dart';
 import 'book_mixin.dart';
 
 // ignore: camel_case_types

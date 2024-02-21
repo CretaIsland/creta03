@@ -12,7 +12,8 @@ import 'package:hycop/hycop/enum/model_enums.dart';
 //import '../pages/studio/studio_constant.dart';
 //import '../pages/login_page.dart';
 //import 'app_enums.dart';
-import 'creta_model.dart';
+import 'package:creta_common/model/creta_model.dart';
+
 import 'team_model.dart';
 import 'user_property_model.dart';
 //import 'creta_style_mixin.dart';

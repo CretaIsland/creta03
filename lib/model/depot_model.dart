@@ -6,7 +6,7 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
-import 'creta_model.dart';
+import 'package:creta_common/model/creta_model.dart';
 
 // ignore: camel_case_types
 class DepotModel extends CretaModel {

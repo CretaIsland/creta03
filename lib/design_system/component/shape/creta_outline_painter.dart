@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import '../../../common/creta_utils.dart';
-import '../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import 'shape_path.dart';
 
 class CretaOutLinePainter extends CustomPainter {

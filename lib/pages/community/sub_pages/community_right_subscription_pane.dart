@@ -32,8 +32,7 @@ import '../creta_book_ui_item.dart';
 //import '../community_sample_data.dart';
 //import 'community_right_pane_mixin.dart';
 //import '../creta_playlist_ui_item.dart';
-import '../../../model/app_enums.dart';
-import '../../../model/creta_model.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../../model/subscription_model.dart';
 import '../../../model/channel_model.dart';
 import '../../../model/user_property_model.dart';
@@ -506,7 +505,7 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
     // }
     var retval = Scrollbar(
       controller: widget.scrollController,
-      child: CretaModelSnippet.waitDatum(
+      child: CretaManager.waitDatum(
         managerList: (widget.subscriptionModelList == null)
             ? [
                 subscriptionManagerHolder,

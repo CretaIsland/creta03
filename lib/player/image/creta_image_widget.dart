@@ -10,7 +10,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 
 import '../../data_io/key_handler.dart';
-import '../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../pages/studio/studio_variables.dart';
 import '../creta_abs_media_widget.dart';
 import 'creta_image_player.dart';

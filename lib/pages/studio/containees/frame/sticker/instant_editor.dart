@@ -12,7 +12,7 @@ import '../../../../../data_io/key_handler.dart';
 import '../../../../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import '../../../../../design_system/component/autoSizeTextField/auto_size_text_field.dart';
 import '../../../../../design_system/creta_color.dart';
-import '../../../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
 import '../../../../../player/text/creta_text_player.dart';

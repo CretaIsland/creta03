@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import '../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 
 class CretaTextSwitcher extends StatefulWidget {
   final String text;

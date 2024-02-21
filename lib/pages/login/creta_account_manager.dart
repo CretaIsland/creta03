@@ -19,7 +19,7 @@ import 'package:hycop/hycop.dart';
 // import '../../design_system/menu/creta_drop_down_button.dart';
 // import '../../design_system/menu/creta_popup_menu.dart';
 // import '../../design_system/text_field/creta_text_field.dart';
-// import '../../model/app_enums.dart';121
+// import 'package:creta_common/model/app_enums.dart';121
 import '../../data_io/user_property_manager.dart';
 import '../../data_io/team_manager.dart';
 import '../../data_io/frame_manager.dart';
@@ -97,7 +97,8 @@ class CretaAccountManager {
       _teamManagerHolder?.clearAll();
     }
     if (_favFrameManagerHolder == null) {
-      _favFrameManagerHolder = FrameManager(pageModel: PageModel('', BookModel('')), bookModel: BookModel(''));
+      _favFrameManagerHolder =
+          FrameManager(pageModel: PageModel('', BookModel('')), bookModel: BookModel(''));
       _favFrameManagerHolder?.configEvent();
       _favFrameManagerHolder?.clearAll();
     }
@@ -163,7 +164,8 @@ class CretaAccountManager {
     if (currentLoginUser.isLoginedUser == false && currentLoginUser.isGuestUser == false) {
       return false;
     }
-    userPropertyManagerHolder.addWhereClause('parentMid', QueryValue(value: currentLoginUser.userId));
+    userPropertyManagerHolder.addWhereClause(
+        'parentMid', QueryValue(value: currentLoginUser.userId));
     userPropertyManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     await userPropertyManagerHolder.queryByAddedContitions();
     AbsExModel? model = userPropertyManagerHolder.onlyOne();
@@ -278,7 +280,8 @@ class CretaAccountManager {
       for (var model in teamManagerHolder.modelList) {
         TeamModel teamModel = model as TeamModel;
         teamMap[teamModel.getMid] = teamModel;
-        _teamMemberMap[teamModel.getMid] = await _getTeamMembers(teamModel.getMid, teamModel.teamMembers);
+        _teamMemberMap[teamModel.getMid] =
+            await _getTeamMembers(teamModel.getMid, teamModel.teamMembers);
       }
       for (String teamMid in getUserProperty!.teams) {
         TeamModel? teamModel = teamMap[teamMid];
@@ -466,7 +469,8 @@ class CretaAccountManager {
 
   static Future<bool> _guestUserLogin() async {
     logger.finest('_login pressed');
-    await AccountManager.login(myConfig!.config.guestUserId, myConfig!.config.guestUserPassword).then((value) async {
+    await AccountManager.login(myConfig!.config.guestUserId, myConfig!.config.guestUserPassword)
+        .then((value) async {
       HycopFactory.setBucketId();
       await CretaAccountManager.initUserProperty(doGuestLogin: false).then((value) {
         if (value) {

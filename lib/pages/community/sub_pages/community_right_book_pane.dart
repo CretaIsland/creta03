@@ -53,7 +53,7 @@ import 'community_comment_pane.dart';
 import '../../../data_io/watch_history_manager.dart';
 import '../../studio/book_main_page.dart';
 import '../../studio/studio_variables.dart';
-import '../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../../model/book_model.dart';
 import '../../../model/channel_model.dart';
 import '../../../model/contents_model.dart';

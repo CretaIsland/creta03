@@ -6,7 +6,7 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_player_platform_interface/video_player_platform_interface.dart';
 
-import '../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../pages/studio/studio_variables.dart';
 import '../creta_abs_player.dart';
 

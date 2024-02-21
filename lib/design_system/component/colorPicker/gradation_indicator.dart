@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../../pages/studio/studio_snippet.dart';
 import '../../creta_color.dart';
 

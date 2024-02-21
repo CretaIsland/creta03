@@ -973,7 +973,7 @@ class _BookMainPageState extends State<BookMainPage> {
       logger.finest('already _onceDBGetComplete');
       return consumerFunc();
     }
-    // var retval = CretaModelSnippet.waitDatum(
+    // var retval = CretaManager.waitDatum(
     //   managerList: [
     //     BookMainPage.bookManagerHolder!,
     //     BookMainPage.pageManagerHolder!,

@@ -6,7 +6,7 @@ import 'package:creta03/design_system/component/snippet.dart';
 import 'package:hycop/common/undo/undo.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../lang/creta_studio_lang.dart';
-import '../../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
 import '../../studio_constant.dart';

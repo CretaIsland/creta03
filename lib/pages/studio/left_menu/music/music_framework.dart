@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:creta03/model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import 'package:creta03/pages/studio/left_menu/music/music_base.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';

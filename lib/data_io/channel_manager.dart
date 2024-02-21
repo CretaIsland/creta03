@@ -5,9 +5,9 @@ import 'package:hycop/hycop.dart';
 //import '../design_system/menu/creta_popup_menu.dart';
 //import 'package:creta_common/lang/creta_lang.dart';
 //import '../lang/creta_studio_lang.dart';
-//import '../model/app_enums.dart';
+//import 'package:creta_common/model/app_enums.dart';
 //import '../model/book_model.dart';
-import '../model/creta_model.dart';
+import 'package:creta_common/model/creta_model.dart';
 import '../model/channel_model.dart';
 import 'creta_manager.dart';
 

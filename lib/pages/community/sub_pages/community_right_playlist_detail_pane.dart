@@ -33,8 +33,7 @@ import '../../../data_io/creta_manager.dart';
 import '../../../data_io/book_published_manager.dart';
 import '../../../data_io/favorites_manager.dart';
 import '../../../data_io/playlist_manager.dart';
-//import '../../../model/app_enums.dart';
-import '../../../model/creta_model.dart';
+//import 'package:creta_common/model/app_enums.dart';
 //import '../../../design_system/component/snippet.dart';
 import '../../../model/book_model.dart';
 import '../../../model/playlist_model.dart';
@@ -122,7 +121,8 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
   }
 
   void _getPlaylistFromDB(List<AbsExModel> modelList) {
-    playlistManagerHolder.addWhereClause('mid', QueryValue(value: CommunityRightPlaylistDetailPane.playlistId));
+    playlistManagerHolder.addWhereClause(
+        'mid', QueryValue(value: CommunityRightPlaylistDetailPane.playlistId));
     playlistManagerHolder.queryByAddedContitions();
   }
 
@@ -149,7 +149,8 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
       return;
     }
     bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: bookIdList, operType: OperType.whereIn));
+    bookPublishedManagerHolder.addWhereClause(
+        'mid', QueryValue(value: bookIdList, operType: OperType.whereIn));
     bookPublishedManagerHolder.queryByAddedContitions();
   }
 
@@ -201,7 +202,8 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
         itemCount: _currentPlaylistModel!.bookIdList.length,
         //itemExtent: 204, // <== 아이템 드래그시 버그 있음
         itemBuilder: (context, index) {
-          BookModel bModel = _cretaBookMap[_currentPlaylistModel!.bookIdList[index]] ?? BookModel('dummy');
+          BookModel bModel =
+              _cretaBookMap[_currentPlaylistModel!.bookIdList[index]] ?? BookModel('dummy');
           return CretaPlaylistDetailItem(
             key: GlobalObjectKey('$index-${bModel.getMid}'),
             bookModel: bModel,
@@ -221,7 +223,7 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
     // }
     var retval = Scrollbar(
       controller: widget.scrollController,
-      child: CretaModelSnippet.waitDatum(
+      child: CretaManager.waitDatum(
         managerList: [bookPublishedManagerHolder, playlistManagerHolder, dummyManagerHolder],
         //userId: AccountManager.currentLoginUser.email,
         consumerFunc: _getItemPane,

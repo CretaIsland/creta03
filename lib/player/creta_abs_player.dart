@@ -5,7 +5,7 @@ import 'package:blobs/blobs.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../data_io/contents_manager.dart';
-import '../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../model/contents_model.dart';
 
 // Image 의 progress bar 전진을 위한 도구

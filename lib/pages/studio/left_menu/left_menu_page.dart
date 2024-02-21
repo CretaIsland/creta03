@@ -29,7 +29,7 @@ import '../../../design_system/menu/creta_popup_menu.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../../../model/book_model.dart';
 import '../../../model/contents_model.dart';
-import '../../../model/creta_model.dart';
+import 'package:creta_common/model/creta_model.dart';
 import '../../../model/frame_model.dart';
 import '../../../model/link_model.dart';
 import '../../../model/page_model.dart';

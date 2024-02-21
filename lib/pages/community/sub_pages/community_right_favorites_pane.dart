@@ -38,8 +38,7 @@ import '../../../data_io/user_property_manager.dart';
 import '../../../data_io/channel_manager.dart';
 //import '../community_sample_data.dart';
 //import 'community_right_pane_mixin.dart';
-import '../../../model/app_enums.dart';
-import '../../../model/creta_model.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../../model/book_model.dart';
 import '../../../model/favorites_model.dart';
 import '../../../model/team_model.dart';
@@ -318,7 +317,7 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
     // }
     var retval = Scrollbar(
       controller: widget.scrollController,
-      child: CretaModelSnippet.waitDatum(
+      child: CretaManager.waitDatum(
         managerList: [
           favoritesManagerHolder,
           bookPublishedManagerHolder,

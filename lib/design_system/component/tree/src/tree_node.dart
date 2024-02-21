@@ -10,7 +10,7 @@ import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/contents_model.dart';
-import '../../../../model/creta_model.dart';
+import 'package:creta_common/model/creta_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/link_model.dart';
 import '../../../../model/page_model.dart';

@@ -11,9 +11,9 @@ import 'package:hycop/common/util/logger.dart';
 //import '../../../../../design_system/component/creta_texture_widget.dart';
 //import '../../../../common/creta_utils.dart';
 import '../../../../data_io/frame_manager.dart';
-import '../../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../../../model/book_model.dart';
-import '../../../../model/creta_model.dart';
+import '../../../../data_io/creta_manager.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 //import '../../../../player/abs_player.dart';
@@ -209,9 +209,9 @@ class PageThumbnailState extends CretaState<PageThumbnail> with ContaineeMixin {
       //print('already _onceDBGetComplete page thumbnailr');
       return _consumerFunc();
     }
-    //var retval = CretaModelSnippet.waitData(
+    //var retval = CretaManager.waitData(
     //print('waitDatum here');
-    var retval = CretaModelSnippet.waitDatum(
+    var retval = CretaManager.waitDatum(
       managerList: [_frameManager!],
       //userId: AccountManager.currentLoginUser.email,
       consumerFunc: _consumerFunc,

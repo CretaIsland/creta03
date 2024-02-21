@@ -236,3 +236,7 @@ W:  Windows. L : Linux 를 각각 지원함을 의미함.
   WL collection: ^1.17.0
 
 
+##### git repository 형태의 dependency 를 업데이트하려면
+
+flutter pub upgrade creta_common
+

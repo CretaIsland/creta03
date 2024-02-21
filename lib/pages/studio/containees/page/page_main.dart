@@ -13,7 +13,7 @@ import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/component/creta_right_mouse_menu.dart';
 import '../../../../design_system/menu/creta_popup_menu.dart';
 import '../../../../lang/creta_studio_lang.dart';
-import '../../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
@@ -544,8 +544,8 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
   //     logger.fine('already _onceDBGetComplete page main');
   //     return _consumerFunc();
   //   }
-  //   //var retval = CretaModelSnippet.waitData(
-  //   var retval = CretaModelSnippet.waitDatum(
+  //   //var retval = CretaManager.waitData(
+  //   var retval = CretaManager.waitDatum(
   //     managerList: [
   //       frameManager!,
   //     ],

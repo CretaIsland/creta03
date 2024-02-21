@@ -4,7 +4,7 @@ import 'package:hycop/common/util/logger.dart';
 import '../../../../../data_io/frame_manager.dart';
 import '../../../../../data_io/key_handler.dart';
 import '../../../../../data_io/page_manager.dart';
-import '../../../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../../../../model/book_model.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';

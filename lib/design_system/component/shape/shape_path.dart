@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 
 //import '../../../common/creta_utils.dart';
-import '../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 
 class ShapePath {
   //static get math => null;

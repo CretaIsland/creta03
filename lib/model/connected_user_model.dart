@@ -2,7 +2,7 @@
 
 import 'package:hycop/hycop/enum/model_enums.dart';
 
-import 'creta_model.dart';
+import 'package:creta_common/model/creta_model.dart';
 
 // ignore: must_be_immutable
 class ConnectedUserModel extends CretaModel {

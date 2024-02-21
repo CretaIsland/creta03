@@ -6,7 +6,7 @@ import 'package:hycop/hycop/enum/model_enums.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../lang/creta_studio_lang.dart';
-import '../../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';

@@ -13,7 +13,7 @@ import 'package:hycop/hycop/database/abs_database.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import '../model/book_model.dart';
 import '../model/contents_model.dart';
-import '../model/creta_model.dart';
+import 'package:creta_common/model/creta_model.dart';
 import '../model/frame_model.dart';
 import '../model/page_model.dart';
 import '../pages/studio/book_main_page.dart';

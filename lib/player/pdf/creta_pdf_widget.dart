@@ -4,7 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
-import '../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../data_io/key_handler.dart';
 import '../../pages/studio/studio_variables.dart';
 import '../creta_abs_media_widget.dart';
@@ -29,7 +29,7 @@ class CretaPdfPlayerWidgetState extends CretaState<CretaPdfWidget> {
     super.initState();
     //widget.player.afterBuild();
   }
- 
+
   @override
   void dispose() {
     super.dispose();

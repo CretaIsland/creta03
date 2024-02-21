@@ -5,7 +5,7 @@ import 'package:creta03/data_io/book_published_manager.dart';
 import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
 import 'package:creta03/design_system/creta_color.dart';
 import 'package:creta03/design_system/creta_font.dart';
-import 'package:creta03/model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import 'package:creta03/model/book_model.dart';
 import 'package:creta03/pages/login/creta_account_manager.dart';
 import 'package:creta03/pages/login/login_dialog.dart';
@@ -58,8 +58,8 @@ class _LandingPageState extends State<LandingPage> {
   late VideoPlayerController signageAnimationController;
   late VideoPlayerController quickStartAnimationController;
 
-  final ValueNotifier<String> _animationLogoImgPath = ValueNotifier<String>("assets/landing_page/image/creta_animation_logo.png");
-
+  final ValueNotifier<String> _animationLogoImgPath =
+      ValueNotifier<String>("assets/landing_page/image/creta_animation_logo.png");
 
   // initalize video controller
   Future<void> initalizeVideoController() async {
@@ -170,10 +170,11 @@ class _LandingPageState extends State<LandingPage> {
     });
 
     Timer.periodic(const Duration(seconds: 3), (timer) {
-      _animationLogoImgPath.value = (_animationLogoImgPath.value == "assets/landing_page/image/creta_animation_logo.png") 
-        ? "assets/landing_page/image/creta_animation_logo2.png" : "assets/landing_page/image/creta_animation_logo.png";
+      _animationLogoImgPath.value =
+          (_animationLogoImgPath.value == "assets/landing_page/image/creta_animation_logo.png")
+              ? "assets/landing_page/image/creta_animation_logo2.png"
+              : "assets/landing_page/image/creta_animation_logo.png";
     });
-
   }
 
   @override
@@ -190,8 +191,11 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-
-    _screenWidth = _screenWidth == null ? 1600 : _screenWidth! < MediaQuery.sizeOf(context).width ? MediaQuery.sizeOf(context).width : _screenWidth;
+    _screenWidth = _screenWidth == null
+        ? 1600
+        : _screenWidth! < MediaQuery.sizeOf(context).width
+            ? MediaQuery.sizeOf(context).width
+            : _screenWidth;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -408,15 +412,12 @@ class _LandingPageState extends State<LandingPage> {
           Positioned(
               top: 50,
               child: Center(
-                child: ValueListenableBuilder(
-                  valueListenable: _animationLogoImgPath, 
-                  builder: (context, animationImgPath, child) {
-                    return Image(
-                      image: AssetImage(animationImgPath)
-                    );
-                  },
-                )
-              )),
+                  child: ValueListenableBuilder(
+                valueListenable: _animationLogoImgPath,
+                builder: (context, animationImgPath, child) {
+                  return Image(image: AssetImage(animationImgPath));
+                },
+              ))),
           Center(
             child: Padding(
               padding: const EdgeInsets.only(top: 150),
@@ -1244,107 +1245,96 @@ class _LandingPageState extends State<LandingPage> {
         color: Colors.black,
         child: Center(
           child: SizedBox(
-            width: 1360,
-            height: 127,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 20.0),
-                      child: Image(
-                        image: AssetImage("assets/creta_logo_blue.png"),
-                        width: 136,
-                        height: 40,
-                        color: Colors.white,
-                      ),
+              width: 1360,
+              height: 127,
+              child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  const Padding(
+                    padding: EdgeInsets.only(left: 20.0),
+                    child: Image(
+                      image: AssetImage("assets/creta_logo_blue.png"),
+                      width: 136,
+                      height: 40,
+                      color: Colors.white,
                     ),
-                    SizedBox(
-                      width: 219,
-                      height: 48,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          AccountManager.currentLoginUser.isLoginedUser
+                  ),
+                  SizedBox(
+                    width: 219,
+                    height: 48,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        AccountManager.currentLoginUser.isLoginedUser
                             ? customButton(
-                              width: 52,
-                              height: 19,
-                              child: Text("Logout", style: footerBTNStyle),
-                              backgroundColor: Colors.black,
-                              onTap: () {
-                                setState(() {
-                                  CretaAccountManager.logout();
-                                });
-                              })
+                                width: 52,
+                                height: 19,
+                                child: Text("Logout", style: footerBTNStyle),
+                                backgroundColor: Colors.black,
+                                onTap: () {
+                                  setState(() {
+                                    CretaAccountManager.logout();
+                                  });
+                                })
                             : customButton(
-                              width: 40,
-                              height: 19,
-                              child: Text("Login", style: footerBTNStyle),
-                              backgroundColor: Colors.black,
-                              onTap: () => LoginDialog.popupDialog(
-                                  context: context, getBuildContext: getBuildContext)),
-                          customButton(
+                                width: 40,
+                                height: 19,
+                                child: Text("Login", style: footerBTNStyle),
+                                backgroundColor: Colors.black,
+                                onTap: () => LoginDialog.popupDialog(
+                                    context: context, getBuildContext: getBuildContext)),
+                        customButton(
                             width: 140,
                             height: 48,
                             child: Text("Sign up", style: footerBTNStyle),
                             backgroundColor: Colors.black,
                             onTap: () => LoginDialog.popupDialog(
-                              context: context,
-                              getBuildContext: getBuildContext,
-                              loginPageState: LoginPageState.singup),
+                                context: context,
+                                getBuildContext: getBuildContext,
+                                loginPageState: LoginPageState.singup),
                             border: Border.all(color: Colors.white),
                             borderRadius: BorderRadius.circular(6.6)),
-                        ],
-                      ),
-                    )
-                  ]
-                ),
+                      ],
+                    ),
+                  )
+                ]),
                 Padding(
                   padding: const EdgeInsets.only(top: 24, bottom: 24),
-                  child: Container(
-                    width: 1360,
-                    height: 1,
-                    color: Colors.white
-                  ),
+                  child: Container(width: 1360, height: 1, color: Colors.white),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     SizedBox(
-                      width: 251,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const SizedBox(width: 20),
-                          customButton(
-                            width: 56, 
-                            height: 19, 
-                            child: Text("이용약관", style: CretaFont.bodyMedium.copyWith(color: Colors.white)),
-                            backgroundColor: Colors.black,
-                            onTap: () {
-                              Routemaster.of(context).push(AppRoutes.serviceTerms);
-                            }
-                          ),
-                          customButton(
-                            width: 115, 
-                            height: 19, 
-                            child: Text("개인정보처리방침", style: CretaFont.bodyMedium.copyWith(color: Colors.white)),
-                            backgroundColor: Colors.black,
-                            onTap: () {
-                              Routemaster.of(context).push(AppRoutes.privacyPolicy);
-                            }
-                          )
-                        ],
-                      )
-                    ),
-                    Text("© 2024 SQISOFT All Rights Reserved", style: CretaFont.bodyESmall.copyWith(color: Colors.white.withOpacity(.2)))
+                        width: 251,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const SizedBox(width: 20),
+                            customButton(
+                                width: 56,
+                                height: 19,
+                                child: Text("이용약관",
+                                    style: CretaFont.bodyMedium.copyWith(color: Colors.white)),
+                                backgroundColor: Colors.black,
+                                onTap: () {
+                                  Routemaster.of(context).push(AppRoutes.serviceTerms);
+                                }),
+                            customButton(
+                                width: 115,
+                                height: 19,
+                                child: Text("개인정보처리방침",
+                                    style: CretaFont.bodyMedium.copyWith(color: Colors.white)),
+                                backgroundColor: Colors.black,
+                                onTap: () {
+                                  Routemaster.of(context).push(AppRoutes.privacyPolicy);
+                                })
+                          ],
+                        )),
+                    Text("© 2024 SQISOFT All Rights Reserved",
+                        style: CretaFont.bodyESmall.copyWith(color: Colors.white.withOpacity(.2)))
                   ],
                 )
-              ]
-            )
-          ),
+              ])),
         ));
   }
 }

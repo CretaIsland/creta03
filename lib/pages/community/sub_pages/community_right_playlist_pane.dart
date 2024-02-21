@@ -38,8 +38,7 @@ import '../../../data_io/playlist_manager.dart';
 import '../../../data_io/channel_manager.dart';
 import '../../../data_io/user_property_manager.dart';
 import '../../../data_io/team_manager.dart';
-import '../../../model/app_enums.dart';
-import '../../../model/creta_model.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../../model/book_model.dart';
 import '../../../model/channel_model.dart';
 import '../../../model/user_property_model.dart';
@@ -145,7 +144,8 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
       searchKeyword: widget.filterSearchKeyword,
     );
     playlistManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    playlistManagerHolder.addWhereClause('channelId', QueryValue(value: CretaAccountManager.getUserProperty!.channelId));
+    playlistManagerHolder.addWhereClause(
+        'channelId', QueryValue(value: CretaAccountManager.getUserProperty!.channelId));
     playlistManagerHolder.queryByAddedContitions();
   }
 
@@ -178,7 +178,8 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
       return;
     }
     bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: bookIdList, operType: OperType.whereIn));
+    bookPublishedManagerHolder.addWhereClause(
+        'mid', QueryValue(value: bookIdList, operType: OperType.whereIn));
     bookPublishedManagerHolder.queryByAddedContitions();
   }
 
@@ -264,7 +265,7 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
   void _deletePlaylist(PlaylistModel model) {
     setState(() {
       playlistManagerHolder.removeToDB(model.getMid);
-      for(var plModel in _playlistModelList) {
+      for (var plModel in _playlistModelList) {
         if (plModel.getMid != model.getMid) continue;
         _playlistModelList.remove(plModel);
         break;
@@ -309,7 +310,7 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
     // }
     var retval = Scrollbar(
       controller: widget.scrollController,
-      child: CretaModelSnippet.waitDatum(
+      child: CretaManager.waitDatum(
         managerList: [playlistManagerHolder, bookPublishedManagerHolder, dummyManagerHolder],
         //userId: AccountManager.currentLoginUser.email,
         consumerFunc: _getItemPane,

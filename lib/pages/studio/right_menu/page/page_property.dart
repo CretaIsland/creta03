@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:creta03/data_io/page_manager.dart';
+import 'package:creta_common/lang/creta_lang.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -13,7 +14,7 @@ import '../../../../design_system/component/creta_proprty_slider.dart';
 //import '../../../../design_system/component/example_box_mixin.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../lang/creta_studio_lang.dart';
-import '../../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
@@ -307,7 +308,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
               });
               BookMainPage.pageManagerHolder!.notify();
             },
-            valueMap: CretaStudioLang.pageTransitionType,
+            valueMap: CretaLang.pageTransitionType,
             defaultTitle: PageTransitionType.getTitleFromInt(_model!.transitionEffect.value),
             //spacebetween: 10,
             padding: EdgeInsets.zero,

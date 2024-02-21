@@ -14,7 +14,7 @@ import 'package:hycop/hycop.dart';
 import '../design_system/menu/creta_popup_menu.dart';
 //import 'package:creta_common/lang/creta_lang.dart';
 import '../lang/creta_studio_lang.dart';
-import '../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../pages/login/creta_account_manager.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/studio_constant.dart';

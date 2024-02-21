@@ -16,9 +16,9 @@ import '../lang/creta_studio_lang.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_variables.dart';
-import 'app_enums.dart';
 import 'book_model.dart';
-import 'creta_model.dart';
+import 'package:creta_common/model/app_enums.dart';
+import 'package:creta_common/model/creta_model.dart';
 import 'creta_style_mixin.dart';
 
 // ignore: camel_case_types

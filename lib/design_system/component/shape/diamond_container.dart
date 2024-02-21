@@ -1,7 +1,7 @@
 // // ignore_for_file: prefer_const_constructors_in_immutables
 import 'package:flutter/material.dart';
 
-import '../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import 'creta_clipper.dart';
 
 class DiamondContainer extends StatelessWidget {
@@ -23,7 +23,8 @@ class DiamondContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipPath(
-      clipper: CretaClipper(mid: ShapeType.diamond.name, shapeType: ShapeType.diamond, applyScale: applyScale),
+      clipper: CretaClipper(
+          mid: ShapeType.diamond.name, shapeType: ShapeType.diamond, applyScale: applyScale),
       child: Container(
         width: width,
         height: height,

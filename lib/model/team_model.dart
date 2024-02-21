@@ -1,6 +1,6 @@
 import 'package:creta_common/common/creta_common_utils.dart';
 
-import 'package:creta03/model/creta_model.dart';
+import 'package:creta_common/model/creta_model.dart';
 import 'package:hycop/hycop.dart';
 
 // ignore: must_be_immutable

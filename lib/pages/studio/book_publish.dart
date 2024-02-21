@@ -24,7 +24,7 @@ import '../../design_system/menu/creta_drop_down_button.dart';
 import '../../design_system/text_field/creta_text_field.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
-import '../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../model/book_model.dart';
 import '../../model/team_model.dart';
 import '../../routes.dart';

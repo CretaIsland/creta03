@@ -1,7 +1,7 @@
 import 'package:hycop/hycop.dart';
 
 import 'package:creta03/data_io/creta_manager.dart';
-import 'package:creta03/model/creta_model.dart';
+import 'package:creta_common/model/creta_model.dart';
 
 import '../model/book_model.dart';
 import '../model/filter_model.dart';

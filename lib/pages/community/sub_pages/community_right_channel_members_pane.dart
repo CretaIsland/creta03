@@ -40,10 +40,9 @@ import '../../../data_io/channel_manager.dart';
 import '../../../data_io/team_manager.dart';
 import '../../../data_io/user_property_manager.dart';
 import '../../../data_io/watch_history_manager.dart';
-import '../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 //import '../../../model/book_model.dart';
 import '../../../model/channel_model.dart';
-import '../../../model/creta_model.dart';
 //import '../../../model/favorites_model.dart';
 //import '../../../model/playlist_model.dart';
 import '../../../model/subscription_model.dart';
@@ -101,11 +100,13 @@ class _CommunityRightChannelMembersPaneState extends State<CommunityRightChannel
   //late BookPublishedManager bookPublishedManagerHolder;
   late WatchHistoryManager dummyManagerHolder;
   ChannelModel? _currentChannelModel;
-  final Map<String, UserPropertyModel> _userPropertyMap = {}; // <UserPropertyModel.email, UserPropertyModel>
+  final Map<String, UserPropertyModel> _userPropertyMap =
+      {}; // <UserPropertyModel.email, UserPropertyModel>
   final Map<String, TeamModel> _teamMap = {}; // <TeamModel.mid, TeamModel>
   //final List<PlaylistModel> _playlistModelList = [];
   //final Map<String, BookModel> _playlistsBooksMap = {}; // <Book.mid, Playlists.books>
-  final Map<String, UserPropertyModel> _membersPropertyMap = {}; // <UserPropertyModel.email, UserPropertyModel>
+  final Map<String, UserPropertyModel> _membersPropertyMap =
+      {}; // <UserPropertyModel.email, UserPropertyModel>
   final List<String> _membersIdList = [];
   final Map<String, ChannelModel> _membersChannelMap = {};
   //bool _onceDBGetComplete = false;
@@ -143,7 +144,8 @@ class _CommunityRightChannelMembersPaneState extends State<CommunityRightChannel
       _currentChannelModel = widget.currentChannelModel;
       CretaManager.startQueries(
         joinList: [
-          QuerySet(userPropertyManagerHolder, _getMembersPropertyFromDB, _resultMembersPropertyFromDB),
+          QuerySet(
+              userPropertyManagerHolder, _getMembersPropertyFromDB, _resultMembersPropertyFromDB),
           QuerySet(channelManagerHolder, _getMembersChannelFromDB, _resultMembersChannelFromDB),
           QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
         ],
@@ -181,7 +183,8 @@ class _CommunityRightChannelMembersPaneState extends State<CommunityRightChannel
 
   void _getCurrentChannelFromDB(List<AbsExModel> modelList) {
     channelManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    channelManagerHolder.addWhereClause('mid', QueryValue(value: CommunityRightChannelPane.channelId));
+    channelManagerHolder.addWhereClause(
+        'mid', QueryValue(value: CommunityRightChannelPane.channelId));
     channelManagerHolder.queryByAddedContitions();
   }
 
@@ -223,7 +226,8 @@ class _CommunityRightChannelMembersPaneState extends State<CommunityRightChannel
   }
 
   void _getMembersPropertyFromDB(List<AbsExModel> modelList) {
-    if (widget.currentChannelModel == null || (widget.currentChannelModel?.teamModel?.teamMembers.length ?? 0) == 0) {
+    if (widget.currentChannelModel == null ||
+        (widget.currentChannelModel?.teamModel?.teamMembers.length ?? 0) == 0) {
       userPropertyManagerHolder.setState(DBState.idle);
       return;
     }
@@ -245,7 +249,8 @@ class _CommunityRightChannelMembersPaneState extends State<CommunityRightChannel
       return;
     }
     channelManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    channelManagerHolder.addWhereClause('userId', QueryValue(value: _membersIdList, operType: OperType.whereIn));
+    channelManagerHolder.addWhereClause(
+        'userId', QueryValue(value: _membersIdList, operType: OperType.whereIn));
     channelManagerHolder.queryByAddedContitions();
   }
 
@@ -322,7 +327,8 @@ class _CommunityRightChannelMembersPaneState extends State<CommunityRightChannel
                 child: SizedBox(
                   child: Column(
                     children: [
-                      userPropertyManagerHolder.imageCircle(userModel.profileImgUrl, userModel.nickname, radius: 84/2),
+                      userPropertyManagerHolder
+                          .imageCircle(userModel.profileImgUrl, userModel.nickname, radius: 84 / 2),
                       SizedBox(height: 20),
                       Text(
                         chModel.name,
@@ -358,10 +364,15 @@ class _CommunityRightChannelMembersPaneState extends State<CommunityRightChannel
     // }
     var retval = Scrollbar(
       controller: widget.scrollController,
-      child: CretaModelSnippet.waitDatum(
+      child: CretaManager.waitDatum(
         initScreenHeight: CommunityRightChannelPane.lastScreenHeight,
         managerList: (widget.currentChannelModel == null)
-            ? [channelManagerHolder, userPropertyManagerHolder, teamManagerHolder, dummyManagerHolder]
+            ? [
+                channelManagerHolder,
+                userPropertyManagerHolder,
+                teamManagerHolder,
+                dummyManagerHolder
+              ]
             : [userPropertyManagerHolder, channelManagerHolder, dummyManagerHolder],
         //userId: AccountManager.currentLoginUser.email,
         consumerFunc: _getItemPane,

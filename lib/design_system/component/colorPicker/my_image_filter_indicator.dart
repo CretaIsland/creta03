@@ -5,7 +5,7 @@ import 'package:hycop/common/util/logger.dart';
 //import 'package:glass/glass.dart';
 
 import '../../../lang/creta_studio_lang.dart';
-import '../../../model/app_enums.dart';
+import 'package:creta_common/model/app_enums.dart';
 import '../../creta_color.dart';
 import '../../creta_font.dart';
 

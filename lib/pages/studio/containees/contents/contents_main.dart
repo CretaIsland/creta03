@@ -15,7 +15,7 @@ import '../../../../data_io/link_manager.dart';
 import '../../../../data_io/key_handler.dart';
 import '../../../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import '../../../../model/contents_model.dart';
-import '../../../../model/creta_model.dart';
+import '../../../../data_io/creta_manager.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../../../player/creta_play_timer.dart';
@@ -79,7 +79,7 @@ class ContentsMainState extends CretaState<ContentsMain> {
       return _consumerFunc();
     }
 
-    var retval = CretaModelSnippet.waitDatum(
+    var retval = CretaManager.waitDatum(
       managerList: [widget.contentsManager],
       consumerFunc: _consumerFunc,
     );
