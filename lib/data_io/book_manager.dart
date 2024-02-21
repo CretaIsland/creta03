@@ -3,7 +3,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
-
+import 'package:creta_common/common/creta_common_utils.dart';
 import 'package:creta03/model/user_property_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -141,7 +141,7 @@ class BookManager extends CretaManager {
     String url = 'https://picsum.photos/200/?random=$randomNumber';
 
     String name = '${CretaStudioLang.sampleBookName} ';
-    name += CretaUtils.getNowString(deli1: '', deli2: ' ', deli3: '', deli4: ' ');
+    name += CretaCommonUtils.getNowString(deli1: '', deli2: ' ', deli3: '', deli4: ' ');
 
     //print('old mid = ${onlyOne()!.mid}');
     BookModel sampleBook = BookModel.withName(name,
@@ -349,7 +349,7 @@ class BookManager extends CretaManager {
     String retval = '{\n$jsonStr\n}';
 
     if (shouldDownload == false) {
-      CretaUtils.saveLogToFile(retval, "${book.mid}.json");
+      CretaCommonUtils.saveLogToFile(retval, "${book.mid}.json");
     }
 
     //base64 encoding 필요

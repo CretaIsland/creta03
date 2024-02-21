@@ -7,7 +7,8 @@ import 'package:hycop/common/util/logger.dart';
 //import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
-import '../common/creta_utils.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 //import '../pages/studio/studio_constant.dart';
 //import 'app_enums.dart';
 import 'creta_model.dart';
@@ -66,7 +67,7 @@ class PlaylistModel extends CretaModel {
     channelId = map["channelId"] ?? '';
     isPublic = map["isPublic"] ?? false;
     //lastUpdateTime = convertValue(map["lastUpdateTime"]); // Timestamp(in Firebase) => DateTime(in Flutter)
-    bookIdList = CretaUtils.jsonStringToList((map["bookIdList"] ?? ''));
+    bookIdList = CretaCommonUtils.jsonStringToList((map["bookIdList"] ?? ''));
   }
 
   @override
@@ -78,7 +79,7 @@ class PlaylistModel extends CretaModel {
         "channelId": channelId,
         "isPublic": isPublic,
         //"lastUpdateTime": lastUpdateTime,
-        "bookIdList": CretaUtils.listToString(bookIdList),
+        "bookIdList": CretaCommonUtils.listToString(bookIdList),
       }.entries);
   }
 }

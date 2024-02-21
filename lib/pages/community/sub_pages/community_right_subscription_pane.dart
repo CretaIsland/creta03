@@ -25,8 +25,8 @@ import 'package:hycop/hycop.dart';
 // import '../../../design_system/menu/creta_drop_down_button.dart';
 // import '../../../design_system/text_field/creta_search_bar.dart';
 //import '../../../pages/login_page.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 import '../../../pages/login/creta_account_manager.dart';
-import '../../../common/creta_utils.dart';
 import '../../../design_system/component/creta_layout_rect.dart';
 import '../creta_book_ui_item.dart';
 //import '../community_sample_data.dart';
@@ -140,9 +140,11 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
       if (kDebugMode) print('widget.subscriptionModelList == null');
       CretaManager.startQueries(
         joinList: [
-          QuerySet(subscriptionManagerHolder, _getSubscriptionListFromDB, _resultSubscriptionListFromDB),
+          QuerySet(
+              subscriptionManagerHolder, _getSubscriptionListFromDB, _resultSubscriptionListFromDB),
           QuerySet(channelManagerHolder, _getChannelListFromDB, _resultChannelListFromDB),
-          QuerySet(userPropertyManagerHolder, _getUserPropertyListFromDB, _resultUserPropertyListFromDB),
+          QuerySet(
+              userPropertyManagerHolder, _getUserPropertyListFromDB, _resultUserPropertyListFromDB),
           QuerySet(teamManagerHolder, _getTeamListFromDB, _resultTeamListFromDB),
           QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
         ],
@@ -151,13 +153,16 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
         },
       );
     } else {
-      if (kDebugMode) print('widget.subscriptionModelList.length=${widget.subscriptionModelList!.length}');
+      if (kDebugMode) {
+        print('widget.subscriptionModelList.length=${widget.subscriptionModelList!.length}');
+      }
       CretaManager.startQueries(
         joinList: [
           QuerySet(bookPublishedManagerHolder, _getBookListFromDB, _resultBookListFromDB),
           QuerySet(favoritesManagerHolder, _getFavoritesFromDB, _resultFavoritesFromDB),
           QuerySet(playlistManagerHolder, _getPlaylistsFromDB, _resultPlaylistsFromDB),
-          QuerySet(bookPublishedManagerHolder, _getPlaylistsBooksFromDB, _resultPlaylistsBooksFromDB),
+          QuerySet(
+              bookPublishedManagerHolder, _getPlaylistsBooksFromDB, _resultPlaylistsBooksFromDB),
           QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
         ],
         completeFunc: () {
@@ -209,7 +214,8 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
       return;
     }
     channelManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    channelManagerHolder.addWhereClause('mid', QueryValue(value: channelIdList, operType: OperType.whereIn));
+    channelManagerHolder.addWhereClause(
+        'mid', QueryValue(value: channelIdList, operType: OperType.whereIn));
     channelManagerHolder.queryByAddedContitions();
   }
 
@@ -312,7 +318,8 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
   void _getPlaylistsFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('_getPlaylistsFromDB=${modelList.length}');
     playlistManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    playlistManagerHolder.addWhereClause('channelId', QueryValue(value: CretaAccountManager.getUserProperty!.channelId));
+    playlistManagerHolder.addWhereClause(
+        'channelId', QueryValue(value: CretaAccountManager.getUserProperty!.channelId));
     playlistManagerHolder.queryByAddedContitions();
   }
 
@@ -358,7 +365,8 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
   void _addToFavorites(String bookId, bool isFavorites) async {
     if (isFavorites) {
       // already in favorites => remove favorites from DB
-      await favoritesManagerHolder.removeFavoritesFromDB(bookId, AccountManager.currentLoginUser.email);
+      await favoritesManagerHolder.removeFavoritesFromDB(
+          bookId, AccountManager.currentLoginUser.email);
       setState(() {
         _favoritesBookIdMap[bookId] = false;
       });
@@ -457,7 +465,8 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
 
   Widget _getItemPane() {
     final width = widget.cretaLayoutRect.childWidth - 286 - 20;
-    final int columnCount = CretaUtils.getItemColumnCount(width, _itemMinWidth, _rightViewItemGapX);
+    final int columnCount =
+        CretaCommonUtils.getItemColumnCount(width, _itemMinWidth, _rightViewItemGapX);
     _itemWidth = ((width + _rightViewItemGapX) ~/ columnCount) - _rightViewItemGapX;
     _itemHeight = _itemWidth * _itemSizeRatio;
 

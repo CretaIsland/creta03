@@ -15,7 +15,8 @@ import '../../routes.dart';
 import '../login/login_dialog.dart';
 import '../../pages/login/creta_account_manager.dart';
 //import '../../common/cross_common_job.dart';
-import '../../common/creta_utils.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 import '../../design_system/creta_font.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
@@ -357,7 +358,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                   for (var menuItem in _rightTabMenuList) {
                     menuItem.selected = (menuItem.index == CommunityChannelType.books.index);
                     if (menuItem.selected) {
-                      if (kDebugMode) print('pressed CommunityChannelType.books (${menuItem.index})');
+                      if (kDebugMode) {
+                        print('pressed CommunityChannelType.books (${menuItem.index})');
+                      }
                     }
                   }
                   if (CommunityRightChannelPane.lastDropdownMenuCount == 0) {
@@ -383,7 +386,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                   for (var menuItem in _rightTabMenuList) {
                     menuItem.selected = (menuItem.index == CommunityChannelType.playlists.index);
                     if (menuItem.selected) {
-                      if (kDebugMode) print('pressed CommunityChannelType.books (${menuItem.index})');
+                      if (kDebugMode) {
+                        print('pressed CommunityChannelType.books (${menuItem.index})');
+                      }
                     }
                   }
                   if (CommunityRightChannelPane.lastDropdownMenuCount == 0) {
@@ -406,9 +411,12 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                 setState(() {
                   _communityChannelType = CommunityChannelType.memberChannels;
                   for (var menuItem in _rightTabMenuList) {
-                    menuItem.selected = (menuItem.index == CommunityChannelType.memberChannels.index);
+                    menuItem.selected =
+                        (menuItem.index == CommunityChannelType.memberChannels.index);
                     if (menuItem.selected) {
-                      if (kDebugMode) print('pressed CommunityChannelType.books (${menuItem.index})');
+                      if (kDebugMode) {
+                        print('pressed CommunityChannelType.books (${menuItem.index})');
+                      }
                     }
                   }
                   if (CommunityRightChannelPane.lastDropdownMenuCount > 0) {
@@ -433,7 +441,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                   for (var menuItem in _rightTabMenuList) {
                     menuItem.selected = (menuItem.index == CommunityChannelType.info.index);
                     if (menuItem.selected) {
-                      if (kDebugMode) print('pressed CommunityChannelType.books (${menuItem.index})');
+                      if (kDebugMode) {
+                        print('pressed CommunityChannelType.books (${menuItem.index})');
+                      }
                     }
                   }
                   if (CommunityRightChannelPane.lastDropdownMenuCount > 0) {
@@ -706,7 +716,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           ),
         ]);
       }
-      Widget hashtagWidget = (size.width > 630) ? Row(children: _getHashtagListOnBanner()) : Container();
+      Widget hashtagWidget =
+          (size.width > 630) ? Row(children: _getHashtagListOnBanner()) : Container();
       return SizedBox(
         width: size.width,
         height: size.height,
@@ -918,7 +929,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                       Row(
                         children: [
                           Text(
-                            (_currentChannelModel == null) ? '' : '${_currentChannelModel!.name}님의 채널',
+                            (_currentChannelModel == null)
+                                ? ''
+                                : '${_currentChannelModel!.name}님의 채널',
                             overflow: TextOverflow.ellipsis,
                             style: CretaFont.displaySmall.copyWith(
                               color: CretaColor.text[700],
@@ -935,7 +948,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                               tooltip: '채널 주소 복사',
                               onPressed: () {
                                 String url = Uri.base.origin;
-                                url += '${AppRoutes.channel}?${CommunityRightChannelPane.channelId}';
+                                url +=
+                                    '${AppRoutes.channel}?${CommunityRightChannelPane.channelId}';
                                 Clipboard.setData(ClipboardData(text: url));
                               },
                             ),
@@ -945,7 +959,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                       SizedBox(height: 18),
                       Row(
                         children: [
-                          if (_currentChannelModel != null && _currentChannelModel!.teamId.isNotEmpty)
+                          if (_currentChannelModel != null &&
+                              _currentChannelModel!.teamId.isNotEmpty)
                             Text(
                               '${_currentChannelModel!.name} 외 ${_currentChannelModel!.followerCount}명',
                               overflow: TextOverflow.ellipsis,
@@ -965,10 +980,13 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                           //     fontWeight: CretaFont.medium,
                           //   ),
                           // ),
-                          if (_currentChannelModel != null && _currentChannelModel!.teamId.isNotEmpty)
+                          if (_currentChannelModel != null &&
+                              _currentChannelModel!.teamId.isNotEmpty)
                             SizedBox(width: 20),
                           Text(
-                            (_currentChannelModel == null) ? '' : '구독자 ${_currentChannelModel!.followerCount}명',
+                            (_currentChannelModel == null)
+                                ? ''
+                                : '구독자 ${_currentChannelModel!.followerCount}명',
                             overflow: TextOverflow.ellipsis,
                             style: CretaFont.buttonLarge.copyWith(
                               color: CretaColor.text[400],
@@ -977,13 +995,15 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                             ),
                           ),
                           SizedBox(width: 12),
-                          (CretaAccountManager.getUserProperty?.channelId == _currentChannelModel?.getMid)
+                          (CretaAccountManager.getUserProperty?.channelId ==
+                                  _currentChannelModel?.getMid)
                               ? SizedBox.shrink()
                               : BTN.fill_blue_t_m(
                                   width: 84,
                                   text: (_selectedSubscriptionModel == null) ? '구독하기' : '구독중',
                                   onPressed: () {
-                                    SubscriptionManager subscriptionManagerHolder = SubscriptionManager();
+                                    SubscriptionManager subscriptionManagerHolder =
+                                        SubscriptionManager();
                                     if (_selectedSubscriptionModel == null) {
                                       subscriptionManagerHolder
                                           .createSubscription(
@@ -995,8 +1015,10 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                                           showSnackBar(context, '구독되었습니다');
                                           setState(() {
                                             _selectedSubscriptionModel = SubscriptionModel.withName(
-                                                channelId: CretaAccountManager.getUserProperty!.channelId,
-                                                subscriptionChannelId: _currentChannelModel!.getMid);
+                                                channelId:
+                                                    CretaAccountManager.getUserProperty!.channelId,
+                                                subscriptionChannelId:
+                                                    _currentChannelModel!.getMid);
                                           });
                                         },
                                       );
@@ -1181,8 +1203,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                     SizedBox(width: 12),
                     Text(
                       (_currentChannelModel == null) ? '' : '${_currentChannelModel!.name}님의 채널',
-                      style:
-                          CretaFont.titleELarge.copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
+                      style: CretaFont.titleELarge
+                          .copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
                     ),
                     SizedBox(width: 20),
                     Text(
@@ -1209,7 +1231,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                 Row(
                   children: [
                     Text(
-                      (_currentChannelModel == null) ? '' : '구독자 ${_currentChannelModel!.followerCount}명',
+                      (_currentChannelModel == null)
+                          ? ''
+                          : '구독자 ${_currentChannelModel!.followerCount}명',
                       style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[400]),
                     ),
                     SizedBox(width: 12),
@@ -1287,7 +1311,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   Widget _getCommunityBookTitlePane(Size size) {
     final GlobalKey menuButtonKey =
         GlobalObjectKey('_getCommunityBookTitlePane.BTN.fill_gray_i_l.CretaPopupMenu.showMenu');
-    final String channelLinkUrl = '${AppRoutes.channel}?${_userPropertyModelOfBookModel?.channelId}';
+    final String channelLinkUrl =
+        '${AppRoutes.channel}?${_userPropertyModelOfBookModel?.channelId}';
     return Container(
       width: size.width - LayoutConst.cretaScrollbarWidth,
       height: 140, //size.height,
@@ -1338,7 +1363,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                             }),
                         SizedBox(width: 20),
                         Text(
-                          CretaUtils.dateToDurationString(_currentBookModel!.updateTime),
+                          CretaCommonUtils.dateToDurationString(_currentBookModel!.updateTime),
                           style: CretaFont.bodyMedium.copyWith(color: Colors.white),
                         ),
                         SizedBox(width: 20),
@@ -1362,7 +1387,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                       if (_currentBookModel!.isEditable) SizedBox(width: 12),
                       if (AccountManager.currentLoginUser.isLoginedUser)
                         BTN.fill_gray_it_l(
-                          icon: _bookIsFavorites ? Icons.favorite_outlined : Icons.favorite_border_outlined,
+                          icon: _bookIsFavorites
+                              ? Icons.favorite_outlined
+                              : Icons.favorite_border_outlined,
                           text: '${_currentBookModel!.likeCount}',
                           onPressed: _toggleBookToFavorites,
                           buttonColor: CretaButtonColor.transparent,
@@ -1418,7 +1445,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                                 CretaMenuItem(
                                   caption: '편집하기',
                                   onPressed: () {
-                                    String url = '${AppRoutes.studioBookMainPage}?${_currentBookModel?.sourceMid}';
+                                    String url =
+                                        '${AppRoutes.studioBookMainPage}?${_currentBookModel?.sourceMid}';
                                     //Routemaster.of(context).push(url);
                                     AppRoutes.launchTab(url);
                                   },
@@ -1433,8 +1461,10 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                               CretaMenuItem(caption: '공유하기', onPressed: () {}),
                               if (AccountManager.currentLoginUser.isLoginedUser)
                                 CretaMenuItem(caption: '다운로드', onPressed: () {}),
-                              if (_currentBookModel!.isEditable) CretaMenuItem(caption: '삭제하기', onPressed: () {}),
-                              if (_currentBookModel!.isCopyable) CretaMenuItem(caption: '사본만들기', onPressed: () {}),
+                              if (_currentBookModel!.isEditable)
+                                CretaMenuItem(caption: '삭제하기', onPressed: () {}),
+                              if (_currentBookModel!.isCopyable)
+                                CretaMenuItem(caption: '사본만들기', onPressed: () {}),
                               if (AccountManager.currentLoginUser.isLoginedUser)
                                 CretaMenuItem(
                                   caption: '전체화면 재생 주소 복사',
@@ -1600,8 +1630,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                           ),
                           SizedBox(width: 28),
                           Text(
-                            //'최근 업데이트 ${CretaUtils.dateToDurationString(_currentPlaylistModel!.lastUpdateTime)}',
-                            '최근 업데이트 ${CretaUtils.dateToDurationString(_currentPlaylistModel!.updateTime)}',
+                            //'최근 업데이트 ${CretaCommonUtils.dateToDurationString(_currentPlaylistModel!.lastUpdateTime)}',
+                            '최근 업데이트 ${CretaCommonUtils.dateToDurationString(_currentPlaylistModel!.updateTime)}',
                             style: CretaFont.buttonMedium,
                           ),
                           Expanded(child: Container()),
@@ -1639,7 +1669,11 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   List<List<CretaMenuItem>> _getLeftDropdownMenuOnBanner() {
     switch (widget.subPageUrl) {
       case AppRoutes.subscriptionList:
-        return [_dropDownMenuItemListPurpose, _dropDownMenuItemListPermission, _dropDownMenuItemListSort];
+        return [
+          _dropDownMenuItemListPurpose,
+          _dropDownMenuItemListPermission,
+          _dropDownMenuItemListSort
+        ];
       case AppRoutes.watchHistory:
         return [
           // _dropDownMenuItemListPurpose,
@@ -1668,7 +1702,11 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             return [];
           case CommunityChannelType.books:
           default:
-            return [_dropDownMenuItemListPurpose, _dropDownMenuItemListPermission, _dropDownMenuItemListSort];
+            return [
+              _dropDownMenuItemListPurpose,
+              _dropDownMenuItemListPermission,
+              _dropDownMenuItemListSort
+            ];
         }
     }
     return [];
@@ -1986,7 +2024,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     }
     //resize(context);
     CommunityRightChannelPane.lastDropdownMenuCount = _getLeftDropdownMenuOnBanner().length;
-    String logoUrl = (CretaAccountManager.currentLoginUser.isLoginedUser) ? AppRoutes.communityHome : AppRoutes.intro;
+    String logoUrl = (CretaAccountManager.currentLoginUser.isLoginedUser)
+        ? AppRoutes.communityHome
+        : AppRoutes.intro;
     return Snippet.CretaScaffoldOfCommunity(
       //title: Text('Community page'),
       title: Row(
@@ -2019,7 +2059,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       child: Stack(
         children: [
           mainPage(
-            bannerKey: GlobalObjectKey('${_communityChannelType.name}|${_currentChannelModel?.bannerImgUrl ?? ' '}'),
+            bannerKey: GlobalObjectKey(
+                '${_communityChannelType.name}|${_currentChannelModel?.bannerImgUrl ?? ' '}'),
             context,
             gotoButtonPressed: () {
               if (CretaAccountManager.experienceWithoutLogin) {
@@ -2038,7 +2079,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             mainWidget: _getRightPane, //(gridArea),
             listOfListFilterOnRight: _getRightDropdownMenuOnBanner(),
             titlePane: _titlePane,
-            bannerPane: (widget.subPageUrl == AppRoutes.communityBook || widget.subPageUrl == AppRoutes.playlistDetail)
+            bannerPane: (widget.subPageUrl == AppRoutes.communityBook ||
+                    widget.subPageUrl == AppRoutes.playlistDetail)
                 ? _titlePane
                 : null,
             leftPaddingOnFilter: (widget.subPageUrl == AppRoutes.subscriptionList) ? 306 : null,

@@ -5,9 +5,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
 import '../../data_io/key_handler.dart';
-import '../../common/creta_utils.dart';
 import '../../design_system/component/snippet.dart';
 import '../../model/contents_model.dart';
 import '../../model/frame_model.dart';
@@ -76,7 +76,7 @@ class CretaVideoPlayerWidgetState extends CretaState<CretaVideoWidget> {
   Widget getClipRect(Size outSize, FrameModel frameModel, ContentsModel? model, Widget child) {
     Widget angleImage = model != null && model.angle.value > 0
         ? Transform.rotate(
-            angle: CretaUtils.degreeToRadian(model.angle.value),
+            angle: CretaCommonUtils.degreeToRadian(model.angle.value),
             child: child,
           )
         : child;

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 
 import '../../common/creta_utils.dart';
+
 import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_variables.dart';
 import 'creta_banner_pane.dart';
@@ -27,6 +28,7 @@ mixin CretaBasicLayoutMixin {
     _bannerScrollController = sc;
     _bannerScrollController.addListener(_scrollListener);
   }
+
   void setScrollOffset(double offset) {
     _scrollOffset = offset;
     if (_bannerScrollController.hasClients) {

@@ -25,7 +25,8 @@ import 'package:hycop/hycop.dart';
 //import '../../../design_system/menu/creta_drop_down.dart';
 // import '../../../design_system/menu/creta_drop_down_button.dart';
 // import '../../../design_system/text_field/creta_search_bar.dart';
-import '../../../common/creta_utils.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 import '../../../design_system/component/creta_layout_rect.dart';
 import '../creta_book_ui_item.dart';
 //import '../community_sample_data.dart';
@@ -119,7 +120,8 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
   final Map<String, String> _channelIdMap = {};
   final Map<String, ChannelModel> _channelMap = {}; // <UserPropertyModel.email, UserPropertyModel>
   final Map<String, String> _userIdMap = {};
-  final Map<String, UserPropertyModel> _userPropertyMap = {}; // <UserPropertyModel.email, UserPropertyModel>
+  final Map<String, UserPropertyModel> _userPropertyMap =
+      {}; // <UserPropertyModel.email, UserPropertyModel>
   final Map<String, String> _teamIdMap = {};
   final Map<String, TeamModel> _teamMap = {}; // <TeamModel.mid, TeamModel>
   //bool _onceDBGetComplete = false;
@@ -154,8 +156,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
           //_onceDBGetComplete = true;
         },
       );
-    }
-    else {
+    } else {
       _currentChannelModel = widget.currentChannelModel;
       _currentSubscriptionModel = widget.currentSubscriptionModel;
       CretaManager.startQueries(
@@ -166,7 +167,8 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
           QuerySet(teamManagerHolder, _getTeamsFromDB, _resultTeamsFromDB),
           QuerySet(favoritesManagerHolder, _getFavoritesFromDB, _resultFavoritesFromDB),
           QuerySet(playlistManagerHolder, _getPlaylistsFromDB, _resultPlaylistsFromDB),
-          QuerySet(bookPublishedManagerHolder, _getPlaylistsBooksFromDB, _resultPlaylistsBooksFromDB),
+          QuerySet(
+              bookPublishedManagerHolder, _getPlaylistsBooksFromDB, _resultPlaylistsBooksFromDB),
           QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
         ],
         completeFunc: () {
@@ -192,7 +194,8 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
   }
 
   void _scrollListener() {
-    CommunityRightChannelPane.lastScreenHeight = MediaQuery.of(context).size.height + widget.scrollController.position.maxScrollExtent - 60;
+    CommunityRightChannelPane.lastScreenHeight =
+        MediaQuery.of(context).size.height + widget.scrollController.position.maxScrollExtent - 60;
     CommunityRightChannelPane.lastScrollPosition = widget.scrollController.offset;
     if (kDebugMode) {
       print('lastScreenHeight=${CommunityRightChannelPane.lastScreenHeight}');
@@ -202,7 +205,8 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
 
   void _getCurrentChannelFromDB(List<AbsExModel> modelList) {
     channelManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    channelManagerHolder.addWhereClause('mid', QueryValue(value: CommunityRightChannelPane.channelId));
+    channelManagerHolder.addWhereClause(
+        'mid', QueryValue(value: CommunityRightChannelPane.channelId));
     channelManagerHolder.queryByAddedContitions();
   }
 
@@ -251,7 +255,8 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
     // );
     List<String> channelIdList = [CommunityRightChannelPane.channelId];
     bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    bookPublishedManagerHolder.addWhereClause('channels', QueryValue(value: channelIdList, operType: OperType.arrayContainsAny));
+    bookPublishedManagerHolder.addWhereClause(
+        'channels', QueryValue(value: channelIdList, operType: OperType.arrayContainsAny));
     bookPublishedManagerHolder.queryByAddedContitions();
   }
 
@@ -261,7 +266,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
       if (kDebugMode) print('_resultBooksFromDB(${bookModel.getMid})');
       _cretaBooksList.add(bookModel);
       _userIdMap[bookModel.creator] = bookModel.creator; // <= email
-      for(var channelId in bookModel.channels) {
+      for (var channelId in bookModel.channels) {
         _channelIdMap[channelId] = channelId;
       }
     }
@@ -276,7 +281,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
   }
 
   void _resultBooksChannelFromDB(List<AbsExModel> modelList) {
-    for(var model in modelList) {
+    for (var model in modelList) {
       ChannelModel chModel = model as ChannelModel;
       _channelMap[chModel.getMid] = chModel;
       if (chModel.userId.isNotEmpty) {
@@ -342,7 +347,8 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
       return;
     }
     playlistManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    playlistManagerHolder.addWhereClause('channelId', QueryValue(value: CommunityRightChannelPane.channelId));
+    playlistManagerHolder.addWhereClause(
+        'channelId', QueryValue(value: CommunityRightChannelPane.channelId));
     playlistManagerHolder.queryByAddedContitions();
   }
 
@@ -359,7 +365,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
       return;
     }
     final List<String> bookIdList = [];
-    for(var model in modelList) {
+    for (var model in modelList) {
       PlaylistModel plModel = model as PlaylistModel;
       if (plModel.bookIdList.isNotEmpty) {
         bookIdList.add(plModel.bookIdList[0]);
@@ -372,7 +378,8 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
       return;
     }
     bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: bookIdList, operType: OperType.whereIn));
+    bookPublishedManagerHolder.addWhereClause(
+        'mid', QueryValue(value: bookIdList, operType: OperType.whereIn));
     bookPublishedManagerHolder.queryByAddedContitions();
   }
 
@@ -388,9 +395,9 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
     if (widget.currentChannelModel == null) {
       if (_currentChannelModel != null) {
         _currentChannelModel?.getModelFromMaps(_userPropertyMap, _teamMap);
-        widget.onUpdateModel?.call(channelModel: _currentChannelModel, subscriptionModel: _currentSubscriptionModel);
-      }
-      else {
+        widget.onUpdateModel?.call(
+            channelModel: _currentChannelModel, subscriptionModel: _currentSubscriptionModel);
+      } else {
         _hasNoChannelModel = true;
       }
       return;
@@ -405,7 +412,8 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
   void _addToFavorites(String bookId, bool isFavorites) async {
     if (isFavorites) {
       // already in favorites => remove favorites from DB
-      await favoritesManagerHolder.removeFavoritesFromDB(bookId, AccountManager.currentLoginUser.email);
+      await favoritesManagerHolder.removeFavoritesFromDB(
+          bookId, AccountManager.currentLoginUser.email);
       setState(() {
         _favoritesBookIdMap[bookId] = false;
       });
@@ -468,7 +476,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
   }
 
   void _onRemoveBook(String bookId) async {
-    for(int i=0; i<_cretaBooksList.length; i++) {
+    for (int i = 0; i < _cretaBooksList.length; i++) {
       BookModel bookModel = _cretaBooksList[i];
       if (bookModel.getMid != bookId) continue;
       bookModel.isRemoved.set(true);
@@ -495,8 +503,8 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
       );
     }
 
-    final int columnCount =
-        CretaUtils.getItemColumnCount(widget.cretaLayoutRect.childWidth, _itemMinWidth, _rightViewItemGapX);
+    final int columnCount = CretaCommonUtils.getItemColumnCount(
+        widget.cretaLayoutRect.childWidth, _itemMinWidth, _rightViewItemGapX);
 
     double itemWidth = -1;
     double itemHeight = -1;
@@ -524,7 +532,8 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
         ),
         itemBuilder: (BuildContext context, int index) {
           BookModel bookModel = _cretaBooksList[index];
-          ChannelModel? chModel = bookModel.channels.isEmpty ? null : _channelMap[bookModel.channels[0]];
+          ChannelModel? chModel =
+              bookModel.channels.isEmpty ? null : _channelMap[bookModel.channels[0]];
           return (itemWidth >= 0 && itemHeight >= 0)
               ? CretaBookUIItem(
                   key: GlobalObjectKey(bookModel.getMid),

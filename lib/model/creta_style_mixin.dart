@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/undo.dart';
 
-import '../common/creta_utils.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 import 'app_enums.dart';
 
 // ignore: must_be_immutable
@@ -135,8 +135,8 @@ mixin CretaStyleMixin {
     width.setDD(w == 0 ? 10 : w, save: false, noUndo: true);
     height.setDD(h == 0 ? 10 : h, save: false, noUndo: true);
 
-    bgColor1.setDD(CretaUtils.string2Color(map["bgColor1"])!, save: false, noUndo: true);
-    bgColor2.setDD(CretaUtils.string2Color(map["bgColor2"])!, save: false, noUndo: true);
+    bgColor1.setDD(CretaCommonUtils.string2Color(map["bgColor1"])!, save: false, noUndo: true);
+    bgColor2.setDD(CretaCommonUtils.string2Color(map["bgColor2"])!, save: false, noUndo: true);
     opacity.setDD(map["opacity"] ?? 1, save: false, noUndo: true);
     gradationType.setDD(GradationType.fromInt(map["gradationType"] ?? 0),
         save: false, noUndo: true);

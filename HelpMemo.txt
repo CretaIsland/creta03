@@ -17,9 +17,9 @@ flutter config --build-dir=../release/creta03_v5
 
 # 그리고 VCode 를 다시 시작해야 한다. 다시 시작한 후에는 반드시 
 # 실행을 한번 해준다.
-#flutter run -d chrome --web-renderer html
+flutter run -d chrome --web-renderer html
 # or
-flutter run -d chrome --web-renderer canvaskit
+#flutter run -d chrome --web-renderer canvaskit
 
 # 이후, build 는 다음과 같다.
 

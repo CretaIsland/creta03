@@ -11,8 +11,8 @@ import 'package:hycop/hycop/enum/model_enums.dart';
 //import 'package:glass/glass.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
-import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../data_io/key_handler.dart';
@@ -277,7 +277,7 @@ class ContentsThumbnailState extends CretaState<ContentsThumbnail>
 
                 Widget angleImage = angle > 0
                     ? Transform.rotate(
-                        angle: CretaUtils.degreeToRadian(angle),
+                        angle: CretaCommonUtils.degreeToRadian(angle),
                         child: opacityImage,
                       )
                     : opacityImage;

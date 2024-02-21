@@ -9,6 +9,8 @@ import 'package:hycop/hycop.dart';
 //import 'package:routemaster/routemaster.dart';
 //import 'package:url_strategy/url_strategy.dart';
 import 'package:intl/intl.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 //import '../design_system/buttons/creta_button_wrapper.dart';
 //import '../../design_system/component/snippet.dart';
 //import '../../design_system/menu/creta_drop_down.dart';
@@ -25,7 +27,6 @@ import '../../../design_system/creta_color.dart';
 //import '../../../design_system/menu/creta_drop_down.dart';
 // import '../../../design_system/menu/creta_drop_down_button.dart';
 // import '../../../design_system/text_field/creta_search_bar.dart';
-import '../../../common/creta_utils.dart';
 import '../../../design_system/component/creta_layout_rect.dart';
 import '../creta_book_ui_item.dart';
 //import '../community_sample_data.dart';
@@ -106,7 +107,8 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
   final Map<String, String> _teamIdMap = {};
   final Map<String, TeamModel> _teamMap = {}; // <TeamModel.mid, TeamModel>
   final Map<String, String> _userIdMap = {};
-  final Map<String, UserPropertyModel> _userPropertyMap = {}; // <UserPropertyModel.email, UserPropertyModel>
+  final Map<String, UserPropertyModel> _userPropertyMap =
+      {}; // <UserPropertyModel.email, UserPropertyModel>
   final Map<String, String> _channelIdMap = {};
   final Map<String, ChannelModel> _channelMap = {}; // <ChannelModel.mid, ChannelModel>
   //bool _onceDBGetComplete = false;
@@ -185,7 +187,7 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
       BookModel bookModel = model as BookModel;
       _cretaBooksMap[bookModel.getMid] = bookModel;
       _userIdMap[bookModel.creator] = bookModel.creator; // <= email
-      for(var channelId in bookModel.channels) {
+      for (var channelId in bookModel.channels) {
         _channelIdMap[channelId] = channelId;
       }
     }
@@ -200,7 +202,7 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
   }
 
   void _resultChannelsFromDB(List<AbsExModel> modelList) {
-    for(var model in modelList) {
+    for (var model in modelList) {
       ChannelModel chModel = model as ChannelModel;
       _channelMap[chModel.getMid] = chModel;
       if (chModel.userId.isNotEmpty) {
@@ -346,7 +348,8 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
           padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
           child: Text(
             key,
-            style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
+            style: CretaFont.titleELarge
+                .copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
           ),
         ))
         ..add(Wrap(
@@ -354,8 +357,9 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
           spacing: _rightViewItemGapX, // 좌우 간격
           runSpacing: _rightViewItemGapY, // 상하 간격
           children: dataList.map((data) {
-            if(kDebugMode) print('---watchhistorykey=${data.getMid}');
-            ChannelModel? chModel = data.bookModel!.channels.isEmpty ? null : _channelMap[data.bookModel!.channels[0]];
+            if (kDebugMode) print('---watchhistorykey=${data.getMid}');
+            ChannelModel? chModel =
+                data.bookModel!.channels.isEmpty ? null : _channelMap[data.bookModel!.channels[0]];
             return CretaBookUIItem(
               key: GlobalObjectKey(data.getMid), //GlobalObjectKey('${index++}+${data.getMid}'),
               bookModel: data.bookModel!,
@@ -377,7 +381,7 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     if (kDebugMode) print('---_rearrangeCretaBookData');
     for (var exModel in watchHistoryManagerHolder.modelList) {
       final whModel = exModel as WatchHistoryModel;
-      if(kDebugMode) print('---add(${whModel.getMid})');
+      if (kDebugMode) print('---add(${whModel.getMid})');
       for (var model in bookPublishedManagerHolder.modelList) {
         final bookModel = model as BookModel;
         if (bookModel.getMid == whModel.bookId) {
@@ -395,7 +399,8 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     if (kDebugMode) print('---_getItemPane');
     if (_cretaBookDataMap.isEmpty) _rearrangeCretaBookData();
     final width = widget.cretaLayoutRect.childWidth;
-    final int columnCount = CretaUtils.getItemColumnCount(width, _itemMinWidth, _rightViewItemGapX);
+    final int columnCount =
+        CretaCommonUtils.getItemColumnCount(width, _itemMinWidth, _rightViewItemGapX);
     _itemWidth = ((width + _rightViewItemGapX) ~/ columnCount) - _rightViewItemGapX;
     _itemHeight = _itemWidth * _itemSizeRatio;
     return Scrollbar(
@@ -489,22 +494,22 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     //     });
     // if (_onceDBGetComplete == false) {
     //   if (kDebugMode) print('---build-3');
-      return Scrollbar(
-        controller: widget.scrollController,
-        child: CretaModelSnippet.waitDatum(
-          managerList: [
-            watchHistoryManagerHolder,
-            bookPublishedManagerHolder,
-            channelManagerHolder,
-            userPropertyManagerHolder,
-            teamManagerHolder,
-            favoritesManagerHolder,
-            dummyManagerHolder
-          ],
-          consumerFunc: _getItemPane,
-          dbComplete: _dbGetComplete,
-        ),
-      );
+    return Scrollbar(
+      controller: widget.scrollController,
+      child: CretaModelSnippet.waitDatum(
+        managerList: [
+          watchHistoryManagerHolder,
+          bookPublishedManagerHolder,
+          channelManagerHolder,
+          userPropertyManagerHolder,
+          teamManagerHolder,
+          favoritesManagerHolder,
+          dummyManagerHolder
+        ],
+        consumerFunc: _getItemPane,
+        dbComplete: _dbGetComplete,
+      ),
+    );
     // }
     // return _getItemPane();
   }

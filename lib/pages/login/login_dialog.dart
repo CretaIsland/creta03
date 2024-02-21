@@ -8,6 +8,7 @@ import 'package:hycop/hycop.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
 //import '../login_page.dart';
 import 'creta_account_manager.dart';
@@ -347,7 +348,7 @@ enum LoginPageState {
 //     AccountManager.resetPassword(email).then((value) async {
 //       String userId = value.$1;
 //       String secret = value.$2;
-//       CretaUtils.sendResetPasswordEmail(email, userId, secret);
+//       CretaCommonUtils.sendResetPasswordEmail(email, userId, secret);
 //     }).onError((error, stackTrace) {
 //       String errMsg;
 //       if (error is HycopException) {
@@ -811,7 +812,10 @@ enum ExtraInfoPageState {
 
 class _ExtraInfoDialogState extends State<ExtraInfoDialog> {
   ExtraInfoPageState _extraInfoPageState = ExtraInfoPageState.purpose;
-  final Map<String, int> _genderValueMap = {'남': GenderType.male.index, '여': GenderType.female.index};
+  final Map<String, int> _genderValueMap = {
+    '남': GenderType.male.index,
+    '여': GenderType.female.index
+  };
   late final List<CretaMenuItem> _purposeDropdownMenuList;
   final List<CretaMenuItem> _birthDropdownMenuList = [];
   BookType _usingPurpose = BookType.presentaion;
@@ -1108,7 +1112,8 @@ class _ExtraInfoDialogState extends State<ExtraInfoDialog> {
           const SizedBox(height: 12),
           Padding(
             padding: const EdgeInsets.fromLTRB(117, 0, 117, 0),
-            child: CretaStepper(totalSteps: ExtraInfoPageState.end.index, currentStep: _extraInfoPageState.index),
+            child: CretaStepper(
+                totalSteps: ExtraInfoPageState.end.index, currentStep: _extraInfoPageState.index),
           ),
           const SizedBox(height: 37),
           ..._getBody(),
@@ -1154,7 +1159,8 @@ class CretaStepper extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.fromLTRB(stepSize / 4 - 0.5, stepSize / 4, 0, 0),
-                child: Icon(Icons.fiber_manual_record_rounded, color: Colors.white, size: stepSize / 2),
+                child: Icon(Icons.fiber_manual_record_rounded,
+                    color: Colors.white, size: stepSize / 2),
               ),
             ],
           ),
@@ -1167,7 +1173,8 @@ class CretaStepper extends StatelessWidget {
             children: [
               Padding(
                 padding: EdgeInsets.fromLTRB(stepSize / 4 - 0.5, stepSize / 4, 0, 0),
-                child: Icon(Icons.fiber_manual_record_rounded, color: CretaColor.text[300], size: stepSize / 2),
+                child: Icon(Icons.fiber_manual_record_rounded,
+                    color: CretaColor.text[300], size: stepSize / 2),
               ),
             ],
           ),
@@ -1387,7 +1394,8 @@ class _LoginDialogState extends State<LoginDialog> {
             TextInput.finishAutofillContext();
             if (CretaAccountManager.getUserProperty!.extraInfo == false) {
               CretaAccountManager.getUserProperty!.extraInfo = true;
-              CretaAccountManager.userPropertyManagerHolder.setToDB(CretaAccountManager.getUserProperty!);
+              CretaAccountManager.userPropertyManagerHolder
+                  .setToDB(CretaAccountManager.getUserProperty!);
               LoginDialog.setShowExtraInfoDialog(true);
             }
             Navigator.of(widget.context).pop();
@@ -1426,14 +1434,16 @@ class _LoginDialogState extends State<LoginDialog> {
     await CretaAccountManager.logout(doGuestLogin: false);
     AccountManager.createAccountByGoogle(myConfig!.config.googleOAuthCliendId).then((value) {
       HycopFactory.setBucketId();
-      CretaAccountManager.userPropertyManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
+      CretaAccountManager.userPropertyManagerHolder
+          .addWhereClause('isRemoved', QueryValue(value: false));
       CretaAccountManager.userPropertyManagerHolder
           .addWhereClause('email', QueryValue(value: AccountManager.currentLoginUser.email));
       CretaAccountManager.userPropertyManagerHolder.queryByAddedContitions().then((value) async {
         bool isNewUser = value.isEmpty;
         if (isNewUser) {
           // create model objects
-          UserPropertyModel userModel = CretaAccountManager.userPropertyManagerHolder.makeCurrentNewUserProperty(
+          UserPropertyModel userModel =
+              CretaAccountManager.userPropertyManagerHolder.makeCurrentNewUserProperty(
             agreeUsingMarketing: true,
             verified: true,
           );
@@ -1454,7 +1464,8 @@ class _LoginDialogState extends State<LoginDialog> {
           await CretaAccountManager.channelManagerHolder.createChannel(teamChannelModel);
           await CretaAccountManager.channelManagerHolder.createChannel(myChannelModel);
           await CretaAccountManager.teamManagerHolder.createTeam(teamModel);
-          await CretaAccountManager.userPropertyManagerHolder.createUserProperty(createModel: userModel);
+          await CretaAccountManager.userPropertyManagerHolder
+              .createUserProperty(createModel: userModel);
           await CretaAccountManager.initUserProperty();
           LoginDialog.setShowExtraInfoDialog(true);
         }
@@ -1484,7 +1495,8 @@ class _LoginDialogState extends State<LoginDialog> {
     });
   }
 
-  Future<void> _signup(String nickname, String email, String password, bool agreeUsingMarketing) async {
+  Future<void> _signup(
+      String nickname, String email, String password, bool agreeUsingMarketing) async {
     logger.finest('_signup');
     await AccountManager.isExistAccount(email).then((value) {
       AccountSignUpType accountSignUpType = value ?? AccountSignUpType.none;
@@ -1514,8 +1526,10 @@ class _LoginDialogState extends State<LoginDialog> {
           username: nickname,
           userEmail: userModel.email,
         );
-        ChannelModel teamChannelModel = CretaAccountManager.channelManagerHolder.makeNewChannel(teamId: teamModel.mid);
-        ChannelModel myChannelModel = CretaAccountManager.channelManagerHolder.makeNewChannel(userId: userModel.email);
+        ChannelModel teamChannelModel =
+            CretaAccountManager.channelManagerHolder.makeNewChannel(teamId: teamModel.mid);
+        ChannelModel myChannelModel =
+            CretaAccountManager.channelManagerHolder.makeNewChannel(userId: userModel.email);
         teamModel.channelId = teamChannelModel.mid;
         userModel.channelId = myChannelModel.mid;
         userModel.teams = [teamModel.mid];
@@ -1523,7 +1537,8 @@ class _LoginDialogState extends State<LoginDialog> {
         await CretaAccountManager.channelManagerHolder.createChannel(teamChannelModel);
         await CretaAccountManager.channelManagerHolder.createChannel(myChannelModel);
         await CretaAccountManager.teamManagerHolder.createTeam(teamModel);
-        await CretaAccountManager.userPropertyManagerHolder.createUserProperty(createModel: userModel);
+        await CretaAccountManager.userPropertyManagerHolder
+            .createUserProperty(createModel: userModel);
         await CretaAccountManager.initUserProperty();
         _notVerifyUserId = CretaAccountManager.currentLoginUser.userId;
         _notVerifyEmail = CretaAccountManager.currentLoginUser.email;
@@ -1585,9 +1600,12 @@ class _LoginDialogState extends State<LoginDialog> {
           _isLoginProcessing = false;
         });
       } else {
-        UserPropertyModel? model = await CretaAccountManager.userPropertyManagerHolder.emailToModel(email);
+        UserPropertyModel? model =
+            await CretaAccountManager.userPropertyManagerHolder.emailToModel(email);
         String nickname = model?.nickname ?? '';
-        bool ret = (secret.isEmpty) ? true : await CretaUtils.sendResetPasswordEmail(email, nickname, userId, secret);
+        bool ret = (secret.isEmpty)
+            ? true
+            : await CretaUtils.sendResetPasswordEmail(email, nickname, userId, secret);
         setState(() {
           _setErrorMessage(
             emailErrorMessage: ret ? '이메일을 발송하였으니 메일함을 확인하세요.' : '이메일 발송에 실패하였습니다.',
@@ -1848,13 +1866,15 @@ class _LoginDialogState extends State<LoginDialog> {
 
   void checkPasswordStrength(String password) {
     setState(() {
-      _passwordError = (password.isEmpty) ? false : !CretaUtils.checkPasswordStrength(password);
+      _passwordError =
+          (password.isEmpty) ? false : !CretaCommonUtils.checkPasswordStrength(password);
     });
   }
 
   void checkPasswordConfirmStrength(String password) {
     setState(() {
-      _passwordConfirmError = (password.isEmpty) ? false : !CretaUtils.checkPasswordStrength(password);
+      _passwordConfirmError =
+          (password.isEmpty) ? false : !CretaCommonUtils.checkPasswordStrength(password);
     });
   }
 
@@ -1948,7 +1968,9 @@ class _LoginDialogState extends State<LoginDialog> {
               textType: CretaTextFieldType.password,
               onEditComplete: (value) {},
               onChanged: checkPasswordStrength,
-              fixedOutlineColor: (_passwordError || _passwordErrorMessage.isNotEmpty) ? CretaColor.stateCritical : null,
+              fixedOutlineColor: (_passwordError || _passwordErrorMessage.isNotEmpty)
+                  ? CretaColor.stateCritical
+                  : null,
             ),
           ),
           Padding(
@@ -1978,7 +2000,9 @@ class _LoginDialogState extends State<LoginDialog> {
               textType: CretaTextFieldType.password,
               onEditComplete: (value) {},
               onChanged: checkPasswordConfirmStrength,
-              fixedOutlineColor: (_passwordConfirmError || _passwordErrorMessage.isNotEmpty) ? CretaColor.stateCritical : null,
+              fixedOutlineColor: (_passwordConfirmError || _passwordErrorMessage.isNotEmpty)
+                  ? CretaColor.stateCritical
+                  : null,
             ),
           ),
           Padding(
@@ -2016,7 +2040,9 @@ class _LoginDialogState extends State<LoginDialog> {
                 : BTN.line_blue_iti_m(
                     width: 326,
                     text: '회원가입',
-                    buttonColor: _isAllRequirementsChecked() ? CretaButtonColor.skyTitle : CretaButtonColor.gray,
+                    buttonColor: _isAllRequirementsChecked()
+                        ? CretaButtonColor.skyTitle
+                        : CretaButtonColor.gray,
                     decoType: CretaButtonDeco.fill,
                     textColor: Colors.white,
                     onPressed: () {
@@ -2026,7 +2052,8 @@ class _LoginDialogState extends State<LoginDialog> {
                       String pwd = _signupPasswordTextEditingController.text;
                       String pwdConf = _signupPasswordConfirmTextEditingController.text;
                       bool agreeTerms = _checkboxSignupValueMap[stringAgreeTerms] ?? false;
-                      bool agreeUsingMarketing = _checkboxSignupValueMap[stringAgreeUsingMarketing] ?? false;
+                      bool agreeUsingMarketing =
+                          _checkboxSignupValueMap[stringAgreeUsingMarketing] ?? false;
                       setState(() {
                         if (nickname.isEmpty) {
                           _setErrorMessage(nicknameErrorMessage: '닉네임을 확인하세요.');
@@ -2192,15 +2219,20 @@ class _LoginDialogState extends State<LoginDialog> {
                         }
                         UserPropertyModel userModel = value[0];
                         if (userModel.teams.isNotEmpty) {
-                          AbsExModel? model = await CretaAccountManager.teamManagerHolder.getFromDB(userModel.teams[0]);
+                          AbsExModel? model = await CretaAccountManager.teamManagerHolder
+                              .getFromDB(userModel.teams[0]);
                           if (model != null) {
                             TeamModel teamModel = model as TeamModel;
-                            await CretaAccountManager.channelManagerHolder.removeToDB(teamModel.channelId);
-                            await CretaAccountManager.teamManagerHolder.removeToDB(teamModel.getMid);
+                            await CretaAccountManager.channelManagerHolder
+                                .removeToDB(teamModel.channelId);
+                            await CretaAccountManager.teamManagerHolder
+                                .removeToDB(teamModel.getMid);
                           }
                         }
-                        await CretaAccountManager.channelManagerHolder.removeToDB(userModel.channelId);
-                        await CretaAccountManager.userPropertyManagerHolder.removeToDB(userModel.mid);
+                        await CretaAccountManager.channelManagerHolder
+                            .removeToDB(userModel.channelId);
+                        await CretaAccountManager.userPropertyManagerHolder
+                            .removeToDB(userModel.mid);
                         // hycop_users
                         String hycopUserId = 'user=${userModel.parentMid.value}';
                         UserPropertyManager manager = UserPropertyManager(tableName: 'hycop_users');
@@ -2260,13 +2292,15 @@ class _LoginDialogState extends State<LoginDialog> {
                         _isLoginProcessing = false;
                       });
                     },
-                    child: Image(width: 32, height: 32, image: AssetImage('assets/social/facebook.png')),
+                    child: Image(
+                        width: 32, height: 32, image: AssetImage('assets/social/facebook.png')),
                   ),
                   InkWell(
                     onTap: () {
                       _loginByGoogle();
                     },
-                    child: SvgPicture.asset('assets/google__g__logo.svg', fit: BoxFit.contain, width: 32, height: 32),
+                    child: SvgPicture.asset('assets/google__g__logo.svg',
+                        fit: BoxFit.contain, width: 32, height: 32),
                   ),
                   InkWell(
                     onTap: () {
@@ -2275,7 +2309,8 @@ class _LoginDialogState extends State<LoginDialog> {
                         _isLoginProcessing = false;
                       });
                     },
-                    child: Image(width: 32, height: 32, image: AssetImage('assets/social/kakaotalk.png')),
+                    child: Image(
+                        width: 32, height: 32, image: AssetImage('assets/social/kakaotalk.png')),
                   ),
                 ],
               ),
@@ -2381,7 +2416,8 @@ class _LoginDialogState extends State<LoginDialog> {
                 SizedBox(width: 16),
                 InkWell(
                   onTap: () {
-                    _sendVerifyEmail(_notVerifyNickname, _notVerifyUserId, _notVerifyEmail, _notVerifySecret);
+                    _sendVerifyEmail(
+                        _notVerifyNickname, _notVerifyUserId, _notVerifyEmail, _notVerifySecret);
                   },
                   child: Text(
                     '재발송하기',

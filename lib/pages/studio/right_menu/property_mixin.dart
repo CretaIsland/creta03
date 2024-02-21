@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:material_tag_editor/tag_editor.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
-import '../../../common/creta_utils.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/buttons/creta_checkbox.dart';
 import '../../../design_system/buttons/creta_ex_slider.dart';
@@ -761,7 +761,7 @@ mixin PropertyMixin {
     Widget? durationWidget,
     required Function onDelete,
   }) {
-    List<String> hashTagList = CretaUtils.jsonStringToList(mixinModel.eventReceive.value);
+    List<String> hashTagList = CretaCommonUtils.jsonStringToList(mixinModel.eventReceive.value);
 
     return propertyCard(
       padding: horizontalPadding,
@@ -817,7 +817,7 @@ mixin PropertyMixin {
                     hashTagList: hashTagList,
                     onTagChanged: (newValue) {
                       hashTagList.add(newValue);
-                      String val = CretaUtils.listToString(hashTagList);
+                      String val = CretaCommonUtils.listToString(hashTagList);
                       logger.fine('eventReceive=$val');
                       mixinModel.eventReceive.set(val);
                       setState();
@@ -827,7 +827,7 @@ mixin PropertyMixin {
                     },
                     onSubmitted: (outstandingValue) {
                       hashTagList.add(outstandingValue);
-                      String val = CretaUtils.listToString(hashTagList);
+                      String val = CretaCommonUtils.listToString(hashTagList);
                       logger.fine('eventReceive=$val');
                       mixinModel.eventReceive.set(val);
                       logger.fine('onSubmitted $outstandingValue input');
@@ -837,7 +837,7 @@ mixin PropertyMixin {
                     },
                     onDeleted: (idx) {
                       hashTagList.removeAt(idx);
-                      String val = CretaUtils.listToString(hashTagList);
+                      String val = CretaCommonUtils.listToString(hashTagList);
                       mixinModel.eventReceive.set(val);
                       logger.finest('onDelete $idx');
                       setState();

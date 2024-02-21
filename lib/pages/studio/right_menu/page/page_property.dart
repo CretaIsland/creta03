@@ -6,8 +6,8 @@ import 'package:get/get.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:provider/provider.dart';
 //import 'package:flutter_animate/flutter_animate.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
-import '../../../../common/creta_utils.dart';
 import '../../../../design_system/buttons/creta_radio_button.dart';
 import '../../../../design_system/component/creta_proprty_slider.dart';
 //import '../../../../design_system/component/example_box_mixin.dart';
@@ -375,7 +375,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
             name: CretaStudioLang.transitionSpeed,
             min: 1,
             max: 5,
-            value: CretaUtils.validCheckDouble(_model!.duration.value.toDouble(), 1, 5),
+            value: CretaCommonUtils.validCheckDouble(_model!.duration.value.toDouble(), 1, 5),
             valueType: SliderValueType.normal,
             onChannged: (value) {
               // widget.model.opacity.set(value);

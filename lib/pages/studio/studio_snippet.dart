@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/hycop_factory.dart';
 import 'package:hycop/hycop/model/file_model.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
-import '../../common/creta_utils.dart';
 import '../../data_io/contents_manager.dart';
 import '../../design_system/buttons/creta_label_text_editor.dart';
 import '../../design_system/creta_color.dart';
@@ -300,7 +300,7 @@ class StudioSnippet {
       {required String defaultValue, required void Function(String) onChanged}) {
     return CretaLang.fontStringList.map(
       (fontStr) {
-        String font = CretaUtils.getFontFamily(fontStr);
+        String font = CretaCommonUtils.getFontFamily(fontStr);
         logger.fine('font=$font');
         return CretaMenuItem(
             caption: fontStr,

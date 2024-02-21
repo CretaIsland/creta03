@@ -349,7 +349,7 @@ class PageThumbnailState extends CretaState<PageThumbnail> with ContaineeMixin {
                 //         alignment: Alignment.center,
                 //         transform: Matrix4.identity()
                 //           ..scale(1.0)
-                //           ..rotateZ(CretaUtils.degreeToRadian(frameModel.angle.value)),
+                //           ..rotateZ(CretaCommonUtils.degreeToRadian(frameModel.angle.value)),
                 //         child: frameBox,
                 //       )
                 //     :
@@ -420,7 +420,7 @@ class PageThumbnailState extends CretaState<PageThumbnail> with ContaineeMixin {
   //   if (model.eventReceive.value.length > 2 && model.showWhenEventReceived.value == true) {
   //     logger.fine(
   //         '_isVisible eventReceive=${model.eventReceive.value}  showWhenEventReceived=${model.showWhenEventReceived.value}');
-  //     List<String> eventNameList = CretaUtils.jsonStringToList(model.eventReceive.value);
+  //     List<String> eventNameList = CretaCommonUtils.jsonStringToList(model.eventReceive.value);
   //     for (String eventName in eventNameList) {
   //       if (BookMainPage.clickReceiverHandler.isEventOn(eventName) == true) {
   //         return true;

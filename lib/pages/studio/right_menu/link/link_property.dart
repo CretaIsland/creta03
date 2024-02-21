@@ -3,8 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/hycop.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
-import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/component/creta_proprty_slider.dart';
@@ -130,7 +130,8 @@ class _LinkPropertyState extends State<LinkProperty> with PropertyMixin {
                 name: CretaStudioLang.opacity,
                 min: 0,
                 max: 100,
-                value: CretaUtils.validCheckDouble(widget.linkModel.bgColor.value.opacity, 0, 1),
+                value:
+                    CretaCommonUtils.validCheckDouble(widget.linkModel.bgColor.value.opacity, 0, 1),
                 valueType: SliderValueType.reverse,
                 onChannged: widget.onOpacityChanged,
                 onChanngeComplete: widget.onOpacityChanged,

@@ -33,7 +33,7 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
     logger.finer('_BookInfoPropertyState.initState');
     //_scrollController = ScrollController(initialScrollOffset: 0.0);
 
-    //hashTagWrapper.hashTagList = CretaUtils.jsonStringToList(widget.model.hashTag.value);
+    //hashTagWrapper.hashTagList = CretaCommonUtils.jsonStringToList(widget.model.hashTag.value);
     logger.finest('hashTagList=${hashTagWrapper.hashTagList}');
 
     titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);
@@ -131,7 +131,7 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
     //     onTagChanged: (newValue) {
     //       setState(() {
     //         hashTagList.add(newValue);
-    //         String val = CretaUtils.listToString(hashTagList);
+    //         String val = CretaCommonUtils.listToString(hashTagList);
     //         logger.finest('hashTag=$val');
     //         widget.model.hashTag.set(val);
     //       });
@@ -140,7 +140,7 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
     //     onSubmitted: (outstandingValue) {
     //       setState(() {
     //         hashTagList.add(outstandingValue);
-    //         String val = CretaUtils.listToString(hashTagList);
+    //         String val = CretaCommonUtils.listToString(hashTagList);
     //         logger.finest('hashTag=$val');
     //         widget.model.hashTag.set(val);
     //         logger.finest('onSubmitted $outstandingValue input');
@@ -158,7 +158,7 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
     //           onDeleted: (idx) {
     //             setState(() {
     //               hashTagList.removeAt(index);
-    //               String val = CretaUtils.listToString(hashTagList);
+    //               String val = CretaCommonUtils.listToString(hashTagList);
     //               widget.model.hashTag.set(val);
     //               logger.finest('onDelete $index');
     //             });

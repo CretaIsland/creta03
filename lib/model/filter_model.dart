@@ -1,7 +1,8 @@
 import 'package:creta03/model/creta_model.dart';
 import 'package:hycop/hycop.dart';
 
-import '../common/creta_utils.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 
 // ignore: must_be_immutable
 class FilterModel extends CretaModel {
@@ -27,8 +28,8 @@ class FilterModel extends CretaModel {
   void fromMap(Map<String, dynamic> map) {
     super.fromMap(map);
     name = map['name'] ?? '';
-    excludes = CretaUtils.dynamicListToStringList(map["excludes"]);
-    includes = CretaUtils.dynamicListToStringList(map["includes"]);
+    excludes = CretaCommonUtils.dynamicListToStringList(map["excludes"]);
+    includes = CretaCommonUtils.dynamicListToStringList(map["includes"]);
   }
 
   @override

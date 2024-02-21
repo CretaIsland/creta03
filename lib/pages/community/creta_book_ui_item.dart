@@ -11,6 +11,8 @@ import 'package:flutter/services.dart';
 //import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 //import 'package:url_strategy/url_strategy.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/component/snippet.dart';
@@ -27,7 +29,6 @@ import '../../routes.dart';
 import '../../design_system/component/custom_image.dart';
 import '../../design_system/creta_font.dart';
 import '../../design_system/creta_color.dart';
-import '../../../common/creta_utils.dart';
 //import '../../../routes.dart';
 //import 'package:routemaster/routemaster.dart';
 import 'package:url_launcher/link.dart';
@@ -384,10 +385,10 @@ class _HoverImageState extends State<HoverImage> with SingleTickerProviderStateM
       duration: const Duration(milliseconds: 275),
       vsync: this,
     );
-    _animation = Tween(begin: 1.0, end: 1.2)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
-    padding = Tween(begin: 0.0, end: -25.0)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
+    _animation = Tween(begin: 1.0, end: 1.2).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
+    padding = Tween(begin: 0.0, end: -25.0).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
     _controller.addListener(() {
       setState(() {});
     });
@@ -431,8 +432,8 @@ class _HoverImageState extends State<HoverImage> with SingleTickerProviderStateM
             borderRadius: BorderRadius.circular(20.0),
           ),
           clipBehavior: Clip.hardEdge,
-          transform: Matrix4(
-              _animation.value, 0, 0, 0, 0, _animation.value, 0, 0, 0, 0, 1, 0, padding.value, padding.value, 0, 1),
+          transform: Matrix4(_animation.value, 0, 0, 0, 0, _animation.value, 0, 0, 0, 0, 1, 0,
+              padding.value, padding.value, 0, 1),
           child: Image.network(
             widget.image,
             fit: BoxFit.cover,
@@ -560,8 +561,8 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   CretaTextField(
-                    textFieldKey:
-                        GlobalObjectKey('${widget.bookModel.mid}.CretaBookUIItem._doPopupMenuShare.CretaTextField'),
+                    textFieldKey: GlobalObjectKey(
+                        '${widget.bookModel.mid}.CretaBookUIItem._doPopupMenuShare.CretaTextField'),
                     width: 364 - 120 + 28,
                     height: 30,
                     value: bookLinkUrl,
@@ -959,7 +960,8 @@ https://sharer.kakao.com/talk/friends/picker/easylink?app_key=437a6516bd110eb436
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(CretaUtils.getDateTimeString(widget.bookModel.updateTime), style: CretaFont.buttonSmall),
+          Text(CretaCommonUtils.getDateTimeString(widget.bookModel.updateTime),
+              style: CretaFont.buttonSmall),
           Text('likeCount=${widget.bookModel.likeCount}', style: CretaFont.buttonSmall),
           Text('viewCount=${widget.bookModel.viewCount}', style: CretaFont.buttonSmall),
         ],
@@ -970,7 +972,8 @@ https://sharer.kakao.com/talk/friends/picker/easylink?app_key=437a6516bd110eb436
   @override
   Widget build(BuildContext context) {
     String bookLinkUrl = '${AppRoutes.communityBook}?${widget.bookModel.mid}';
-    String channelLinkUrl = (widget.channelModel == null) ? '' : '${AppRoutes.channel}?${widget.channelModel!.mid}';
+    String channelLinkUrl =
+        (widget.channelModel == null) ? '' : '${AppRoutes.channel}?${widget.channelModel!.mid}';
     return MouseRegion(
       onEnter: (value) {
         setState(() {
@@ -1092,7 +1095,7 @@ https://sharer.kakao.com/talk/friends/picker/easylink?app_key=437a6516bd110eb436
                       ),
                       // time
                       Text(
-                        CretaUtils.dateToDurationString(
+                        CretaCommonUtils.dateToDurationString(
                             widget.watchHistoryModel?.updateTime ?? widget.bookModel.updateTime),
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.left,
@@ -1188,7 +1191,7 @@ https://sharer.kakao.com/talk/friends/picker/easylink?app_key=437a6516bd110eb436
       //                       SizedBox(width: 8),
       //                       // time
       //                       Text(
-      //                         CretaUtils.dateToDurationString(widget.watchHistoryModel?.updateTime ?? widget.bookModel.updateTime),
+      //                         CretaCommonUtils.dateToDurationString(widget.watchHistoryModel?.updateTime ?? widget.bookModel.updateTime),
       //                         overflow: TextOverflow.ellipsis,
       //                         textAlign: TextAlign.left,
       //                         style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[300]),

@@ -1,7 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
-import '../../../common/creta_utils.dart';
+//import '../../../common/creta_utils.dart';
 import '../../../model/app_enums.dart';
 
 class ShapePath {
@@ -142,7 +143,7 @@ class ShapePath {
     double halfWidth = width / 2;
     double bigRadius = halfWidth;
     double radius = halfWidth / 2;
-    double degreesPerStep = CretaUtils.degreeToRadian(360 / numberOfPoints);
+    double degreesPerStep = CretaCommonUtils.degreeToRadian(360 / numberOfPoints);
     double halfDegreesPerStep = degreesPerStep / 2;
 
     var path = Path();
@@ -397,7 +398,6 @@ class ShapePath {
 
   static Path arrowRight(Size size,
       {Offset offset = Offset.zero, double? triangleHeight, double? rectangleClipHeight}) {
-
     triangleHeight ??= size.width * 0.33;
     rectangleClipHeight ??= size.height * 0.6;
     var path = Path();

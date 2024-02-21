@@ -615,7 +615,7 @@ class _BookMainPageState extends State<BookMainPage> {
     }
     super.dispose();
 
-    CretaTextField.mainFocusNode?.dispose();
+    //CretaTextField.mainFocusNode?.dispose();
     logger.info('BookMainPage.dispose end');
   }
 

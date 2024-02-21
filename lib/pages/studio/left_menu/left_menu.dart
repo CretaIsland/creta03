@@ -4,8 +4,8 @@ import 'package:creta03/pages/studio/left_menu/left_menu_web_conference.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
-import '../../../common/creta_utils.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/creta_color.dart';
 import '../book_main_page.dart';
@@ -163,7 +163,7 @@ class _LeftMenuState
                 left: 0,
                 width: _leftMenuWidth, // ----- added on 230518 ------
                 child: _isNotImpl(BookMainPage.leftMenuNotifier!.selectedStick) == true
-                    ? CretaUtils.underConstruction(
+                    ? CretaCommonUtils.underConstruction(
                         width: _leftMenuWidth,
                         height: _maxHeight,
                         padding: EdgeInsets.only(bottom: 250),

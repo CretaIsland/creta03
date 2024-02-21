@@ -257,23 +257,23 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
             ContentsModel? content = contentsManager.getCurrentModel();
             if (content != null && contentsManager.getAvailLength() > 0) {
               //print('contentsManager is not null');
-              //print('3.frameManager?.setSelectedMid : ${CretaUtils.timeLap()}');
+              //print('3.frameManager?.setSelectedMid : ${CretaCommonUtils.timeLap()}');
               frameManager?.setSelectedMid(mid, doNotify: false);
-              // print('4.contentsManager.setSelectedMid : ${CretaUtils.timeLap()}');
+              // print('4.contentsManager.setSelectedMid : ${CretaCommonUtils.timeLap()}');
               contentsManager.setSelectedMid(content.mid, doNotify: false);
 
               // 아래 5번 6번 두가지 Notification 때문에, 느려지게 된다.  따라서, 이를 여기서 하지 않고,
               // SelectedBox 에서 SelectedBox 가 다 그려지고 나서 하도록 한다.
 
-              // print('5 notify MiniMenuNotifier : ${CretaUtils.timeLap()}');
+              // print('5 notify MiniMenuNotifier : ${CretaCommonUtils.timeLap()}');
               // BookMainPage.miniMenuNotifier!.set(true, doNoti: true);
-              //print('6.not notify, set only ContaineeNotifier : ${CretaUtils.timeLap()}');
+              //print('6.not notify, set only ContaineeNotifier : ${CretaCommonUtils.timeLap()}');
               BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: false);
-              //print('7.before tree update : ${CretaUtils.timeLap()}');
+              //print('7.before tree update : ${CretaCommonUtils.timeLap()}');
               _invokeNotify();
 
               LeftMenuPage.treeInvalidate();
-              //print('8.after tee update.${CretaUtils.timeLap()}');
+              //print('8.after tee update.${CretaCommonUtils.timeLap()}');
 
               return;
             } else {
@@ -289,22 +289,22 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
             BookMainPage.miniMenuNotifier!.isShow == false ||
             BookMainPage.containeeNotifier!.selectedClass != ContaineeEnum.Frame ||
             RightMenu.isOpen == false) {
-          //print('3.frameManager?.setSelectedMid : ${CretaUtils.timeLap()}');
+          //print('3.frameManager?.setSelectedMid : ${CretaCommonUtils.timeLap()}');
 
           frameManager?.setSelectedMid(mid, doNotify: false);
           //setState(() {
           // 아래 4번 5 번 두가지 Notification 때문에, 느려지게 된다.  따라서, 이를 여기서 하지 않고,
           // SelectedBox 에서 SelectedBox 가 다 그려지고 나서 하도록 한다.
           // Delay 를 주고 async 함수로 보냈다.
-          // print('4.notify...here....${CretaUtils.timeLap()}');
+          // print('4.notify...here....${CretaCommonUtils.timeLap()}');
           // BookMainPage.miniMenuNotifier!.set(true, doNoti: true);
-          //print('5.not notify, set only ContaineeNotifier: ${CretaUtils.timeLap()}');
+          //print('5.not notify, set only ContaineeNotifier: ${CretaCommonUtils.timeLap()}');
           BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: false);
 
           _invokeNotify();
-          //print('6.before tree update : ${CretaUtils.timeLap()}');
+          //print('6.before tree update : ${CretaCommonUtils.timeLap()}');
           LeftMenuPage.treeInvalidate();
-          //print('7.after tee update.${CretaUtils.timeLap()}');
+          //print('7.after tee update.${CretaCommonUtils.timeLap()}');
 
           //});
         }
@@ -385,9 +385,9 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
   void _invokeNotify() {
     //await Future.delayed(const Duration(milliseconds: 100));
     // 속도 향상을 위해, miniMenuNotifier  와 containeeNotifier 를 이곳에서 한다.
-    //print('5 before set and notify MiniMenuNotifier : ${CretaUtils.timeLap()}');
+    //print('5 before set and notify MiniMenuNotifier : ${CretaCommonUtils.timeLap()}');
     BookMainPage.miniMenuNotifier!.set(true, doNoti: true);
-    //print('6.before notify ContaineeNotifier : ${CretaUtils.timeLap()}');
+    //print('6.before notify ContaineeNotifier : ${CretaCommonUtils.timeLap()}');
     BookMainPage.containeeNotifier!.notify();
   }
 

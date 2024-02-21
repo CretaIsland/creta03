@@ -3,6 +3,8 @@
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 import '../../../../../common/creta_utils.dart';
 import '../../../../../data_io/contents_manager.dart';
 import '../../../../../data_io/frame_manager.dart';
@@ -84,7 +86,7 @@ class InstantEditorState extends CretaState<InstantEditor> {
   //   int textLineCount = 0;
   //   double textLineHeight = 1.0;
   //   double textLineWidth = 1.0;
-  //   (textLineWidth, textLineHeight, textLineCount) = CretaUtils.getLineSizeAndCount(
+  //   (textLineWidth, textLineHeight, textLineCount) = CretaCommonUtils.getLineSizeAndCount(
   //     text,
   //     autoSizeType,
   //     _realSize!.width,
@@ -103,7 +105,7 @@ class InstantEditorState extends CretaState<InstantEditor> {
   // void _resize() {
   //   late double newWidth;
   //   late double newHeight;
-  //   (newWidth, newHeight) = CretaUtils.resizeText(
+  //   (newWidth, newHeight) = CretaCommonUtils.resizeText(
   //     _textLineWidth,
   //     _textLineHeight,
   //     _textLineCount!,
@@ -289,7 +291,7 @@ class InstantEditorState extends CretaState<InstantEditor> {
     _frameSize = Size(widget.frameModel.width.value * StudioVariables.applyScale,
         widget.frameModel.height.value * StudioVariables.applyScale);
     _realSize ??= _frameSize;
-    //_textLineCount ??= CretaUtils.countAs(uri, '\n') + 1;
+    //_textLineCount ??= CretaCommonUtils.countAs(uri, '\n') + 1;
     return _editText(model, uri, style);
   }
 
@@ -418,7 +420,7 @@ class InstantEditorState extends CretaState<InstantEditor> {
       wrapWords: true, // <- 반드시 true 여야함.
       key: _textFieldKey,
       cursorWidth: cursorWidth,
-      cursorColor: CretaUtils.luminance(widget.frameModel.bgColor1.value),
+      cursorColor: CretaCommonUtils.luminance(widget.frameModel.bgColor1.value),
       stepGranularity: StudioConst.stepGranularity, // <-- 폰트 사이즈 정밀도, 작을수록 속도가 느리다.  0.1 이 최소
       minFontSize: StudioConst.minFontSize,
       strutStyle: const StrutStyle(forceStrutHeight: true, height: 1.0),
@@ -471,7 +473,7 @@ class InstantEditorState extends CretaState<InstantEditor> {
         CretaTextField.mainFocusNode?.requestFocus();
       },
       onChanged: (value) {
-        // int newlineCount = CretaUtils.countAs(value, '\n') + 1;
+        // int newlineCount = CretaCommonUtils.countAs(value, '\n') + 1;
         // if (newlineCount != _textLineCount) {
         model.cursorPos = _textController.selection.baseOffset;
         //print('cur=${model.cursorPos}');
@@ -582,7 +584,7 @@ class InstantEditorState extends CretaState<InstantEditor> {
   //       widget.onTap?.call(widget.frameModel.mid); //frameMain onTap
   //     },
   //     onChanged: (value) {
-  //       // int newlineCount = CretaUtils.countAs(value, '\n') + 1;
+  //       // int newlineCount = CretaCommonUtils.countAs(value, '\n') + 1;
   //       // if (newlineCount != _textLineCount) {
   //       model.cursorPos = _textController.selection.baseOffset;
   //       //print('cur=${model.cursorPos}');

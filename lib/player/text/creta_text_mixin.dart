@@ -8,6 +8,7 @@ import 'package:uuid/uuid.dart';
 import 'package:widget_and_text_animator/widget_and_text_animator.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
 import '../../common/creta_utils.dart';
 import '../../design_system/component/autoSizeText/creta_auto_size_text.dart';
@@ -119,7 +120,6 @@ mixin CretaTextMixin {
       (frameWidth, frameHeight) = CretaUtils.getTextBoxSize(
         uri,
         model.autoSizeType.value,
-        
         realSize.width,
         realSize.height,
         style,
@@ -297,7 +297,7 @@ mixin CretaTextMixin {
     double fontSize,
     bool isThumbnail,
   ) {
-    int textSize = CretaUtils.getStringSize(text);
+    int textSize = CretaCommonUtils.getStringSize(text);
     // duration 이 50 이면 실제로는 5초 정도에  문자열을 다 흘려보내다.
     // 따라서 문자열의 길이에  anyDuration / 10  정도의 값을 곱해본다.
     String key = const Uuid().v4();

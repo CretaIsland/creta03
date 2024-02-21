@@ -883,7 +883,7 @@ class FrameManager extends CretaManager {
       // if (stickerKey == null) {
       //   return null;
       // }
-      // bool founded = CretaUtils.isMousePointerOnWidget(stickerKey, pos);
+      // bool founded = CretaCommonUtils.isMousePointerOnWidget(stickerKey, pos);
       String keyString = stickerKeyMangler(pageModel.mid, frame.mid);
       bool founded = stickerKeyHandler.isMousePointerOnWidget(keyString, pos);
       if (founded) {
@@ -1009,7 +1009,7 @@ class FrameManager extends CretaManager {
     //   //print(' key is null , ${DraggableStickers.frameSelectNotifier!.selectedAssetId}');
     //   return false;
     // }
-    //return CretaUtils.isMousePointerOnWidget(key, position);
+    //return CretaCommonUtils.isMousePointerOnWidget(key, position);
     String keyString =
         stickerKeyMangler(pageModel.mid, DraggableStickers.frameSelectNotifier!.selectedAssetId!);
     return stickerKeyHandler.isMousePointerOnWidget(keyString, position);

@@ -102,7 +102,7 @@ mixin BookInfoMixin {
   //       inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'[/\\]'))],
   //       onTagChanged: (newValue) {
   //         hashTagList.add(newValue);
-  //         String val = CretaUtils.listToString(hashTagList);
+  //         String val = CretaCommonUtils.listToString(hashTagList);
   //         logger.finest('hashTag=$val');
   //         model.hashTag.set(val);
   //         onTagChanged.call(newValue);
@@ -110,7 +110,7 @@ mixin BookInfoMixin {
   //       },
   //       onSubmitted: (outstandingValue) {
   //         hashTagList.add(outstandingValue);
-  //         String val = CretaUtils.listToString(hashTagList);
+  //         String val = CretaCommonUtils.listToString(hashTagList);
   //         logger.finest('hashTag=$val');
   //         model.hashTag.set(val);
   //         logger.finest('onSubmitted $outstandingValue input');
@@ -127,7 +127,7 @@ mixin BookInfoMixin {
   //             label: hashTagList[index],
   //             onDeleted: (idx) {
   //               hashTagList.removeAt(index);
-  //               String val = CretaUtils.listToString(hashTagList);
+  //               String val = CretaCommonUtils.listToString(hashTagList);
   //               model.hashTag.set(val);
   //               logger.finest('onDelete $index');
   //               onDeleted.call(idx);

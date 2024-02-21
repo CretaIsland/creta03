@@ -115,8 +115,8 @@ mixin BookMixin {
     width.setDD(w == 0 ? 10 : w, save: false, noUndo: true);
     height.setDD(h == 0 ? 10 : h, save: false, noUndo: true);
 
-    // bgColor1.set(CretaUtils.string2Color(map["bgColor1"])!, save: false, noUndo: true);
-    // bgColor2.set(CretaUtils.string2Color(map["bgColor2"])!, save: false, noUndo: true);
+    // bgColor1.set(CretaCommonUtils.string2Color(map["bgColor1"])!, save: false, noUndo: true);
+    // bgColor2.set(CretaCommonUtils.string2Color(map["bgColor2"])!, save: false, noUndo: true);
     // opacity.set(map["opacity"] ?? 1, save: false, noUndo: true);
     // gradationType.set(GradationType.fromInt(map["gradationType"] ?? 0), save: false, noUndo: true);
     // textureType.set(TextureType.fromInt(map["textureType"] ?? 0), save: false, noUndo: true);

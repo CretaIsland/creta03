@@ -116,7 +116,7 @@ class _CretaExSliderState extends State<CretaExSlider> {
           //   //onDragging: (val) {
           //   onChanged: (val) {
           //     _value = _reverseValue(val, widget.valueType);
-          //     if (widget.delay > 0 && CretaUtils.hasTimePassed(_lastTime!, widget.delay)) {
+          //     if (widget.delay > 0 && CretaCommonUtils.hasTimePassed(_lastTime!, widget.delay)) {
           //       widget.onChannged.call(_value);
           //       _lastTime = DateTime.now();
           //     } else {

@@ -25,7 +25,8 @@ import 'package:hycop/hycop.dart';
 //import '../../../design_system/menu/creta_drop_down.dart';
 // import '../../../design_system/menu/creta_drop_down_button.dart';
 // import '../../../design_system/text_field/creta_search_bar.dart';
-import '../../../common/creta_utils.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 import '../../../design_system/component/creta_layout_rect.dart';
 import '../creta_book_ui_item.dart';
 import '../../../data_io/creta_manager.dart';
@@ -99,7 +100,8 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
   final Map<String, String> _teamIdMap = {};
   final Map<String, TeamModel> _teamMap = {}; // <UserPropertyModel.email, UserPropertyModel>
   final Map<String, String> _userIdMap = {};
-  final Map<String, UserPropertyModel> _userPropertyMap = {}; // <UserPropertyModel.email, UserPropertyModel>
+  final Map<String, UserPropertyModel> _userPropertyMap =
+      {}; // <UserPropertyModel.email, UserPropertyModel>
   final Map<String, String> _channelIdMap = {};
   final Map<String, ChannelModel> _channelMap = {}; // <ChannelModel.mid, ChannelModel>
   //bool _onceDBGetComplete = false;
@@ -228,7 +230,8 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
   void _addToFavorites(String bookId, bool isFavorites) async {
     if (isFavorites) {
       // already in favorites => remove favorites from DB
-      await favoritesManagerHolder.removeFavoritesFromDB(bookId, AccountManager.currentLoginUser.email);
+      await favoritesManagerHolder.removeFavoritesFromDB(
+          bookId, AccountManager.currentLoginUser.email);
       setState(() {
         _favoritesBookIdMap[bookId] = false;
       });
@@ -242,8 +245,8 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
   }
 
   Widget _getItemPane() {
-    final int columnCount =
-        CretaUtils.getItemColumnCount(widget.cretaLayoutRect.childWidth, _itemMinWidth, _rightViewItemGapX);
+    final int columnCount = CretaCommonUtils.getItemColumnCount(
+        widget.cretaLayoutRect.childWidth, _itemMinWidth, _rightViewItemGapX);
 
     double itemWidth = -1;
     double itemHeight = -1;
@@ -274,7 +277,8 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
         itemBuilder: (BuildContext context, int index) {
           FavoritesModel fModel = _favoritesBookList[index];
           BookModel bookModel = _cretaBooksMap[fModel.bookId] ?? BookModel('');
-          ChannelModel? chModel = bookModel.channels.isEmpty ? null : _channelMap[bookModel.channels[0]];
+          ChannelModel? chModel =
+              bookModel.channels.isEmpty ? null : _channelMap[bookModel.channels[0]];
           return (itemWidth >= 0 && itemHeight >= 0)
               ? CretaBookUIItem(
                   key: GlobalObjectKey(bookModel.getMid),

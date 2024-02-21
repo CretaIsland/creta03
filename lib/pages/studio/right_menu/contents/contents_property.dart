@@ -12,6 +12,7 @@ import 'package:widget_and_text_animator/widget_and_text_animator.dart';
 import 'package:scroll_loop_auto_scroll/scroll_loop_auto_scroll.dart';
 import 'package:uuid/uuid.dart';
 import 'package:neonpen/neonpen.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
@@ -340,7 +341,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       //     titleWidget: Text(CretaLang.fontColor, style: CretaFont.titleSmall),
       //     //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
       //     trailWidget: Text(
-      //       '${CretaUtils.extractColorString(widget.model.fontColor.value.toString())},${(1 - widget.model.opacity.value) * 100}%',
+      //       '${CretaCommonUtils.extractColorString(widget.model.fontColor.value.toString())},${(1 - widget.model.opacity.value) * 100}%',
       //       textAlign: TextAlign.right,
       //       style: CretaFont.titleSmall.copyWith(
       //         overflow: TextOverflow.fade,
@@ -799,7 +800,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             name: CretaStudioLang.opacity,
             min: 0,
             max: 100,
-            value: CretaUtils.validCheckDouble(widget.model.opacity.value, 0, 1),
+            value: CretaCommonUtils.validCheckDouble(widget.model.opacity.value, 0, 1),
             valueType: SliderValueType.reverse,
             onChannged: (value) {
               // widget.model.opacity.set(value);
@@ -1325,7 +1326,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
 
   Widget tickerSide(ContentsModel model) {
     String text = "${CretaStudioLang.tickerSide} ";
-    int textSize = CretaUtils.getStringSize(text);
+    int textSize = CretaCommonUtils.getStringSize(text);
     // duration 이 50 이면 실제로는 5-7초 정도에  문자열을 다 흘려보내다.
     // 따라서 문자열의 길이에  anyDuration / 10  정도의 값을 곱해본다.
     int duration = (textSize * 0.75).ceil() * ((101 - model.anyDuration.value) / 10).ceil();
@@ -1359,7 +1360,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
 
   Widget tickerUpDown(ContentsModel model) {
     String text = "${CretaStudioLang.tickerSide} ";
-    int textSize = CretaUtils.getStringSize(text);
+    int textSize = CretaCommonUtils.getStringSize(text);
     // duration 이 50 이면 실제로는 5-7초 정도에  문자열을 다 흘려보내다.
     // 따라서 문자열의 길이에  anyDuration / 10  정도의 값을 곱해본다.
     int duration = (textSize * 0.75).ceil() * ((101 - model.anyDuration.value) / 10).ceil();

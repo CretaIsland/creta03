@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
-import 'package:creta03/common/creta_utils.dart';
 import 'package:creta03/design_system/component/creta_texture_widget.dart';
 import 'package:creta03/design_system/component/shape/creta_clipper.dart';
 import '../../../../data_io/contents_manager.dart';
@@ -190,7 +190,7 @@ class FrameThumbnailState extends CretaState<FrameThumbnail> with ContaineeMixin
         alignment: Alignment.center,
         transform: Matrix4.identity()
           ..scale(1.0)
-          ..rotateZ(CretaUtils.degreeToRadian(widget.model.angle.value)),
+          ..rotateZ(CretaCommonUtils.degreeToRadian(widget.model.angle.value)),
         child: _isShowBorder ? _dottedShapeBox(widget.model) : _shapeBox(widget.model),
       );
     }
@@ -212,7 +212,7 @@ class FrameThumbnailState extends CretaState<FrameThumbnail> with ContaineeMixin
       child: _textureBox(model).asShape(
         mid: model.mid,
         shapeType: model.shape.value,
-        offset: CretaUtils.getShadowOffset(
+        offset: CretaCommonUtils.getShadowOffset(
             model.shadowDirection.value, model.shadowOffset.value * applyScale),
         shadowBlur: model.shadowBlur.value,
         shadowSpread: model.shadowSpread.value * applyScale,

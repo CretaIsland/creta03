@@ -3,6 +3,7 @@
 import 'package:creta03/lang/creta_lang.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
 import '../../../../common/creta_utils.dart';
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
@@ -272,7 +273,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
 
   Future<bool> _addUser(String email) async {
     // email 이거나, 팀명이다.
-    bool isEmail = CretaUtils.isValidEmail(email);
+    bool isEmail = CretaCommonUtils.isValidEmail(email);
     if (isEmail) {
       // 헤당 유저가 회원인지 찾는다.
       UserPropertyModel? user =
@@ -422,7 +423,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
               itemBuilder: (BuildContext context, int index) {
                 String email = emailList[index];
                 bool isNotCreator = (email != widget.model.creator);
-                if (CretaUtils.isValidEmail(email) == isTeam) {
+                if (CretaCommonUtils.isValidEmail(email) == isTeam) {
                   return SizedBox.shrink();
                 }
                 UserPropertyModel? userModel = _findModel(email);

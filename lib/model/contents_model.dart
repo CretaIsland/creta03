@@ -11,6 +11,8 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 
 import '../common/creta_utils.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 import '../design_system/creta_font.dart';
 import '../pages/studio/studio_variables.dart';
 import 'app_enums.dart';
@@ -526,12 +528,14 @@ class ContentsModel extends CretaModel {
     opacity.setDD(map["opacity"] ?? 1, save: false, noUndo: true);
     fontSize.setDD(map["fontSize"] ?? StudioConst.defaultFontSize, save: false, noUndo: true);
     fontSizeType.setDD(FontSizeType.fromInt(map["fontSizeType"] ?? 5), save: false, noUndo: true);
-    fontColor.setDD(CretaUtils.string2Color(map["fontColor"])!, save: false, noUndo: true);
-    shadowColor.setDD(CretaUtils.string2Color(map["shadowColor"])!, save: false, noUndo: true);
+    fontColor.setDD(CretaCommonUtils.string2Color(map["fontColor"])!, save: false, noUndo: true);
+    shadowColor.setDD(CretaCommonUtils.string2Color(map["shadowColor"])!,
+        save: false, noUndo: true);
     shadowBlur.setDD(map["shadowBlur"] ?? 0, save: false, noUndo: true);
     shadowIntensity.setDD(map["shadowIntensity"] ?? 0.5, save: false, noUndo: true);
     outLineWidth.setDD(map["outLineWidth"] ?? 0, save: false, noUndo: true);
-    outLineColor.setDD(CretaUtils.string2Color(map["outLineColor"])!, save: false, noUndo: true);
+    outLineColor.setDD(CretaCommonUtils.string2Color(map["outLineColor"])!,
+        save: false, noUndo: true);
     isItalic.setDD(map["isItalic"] ?? false, save: false, noUndo: true);
     isUnderline.setDD(map["isUnderline"] ?? false, save: false, noUndo: true);
     isStrike.setDD(map["isStrike"] ?? false, save: false, noUndo: true);

@@ -8,6 +8,7 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:r_dotted_line_border/r_dotted_line_border.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/frame_manager.dart';
@@ -1655,7 +1656,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               CretaWidgetDropDown(
                 items: [
                   choiceStringElement(CretaStudioLang.noBorder, 156, 30),
-                  ...CretaUtils.borderStyle.map((e) {
+                  ...CretaCommonUtils.borderStyle.map((e) {
                     return _borderStyle(156, 10, e[0], e[1]);
                   }).toList(),
                 ],
@@ -1733,7 +1734,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                 blur: widget.model.shadowBlur.value,
                 direction: widget.model.shadowDirection.value,
                 distance: widget.model.shadowOffset.value,
-                opacity: CretaUtils.validCheckDouble(widget.model.shadowOpacity.value, 0, 1),
+                opacity: CretaCommonUtils.validCheckDouble(widget.model.shadowOpacity.value, 0, 1),
                 isSelected: false,
                 width: 24,
                 height: 24,
@@ -1865,7 +1866,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           name: CretaStudioLang.color,
           widget: colorIndicator(
             shadowColor,
-            CretaUtils.validCheckDouble(shadowOpacity, 0, 1),
+            CretaCommonUtils.validCheckDouble(shadowOpacity, 0, 1),
             onColorChanged: onColorChanged,
             onClicked: () {
               setState(() {
@@ -1909,7 +1910,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             name: CretaStudioLang.opacity,
             min: 0,
             max: 100,
-            value: CretaUtils.validCheckDouble(shadowOpacity, 0, 1),
+            value: CretaCommonUtils.validCheckDouble(shadowOpacity, 0, 1),
             valueType: SliderValueType.reverse,
             onChannged: onOpacityChanged,
             onChanngeComplete: onOpacityChanged,
@@ -2323,7 +2324,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   Widget _eventBody() {
     //return Column(children: [
     //Text(CretaStudioLang.pageSize, style: CretaFont.titleSmall),
-    List<String> hashTagList = CretaUtils.jsonStringToList(widget.model.eventReceive.value);
+    List<String> hashTagList = CretaCommonUtils.jsonStringToList(widget.model.eventReceive.value);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -2384,7 +2385,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                   onTagChanged: (newValue) {
                     setState(() {
                       hashTagList.add(newValue);
-                      String val = CretaUtils.listToString(hashTagList);
+                      String val = CretaCommonUtils.listToString(hashTagList);
                       logger.fine('eventReceive=$val');
                       widget.model.eventReceive.set(val);
                     });
@@ -2395,7 +2396,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                   onSubmitted: (outstandingValue) {
                     setState(() {
                       hashTagList.add(outstandingValue);
-                      String val = CretaUtils.listToString(hashTagList);
+                      String val = CretaCommonUtils.listToString(hashTagList);
                       logger.fine('eventReceive=$val');
                       widget.model.eventReceive.set(val);
                       logger.fine('onSubmitted $outstandingValue input');
@@ -2406,7 +2407,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                   onDeleted: (idx) {
                     setState(() {
                       hashTagList.removeAt(idx);
-                      String val = CretaUtils.listToString(hashTagList);
+                      String val = CretaCommonUtils.listToString(hashTagList);
                       widget.model.eventReceive.set(val);
                       logger.finest('onDelete $idx');
                     });

@@ -2,7 +2,8 @@ import 'dart:math';
 
 import 'package:creta03/data_io/page_manager.dart';
 import 'package:hycop/hycop.dart';
-import '../common/creta_utils.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 import '../design_system/menu/creta_popup_menu.dart';
 import '../lang/creta_lang.dart';
 import '../lang/creta_studio_lang.dart';
@@ -116,7 +117,7 @@ class BookPublishedManager extends CretaManager {
     String url = 'https://picsum.photos/200/?random=$randomNumber';
 
     String name = '${CretaStudioLang.sampleBookName} ';
-    name += CretaUtils.getNowString(deli1: '', deli2: ' ', deli3: '', deli4: ' ');
+    name += CretaCommonUtils.getNowString(deli1: '', deli2: ' ', deli3: '', deli4: ' ');
 
     BookModel sampleBook = BookModel.withName(name,
         creator: AccountManager.currentLoginUser.email,

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 //import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop.dart';
 import 'package:progress_bar_steppers/steppers.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
 import '../../common/creta_utils.dart';
 import '../../data_io/book_published_manager.dart';
@@ -111,7 +112,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   void initState() {
     super.initState();
     horizontalPadding = 16;
-    hashTagWrapper.hashTagList = CretaUtils.jsonStringToList(widget.model!.hashTag.value);
+    hashTagWrapper.hashTagList = CretaCommonUtils.jsonStringToList(widget.model!.hashTag.value);
     logger.fine('hashTagList=${hashTagWrapper.hashTagList}');
     stepsData = [
       StepperData(label: CretaStudioLang.publishSteps[0]),
@@ -655,10 +656,9 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
       onDeleted: (value) {
         setState(() {});
       },
-            limit: StudioConst.maxTextLimit - 2,
+      limit: StudioConst.maxTextLimit - 2,
       enabled: _tagEnabled,
       rest: rest > 0 ? rest - 1 : 0,
-
     );
   }
 
@@ -768,7 +768,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
 
   Future<bool> _addUser(String email) async {
     // email 이거나, 팀명이다.
-    bool isEmail = CretaUtils.isValidEmail(email);
+    bool isEmail = CretaCommonUtils.isValidEmail(email);
     if (isEmail) {
       // 헤당 유저가 회원인지 찾는다.
       UserPropertyModel? user =

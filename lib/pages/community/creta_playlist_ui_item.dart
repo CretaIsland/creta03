@@ -8,6 +8,8 @@ import 'package:url_launcher/link.dart';
 //import 'package:hycop/hycop.dart';
 //import 'package:hycop/common/util/logger.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 //import 'package:url_strategy/url_strategy.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
@@ -30,7 +32,6 @@ import '../../design_system/component/custom_image.dart';
 import '../../model/book_model.dart';
 import '../../model/playlist_model.dart';
 import 'sub_pages/community_right_playlist_detail_pane.dart';
-import '../../../common/creta_utils.dart';
 
 // const double _rightViewTopPane = 40;
 const double _rightViewLeftPane = 40;
@@ -82,7 +83,8 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
   void initState() {
     super.initState();
 
-    _popupMenuKey = GlobalObjectKey('CretaPlaylistItemState.${widget.playlistModel.getMid}.popmenu');
+    _popupMenuKey =
+        GlobalObjectKey('CretaPlaylistItemState.${widget.playlistModel.getMid}.popmenu');
     _popupMenuList = [
       CretaMenuItem(
         caption: '재생목록 수정',
@@ -152,7 +154,9 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
                       ),
                     ),
                     SizedBox(width: 8),
-                    (widget.playlistModel.isPublic) ? SizedBox.shrink() : Icon(Icons.lock_outline, size: 16),
+                    (widget.playlistModel.isPublic)
+                        ? SizedBox.shrink()
+                        : Icon(Icons.lock_outline, size: 16),
                     Expanded(child: Container()),
                   ],
                 ),
@@ -171,7 +175,7 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
                   ),
                   SizedBox(width: 8),
                   Text(
-                    '최근 업데이트 ${CretaUtils.dateToDurationString(widget.playlistModel.updateTime)}',
+                    '최근 업데이트 ${CretaCommonUtils.dateToDurationString(widget.playlistModel.updateTime)}',
                     style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[400]),
                   ),
                 ],
@@ -247,7 +251,8 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
               direction: Axis.horizontal,
               spacing: 20, // <-- Spacing between children
               children: List<Widget>.generate(widget.playlistModel.bookIdList.length, (idx) {
-                BookModel bModel = widget.bookMap[widget.playlistModel.bookIdList[idx]] ?? BookModel('dummy');
+                BookModel bModel =
+                    widget.bookMap[widget.playlistModel.bookIdList[idx]] ?? BookModel('dummy');
                 return Container(
                   width: 207,
                   height: 118,

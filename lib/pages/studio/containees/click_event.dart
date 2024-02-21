@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:hycop/common/util/logger.dart';
 //import 'package:mutex/mutex.dart';
-import '../../../common/creta_utils.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 import '../../../data_io/page_manager.dart';
 import '../../../model/creta_model.dart';
 import '../book_main_page.dart';
@@ -102,7 +103,7 @@ class ClickEventHandler {
       return;
     }
 
-    List<String> eventNameList = CretaUtils.jsonStringToList(eventNameStringList);
+    List<String> eventNameList = CretaCommonUtils.jsonStringToList(eventNameStringList);
     for (String eventName in eventNameList) {
       _subscribe(eventName, model, eventController, pageManager);
     }

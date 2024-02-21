@@ -1094,7 +1094,7 @@ class ContentsManager extends CretaManager {
     Uint8List blob = reader.result as Uint8List;
     ui.Image image = await decodeImageFromList(blob);
     // } else if (contentsModel.remoteUrl != null) {
-    //   image = await CretaUtils.loadImageFromUrl(contentsModel.remoteUrl!);
+    //   image = await CretaCommonUtils.loadImageFromUrl(contentsModel.remoteUrl!);
     // } else {
     //   logger.severe('contents.file and remoteUrl both null');
     //   return;

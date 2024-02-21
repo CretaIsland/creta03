@@ -9,7 +9,8 @@ import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
-import '../common/creta_utils.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 import '../pages/studio/studio_constant.dart';
 import 'app_enums.dart';
 import 'creta_model.dart';
@@ -274,18 +275,18 @@ class BookModel extends CretaModel with BookMixin {
     backgroundMusicFrame.setDD(map["backgroundMusicFrame"] ?? '', save: false, noUndo: true);
     thumbnailType.setDD(ContentsType.fromInt(map["thumbnailType"] ?? 1), save: false, noUndo: true);
     thumbnailAspectRatio.setDD((map["thumbnailAspectRatio"] ?? 1), save: false, noUndo: true);
-    owners = CretaUtils.jsonStringToList(map["owners"] ?? '');
+    owners = CretaCommonUtils.jsonStringToList(map["owners"] ?? '');
     if (owners.isEmpty) {
       owners.add(creator);
     }
-    readers = CretaUtils.jsonStringToList((map["readers"] ?? ''));
-    writers = CretaUtils.jsonStringToList((map["writers"] ?? ''));
+    readers = CretaCommonUtils.jsonStringToList((map["readers"] ?? ''));
+    writers = CretaCommonUtils.jsonStringToList((map["writers"] ?? ''));
     shares = getShares(owners, writers, readers);
     publishMid = map["publishMid"] ?? '';
     sourceMid = map["sourceMid"] ?? '';
     //hashtags = map["hashtags"] ?? [];
-    hashtags = CretaUtils.dynamicListToStringList(map["hashtags"]);
-    channels = CretaUtils.dynamicListToStringList(map["channels"]);
+    hashtags = CretaCommonUtils.dynamicListToStringList(map["hashtags"]);
+    channels = CretaCommonUtils.dynamicListToStringList(map["channels"]);
     // if (channels.isEmpty) {
     //   channels.add(creator);
     // }
@@ -330,9 +331,9 @@ class BookModel extends CretaModel with BookMixin {
         "viewCount": viewCount,
         "likeCount": likeCount,
         "copyCount": copyCount,
-        "owners": CretaUtils.listToString(owners),
-        "readers": CretaUtils.listToString(readers),
-        "writers": CretaUtils.listToString(writers),
+        "owners": CretaCommonUtils.listToString(owners),
+        "readers": CretaCommonUtils.listToString(readers),
+        "writers": CretaCommonUtils.listToString(writers),
         "shares": shares, //DB 에 쓰기는 쓴다, 검색용이다.
         "publishMid": publishMid,
         "sourceMid": sourceMid,

@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
-import '../../common/creta_utils.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
 class CustomScrollController extends StatefulWidget {
   final Size realSize;
@@ -48,7 +47,8 @@ class CustomScrollControllerState extends State<CustomScrollController> {
     _sentences = widget.text.split('\n');
     _sentences.add('');
     _itemHeight =
-        CretaUtils.calculateTextSize(_sentences[0], widget.textStyle, widget.realSize.width).height;
+        CretaCommonUtils.calculateTextSize(_sentences[0], widget.textStyle, widget.realSize.width)
+            .height;
 
     if (_itemHeight > widget.realSize.height) {
       _itemHeight = widget.realSize.height;

@@ -154,7 +154,7 @@ class CretaTextPlayer extends CretaAbsPlayer {
 
   // Widget animationText(
   //     String text, TextStyle style, Widget? textWidget, Size realSize, double fontSize) {
-  //   int textSize = CretaUtils.getStringSize(text);
+  //   int textSize = CretaCommonUtils.getStringSize(text);
   //   // duration 이 50 이면 실제로는 5초 정도에  문자열을 다 흘려보내다.
   //   // 따라서 문자열의 길이에  anyDuration / 10  정도의 값을 곱해본다.
 

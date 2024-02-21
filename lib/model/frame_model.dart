@@ -9,7 +9,8 @@ import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 
-import '../common/creta_utils.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 import '../data_io/frame_manager.dart';
 import '../lang/creta_studio_lang.dart';
 import '../pages/studio/book_main_page.dart';
@@ -495,15 +496,16 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     isMain.setDD((map["isMain"] ?? false), save: false, noUndo: true);
     isOverlay.setDD((map["isOverlay"] ?? false), save: false, noUndo: true);
 
-    borderColor.setDD(CretaUtils.string2Color(map["borderColor"])!, save: false, noUndo: true);
-    subColor.setDD(CretaUtils.string2Color(map["subColor"])!, save: false, noUndo: true);
+    borderColor.setDD(CretaCommonUtils.string2Color(map["borderColor"])!,
+        save: false, noUndo: true);
+    subColor.setDD(CretaCommonUtils.string2Color(map["subColor"])!, save: false, noUndo: true);
     subSize.setDD((map["subSize"] ?? 0), save: false, noUndo: true);
     borderWidth.setDD((map["borderWidth"] ?? 0), save: false, noUndo: true);
     borderType.setDD((map["borderType"] ?? 0), save: false, noUndo: true);
     borderCap.setDD(BorderCapType.fromInt(map["borderCap"] ?? 0), save: false, noUndo: true);
     nextContentTypes.setDD(NextContentTypes.fromInt(map["nextContentTypes"] ?? 0),
         save: false, noUndo: true);
-    shadowColor.setDD(CretaUtils.string2Color(map["shadowColor"]) ?? Colors.black,
+    shadowColor.setDD(CretaCommonUtils.string2Color(map["shadowColor"]) ?? Colors.black,
         save: false, noUndo: true);
     shadowOpacity.setDD((map["shadowOpacity"] ?? 0.0), save: false, noUndo: true);
     shadowSpread.setDD((map["shadowSpread"] ?? 0), save: false, noUndo: true);
@@ -787,7 +789,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   }
 
   void addOverlayExclude(String pageMid) {
-    Set<String> set = CretaUtils.stringToSet(overlayExclude.value);
+    Set<String> set = CretaCommonUtils.stringToSet(overlayExclude.value);
     set.add(pageMid);
     String val = '';
     for (var ele in set.toList()) {
@@ -800,7 +802,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   }
 
   void removeOverlayExclude(String pageMid) {
-    Set<String> set = CretaUtils.stringToSet(overlayExclude.value);
+    Set<String> set = CretaCommonUtils.stringToSet(overlayExclude.value);
     String val = '';
     for (var ele in set.toList()) {
       if (val.isNotEmpty) {
@@ -820,7 +822,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     if (eventReceive.value.length > 2 && showWhenEventReceived.value == true) {
       logger.fine(
           '_isVisible eventReceive=${eventReceive.value}  showWhenEventReceived=${showWhenEventReceived.value}');
-      List<String> eventNameList = CretaUtils.jsonStringToList(eventReceive.value);
+      List<String> eventNameList = CretaCommonUtils.jsonStringToList(eventReceive.value);
       for (String eventName in eventNameList) {
         if (BookMainPage.clickReceiverHandler.isEventOn(eventName) == true) {
           return true;

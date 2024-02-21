@@ -1,4 +1,5 @@
-import 'package:creta03/common/creta_utils.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 import 'package:creta03/model/app_enums.dart';
 import 'package:creta03/model/creta_model.dart';
 import 'package:flutter/material.dart';
@@ -207,12 +208,12 @@ class UserPropertyModel extends CretaModel {
     autoPlay = map['autoPlay'] ?? true;
     mute = map['mute'] ?? false;
     latestBook = map['latestBook'] ?? '';
-    latestUseFrames = CretaUtils.jsonStringToList(map["latestUseFrames"] ?? "[]");
-    latestUseColors = CretaUtils.string2ColorList(map["lastestUseColors"] ?? "[]");
-    //teams = CretaUtils.jsonStringToMapList(map["teams"] ?? "[]") as List<Map<String, String>>;
+    latestUseFrames = CretaCommonUtils.jsonStringToList(map["latestUseFrames"] ?? "[]");
+    latestUseColors = CretaCommonUtils.string2ColorList(map["lastestUseColors"] ?? "[]");
+    //teams = CretaCommonUtils.jsonStringToMapList(map["teams"] ?? "[]") as List<Map<String, String>>;
     //teams = List<String>.from(map['teams'] ?? "[]" as List);
     //teams = List<String>.from(map['teams'] ?? "[]" as List);
-    teams = CretaUtils.dynamicListToStringList(map["teams"]);
+    teams = CretaCommonUtils.dynamicListToStringList(map["teams"]);
     enterprise = map['enterprise'] ?? defaultEnterprise;
     genderType = GenderType.fromInt(map['genderType'] ?? 0);
     agreeUsingMarketing = map['agreeUsingMarketing'] ?? false;
@@ -253,9 +254,9 @@ class UserPropertyModel extends CretaModel {
         'autoPlay': autoPlay,
         'mute': mute,
         'latestBook': latestBook,
-        'latestUseFrames': CretaUtils.listToString(latestUseFrames),
-        'latestUseColors': CretaUtils.colorList2String(latestUseColors),
-        // 'teams' : CretaUtils.mapListToString(teams)
+        'latestUseFrames': CretaCommonUtils.listToString(latestUseFrames),
+        'latestUseColors': CretaCommonUtils.colorList2String(latestUseColors),
+        // 'teams' : CretaCommonUtils.mapListToString(teams)
         'teams': teams,
         'enterprise': enterprise,
         'genderType': genderType.index,

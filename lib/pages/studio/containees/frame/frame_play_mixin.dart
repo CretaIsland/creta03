@@ -525,7 +525,7 @@ mixin FramePlayMixin {
       details,
       null,
     );
-    //Offset pos = CretaUtils.positionInPage(details /*.localPosition*/, null);
+    //Offset pos = CretaCommonUtils.positionInPage(details /*.localPosition*/, null);
     // 커서의 크기가 있어서, 조금 빼주어야 텍스트 박스가 커서 위치에 맞게 나온다.
     double posOffset = LayoutConst.topMenuCursorSize / StudioVariables.applyScale;
     pos = Offset((pos.dx - posOffset > 0 ? pos.dx - posOffset : 0),

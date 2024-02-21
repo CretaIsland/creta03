@@ -1,7 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:ui';
-import 'package:creta03/common/creta_utils.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 import 'package:creta03/model/favorites_model.dart';
 import 'package:creta03/model/subscription_model.dart';
 //import 'package:creta03/pages/community/community_book_page.dart';
@@ -280,7 +281,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     }
     _currentBookModel = modelList[0] as BookModel; // 오직 1개만 있다고 가정
     _userIdMap[_currentBookModel!.creator] = _currentBookModel!.creator;
-    _hashtagValueList = CretaUtils.jsonStringToList(_currentBookModel!.hashTag.value);
+    _hashtagValueList = CretaCommonUtils.jsonStringToList(_currentBookModel!.hashTag.value);
 
     String currentLoginedUserId = CretaAccountManager.getUserProperty?.getMid ?? 'null@null.null';
     String owner = '<${PermissionType.owner.name}>$currentLoginedUserId';
@@ -806,7 +807,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
           setState(() {
             //_hashtagValueList = _hashtagValueList.where((item) => item != hashtag).toList();
             _hashtagValueList.remove(hashtag);
-            _currentBookModel?.hashTag.set(CretaUtils.listToString(_hashtagValueList));
+            _currentBookModel?.hashTag.set(CretaCommonUtils.listToString(_hashtagValueList));
           });
         }
       },
@@ -1673,7 +1674,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                               _hashtagController.text = '';
                               _hashtagValueList.add(value);
                               _currentBookModel?.hashTag
-                                  .set(CretaUtils.listToString(_hashtagValueList));
+                                  .set(CretaCommonUtils.listToString(_hashtagValueList));
                             });
                           }
                         },

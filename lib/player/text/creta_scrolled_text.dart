@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../common/creta_utils.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
 class CretaScrolledText extends StatefulWidget {
   const CretaScrolledText({
@@ -102,7 +101,8 @@ class _CretaScrolledTextState extends State<CretaScrolledText> with SingleTicker
     if (oldWidget.text != widget.text || oldWidget.realSize != widget.realSize) {
       List<String> sentences = widget.text.split('\n');
       String first = sentences[0];
-      _itemHeight = CretaUtils.calculateTextSize(first, widget.style, widget.realSize.width).height;
+      _itemHeight =
+          CretaCommonUtils.calculateTextSize(first, widget.style, widget.realSize.width).height;
     }
   }
 
@@ -110,7 +110,8 @@ class _CretaScrolledTextState extends State<CretaScrolledText> with SingleTicker
   void initState() {
     List<String> sentences = widget.text.split('\n');
     String first = sentences[0];
-    _itemHeight = CretaUtils.calculateTextSize(first, widget.style, widget.realSize.width).height;
+    _itemHeight =
+        CretaCommonUtils.calculateTextSize(first, widget.style, widget.realSize.width).height;
 
     scrollController = ScrollController();
 

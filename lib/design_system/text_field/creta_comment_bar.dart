@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hycop/hycop.dart';
 //import 'package:hycop/hycop.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 
 import '../creta_color.dart';
 import '../creta_font.dart';
@@ -15,7 +17,6 @@ import '../creta_font.dart';
 //import 'package:outline_search_bar/outline_search_bar.dart';
 import '../../design_system/buttons/creta_button.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
-import '../../common/creta_utils.dart';
 import '../../model/app_enums.dart';
 import '../../model/comment_model.dart';
 
@@ -186,7 +187,7 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
               ),
               SizedBox(width: 11),
               Text(
-                CretaUtils.dateToDurationString(widget.data.createTime),
+                CretaCommonUtils.dateToDurationString(widget.data.createTime),
                 style: CretaFont.bodySmall.copyWith(color: CretaColor.text[400]),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -354,7 +355,7 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
     // tp.layout(maxWidth: textWidth);
     // final line = tp.computeLineMetrics().length;
     // -->
-    final line = CretaUtils.getTextLineCount(widget.data.comment, CretaFont.bodyMedium, textWidth);
+    final line = CretaCommonUtils.getTextLineCount(widget.data.comment, CretaFont.bodyMedium, textWidth);
 
     return Column(
       children: [

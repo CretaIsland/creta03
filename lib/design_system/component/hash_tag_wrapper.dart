@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:material_tag_editor/tag_editor.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
-import '../../common/creta_utils.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../pages/studio/studio_constant.dart';
 import '../creta_chip.dart';
@@ -29,7 +29,7 @@ class HashTagWrapper {
     int limit = StudioConst.maxTextLimit,
     int rest = StudioConst.maxTextLimit,
   }) {
-    hashTagList = CretaUtils.jsonStringToList(model.hashTag.value);
+    hashTagList = CretaCommonUtils.jsonStringToList(model.hashTag.value);
     logger.fine('...hashTagList=$hashTagList');
 
     //GlobalObjectKey key = GlobalObjectKey('hashTagTagEditor${model.mid}');
@@ -80,26 +80,26 @@ class HashTagWrapper {
         ),
         inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'[/\\]'))],
         onTagChanged: (newValue) {
-          String val = CretaUtils.listToString(hashTagList);
+          String val = CretaCommonUtils.listToString(hashTagList);
           if (val.length + newValue.length >= limit) {
             logger.warning('len overflow');
             onTagChanged.call(null);
             return;
           }
           hashTagList.add(newValue);
-          model.hashTag.set(CretaUtils.listToString(hashTagList));
+          model.hashTag.set(CretaCommonUtils.listToString(hashTagList));
           onTagChanged.call(newValue);
           logger.finest('onTagChanged $newValue input');
         },
         onSubmitted: (outstandingValue) {
-          String val = CretaUtils.listToString(hashTagList);
+          String val = CretaCommonUtils.listToString(hashTagList);
           if (val.length + outstandingValue.length >= limit) {
             logger.warning('len0 overflow');
             onSubmitted.call(null);
             return;
           }
           hashTagList.add(outstandingValue);
-          model.hashTag.set(CretaUtils.listToString(hashTagList));
+          model.hashTag.set(CretaCommonUtils.listToString(hashTagList));
           logger.finest('onSubmitted $outstandingValue input');
           onSubmitted.call(outstandingValue);
         },
@@ -114,7 +114,7 @@ class HashTagWrapper {
               label: hashTagList[index],
               onDeleted: (idx) {
                 hashTagList.removeAt(index);
-                String val = CretaUtils.listToString(hashTagList);
+                String val = CretaCommonUtils.listToString(hashTagList);
                 model.hashTag.set(val);
                 logger.finest('onDelete $index');
                 onDeleted.call(idx);

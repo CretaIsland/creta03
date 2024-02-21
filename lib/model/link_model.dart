@@ -2,7 +2,8 @@ import 'package:creta03/model/creta_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 
-import '../common/creta_utils.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 import '../design_system/creta_color.dart';
 import 'app_enums.dart';
 
@@ -55,7 +56,7 @@ class LinkModel extends CretaModel {
     connectedMid = map['connectedMid'] ?? '';
     connectedClass = map['connectedClass'] ?? '';
 
-    bgColor.setDD(CretaUtils.string2Color(map["bgColor"])!, save: false, noUndo: true);
+    bgColor.setDD(CretaCommonUtils.string2Color(map["bgColor"])!, save: false, noUndo: true);
     iconSize.setDD((map["iconSize"] ?? 0), save: false, noUndo: true);
     iconData.setDD(LinkIconType.fromInt(map["iconData"] ?? 0), save: false, noUndo: true);
   }

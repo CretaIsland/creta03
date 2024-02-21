@@ -12,7 +12,8 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:rxdart/rxdart.dart';
-import '../../../../common/creta_utils.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 import '../../../../data_io/contents_manager.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/frame_model.dart';
@@ -339,12 +340,12 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
       dampX = 23;
       dampY = 32;
     }
-    //Size? volumeBtSize = CretaUtils.getSize(volumeButtonKey);
+    //Size? volumeBtSize = CretaCommonUtils.getSize(volumeButtonKey);
     //if (volumeBtSize != null) {
     //print('volumeBtSize = $volumeBtSize');
     if (frameModel.musicPlayerSizeType == MusicPlayerSizeEnum.Big ||
         frameModel.musicPlayerSizeType == MusicPlayerSizeEnum.Medium) {
-      _volumePosition = CretaUtils.getPosition(volumeButtonKey);
+      _volumePosition = CretaCommonUtils.getPosition(volumeButtonKey);
       //_volumePosition = Offset(rect.left, rect.top);
       if (_volumePosition != null) {
         double offsetX = frameModel.posX.value * StudioVariables.applyScale +

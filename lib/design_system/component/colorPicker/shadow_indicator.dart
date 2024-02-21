@@ -1,9 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 //import 'package:flutter_inner_shadow/flutter_inner_shadow.dart';
 
-import '../../../common/creta_utils.dart';
 import '../../creta_color.dart';
 import '../../creta_font.dart';
 
@@ -98,7 +99,7 @@ class _ShadowIndicatorState extends State<ShadowIndicator> {
           if (widget.showShadow)
             BoxShadow(
               color: widget.opacity == 1 ? widget.color : widget.color.withOpacity(widget.opacity),
-              offset: CretaUtils.getShadowOffset(widget.direction, widget.distance / 3),
+              offset: CretaCommonUtils.getShadowOffset(widget.direction, widget.distance / 3),
               blurRadius: widget.blur,
               spreadRadius: widget.spread / 10,
               //blurStyle: widget.shadowIn ? BlurStyle.inner : BlurStyle.normal,
@@ -119,7 +120,7 @@ class _ShadowIndicatorState extends State<ShadowIndicator> {
   //       Shadow(
   //         blurRadius: widget.blur > 0 ? widget.blur : widget.spread,
   //         color: widget.opacity == 1 ? widget.color : widget.color.withOpacity(widget.opacity),
-  //         offset: CretaUtils.getShadowOffset((180 + widget.direction) % 360, widget.distance),
+  //         offset: CretaCommonUtils.getShadowOffset((180 + widget.direction) % 360, widget.distance),
   //       ),
   //     ],
   //     child: Container(

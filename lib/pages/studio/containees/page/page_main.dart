@@ -496,7 +496,7 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
     //     (LayoutConst.defaultFrameSize.width / 2) * StudioVariables.applyScale,
     //     (LayoutConst.defaultFrameSize.height / 2) * StudioVariables.applyScale,
     //   );
-    //   Offset pos = CretaUtils.positionInPage(details.localPosition - center, null);
+    //   Offset pos = CretaCommonUtils.positionInPage(details.localPosition - center, null);
     //   frameManager!.createNextFrame(pos: pos, size: LayoutConst.defaultFrameSize).then((value) {
     //     frameManager!.notify();
     //     return null;

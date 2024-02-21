@@ -11,7 +11,8 @@ import '../../../data_io/frame_manager.dart';
 import 'package:hycop/hycop.dart';
 import 'package:provider/provider.dart';
 import 'package:dotted_border/dotted_border.dart';
-import '../../../common/creta_utils.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 import '../../../common/window_screenshot.dart';
 import '../../../data_io/link_manager.dart';
 import '../../../data_io/page_manager.dart';
@@ -940,7 +941,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       return;
     }
 
-    Rect? pageViewArea = CretaUtils.getArea(_pageViewKey);
+    Rect? pageViewArea = CretaCommonUtils.getArea(_pageViewKey);
     if (pageViewArea == null) {
       return;
     }
@@ -948,7 +949,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
 
     bool contained = false;
     if (_thumbArea != null) {
-      contained = CretaUtils.isRectContained(pageViewArea, _thumbArea!);
+      contained = CretaCommonUtils.isRectContained(pageViewArea, _thumbArea!);
     }
     if (contained) {
       return;
@@ -997,7 +998,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       if (BookMainPage.thumbnailChanged == false) {
         return;
       }
-      Rect? pageViewArea = CretaUtils.getArea(_pageViewKey);
+      Rect? pageViewArea = CretaCommonUtils.getArea(_pageViewKey);
       if (pageViewArea == null) {
         return;
       }
@@ -1006,7 +1007,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
 
       _thumbArea = BookMainPage.pageManagerHolder!.getFirstThumbArea();
       if (_thumbArea != null) {
-        if (CretaUtils.isRectContained(pageViewArea, _thumbArea!)) {
+        if (CretaCommonUtils.isRectContained(pageViewArea, _thumbArea!)) {
           // 이미 화면에 완전히 보인다.
           logger.fine('start first _takeAScreenShot()');
           _takeAScreenShot(_thumbArea!);
@@ -1018,7 +1019,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       // 이때는 selecte 된 Page thumbnail 을 찍는 다.
       _thumbArea = BookMainPage.pageManagerHolder!.getThumbArea();
       if (_thumbArea != null) {
-        if (CretaUtils.isRectContained(pageViewArea, _thumbArea!)) {
+        if (CretaCommonUtils.isRectContained(pageViewArea, _thumbArea!)) {
           // 이미 화면에 완전히 보인다.
           logger.fine('start selected _takeAScreenShot()');
           _takeAScreenShot(_thumbArea!);

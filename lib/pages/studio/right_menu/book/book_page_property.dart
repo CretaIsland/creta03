@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
 //import '../../../../data_io/book_manager.dart';
-import '../../../../common/creta_utils.dart';
 import '../../../../data_io/filter_manager.dart';
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../design_system/buttons/creta_toggle_button.dart';
@@ -673,7 +673,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
                 SizedBox(
                   width: 210,
                   child: Text(
-                    CretaUtils.listToDisplay(filterModel.excludes),
+                    CretaCommonUtils.listToDisplay(filterModel.excludes),
                     style: dataStyle,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -696,7 +696,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
                 SizedBox(
                   width: 210,
                   child: Text(
-                    CretaUtils.listToDisplay(filterModel.includes),
+                    CretaCommonUtils.listToDisplay(filterModel.includes),
                     style: dataStyle,
                     overflow: TextOverflow.ellipsis,
                   ),

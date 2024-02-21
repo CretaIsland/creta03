@@ -21,7 +21,8 @@ import 'package:hycop/hycop.dart';
 // import 'package:image_network/image_network.dart';
 // import 'package:cached_network_image/cached_network_image.dart';
 //import '../../common/cross_common_job.dart';
-import '../../../common/creta_utils.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 //import '../../../design_system/buttons/creta_button_wrapper.dart';
 //import '../../../design_system/component/creta_leftbar.dart';
 import '../../../design_system/component/creta_layout_rect.dart';
@@ -395,7 +396,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   //int saveIdx = 0;
 
   Widget _getItemPane() {
-    final int columnCount = CretaUtils.getItemColumnCount(
+    final int columnCount = CretaCommonUtils.getItemColumnCount(
         widget.cretaLayoutRect.childWidth, _itemMinWidth, _rightViewItemGapX);
 
     double itemWidth = -1;

@@ -460,7 +460,7 @@ class StickerState extends CretaState<Sticker> with CretaMusicMixin {
   //   if (model.eventReceive.value.length > 2 && model.showWhenEventReceived.value == true) {
   //     logger.fine(
   //         '_isVisible eventReceive=${model.eventReceive.value}  showWhenEventReceived=${model.showWhenEventReceived.value}');
-  //     List<String> eventNameList = CretaUtils.jsonStringToList(model.eventReceive.value);
+  //     List<String> eventNameList = CretaCommonUtils.jsonStringToList(model.eventReceive.value);
   //     for (String eventName in eventNameList) {
   //       if (BookMainPage.clickReceiverHandler.isEventOn(eventName) == true) {
   //         return true;

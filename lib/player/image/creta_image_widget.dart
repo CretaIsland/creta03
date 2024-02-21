@@ -7,9 +7,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
 import '../../data_io/key_handler.dart';
-import '../../common/creta_utils.dart';
 import '../../model/app_enums.dart';
 import '../../pages/studio/studio_variables.dart';
 import '../creta_abs_media_widget.dart';
@@ -132,7 +132,7 @@ class CretaImagePlayerWidgetState extends CretaState<CretaImagerWidget>
     double angle = player.model!.angle.value;
     Widget angleImage = angle > 0
         ? Transform.rotate(
-            angle: CretaUtils.degreeToRadian(angle),
+            angle: CretaCommonUtils.degreeToRadian(angle),
             child: drawImage,
           )
         : drawImage;

@@ -4,8 +4,8 @@ import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:provider/provider.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
-import '../../../../common/creta_utils.dart';
 import '../../../../data_io/book_manager.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
@@ -58,7 +58,7 @@ class _RightMenuBookState extends State<RightMenuBook> {
           child: Text("No CretaBook Selected", style: CretaFont.titleLarge),
         );
       }
-      hashTagList = CretaUtils.jsonStringToList(_model!.hashTag.value);
+      hashTagList = CretaCommonUtils.jsonStringToList(_model!.hashTag.value);
       return Column(
         children: [
           _menuBar(),

@@ -10,8 +10,8 @@ import 'package:hycop/hycop.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
-import 'package:creta03/common/creta_utils.dart';
 import 'package:creta03/design_system/component/creta_texture_widget.dart';
 import '../../../../data_io/key_handler.dart';
 import '../../../../data_io/contents_manager.dart';
@@ -279,7 +279,7 @@ class FrameEachState extends CretaState<FrameEach> with ContaineeMixin, FramePla
         alignment: Alignment.center,
         transform: Matrix4.identity()
           ..scale(1.0)
-          ..rotateZ(CretaUtils.degreeToRadian(widget.model.angle.value)),
+          ..rotateZ(CretaCommonUtils.degreeToRadian(widget.model.angle.value)),
         child: _frameBody2(),
       );
     }
@@ -434,7 +434,7 @@ class FrameEachState extends CretaState<FrameEach> with ContaineeMixin, FramePla
     return _textureBox(model).asShape(
       mid: model.mid,
       shapeType: model.shape.value,
-      offset: CretaUtils.getShadowOffset(
+      offset: CretaCommonUtils.getShadowOffset(
           model.shadowDirection.value, model.shadowOffset.value * StudioVariables.applyScale),
       shadowBlur: model.shadowBlur.value,
       shadowSpread: model.shadowSpread.value * StudioVariables.applyScale,
@@ -491,7 +491,7 @@ class FrameEachState extends CretaState<FrameEach> with ContaineeMixin, FramePla
   //           color: model.shadowOpacity.value == 1
   //               ? model.shadowColor.value
   //               : model.shadowColor.value.withOpacity(model.shadowOpacity.value),
-  //           offset: CretaUtils.getShadowOffset(
+  //           offset: CretaCommonUtils.getShadowOffset(
   //               (180 + model.shadowDirection.value) % 360, model.shadowOffset.value),
   //         ),
   //       ],
@@ -663,8 +663,8 @@ class FrameEachState extends CretaState<FrameEach> with ContaineeMixin, FramePla
   // BoxShadow _getShadow(FrameModel model) {
   //   return BoxShadow(
   //     color: model.shadowColor.value
-  //         .withOpacity(CretaUtils.validCheckDouble(model.shadowOpacity.value, 0, 1)),
-  //     offset: CretaUtils.getShadowOffset(model.shadowDirection.value, model.shadowOffset.value),
+  //         .withOpacity(CretaCommonUtils.validCheckDouble(model.shadowOpacity.value, 0, 1)),
+  //     offset: CretaCommonUtils.getShadowOffset(model.shadowDirection.value, model.shadowOffset.value),
   //     shadowBlur: model.shadowBlur.value,
   //     spreadRadius: model.shadowSpread.value,
   //     //blurStyle: widget.shadowIn ? BlurStyle.inner : BlurStyle.normal,
@@ -682,12 +682,12 @@ class FrameEachState extends CretaState<FrameEach> with ContaineeMixin, FramePla
   //       color: model.borderColor.value,
   //       width: model.borderWidth.value,
   //       style: BorderStyle.solid,
-  //       strokeAlign: CretaUtils.borderPosition(model.borderPosition.value));
+  //       strokeAlign: CretaCommonUtils.borderPosition(model.borderPosition.value));
 
   //   if (model.borderType.value > 1) {
   //     return RDottedLineBorder(
-  //       dottedLength: CretaUtils.borderStyle[model.borderType.value - 1][0],
-  //       dottedSpace: CretaUtils.borderStyle[model.borderType.value - 1][1],
+  //       dottedLength: CretaCommonUtils.borderStyle[model.borderType.value - 1][0],
+  //       dottedSpace: CretaCommonUtils.borderStyle[model.borderType.value - 1][1],
   //       bottom: bs,
   //       top: bs,
   //       left: bs,
@@ -698,7 +698,7 @@ class FrameEachState extends CretaState<FrameEach> with ContaineeMixin, FramePla
   //     color: model.borderColor.value,
   //     width: model.borderWidth.value,
   //     style: BorderStyle.solid,
-  //     strokeAlign: CretaUtils.borderPosition(model.borderPosition.value),
+  //     strokeAlign: CretaCommonUtils.borderPosition(model.borderPosition.value),
   //   );
   // }
 

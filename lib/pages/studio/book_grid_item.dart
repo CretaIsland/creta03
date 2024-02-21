@@ -8,8 +8,8 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:url_launcher/link.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
-import '../../common/creta_utils.dart';
 import '../../data_io/book_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_elibated_button.dart';
@@ -499,7 +499,7 @@ class BookGridItemState extends State<BookGridItem> {
           Container(
             color: (mouseOver) ? Colors.grey[100] : Colors.white,
             child: Text(
-              CretaUtils.dateToDurationString(widget.bookModel!.updateTime),
+              CretaCommonUtils.dateToDurationString(widget.bookModel!.updateTime),
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.left,
               style: CretaFont.buttonMedium,

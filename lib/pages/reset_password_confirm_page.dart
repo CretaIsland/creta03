@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:url_launcher/link.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
 import '../pages/login/creta_account_manager.dart';
 import '../../routes.dart';
-import '../common/creta_utils.dart';
 import '../design_system/component/snippet.dart';
 import '../../design_system/text_field/creta_text_field.dart';
 import '../design_system/creta_font.dart';
@@ -55,7 +55,9 @@ class _ResetPasswordConfirmPageState extends State<ResetPasswordConfirmPage> {
       _isJobProcessing = true;
       _successResetPassword = false;
     });
-    HycopFactory.account!.resetPasswordConfirm(widget.userId, widget.secretKey, newPassword).then((value) {
+    HycopFactory.account!
+        .resetPasswordConfirm(widget.userId, widget.secretKey, newPassword)
+        .then((value) {
       setState(() {
         _isJobProcessing = false;
         _successResetPassword = true;
@@ -92,7 +94,8 @@ class _ResetPasswordConfirmPageState extends State<ResetPasswordConfirmPage> {
             onPressed: () {
               String newPassword = _newPasswordTextEditingController.text;
               String newPasswordConfirm = _newPasswordConfirmTextEditingController.text;
-              if (newPassword != newPasswordConfirm || !CretaUtils.checkPasswordStrength(newPassword)) {
+              if (newPassword != newPasswordConfirm ||
+                  !CretaCommonUtils.checkPasswordStrength(newPassword)) {
                 showSnackBar(context, '비밀번호를 다시 확인해주세요');
                 return;
               }
@@ -103,19 +106,23 @@ class _ResetPasswordConfirmPageState extends State<ResetPasswordConfirmPage> {
 
   void checkPasswordStrength(String password) {
     setState(() {
-      _newPasswordError = (password.isEmpty) ? false : !CretaUtils.checkPasswordStrength(password);
+      _newPasswordError =
+          (password.isEmpty) ? false : !CretaCommonUtils.checkPasswordStrength(password);
     });
   }
 
   void checkPasswordConfirmStrength(String password) {
     setState(() {
-      _newPasswordConfirmError = (password.isEmpty) ? false : !CretaUtils.checkPasswordStrength(password);
+      _newPasswordConfirmError =
+          (password.isEmpty) ? false : !CretaCommonUtils.checkPasswordStrength(password);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    String logoUrl = (CretaAccountManager.currentLoginUser.isLoginedUser) ? AppRoutes.communityHome : AppRoutes.intro;
+    String logoUrl = (CretaAccountManager.currentLoginUser.isLoginedUser)
+        ? AppRoutes.communityHome
+        : AppRoutes.intro;
     return Snippet.CretaScaffoldOfCommunity(
       title: Row(
         children: [

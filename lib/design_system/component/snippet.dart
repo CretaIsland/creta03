@@ -9,12 +9,14 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:just_the_tooltip/just_the_tooltip.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 
 //import 'package:hycop/common/util/logger.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:hycop/hycop.dart';
 import '../../common/creta_constant.dart';
-import '../../common/creta_utils.dart';
+//import '../../common/creta_utils.dart';
 import '../../data_io/frame_manager.dart';
 import '../../lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
@@ -117,12 +119,12 @@ class Snippet {
                   //
                   if (details.localPosition.dy < LayoutConst.topMenuBarHeight) return;
 
-                  Size leftMenuSize = CretaUtils.getSizeByKey(BookMainPage.leftMenuKey);
+                  Size leftMenuSize = CretaCommonUtils.getSizeByKey(BookMainPage.leftMenuKey);
 
                   if (details.localPosition.dx < leftMenuSize.width + LayoutConst.menuStickWidth) {
                     return;
                   }
-                  Size rightMenuSize = CretaUtils.getSizeByKey(BookMainPage.rightMenuKey);
+                  Size rightMenuSize = CretaCommonUtils.getSizeByKey(BookMainPage.rightMenuKey);
                   if (details.localPosition.dx > maxWidth - rightMenuSize.width) return;
 
                   //LastClicked.clickedOutSide(details.globalPosition);

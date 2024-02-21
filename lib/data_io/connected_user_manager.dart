@@ -39,7 +39,7 @@ class ConnectedUserManager extends CretaManager {
   //     query['parentMid'] = QueryValue(value: bookMid);
   //     query['isRemoved'] = QueryValue(value: false);
   //     // query['updateTime'] = QueryValue(
-  //     //     value: CretaUtils.getTimeSecondsAgo(monitorPerid),
+  //     //     value: CretaCommonUtils.getTimeSecondsAgo(monitorPerid),
   //     //     operType: OperType.isGreaterThanOrEqualTo);
   //     await queryFromDB(query);
   //     reOrdering();
@@ -131,7 +131,7 @@ class ConnectedUserManager extends CretaManager {
         continue;
       }
       // print('lastUpdateTime = ${ele.updateTime.toString()}');
-      // if (ele.updateTime.isBefore(CretaUtils.getTimeSecondsAgo(monitorPerid))) {
+      // if (ele.updateTime.isBefore(CretaCommonUtils.getTimeSecondsAgo(monitorPerid))) {
       //   continue;
       // }
       ConnectedUserModel model = ele as ConnectedUserModel;
@@ -191,7 +191,7 @@ class ConnectedUserManager extends CretaManager {
   //       continue;
   //     }
   //     //print('${model.name} lastUpdateTime = ${model.updateTime.toString()}');
-  //     if (model.updateTime.isBefore(CretaUtils.getTimeSecondsAgo(monitorPerid))) {
+  //     if (model.updateTime.isBefore(CretaCommonUtils.getTimeSecondsAgo(monitorPerid))) {
   //       counter++;
   //       model.isRemoved.set(true, noUndo: true);
   //       //print('ele.mid is old, deleted!!!');

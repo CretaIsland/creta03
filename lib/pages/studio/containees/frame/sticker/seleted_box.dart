@@ -82,9 +82,9 @@ class _SelectedBoxState extends State<SelectedBox> {
   // Future<void> _invokeNotify() async {
   //   await Future.delayed(const Duration(milliseconds: 500));
   //   // 속도 향상을 위해, miniMenuNotifier  와 containeeNotifier 를 이곳에서 한다.
-  //   //print('5 before set and notify MiniMenuNotifier : ${CretaUtils.timeLap()}');
+  //   //print('5 before set and notify MiniMenuNotifier : ${CretaCommonUtils.timeLap()}');
   //   BookMainPage.miniMenuNotifier!.set(true, doNoti: true);
-  //   //print('6.before notify ContaineeNotifier : ${CretaUtils.timeLap()}');
+  //   //print('6.before notify ContaineeNotifier : ${CretaCommonUtils.timeLap()}');
   //   BookMainPage.containeeNotifier!.notify();
   // }
 
@@ -204,7 +204,7 @@ class _SelectedBoxState extends State<SelectedBox> {
     return Consumer<FrameSelectNotifier>(builder: (context, frameSelectNotifier, childW) {
       //if (StudioVariables.isLinkSelectMode == false) {
       //print(
-      //    'Consumer<FrameSelectNotifier>  ${CretaUtils.timeLap()} ${widget.mid} -------------------');
+      //    'Consumer<FrameSelectNotifier>  ${CretaCommonUtils.timeLap()} ${widget.mid} -------------------');
       if (frameSelectNotifier.selectedAssetId == widget.mid) {
         Widget mainBuild = Stack(
           children: [
@@ -235,7 +235,7 @@ class _SelectedBoxState extends State<SelectedBox> {
     double heightCenter,
     double widthCenter,
   ) {
-    //print('_dragBoxes....start.${CretaUtils.timeLap()}');
+    //print('_dragBoxes....start.${CretaCommonUtils.timeLap()}');
 
     List<Widget> retval = [
       if (widget.isVerticalResiable && widget.isHorizontalResiable)
@@ -299,7 +299,7 @@ class _SelectedBoxState extends State<SelectedBox> {
         ),
     ];
 
-    //print('_dragBoxes....end.${CretaUtils.timeLap()}');
+    //print('_dragBoxes....end.${CretaCommonUtils.timeLap()}');
     return retval;
   }
 }

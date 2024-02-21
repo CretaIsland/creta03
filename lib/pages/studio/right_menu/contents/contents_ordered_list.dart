@@ -7,8 +7,8 @@ import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
-import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/buttons/creta_button.dart';
@@ -134,7 +134,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           children: [
             (model != null && model.isText())
                 ? Text(
-                    '${CretaUtils.getFontName(model.font.value)},${model.fontSize.value.ceil()}',
+                    '${CretaCommonUtils.getFontName(model.font.value)},${model.fontSize.value.ceil()}',
                     textAlign: TextAlign.right,
                     style: CretaFont.titleSmall.copyWith(
                       overflow: TextOverflow.fade,
@@ -746,7 +746,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         //crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(CretaLang.playTime, style: titleStyle),
-          Text(CretaUtils.secToDurationString(model.videoPlayTime.value / 1000), style: dataStyle),
+          Text(CretaCommonUtils.secToDurationString(model.videoPlayTime.value / 1000),
+              style: dataStyle),
         ],
       ),
     );
@@ -1317,7 +1318,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   //       width: 200,
   //       height: 36,
   //       itemHeight: 24,
-  //       dropDownMenuItemList: CretaUtils.getLangItem(
+  //       dropDownMenuItemList: CretaCommonUtils.getLangItem(
   //           defaultValue: model.lang.value,
   //           onChanged: (val) async {
   //             model.lang.set(val);

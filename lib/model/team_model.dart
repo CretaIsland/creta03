@@ -1,4 +1,5 @@
-import 'package:creta03/common/creta_utils.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 import 'package:creta03/model/creta_model.dart';
 import 'package:hycop/hycop.dart';
 
@@ -71,9 +72,9 @@ class TeamModel extends CretaModel {
     channelBannerImg = map['channelBannerImg'] ?? '';
     isPublicProfile = map['isPublicProfile'] ?? true;
     owner = map['owner'] ?? '';
-    managers = CretaUtils.jsonStringToList(map['managers'] ?? '[]');
-    generalMembers = CretaUtils.jsonStringToList(map['generalMembers'] ?? '[]');
-    removedMembers = CretaUtils.jsonStringToList(map['removedMembers'] ?? '[]');
+    managers = CretaCommonUtils.jsonStringToList(map['managers'] ?? '[]');
+    generalMembers = CretaCommonUtils.jsonStringToList(map['generalMembers'] ?? '[]');
+    removedMembers = CretaCommonUtils.jsonStringToList(map['removedMembers'] ?? '[]');
     teamMembers = List<String>.from(map['teamMembers'] ?? "[]" as List);
     channelId = map['channelId'] ?? '';
   }
@@ -87,9 +88,9 @@ class TeamModel extends CretaModel {
         'channelBannerImg': channelBannerImg,
         'isPublicProfile': isPublicProfile,
         'owner': owner,
-        'managers': CretaUtils.listToString(managers),
-        'generalMembers': CretaUtils.listToString(generalMembers),
-        'removedMembers': CretaUtils.listToString(removedMembers),
+        'managers': CretaCommonUtils.listToString(managers),
+        'generalMembers': CretaCommonUtils.listToString(generalMembers),
+        'removedMembers': CretaCommonUtils.listToString(removedMembers),
         'teamMembers': teamMembers,
         'channelId': channelId,
       }.entries);

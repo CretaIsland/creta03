@@ -1,7 +1,8 @@
 // ignore_for_file: non_constant_identifier_names
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../../common/creta_utils.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
+
 import '../../lang/creta_studio_lang.dart';
 import '../component/creta_ani_icon.dart';
 import '../component/snippet.dart';
@@ -616,7 +617,7 @@ class BTN {
     double width = 219,
     CretaButtonSidePadding? sidePadding,
   }) {
-    double textWidth = CretaUtils.calculateTextSize(
+    double textWidth = CretaCommonUtils.calculateTextSize(
       text,
       CretaFont.titleLarge,
       width - 24 - 52 - 20,
@@ -681,7 +682,7 @@ class BTN {
     double width = 170,
     CretaButtonSidePadding? sidePadding,
   }) {
-    double textWidth = CretaUtils.calculateTextSize(
+    double textWidth = CretaCommonUtils.calculateTextSize(
       text,
       CretaFont.buttonLarge,
       width - 12 - 48 - 20 - 12, // 12는 이유를 모르겠음..어쩃든 12를 더 띠어야 함.

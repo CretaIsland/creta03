@@ -7,8 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop.dart';
+import 'package:creta_common/common/creta_common_utils.dart';
 
-import '../../common/creta_utils.dart';
+
+//import '../../common/creta_utils.dart';
 import '../component/snippet.dart';
 import '../creta_color.dart';
 import '../creta_font.dart';
@@ -407,7 +409,7 @@ class CretaTextFieldState extends State<CretaTextField> {
     );
 
     if (widget.autoHeight) {
-      _lineCount = CretaUtils.countAs(widget.value, '\n');
+      _lineCount = CretaCommonUtils.countAs(widget.value, '\n');
 
       //print('_lineCount= $_lineCount');
 
@@ -683,7 +685,7 @@ class CretaTextFieldState extends State<CretaTextField> {
         onChanged: (value) {
           // Replace any Enter key presses with a line feed character
           if (widget.autoHeight) {
-            int newLineNo = CretaUtils.countAs(value, '\n');
+            int newLineNo = CretaCommonUtils.countAs(value, '\n');
             if (_lineCount < 10 || (newLineNo < 10 && newLineNo > 1)) {
               if (newLineNo != 0 && newLineNo != _lineCount) {
                 if (newLineNo > 10) {
