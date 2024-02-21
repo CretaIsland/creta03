@@ -13,7 +13,7 @@ import '../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../design_system/component/creta_right_mouse_menu.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/menu/creta_popup_menu.dart';
-import '../../../../lang/creta_lang.dart';
+import 'package:creta_common/lang/creta_lang.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
-import '../../common/creta_constant.dart';
+import 'package:creta_common/common/creta_constant.dart';
 import '../../data_io/creta_manager.dart';
 import '../../model/creta_model.dart';
 import '../../model/frame_model.dart';

@@ -24,7 +24,7 @@ import 'package:creta03/lang/creta_studio_lang.dart';
 import 'package:creta03/model/connected_user_model.dart';
 import 'package:routemaster/routemaster.dart';
 
-import '../../common/creta_constant.dart';
+import 'package:creta_common/common/creta_constant.dart';
 import '../../data_io/book_manager.dart';
 import '../../data_io/connected_user_manager.dart';
 import '../../data_io/contents_manager.dart';
@@ -46,7 +46,7 @@ import '../../design_system/dialog/creta_alert_dialog.dart';
 //import '../../design_system/dialog/creta_dialog.dart';
 import '../../design_system/uploading_popup.dart';
 import '../../design_system/text_field/creta_text_field.dart';
-import '../../lang/creta_lang.dart';
+import 'package:creta_common/lang/creta_lang.dart';
 import '../../model/book_model.dart';
 import '../../design_system/component/cross_scrollbar.dart';
 import '../../model/frame_model.dart';
@@ -99,7 +99,7 @@ class BookMainPage extends StatefulWidget {
 
   static List<PageInfo> allPageInfos = [];
 
-   static void warningNeedToLogin(BuildContext context) {
+  static void warningNeedToLogin(BuildContext context) {
     CretaPopup.simple(
       context: context,
       title: CretaLang.needToLoginTitle,

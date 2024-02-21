@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 //import '../common/creta_utils.dart';
 //import '../design_system/menu/creta_popup_menu.dart';
-//import '../lang/creta_lang.dart';
+//import 'package:creta_common/lang/creta_lang.dart';
 //import '../lang/creta_studio_lang.dart';
 //import '../model/app_enums.dart';
 //import '../model/book_model.dart';
@@ -22,7 +22,7 @@ import '../../../design_system/component/custom_image.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 
 class PlaylistManager extends CretaManager {
-  PlaylistManager() : super('creta_playlist',null) {
+  PlaylistManager() : super('creta_playlist', null) {
     saveManagerHolder?.registerManager('playlist', this);
   }
 
@@ -66,7 +66,8 @@ class PlaylistManager extends CretaManager {
     );
     createToDB(plModel);
     await isGetListFromDBComplete().catchError((error, stackTrace) =>
-        throw HycopUtils.getHycopException(error: error, defaultMessage: 'createNewPlaylist Failed !!!'));
+        throw HycopUtils.getHycopException(
+            error: error, defaultMessage: 'createNewPlaylist Failed !!!'));
     return plModel;
   }
 
@@ -78,9 +79,10 @@ class PlaylistManager extends CretaManager {
     query['channelId'] = QueryValue(value: CretaAccountManager.getUserProperty!.channelId);
     queryFromDB(query);
     List<AbsExModel> list = await isGetListFromDBComplete().catchError((error, stackTrace) =>
-        throw HycopUtils.getHycopException(error: error, defaultMessage: 'addBookToPlaylist Failed !!!'));
+        throw HycopUtils.getHycopException(
+            error: error, defaultMessage: 'addBookToPlaylist Failed !!!'));
     PlaylistModel? plModel;
-    for(var model in list) {
+    for (var model in list) {
       PlaylistModel pModel = model as PlaylistModel;
       if (pModel.getMid == playlistMid) {
         plModel = pModel;
@@ -94,7 +96,8 @@ class PlaylistManager extends CretaManager {
     plModel.bookIdList.add(bookId);
     setToDB(plModel);
     await isGetListFromDBComplete().catchError((error, stackTrace) =>
-        throw HycopUtils.getHycopException(error: error, defaultMessage: 'addFavoritesToDB Failed !!!'));
+        throw HycopUtils.getHycopException(
+            error: error, defaultMessage: 'addFavoritesToDB Failed !!!'));
     return true;
   }
 
@@ -192,8 +195,7 @@ class PlaylistManager extends CretaManager {
                     Navigator.of(context).pop();
                     if (modifyMode) {
                       onModifyPlaylistDone?.call(modifyPlaylistId, textController.text, _isPublic);
-                    }
-                    else {
+                    } else {
                       onNewPlaylistDone(textController.text, _isPublic, bookModel, bookModelMap);
                     }
                   },
@@ -292,12 +294,13 @@ class PlaylistManager extends CretaManager {
     );
   }
 
-  void _newPlaylistDone(String name, bool isPublic, BookModel bookModel, Map<String, BookModel> playlistsBooksMap) async {
+  void _newPlaylistDone(String name, bool isPublic, BookModel bookModel,
+      Map<String, BookModel> playlistsBooksMap) async {
     if (kDebugMode) print('_newPlaylistDone($name, $isPublic, ${bookModel.getMid})');
     PlaylistModel newPlaylist = await createNewPlaylist(
       name: name,
-      userId: CretaAccountManager.getUserProperty!.getMid,//AccountManager.currentLoginUser.email,
-      channelId: CretaAccountManager.getChannel!.getMid,//'test_channel_id',
+      userId: CretaAccountManager.getUserProperty!.getMid, //AccountManager.currentLoginUser.email,
+      channelId: CretaAccountManager.getChannel!.getMid, //'test_channel_id',
       isPublic: isPublic,
       bookIdList: [bookModel.getMid],
     );
@@ -310,7 +313,7 @@ class PlaylistManager extends CretaManager {
 
   void _modifyPlaylistDone(String playlistId, String name, bool isPublic) async {
     if (kDebugMode) print('_modifyPlaylistDone($playlistId, $name, $isPublic)');
-    for(var model in modelList) {
+    for (var model in modelList) {
       PlaylistModel plModel = model as PlaylistModel;
       if (plModel.getMid != playlistId) continue;
       plModel.name = name;
@@ -336,7 +339,8 @@ class PlaylistManager extends CretaManager {
     );
   }
 
-  void _newPlaylist(BuildContext context, BookModel bookModel, Map<String, BookModel> playlistsBooksMap) {
+  void _newPlaylist(
+      BuildContext context, BookModel bookModel, Map<String, BookModel> playlistsBooksMap) {
     showDialog(
       context: context,
       builder: (context) => PlaylistManager.newPlaylistPopUp(
@@ -356,7 +360,8 @@ class PlaylistManager extends CretaManager {
     //
   }
 
-  void addToPlaylist(BuildContext context, BookModel bookModel, Map<String, BookModel> playlistsBooksMap) async {
+  void addToPlaylist(
+      BuildContext context, BookModel bookModel, Map<String, BookModel> playlistsBooksMap) async {
     showDialog(
       context: context,
       builder: (context) => PlaylistManager.playlistSelectPopUp(
@@ -434,7 +439,8 @@ class _PlaylistListControlState extends State<PlaylistListControl> {
                 const SizedBox(height: 10),
                 ...widget.playlist.expand((element) {
                   PlaylistModel plModel = element as PlaylistModel;
-                  String channelName = widget.channelMap?[plModel.channelId]?.name ?? CretaAccountManager.getUserProperty!.nickname;
+                  String channelName = widget.channelMap?[plModel.channelId]?.name ??
+                      CretaAccountManager.getUserProperty!.nickname;
                   String bookThumbnailUrl = '';
                   if (plModel.bookIdList.isNotEmpty) {
                     BookModel? model = widget.bookModelMap[plModel.bookIdList[0]];
@@ -464,7 +470,8 @@ class _PlaylistListControlState extends State<PlaylistListControl> {
                           margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(6),
-                            color: (_selectedPlaylistId == plModel.mid) ? CretaColor.text[200] : null,
+                            color:
+                                (_selectedPlaylistId == plModel.mid) ? CretaColor.text[200] : null,
                           ),
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
@@ -479,11 +486,13 @@ class _PlaylistListControlState extends State<PlaylistListControl> {
                                     children: [
                                       Text(
                                         plModel.name,
-                                        style: CretaFont.titleSmall.copyWith(color: CretaColor.text[700]),
+                                        style: CretaFont.titleSmall
+                                            .copyWith(color: CretaColor.text[700]),
                                       ),
                                       Text(
                                         channelName,
-                                        style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[500]),
+                                        style: CretaFont.buttonMedium
+                                            .copyWith(color: CretaColor.text[500]),
                                       ),
                                     ],
                                   ),
@@ -521,7 +530,8 @@ class _PlaylistListControlState extends State<PlaylistListControl> {
                                                 child: Center(
                                                   child: Text(
                                                     '추가하기',
-                                                    style: CretaFont.buttonSmall.copyWith(color: Colors.white),
+                                                    style: CretaFont.buttonSmall
+                                                        .copyWith(color: Colors.white),
                                                   ),
                                                 ),
                                               )

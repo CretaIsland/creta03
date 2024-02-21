@@ -13,7 +13,7 @@ import '../../data_io/frame_manager.dart';
 import '../../data_io/key_handler.dart';
 import '../../design_system/buttons/creta_button.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
-import '../../lang/creta_lang.dart';
+import 'package:creta_common/lang/creta_lang.dart';
 import '../../model/contents_model.dart';
 import '../../model/frame_model.dart';
 //import '../../pages/studio/left_menu/word_pad/quill_appflowy.dart';

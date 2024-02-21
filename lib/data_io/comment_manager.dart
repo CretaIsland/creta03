@@ -2,7 +2,7 @@
 import 'package:hycop/hycop.dart';
 //import '../common/creta_utils.dart';
 //import '../design_system/menu/creta_popup_menu.dart';
-//import '../lang/creta_lang.dart';
+//import 'package:creta_common/lang/creta_lang.dart';
 //import '../lang/creta_studio_lang.dart';
 //import '../model/app_enums.dart';
 //import '../model/book_model.dart';
@@ -29,7 +29,8 @@ class CommentManager extends CretaManager {
 
   List<CommentModel> commentList = [];
 
-  Future<List<CommentModel>> getCommentList(String bookId) async { // 추후 페이징 기능 추가 필요!!!
+  Future<List<CommentModel>> getCommentList(String bookId) async {
+    // 추후 페이징 기능 추가 필요!!!
     addWhereClause('isRemoved', QueryValue(value: false));
     addWhereClause('bookId', QueryValue(value: bookId));
     addWhereClause('parentId', QueryValue(value: ''));
@@ -38,7 +39,7 @@ class CommentManager extends CretaManager {
     commentList = [];
     List<List<String>> commentIdListList = [];
     List<String> commentIdList = [];
-    for(var model in modelList) {
+    for (var model in modelList) {
       CommentModel commentModel = model as CommentModel;
       commentList.add(commentModel);
       commentIdList.add(commentModel.mid);
@@ -50,13 +51,13 @@ class CommentManager extends CretaManager {
     if (commentIdList.isNotEmpty) {
       commentIdListList.add(commentIdList);
     }
-    for(var commentIdList in commentIdListList) {
+    for (var commentIdList in commentIdListList) {
       addWhereClause('isRemoved', QueryValue(value: false));
       addWhereClause('bookId', QueryValue(value: bookId));
       addWhereClause('parentId', QueryValue(value: commentIdList, operType: OperType.whereIn));
       addOrderBy('createTime', OrderDirection.ascending);
       List<AbsExModel> modelList = await queryByAddedContitions();
-      for(var model in modelList) {
+      for (var model in modelList) {
         commentList.add(model as CommentModel);
       }
     }
@@ -65,7 +66,7 @@ class CommentManager extends CretaManager {
 
   Future<void> removeCommentFromDB(CommentModel model) async {
     // remove child-comments
-    for(var replayComment in model.replyList) {
+    for (var replayComment in model.replyList) {
       await removeToDB(replayComment.mid);
     }
     // remove comment

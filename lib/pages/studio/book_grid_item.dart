@@ -19,7 +19,7 @@ import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
-import '../../lang/creta_lang.dart';
+import 'package:creta_common/lang/creta_lang.dart';
 import '../../model/book_model.dart';
 import '../../routes.dart';
 import 'book_grid_page.dart';

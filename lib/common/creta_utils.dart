@@ -12,7 +12,7 @@ import 'package:hycop/hycop.dart';
 //import 'package:image/image.dart' as img;
 
 import '../design_system/menu/creta_popup_menu.dart';
-//import '../lang/creta_lang.dart';
+//import 'package:creta_common/lang/creta_lang.dart';
 import '../lang/creta_studio_lang.dart';
 import '../model/app_enums.dart';
 import '../pages/login/creta_account_manager.dart';

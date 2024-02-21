@@ -4,7 +4,7 @@ import 'package:creta03/design_system/component/creta_proprty_slider.dart';
 import 'package:creta03/design_system/creta_color.dart';
 import 'package:creta03/design_system/creta_font.dart';
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
-import 'package:creta03/lang/creta_lang.dart';
+import 'package:creta_common/lang/creta_lang.dart';
 import 'package:creta03/model/app_enums.dart';
 import 'package:creta03/pages/studio/left_menu/left_menu_ele_button.dart';
 import 'package:creta03/pages/studio/left_menu/weather/weather_sticker_elements.dart';

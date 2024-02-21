@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 import '../../../../design_system/component/custom_image.dart';
 import '../../../../design_system/component/snippet.dart';
-import '../../../../lang/creta_lang.dart';
+import 'package:creta_common/lang/creta_lang.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/team_model.dart';
 import '../../studio_variables.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-import '../lang/creta_lang.dart';
+import 'package:creta_common/lang/creta_lang.dart';
 import '../pages/studio/studio_snippet.dart';
 import 'creta_color.dart';
 import 'creta_font.dart';

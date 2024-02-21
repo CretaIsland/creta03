@@ -27,7 +27,7 @@
 // //import '../../design_system/component/creta_basic_layout_mixin.dart';
 // import '../../design_system/component/custom_image.dart';
 // import '../../design_system/creta_font.dart';
-// //import '../../lang/creta_lang.dart';
+// //import 'package:creta_common/lang/creta_lang.dart';
 // //import 'package:creta03/design_system/creta_color.dart';
 // import 'package:creta03/pages/community/community_sample_data.dart';
 // import 'creta_book_ui_item.dart';

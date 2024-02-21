@@ -1,7 +1,7 @@
 import 'package:hycop/hycop.dart';
 //import '../common/creta_utils.dart';
 //import '../design_system/menu/creta_popup_menu.dart';
-//import '../lang/creta_lang.dart';
+//import 'package:creta_common/lang/creta_lang.dart';
 //import '../lang/creta_studio_lang.dart';
 //import '../pages/login_page.dart';
 import '../pages/login/creta_account_manager.dart';
@@ -35,7 +35,8 @@ class SubscriptionManager extends CretaManager {
     addWhereClause('subscriptionChannelId', QueryValue(value: subscriptionChannelId));
     List<AbsExModel> modelList = await queryByAddedContitions();
     if (modelList.isEmpty) {
-      SubscriptionModel model = SubscriptionModel.withName(channelId: channelId, subscriptionChannelId: subscriptionChannelId);
+      SubscriptionModel model = SubscriptionModel.withName(
+          channelId: channelId, subscriptionChannelId: subscriptionChannelId);
       return createToDB(model);
     }
     return Future.value();

@@ -11,14 +11,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 
-
 //import 'package:hycop/common/util/logger.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:hycop/hycop.dart';
-import '../../common/creta_constant.dart';
+import 'package:creta_common/common/creta_constant.dart';
 //import '../../common/creta_utils.dart';
 import '../../data_io/frame_manager.dart';
-import '../../lang/creta_lang.dart';
+import 'package:creta_common/lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../pages/studio/book_main_page.dart';
 import '../../pages/studio/containees/frame/sticker/draggable_stickers.dart';

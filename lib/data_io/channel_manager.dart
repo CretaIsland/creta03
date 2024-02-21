@@ -3,7 +3,7 @@ import 'package:hycop/hycop.dart';
 //import '../pages/login/creta_account_manager.dart';
 //import '../common/creta_utils.dart';
 //import '../design_system/menu/creta_popup_menu.dart';
-//import '../lang/creta_lang.dart';
+//import 'package:creta_common/lang/creta_lang.dart';
 //import '../lang/creta_studio_lang.dart';
 //import '../model/app_enums.dart';
 //import '../model/book_model.dart';

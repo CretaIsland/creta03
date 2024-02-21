@@ -27,7 +27,7 @@ import '../../design_system/component/snippet.dart';
 //import '../../design_system/menu/creta_drop_down.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 //import '../../design_system/text_field/creta_search_bar.dart';
-import '../../lang/creta_lang.dart';
+import 'package:creta_common/lang/creta_lang.dart';
 import '../../data_io/book_manager.dart';
 import '../../data_io/favorites_manager.dart';
 import '../../data_io/subscription_manager.dart';

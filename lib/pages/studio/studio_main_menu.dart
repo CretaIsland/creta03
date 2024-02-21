@@ -3,11 +3,11 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:routemaster/routemaster.dart';
 
-import '../../common/creta_constant.dart';
+import 'package:creta_common/common/creta_constant.dart';
 import '../../data_io/book_manager.dart';
 import '../../design_system/component/creta_popup.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
-import '../../lang/creta_lang.dart';
+import 'package:creta_common/lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../model/book_model.dart';
 import '../../routes.dart';

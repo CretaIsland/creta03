@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 //import 'package:hycop/hycop/account/account_manager.dart';
 
-import '../../lang/creta_lang.dart';
+import 'package:creta_common/lang/creta_lang.dart';
 //import '../../pages/studio/studio_constant.dart';
 //import '../../pages/studio/studio_snippet.dart';
 //import '../creta_font.dart';
@@ -128,7 +128,8 @@ class _CretaFilterPaneState extends State<CretaFilterPane> {
                       ...listOfListFilterOnRight
                           .map(
                             (e) => CretaDropDownButton(height: 36, dropDownMenuItemList: e),
-                      ).toList(),
+                          )
+                          .toList(),
                     ],
                   )
           ],

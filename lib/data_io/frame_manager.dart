@@ -10,7 +10,7 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/database/abs_database.dart';
 //import '../common/creta_utils.dart';
-import '../lang/creta_lang.dart';
+import 'package:creta_common/lang/creta_lang.dart';
 import '../model/app_enums.dart';
 import '../model/book_model.dart';
 import '../model/contents_model.dart';

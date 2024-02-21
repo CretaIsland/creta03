@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 
 import '../../design_system/buttons/creta_button_wrapper.dart';
-import '../../lang/creta_lang.dart';
+import 'package:creta_common/lang/creta_lang.dart';
 import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_snippet.dart';
 import '../creta_font.dart';
@@ -54,13 +54,14 @@ class CretaBannerPane extends StatefulWidget {
 class _CretaBannerPaneState extends State<CretaBannerPane> {
   @override
   Widget build(BuildContext context) {
-    bool isExistFilter = widget.listOfListFilter.isNotEmpty
-        || (widget.onSearch != null && !(widget.isSearchbarInBanner ?? false))
-        || (widget.listOfListFilterOnRight?.isNotEmpty ?? false);
-    double internalWidth =
-        widget.width - LayoutConst.cretaTopTitlePaddingLT.width - LayoutConst.cretaTopTitlePaddingRB.width;
-    double heightDelta = widget.height -
-        (LayoutConst.cretaPaddingPixel + LayoutConst.cretaTopTitleHeight);
+    bool isExistFilter = widget.listOfListFilter.isNotEmpty ||
+        (widget.onSearch != null && !(widget.isSearchbarInBanner ?? false)) ||
+        (widget.listOfListFilterOnRight?.isNotEmpty ?? false);
+    double internalWidth = widget.width -
+        LayoutConst.cretaTopTitlePaddingLT.width -
+        LayoutConst.cretaTopTitlePaddingRB.width;
+    double heightDelta =
+        widget.height - (LayoutConst.cretaPaddingPixel + LayoutConst.cretaTopTitleHeight);
     if (isExistFilter) {
       heightDelta -= LayoutConst.cretaTopFilterHeight;
     } else {
@@ -71,7 +72,8 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
       heightDelta -= (32 + 36 + 16 - 20);
     }
     return Container(
-      width: widget.width - ((widget.scrollbarOnRight ?? false) ? LayoutConst.cretaScrollbarWidth : 0),
+      width:
+          widget.width - ((widget.scrollbarOnRight ?? false) ? LayoutConst.cretaScrollbarWidth : 0),
       height: widget.height,
       color: widget.color,
       child: Stack(
@@ -97,7 +99,8 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
               ),
               clipBehavior: Clip.antiAlias,
               child: widget.titlePane != null
-                  ? widget.titlePane!.call(Size(internalWidth, LayoutConst.cretaTopTitleHeight + heightDelta))
+                  ? widget.titlePane!
+                      .call(Size(internalWidth, LayoutConst.cretaTopTitleHeight + heightDelta))
                   : _titlePane(
                       title: widget.title,
                       description: widget.description,
@@ -119,10 +122,12 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
                       return [
                         BTN.fill_color_t_m(
                           text: menuItem.caption,
-                          height:24,
+                          height: 24,
                           width: null,
                           sidePadding: CretaButtonSidePadding(left: 12, right: 12),
-                          buttonColor: menuItem.selected ? CretaButtonColor.channelTabSelected : CretaButtonColor.channelTabUnselected,
+                          buttonColor: menuItem.selected
+                              ? CretaButtonColor.channelTabSelected
+                              : CretaButtonColor.channelTabUnselected,
                           isSelected: menuItem.selected,
                           onPressed: menuItem.onPressed ?? () {},
                         ),
@@ -135,7 +140,9 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
             ),
           Positioned(
             left: LayoutConst.cretaTopFilterPaddingLT.width + (widget.leftPaddingOnFilter ?? 0),
-            top: LayoutConst.cretaTopFilterPaddingLT.height + heightDelta + (isExistTabMenu ? 64 : 0),
+            top: LayoutConst.cretaTopFilterPaddingLT.height +
+                heightDelta +
+                (isExistTabMenu ? 64 : 0),
             child: CretaFilterPane(
               width: internalWidth - (widget.leftPaddingOnFilter ?? 0),
               height: LayoutConst.cretaTopFilterItemHeight,

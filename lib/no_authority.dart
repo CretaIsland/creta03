@@ -6,7 +6,7 @@ import 'design_system/buttons/creta_button.dart';
 import 'design_system/buttons/creta_button_wrapper.dart';
 import 'design_system/creta_color.dart';
 import 'design_system/creta_font.dart';
-import 'lang/creta_lang.dart';
+import 'package:creta_common/lang/creta_lang.dart';
 import 'routes.dart';
 
 class NoAuthority extends StatelessWidget {

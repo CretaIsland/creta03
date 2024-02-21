@@ -1,6 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
 
-import 'package:creta03/lang/creta_lang.dart';
+import 'package:creta_common/lang/creta_lang.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 import 'package:creta_common/common/creta_common_utils.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../lang/creta_lang.dart';
+import 'package:creta_common/lang/creta_lang.dart';
 import '../creta_color.dart';
 import '../text_field/creta_text_field.dart';
 

@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 
-import '../../../common/window_screenshot.dart';
+import 'package:creta_common/common/window_screenshot.dart';
 import '../../../data_io/link_manager.dart';
 import '../../../data_io/page_manager.dart';
 import '../../../design_system/buttons/creta_button.dart';

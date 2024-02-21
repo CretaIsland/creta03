@@ -25,7 +25,7 @@ import '../../../../design_system/component/time_input_widget.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../design_system/menu/creta_drop_down_button.dart';
-import '../../../../lang/creta_lang.dart';
+import 'package:creta_common/lang/creta_lang.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';

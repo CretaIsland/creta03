@@ -12,7 +12,7 @@ import 'package:creta03/model/user_property_model.dart';
 //import 'package:creta03/pages/studio/studio_constant.dart';
 import 'package:creta03/model/creta_model.dart';
 import '../design_system/creta_font.dart';
-import '../lang/creta_lang.dart';
+import 'package:creta_common/lang/creta_lang.dart';
 import '../model/team_model.dart';
 //import '../pages/login_page.dart';
 import '../pages/login/creta_account_manager.dart';
