@@ -24,6 +24,7 @@ class CretaVideoWidget extends CretaAbsPlayerWidget {
 
 class CretaVideoPlayerWidgetState extends CretaState<CretaVideoWidget> {
   bool isMute = false;
+  Future<bool>? _isInitialized;
 
   @override
   void setState(VoidCallback fn) {
@@ -34,6 +35,8 @@ class CretaVideoPlayerWidgetState extends CretaState<CretaVideoWidget> {
   void initState() {
     super.initState();
     //widget.player.afterBuild();
+    final CretaVideoPlayer player = widget.player as CretaVideoPlayer;
+    _isInitialized = player.waitInitVideo();
   }
 
   @override
@@ -44,10 +47,29 @@ class CretaVideoPlayerWidgetState extends CretaState<CretaVideoWidget> {
 
   @override
   Widget build(BuildContext context) {
+    //print('build');
     final CretaVideoPlayer player = widget.player as CretaVideoPlayer;
+    if (player.isInitAlreadyDone) {
+      //print('====================================================${player.keyString}');
+      return IgnorePointer(
+        child: getClipRect(
+          player.getSize()!,
+          player.acc.frameModel,
+          //VideoPlayer(player.wcontroller!, key: GlobalObjectKey('widget-${player.keyString}')),
+          player.model,
+          // Container(
+          //   color: Colors.amberAccent,
+          // )
 
+          VideoPlayer(key: GlobalObjectKey('VideoPlayer${player.keyString}'), player.wcontroller!),
+          //VideoPlayer(key: GlobalKey(), player.wcontroller!),
+        ),
+      );
+    }
+    //print('000000000000000000000000000000000000000000000000000${player.keyString}');
     return FutureBuilder(
-        future: player.waitInitVideo(),
+        //future: player.waitInitVideo(),
+        future: _isInitialized,
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.hasData == false) {
             //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
@@ -67,7 +89,8 @@ class CretaVideoPlayerWidgetState extends CretaState<CretaVideoWidget> {
               player.acc.frameModel,
               //VideoPlayer(player.wcontroller!, key: GlobalObjectKey('widget-${player.keyString}')),
               player.model,
-              VideoPlayer(player.wcontroller!),
+              VideoPlayer(
+                  key: GlobalObjectKey('VideoPlayer${player.keyString}'), player.wcontroller!),
             ),
           );
         });

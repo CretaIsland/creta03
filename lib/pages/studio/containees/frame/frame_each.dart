@@ -321,6 +321,10 @@ class FrameEachState extends CretaState<FrameEach> with ContaineeMixin, FramePla
     if (_contentsManager == null) {
       return const SizedBox.shrink();
     }
+    if (StudioVariables.isPreview) {
+      return _applyAnimate(widget.model);
+    }
+
     logger.fine('_frameBody2 ${widget.model.name.value}');
     logger.fine('_frameBody2 ${widget.model.isShow.value}');
     logger.fine('_frameBody2 ${widget.model.mid}');
