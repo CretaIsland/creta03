@@ -64,6 +64,7 @@ class FrameEachState extends CretaState<FrameEach> with ContaineeMixin, FramePla
   ContentsManager? _contentsManager;
   CretaPlayTimer? _playTimer;
   late double _width;
+  bool _onceInited = false;
 
   Future<bool>? _isInitialized;
   //final bool _isHover = false;
@@ -161,7 +162,9 @@ class FrameEachState extends CretaState<FrameEach> with ContaineeMixin, FramePla
         ),
       ],
       //child: _isInitialized ? _frameDropZone() : _futureBuider(),
-      child: _futureBuider(),
+      child: (StudioVariables.isPreview == true)
+          ? _frameBody2()
+          : _futureBuider(), //skpark 이부분 다시 테스트해봐야함. 과연 previewMode 에서는 정말로 wait 를 하지 않아도 되는가??? 그럴리가....한번되면 안해도 되게..
     );
   }
 
@@ -175,6 +178,7 @@ class FrameEachState extends CretaState<FrameEach> with ContaineeMixin, FramePla
   // }
 
   Widget _futureBuider() {
+    _onceInited = true;
     return FutureBuilder<bool>(
         initialData: false,
         //future: _waitInit(),
