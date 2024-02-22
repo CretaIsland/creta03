@@ -1,5 +1,5 @@
 // ignore_for_file: depend_on_referenced_packages
-
+import 'package:creta_common/common/creta_const.dart';
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,9 +22,10 @@ import '../../../../design_system/component/creta_font_selector.dart';
 import '../../../../design_system/component/creta_icon_toggle_button.dart';
 import '../../../../design_system/component/creta_proprty_slider.dart';
 import '../../../../design_system/component/time_input_widget.dart';
-import '../../../../design_system/creta_color.dart';
-import '../../../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 import '../../../../design_system/drag_and_drop/drop_zone_widget.dart';
+import '../../../../design_system/extra_text_style.dart';
 import '../../../../design_system/menu/creta_drop_down_button.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import '../../../../lang/creta_studio_lang.dart';
@@ -141,7 +142,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                       //color: model.fontColor.value.withOpacity(model.opacity.value),
                       color: Colors.black,
                       fontFamily: model.font.value,
-                      fontWeight: StudioConst.fontWeight2Type[model.fontWeight.value],
+                      fontWeight: CretaConst.fontWeight2Type[model.fontWeight.value],
                     ),
                   )
                 : Text('$itemCount ${CretaLang.count}', style: dataStyle),
@@ -828,7 +829,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               }
               widget.contentsManager.notify();
 
-              ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
+              ExtraTextStyle.setLastTextStyle(
+                  model.makeTextStyle(context, applyScale: StudioVariables.applyScale), model);
               setState(() {});
             }
           },
@@ -840,7 +842,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                 _sendEvent!.sendEvent(_frameModel);
               }
               widget.contentsManager.notify();
-              ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
+              ExtraTextStyle.setLastTextStyle(
+                  model.makeTextStyle(context, applyScale: StudioVariables.applyScale), model);
               setState(() {});
             }
           },
@@ -923,7 +926,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   }
 
   Widget _fontSize(ContentsModel model) {
-    double minFontSize = StudioConst.minFontSize / StudioVariables.applyScale;
+    double minFontSize = CretaConst.minFontSize / StudioVariables.applyScale;
     double fontSize = model.fontSize.value;
 
     //print('model.fontSize = $fontSize');
@@ -938,7 +941,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         value: fontSize,
         textType: CretaTextFieldType.number,
         min: minFontSize,
-        max: StudioConst.maxFontSize,
+        max: CretaConst.maxFontSize,
         onChanngeComplete: (val) {
           //setState(() {
           FontSizeType? fontSyzeType = FontSizeType.valToEnum[val];
@@ -967,7 +970,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         },
         onChannged: (val) {
           model.fontSize.set(val.roundToDouble());
-          ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
+          ExtraTextStyle.setLastTextStyle(
+              model.makeTextStyle(context, applyScale: StudioVariables.applyScale), model);
           //widget.contentsManager.notify();
           //if (model.textType == TextType.clock) {
           _notifyToMain(model);
@@ -1010,7 +1014,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         },
         onChannged: (val) {
           model.letterSpacing.set(val);
-          ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
+          ExtraTextStyle.setLastTextStyle(
+              model.makeTextStyle(context, applyScale: StudioVariables.applyScale), model);
           //widget.contentsManager.notify();
           //if (model.textType == TextType.clock) {
           _notifyToMain(model);
@@ -1047,7 +1052,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         },
         onChannged: (val) {
           model.lineHeight.set(val);
-          ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
+          ExtraTextStyle.setLastTextStyle(model.makeTextStyle(context, applyScale: StudioVariables.applyScale), model);
           // widget.contentsManager.notify();
           //if (model.textType == TextType.clock) {
           //print('ddddddddddddddddddddd');
@@ -1088,7 +1093,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   //       //disabled: model.fontSizeType.value != FontSizeType.userDefine,
   //       key: GlobalKey(),
   //       min: 6,
-  //       max: StudioConst.maxFontSize,
+  //       max: CretaConst.maxFontSize,
   //       value: model.fontSize.value,
   //       valueType: SliderValueType.normal,
   //       sliderWidth: 136,

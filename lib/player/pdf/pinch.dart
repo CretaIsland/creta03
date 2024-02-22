@@ -4,7 +4,7 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 // import 'package:pdfx/pdfx.dart';
 
 import '../../design_system/buttons/creta_button_wrapper.dart';
-import '../../design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import '../../pages/studio/book_main_page.dart';
 
 class PinchPage extends StatefulWidget {

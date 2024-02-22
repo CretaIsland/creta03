@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 
-import '../creta_color.dart';
-import '../creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 // import 'package:hycop/common/util/logger.dart';
 import 'package:url_launcher/link.dart';
 import 'package:routemaster/routemaster.dart';
@@ -131,7 +131,8 @@ class CretaPopupMenu {
     );
   }
 
-  static Widget _elevatedButton(BuildContext context, CretaMenuItem item, double width, Alignment textAlign) {
+  static Widget _elevatedButton(
+      BuildContext context, CretaMenuItem item, double width, Alignment textAlign) {
     return SizedBox(
       width: width,
       height: 32,
@@ -152,21 +153,22 @@ class CretaPopupMenu {
               ? MaterialStateProperty.all<Color>(CretaColor.text[300]!)
               : MaterialStateProperty.all<Color>(CretaColor.text[700]!),
           backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0), side: BorderSide(color: Colors.white))),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18.0), side: BorderSide(color: Colors.white))),
         ),
         onPressed: () {
           Navigator.pop(context);
           if ((item.linkUrl ?? '').isEmpty) {
             item.onPressed?.call();
-          }
-          else {
+          } else {
             Routemaster.of(context).push(item.linkUrl!);
           }
         },
         child: Text(
           item.caption,
-          style: item.disabled ? CretaFont.buttonMedium.copyWith(color: CretaColor.text[300]!) : CretaFont.buttonMedium,
+          style: item.disabled
+              ? CretaFont.buttonMedium.copyWith(color: CretaColor.text[300]!)
+              : CretaFont.buttonMedium,
           // TextStyle(
           //   fontSize: 13,
           //   fontWeight: item.fontWeight,

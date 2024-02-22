@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../design_system/buttons/creta_button_wrapper.dart';
-import '../../../design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../studio_snippet.dart';
 
@@ -88,6 +88,4 @@ mixin LeftMenuMixin {
       },
     );
   }
-
-  
 }

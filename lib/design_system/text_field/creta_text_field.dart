@@ -9,11 +9,10 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 
-
 //import '../../common/creta_utils.dart';
 import '../component/snippet.dart';
-import '../creta_color.dart';
-import '../creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 
 abstract class LastClickable extends StatefulWidget {
   final void Function(String value) onEditComplete;
@@ -676,7 +675,7 @@ class CretaTextFieldState extends State<CretaTextField> {
                     color: CretaColor.primary,
                   ),
                 ),
-        ),
+              ),
         // onEditingComplete: () {
         //   _searchValue = _controller.text;
         //   logger.finest('onEditingComplete $_searchValue');
@@ -760,11 +759,11 @@ class CretaTextFieldState extends State<CretaTextField> {
     BoxBorder border = (widget.fixedOutlineColor != null)
         ? Border.all(color: widget.fixedOutlineColor!)
         : _clicked
-        ? Border.all(color: CretaColor.primary)
-        : _hovered
-        ? Border.all(color: CretaColor.text[300]!)
-        // ? Border.all(color: Colors.red)
-        : widget.defaultBorder ?? Border.all(color: CretaColor.text[200]!);
+            ? Border.all(color: CretaColor.primary)
+            : _hovered
+                ? Border.all(color: CretaColor.text[300]!)
+                // ? Border.all(color: Colors.red)
+                : widget.defaultBorder ?? Border.all(color: CretaColor.text[200]!);
     return BoxDecoration(
       //color: _clicked ? Colors.white : CretaColor.text[100]!,
       color: Colors.white,
@@ -846,5 +845,4 @@ class CretaTextFieldState extends State<CretaTextField> {
       _obscured = !_obscured;
     });
   }
-
 }

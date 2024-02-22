@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../pages/studio/studio_variables.dart';
-import '../creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 
 class CrossScrollBar extends StatefulWidget {
   final Widget child;

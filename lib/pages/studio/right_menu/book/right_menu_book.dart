@@ -7,8 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 
 import '../../../../data_io/book_manager.dart';
-import '../../../../design_system/creta_color.dart';
-import '../../../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/book_model.dart';
 import '../../book_main_page.dart';

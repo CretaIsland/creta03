@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 //import 'package:another_xlider/another_xlider.dart';
 //import 'package:hycop/common/util/logger.dart';
 
-//import '../creta_color.dart';
+//import 'package:creta_common/common/creta_color.dart';
 
 class CretaProgressSlider extends StatefulWidget {
   final double? height;
@@ -76,19 +76,23 @@ class _CretaProgressSliderState extends State<CretaProgressSlider> {
             //overlayShape: SliderComponentShape.noOverlay,
             trackHeight: widget.barThickness,
             thumbShape: RoundSliderThumbShape(
-              enabledThumbRadius: 0,//thumbRadius,
+              enabledThumbRadius: 0, //thumbRadius,
               //disabledThumbRadius: thumbRadius*2,
               elevation: 0,
               pressedElevation: 0,
             ),
-            thumbColor: Colors.transparent,//mouseHover ? widget.thumbColor : Colors.transparent,
+            thumbColor: Colors.transparent, //mouseHover ? widget.thumbColor : Colors.transparent,
             activeTrackColor: widget.activeTrackColor,
             inactiveTrackColor: widget.inactiveTrackColor,
             overlayColor: Colors.transparent,
-            disabledThumbColor: _value == widget.min ? widget.inactiveTrackColor : Colors.transparent,
+            disabledThumbColor:
+                _value == widget.min ? widget.inactiveTrackColor : Colors.transparent,
             // overlappingShapeStrokeColor: Colors.transparent,
             // valueIndicatorColor: Colors.transparent,
-            trackShape: CustomTrackShape(mouseHover: mouseHover, isMinValue: (_value == widget.min),),
+            trackShape: CustomTrackShape(
+              mouseHover: mouseHover,
+              isMinValue: (_value == widget.min),
+            ),
           ),
           child: Slider(
             //thumbColor: sliderMouseOver ? null : Colors.transparent,
@@ -153,18 +157,18 @@ class CustomTrackShape extends SliderTrackShape with BaseSliderTrackShape {
 
   @override
   void paint(
-      PaintingContext context,
-      Offset offset, {
-        required RenderBox parentBox,
-        required SliderThemeData sliderTheme,
-        required Animation<double> enableAnimation,
-        required TextDirection textDirection,
-        required Offset thumbCenter,
-        Offset? secondaryOffset,
-        bool isDiscrete = false,
-        bool isEnabled = false,
-        double additionalActiveTrackHeight = 2,
-      }) {
+    PaintingContext context,
+    Offset offset, {
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required Animation<double> enableAnimation,
+    required TextDirection textDirection,
+    required Offset thumbCenter,
+    Offset? secondaryOffset,
+    bool isDiscrete = false,
+    bool isEnabled = false,
+    double additionalActiveTrackHeight = 2,
+  }) {
     // assert(context != null);
     // assert(offset != null);
     // assert(parentBox != null);
@@ -186,8 +190,10 @@ class CustomTrackShape extends SliderTrackShape with BaseSliderTrackShape {
 
     // Assign the track segment paints, which are leading: active and
     // trailing: inactive.
-    final ColorTween activeTrackColorTween = ColorTween(begin: sliderTheme.disabledActiveTrackColor, end: sliderTheme.activeTrackColor);
-    final ColorTween inactiveTrackColorTween = ColorTween(begin: sliderTheme.disabledInactiveTrackColor, end: sliderTheme.inactiveTrackColor);
+    final ColorTween activeTrackColorTween =
+        ColorTween(begin: sliderTheme.disabledActiveTrackColor, end: sliderTheme.activeTrackColor);
+    final ColorTween inactiveTrackColorTween = ColorTween(
+        begin: sliderTheme.disabledInactiveTrackColor, end: sliderTheme.inactiveTrackColor);
     final Paint activePaint = Paint()..color = activeTrackColorTween.evaluate(enableAnimation)!;
     final Paint inactivePaint = Paint()..color = inactiveTrackColorTween.evaluate(enableAnimation)!;
     final Paint leftTrackPaint;
@@ -214,14 +220,19 @@ class CustomTrackShape extends SliderTrackShape with BaseSliderTrackShape {
         ? (trackRect.height - (thumbCenter.dx - trackRect.left)) / 2
         : 0;
     final Radius trackRadius = Radius.circular(trackRect.height / 2);
-    final Radius activeTrackRadius = Radius.circular((trackRect.height + additionalActiveTrackHeight) / 2);
+    final Radius activeTrackRadius =
+        Radius.circular((trackRect.height + additionalActiveTrackHeight) / 2);
 
     context.canvas.drawRRect(
       RRect.fromLTRBAndCorners(
         trackRect.left,
-        (textDirection == TextDirection.rtl) ? trackRect.top - (additionalActiveTrackHeight / 2) : trackRect.top,
+        (textDirection == TextDirection.rtl)
+            ? trackRect.top - (additionalActiveTrackHeight / 2)
+            : trackRect.top,
         trackRect.right,
-        (textDirection == TextDirection.rtl) ? trackRect.bottom + (additionalActiveTrackHeight / 2) : trackRect.bottom,
+        (textDirection == TextDirection.rtl)
+            ? trackRect.bottom + (additionalActiveTrackHeight / 2)
+            : trackRect.bottom,
         topLeft: (textDirection == TextDirection.rtl) ? activeTrackRadius : trackRadius,
         bottomLeft: (textDirection == TextDirection.rtl) ? activeTrackRadius : trackRadius,
         topRight: (textDirection == TextDirection.rtl) ? activeTrackRadius : trackRadius,
@@ -233,13 +244,17 @@ class CustomTrackShape extends SliderTrackShape with BaseSliderTrackShape {
     context.canvas.drawRRect(
       RRect.fromLTRBAndCorners(
         trackRect.left,
-        (textDirection == TextDirection.ltr) ? trackRect.top - (additionalActiveTrackHeight / 2) + dy : trackRect.top,
+        (textDirection == TextDirection.ltr)
+            ? trackRect.top - (additionalActiveTrackHeight / 2) + dy
+            : trackRect.top,
         thumbCenter.dx,
-        (textDirection == TextDirection.ltr) ? trackRect.bottom + (additionalActiveTrackHeight / 2) - dy : trackRect.bottom,
+        (textDirection == TextDirection.ltr)
+            ? trackRect.bottom + (additionalActiveTrackHeight / 2) - dy
+            : trackRect.bottom,
         topLeft: (textDirection == TextDirection.ltr) ? activeTrackRadius : trackRadius,
-        bottomLeft: (textDirection == TextDirection.ltr) ? activeTrackRadius: trackRadius,
+        bottomLeft: (textDirection == TextDirection.ltr) ? activeTrackRadius : trackRadius,
         topRight: (textDirection == TextDirection.ltr) ? activeTrackRadius : trackRadius,
-        bottomRight: (textDirection == TextDirection.ltr) ? activeTrackRadius: trackRadius,
+        bottomRight: (textDirection == TextDirection.ltr) ? activeTrackRadius : trackRadius,
       ),
       leftTrackPaint,
     );
@@ -250,8 +265,11 @@ class CustomTrackShape extends SliderTrackShape with BaseSliderTrackShape {
             : (secondaryOffset.dx < thumbCenter.dx));
 
     if (showSecondaryTrack) {
-      final ColorTween secondaryTrackColorTween = ColorTween(begin: sliderTheme.disabledSecondaryActiveTrackColor, end: sliderTheme.secondaryActiveTrackColor);
-      final Paint secondaryTrackPaint = Paint()..color = secondaryTrackColorTween.evaluate(enableAnimation)!;
+      final ColorTween secondaryTrackColorTween = ColorTween(
+          begin: sliderTheme.disabledSecondaryActiveTrackColor,
+          end: sliderTheme.secondaryActiveTrackColor);
+      final Paint secondaryTrackPaint = Paint()
+        ..color = secondaryTrackColorTween.evaluate(enableAnimation)!;
       if (textDirection == TextDirection.ltr) {
         context.canvas.drawRRect(
           RRect.fromLTRBAndCorners(

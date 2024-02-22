@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 //import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 
 import 'package:creta_common/model/app_enums.dart';
-import '../../creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import 'creta_arrow_clipper.dart';
 import 'creta_digonal_clipper.dart';
 import 'creta_dir_clipper.dart';

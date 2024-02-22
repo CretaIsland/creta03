@@ -3,8 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:group_radio_button/group_radio_button.dart';
 import 'package:hycop/common/util/logger.dart';
-import '../creta_color.dart';
-import '../creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 
 class CretaRadioButton extends StatefulWidget {
   final Map<String, dynamic> valueMap; // title and value map

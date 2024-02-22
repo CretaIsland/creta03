@@ -6,7 +6,7 @@ import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
 
 import 'package:hycop/common/util/logger.dart';
-import '../../../../../design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import '../../../../../data_io/key_handler.dart';
 import '../../../../../model/frame_model.dart';
 import '../../../book_main_page.dart';
@@ -247,7 +247,6 @@ class DraggableResizableState extends CretaState<DraggableResizable> {
     return Stack(
       children: <Widget>[
         Positioned(
-         
           top: normalizedTop,
           left: normalizedLeft,
           child: DraggablePoint(

@@ -7,12 +7,12 @@ import 'package:provider/provider.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 
 import '../../../design_system/buttons/creta_button_wrapper.dart';
-import '../../../design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import '../book_main_page.dart';
 import '../studio_snippet.dart';
 import 'left_menu_frame.dart';
 import '../../../lang/creta_studio_lang.dart';
-import '../../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_font.dart';
 import '../studio_constant.dart';
 import 'left_menu_page.dart';
 import 'left_menu_storage.dart';

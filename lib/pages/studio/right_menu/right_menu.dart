@@ -9,7 +9,7 @@ import '../../../data_io/frame_manager.dart';
 import '../../../data_io/link_manager.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/buttons/creta_label_text_editor.dart';
-import '../../../design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../../../model/book_model.dart';
 import '../../../model/contents_model.dart';
@@ -18,7 +18,7 @@ import '../../../model/link_model.dart';
 import '../../../model/page_model.dart';
 import '../book_main_page.dart';
 
-import '../../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_font.dart';
 import '../containees/containee_nofifier.dart';
 import '../studio_constant.dart';
 import '../studio_snippet.dart';

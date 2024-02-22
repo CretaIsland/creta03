@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 
-import '../creta_color.dart';
-import '../creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 
 // ignore: must_be_immutable
 class CretaTapBarButton extends StatefulWidget {
@@ -164,7 +164,8 @@ class _CretaTapBarButtonState extends State<CretaTapBarButton> {
               SizedBox(width: 12),
               Text(
                 widget.caption,
-                style: CretaFont.titleLarge.copyWith(color: _getfgColor(), fontWeight: CretaFont.medium),
+                style: CretaFont.titleLarge
+                    .copyWith(color: _getfgColor(), fontWeight: CretaFont.medium),
               ),
             ],
           ),

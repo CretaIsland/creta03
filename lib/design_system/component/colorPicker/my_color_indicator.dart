@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
-import '../../creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import 'my_color_picker.dart';
 
 class MyColorIndicator extends StatefulWidget {

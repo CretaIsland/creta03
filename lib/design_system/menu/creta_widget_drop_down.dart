@@ -3,7 +3,7 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 
-import '../creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 
 // ignore_for_file: prefer_const_constructors
 

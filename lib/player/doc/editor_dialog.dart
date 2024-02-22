@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 
-import '../../../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_font.dart';
 import '../../../../lang/creta_studio_lang.dart';
 
 class EditorDialog extends StatefulWidget {

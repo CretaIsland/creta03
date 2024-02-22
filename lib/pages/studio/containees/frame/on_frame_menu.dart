@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 //import 'package:hycop/common/util/logger.dart';
 
 //import '../../../../design_system/buttons/creta_button_wrapper.dart';
-import '../../../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_font.dart';
 //import 'package:creta_common/model/app_enums.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../player/creta_play_timer.dart';

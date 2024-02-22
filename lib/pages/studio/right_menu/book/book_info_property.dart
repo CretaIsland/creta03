@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../../../design_system/component/hash_tag_wrapper.dart';
-import '../../../../design_system/creta_color.dart';
-import '../../../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/book_model.dart';
 import '../../book_info_mixin.dart';

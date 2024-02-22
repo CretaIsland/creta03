@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 //import '../../design_system/menu/creta_drop_down.dart';
 //import '../../design_system/menu/creta_popup_menu.dart';
 //import '../../design_system/text_field/creta_search_bar.dart';
-//import '../design_system/creta_color.dart';
+//import 'package:creta_common/common/creta_color.dart';
 //import 'package:image_network/image_network.dart';
 //import 'package:cached_network_image/cached_network_image.dart';
 //import '../../common/cross_common_job.dart';
@@ -22,8 +22,8 @@ import 'package:flutter/material.dart';
 //import 'sub_pages/community_left_menu_pane.dart';
 //import 'community_sample_data.dart';
 //import '../../design_system/component/custom_image.dart';
-import '../../design_system/creta_font.dart';
-import '../../design_system/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
 //import '../../../common/creta_utils.dart';
 //import '../../../routes.dart';
 //import 'package:routemaster/routemaster.dart';
@@ -31,8 +31,8 @@ import '../../design_system/creta_color.dart';
 //import '../../../design_system/buttons/creta_button_wrapper.dart';
 // import '../../../design_system/menu/creta_popup_menu.dart';
 import '../../../design_system/component/custom_image.dart';
-// import '../../../design_system/creta_font.dart';
-// import '../../../design_system/creta_color.dart';
+// import 'package:creta_common/common/creta_font.dart';
+// import 'package:creta_common/common/creta_color.dart';
 //import '../../../design_system/buttons/creta_button.dart';
 //import '../../../design_system/component/snippet.dart';
 // import '../../../model/book_model.dart';
@@ -55,7 +55,6 @@ import '../../model/subscription_model.dart';
 // const double _itemDefaultWidth = 290.0;
 // const double _itemDefaultHeight = 256.0;
 //const double _itemDescriptionHeight = 56;
-
 
 class SubscriptionItem extends StatefulWidget {
   const SubscriptionItem({

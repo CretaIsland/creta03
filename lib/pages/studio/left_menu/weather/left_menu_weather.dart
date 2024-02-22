@@ -14,7 +14,7 @@ import 'package:weather_animation/weather_animation.dart';
 
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
-import '../../../../design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/model/app_enums.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';

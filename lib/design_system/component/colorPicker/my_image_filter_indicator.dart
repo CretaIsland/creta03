@@ -6,8 +6,8 @@ import 'package:hycop/common/util/logger.dart';
 
 import '../../../lang/creta_studio_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../../creta_color.dart';
-import '../../creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 
 class MyImageFilterIndicator extends StatefulWidget {
   final bool isSelected;

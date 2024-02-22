@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../design_system/buttons/creta_rect_button.dart';
-import '../../../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_font.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
 import '../../book_main_page.dart';

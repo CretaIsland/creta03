@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import '../component/snippet.dart';
-import '../creta_font.dart';
+import 'package:creta_common/common/creta_font.dart';
 
 class FontDemoPage extends StatefulWidget {
   FontDemoPage({super.key});

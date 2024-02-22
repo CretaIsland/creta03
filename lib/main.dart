@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors, depend_on_referenced_packages
 
-import 'package:creta03/design_system/creta_color.dart';
-//import 'package:creta03/pages/studio/sample_data.dart';
+import 'package:creta_common/common/creta_color.dart'; //import 'package:creta03/pages/studio/sample_data.dart';
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

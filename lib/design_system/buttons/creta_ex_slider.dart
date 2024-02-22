@@ -4,8 +4,8 @@ import 'package:hycop/common/util/logger.dart';
 
 //import '../component/creta_cupertino_slider.dart';
 import '../component/creta_proprty_slider.dart';
-import '../creta_color.dart';
-import '../creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 import '../text_field/creta_text_field.dart';
 
 class CretaExSlider extends StatefulWidget {

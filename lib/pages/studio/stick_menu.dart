@@ -7,8 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../lang/creta_studio_lang.dart';
-import '../../design_system/creta_color.dart';
-import '../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 import 'book_main_page.dart';
 import 'left_menu/left_menu.dart';
 import 'studio_constant.dart';

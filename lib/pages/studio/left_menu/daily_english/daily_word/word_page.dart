@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:creta03/design_system/component/snippet.dart';
-import 'package:creta03/design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 import 'package:intl/intl.dart';

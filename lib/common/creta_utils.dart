@@ -186,37 +186,6 @@ class CretaUtils {
     return (width, height);
   }
 
-  static double getOptimalFontSize({
-    required String text,
-    required TextStyle style,
-    required double containerWidth,
-    required double containerHeight,
-    double delta = 1.0,
-  }) {
-    final textPainter = TextPainter(
-      textDirection: TextDirection.ltr,
-      maxLines: 1,
-    );
-
-    double minFontSize = StudioConst.minFontSize; // 시작 폰트 크기
-    double maxFontSize = StudioConst.maxFontSize; // 최대 시도할 폰트 크기
-    double currentSize = StudioConst.defaultFontSize;
-
-    while (maxFontSize - minFontSize > delta) {
-      currentSize = (minFontSize + maxFontSize) / 2;
-      textPainter.text = TextSpan(text: text, style: style.copyWith(fontSize: currentSize));
-      textPainter.layout(maxWidth: containerWidth);
-
-      if (textPainter.size.height > containerHeight) {
-        maxFontSize = currentSize;
-      } else {
-        minFontSize = currentSize;
-      }
-    }
-
-    return currentSize;
-  }
-
   static MouseCursor getCursorShape() {
     if (BookMainPage.topMenuNotifier!.isTextCreate()) {
       return SystemMouseCursors.text;

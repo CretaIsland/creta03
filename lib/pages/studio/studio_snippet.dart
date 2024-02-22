@@ -1,3 +1,4 @@
+import 'package:creta_common/common/creta_const.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -7,8 +8,8 @@ import 'package:creta_common/common/creta_common_utils.dart';
 
 import '../../data_io/contents_manager.dart';
 import '../../design_system/buttons/creta_label_text_editor.dart';
-import '../../design_system/creta_color.dart';
-import '../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 import '../../design_system/uploading_popup.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 import 'package:creta_common/lang/creta_lang.dart';
@@ -323,11 +324,11 @@ class StudioSnippet {
 
     return weightList.map(
       (weight) {
-        String? fontStr = StudioConst.fontWeightInt2Str[weight];
+        String? fontStr = CretaConst.fontWeightInt2Str[weight];
         return CretaMenuItem(
             caption: fontStr!,
             fontFamily: font,
-            fontWeight: StudioConst.fontWeight2Type[weight],
+            fontWeight: CretaConst.fontWeight2Type[weight],
             onPressed: () {
               onChanged(weight);
             },

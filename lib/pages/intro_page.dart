@@ -9,7 +9,7 @@ import 'package:hycop/hycop.dart';
 
 //import '../../routes.dart';
 import '../design_system/component/snippet.dart';
-import '../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_font.dart';
 
 class IntroPage extends StatefulWidget {
   const IntroPage({super.key});

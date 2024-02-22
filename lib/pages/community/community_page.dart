@@ -17,8 +17,8 @@ import '../../pages/login/creta_account_manager.dart';
 //import '../../common/cross_common_job.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 
-import '../../design_system/creta_font.dart';
-import '../../design_system/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_button.dart';
 import '../../design_system/component/creta_basic_layout_mixin.dart';

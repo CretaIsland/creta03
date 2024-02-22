@@ -16,7 +16,7 @@ import '../../../pages/studio/studio_getx_controller.dart';
 import '../../../pages/studio/studio_variables.dart';
 import '../../buttons/creta_button.dart';
 import '../../buttons/creta_button_wrapper.dart';
-import '../../creta_font.dart';
+import 'package:creta_common/common/creta_font.dart';
 import 'flutter_treeview.dart' as tree;
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
@@ -28,7 +28,7 @@ import '../../../model/contents_model.dart';
 import 'package:creta_common/model/creta_model.dart';
 import '../../../model/frame_model.dart';
 import '../../../model/page_model.dart';
-import '../../creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 
 class MyTreeView extends StatefulWidget {
   //final List<tree.Node> nodes;

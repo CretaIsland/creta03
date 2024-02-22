@@ -1,8 +1,8 @@
 import 'package:creta03/design_system/buttons/creta_ex_slider.dart';
 import 'package:creta03/design_system/buttons/creta_toggle_button.dart';
 import 'package:creta03/design_system/component/creta_proprty_slider.dart';
-import 'package:creta03/design_system/creta_color.dart';
-import 'package:creta03/design_system/creta_font.dart';
+import 'package:creta_common/common/creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import 'package:creta_common/model/app_enums.dart';

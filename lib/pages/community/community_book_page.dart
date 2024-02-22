@@ -18,7 +18,7 @@
 // //import '../../design_system/menu/creta_drop_down.dart';
 // //import '../../design_system/menu/creta_popup_menu.dart';
 // //import '../../design_system/text_field/creta_search_bar.dart';
-// import '../../design_system/creta_color.dart';
+// import 'package:creta_common/common/creta_color.dart';
 // //import 'package:image_network/image_network.dart';
 // //import 'package:cached_network_image/cached_network_image.dart';
 // //import '../../common/cross_common_job.dart';
@@ -26,9 +26,9 @@
 // //import 'sub_pages/community_left_menu_pane.dart';
 // //import '../../design_system/component/creta_basic_layout_mixin.dart';
 // import '../../design_system/component/custom_image.dart';
-// import '../../design_system/creta_font.dart';
+// import 'package:creta_common/common/creta_font.dart';
 // //import 'package:creta_common/lang/creta_lang.dart';
-// //import 'package:creta03/design_system/creta_color.dart';
+// //import 'package:creta_common/common/creta_font.dart';
 // import 'package:creta03/pages/community/community_sample_data.dart';
 // import 'creta_book_ui_item.dart';
 // import '../../design_system/buttons/creta_progress_slider.dart';

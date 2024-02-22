@@ -1,7 +1,7 @@
-import 'package:creta03/design_system/creta_font.dart';
+import 'package:creta_common/common/creta_font.dart';
 import 'package:flutter/material.dart';
 import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
-import '../creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 
 class CretaDialog extends StatelessWidget {
   const CretaDialog({
@@ -43,7 +43,8 @@ class CretaDialog extends StatelessWidget {
                         title,
                         style: CretaFont.titleMedium,
                       ),
-                      BTN.fill_gray_i_s(icon: Icons.close, onPressed: () => Navigator.of(context).pop())
+                      BTN.fill_gray_i_s(
+                          icon: Icons.close, onPressed: () => Navigator.of(context).pop())
                     ],
                   )),
               (hideTopSplitLine)
@@ -112,7 +113,8 @@ class CretaStackDialog extends StatelessWidget {
                           style: CretaFont.titleMedium,
                         ),
                         if (showCloseButton)
-                          BTN.fill_gray_i_s(icon: Icons.close, onPressed: () => Navigator.of(context).pop()),
+                          BTN.fill_gray_i_s(
+                              icon: Icons.close, onPressed: () => Navigator.of(context).pop()),
                       ],
                     ),
                   ),

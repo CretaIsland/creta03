@@ -4,8 +4,8 @@ import 'package:hycop/hycop.dart';
 
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../design_system/buttons/creta_checkbox.dart';
-import '../../../../design_system/creta_color.dart';
-//import '../../../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+//import 'package:creta_common/common/creta_font.dart';
 import '../../../../design_system/dialog/creta_dialog.dart';
 import '../../../../design_system/text_field/creta_text_field.dart';
 import 'package:creta_common/lang/creta_lang.dart';

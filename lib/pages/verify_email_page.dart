@@ -12,7 +12,7 @@ import 'package:url_launcher/link.dart';
 import '../../routes.dart';
 import '../design_system/component/snippet.dart';
 //import '../../design_system/text_field/creta_text_field.dart';
-//import '../design_system/creta_font.dart';
+//import 'package:creta_common/common/creta_font.dart';
 import '../../design_system/buttons/creta_button.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 
@@ -35,21 +35,23 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   bool _isVerified = false;
   bool _error = false;
 
-
   @override
   void initState() {
     super.initState();
   }
-
 
   void _doVerifyEmail() {
     setState(() {
       _isJobProcessing = true;
     });
 
-    CretaAccountManager.userPropertyManagerHolder.addWhereClause('parentMid', QueryValue(value: widget.userId));
-    CretaAccountManager.userPropertyManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    CretaAccountManager.userPropertyManagerHolder.queryByAddedContitions().catchError((error, stackTrace) {
+    CretaAccountManager.userPropertyManagerHolder
+        .addWhereClause('parentMid', QueryValue(value: widget.userId));
+    CretaAccountManager.userPropertyManagerHolder
+        .addWhereClause('isRemoved', QueryValue(value: false));
+    CretaAccountManager.userPropertyManagerHolder
+        .queryByAddedContitions()
+        .catchError((error, stackTrace) {
       setState(() {
         _isJobProcessing = false;
         _error = true;
@@ -64,7 +66,9 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
       } else {
         UserPropertyModel model = modelList[0] as UserPropertyModel;
         model.verified = true;
-        CretaAccountManager.userPropertyManagerHolder.setToDB(model).catchError((error, stackTrace) {
+        CretaAccountManager.userPropertyManagerHolder
+            .setToDB(model)
+            .catchError((error, stackTrace) {
           setState(() {
             _isJobProcessing = false;
             _error = true;
@@ -80,11 +84,9 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
     });
   }
 
-
   BuildContext getBuildContext() {
     return context;
   }
-
 
   Widget _getVerifyButton() {
     return _isJobProcessing
@@ -105,7 +107,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
             onPressed: () => _doVerifyEmail(),
           );
   }
-
 
   Widget _getVerifiedBody() {
     return Center(
@@ -134,7 +135,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
     );
   }
 
-
   Widget _getNotVerifiedBody() {
     return Center(
       child: SizedBox(
@@ -153,7 +153,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
     );
   }
 
-
   Widget _getBody() {
     if (_isVerified) {
       return _getVerifiedBody();
@@ -161,10 +160,11 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
     return _getNotVerifiedBody();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    String logoUrl = (CretaAccountManager.currentLoginUser.isLoginedUser) ? AppRoutes.communityHome : AppRoutes.intro;
+    String logoUrl = (CretaAccountManager.currentLoginUser.isLoginedUser)
+        ? AppRoutes.communityHome
+        : AppRoutes.intro;
     return Snippet.CretaScaffoldOfCommunity(
       title: Row(
         children: [

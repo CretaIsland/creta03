@@ -126,7 +126,7 @@ class CretaTextPlayerWidgetState extends CretaState<CretaTextWidget> with CretaT
           //         player.model!.aniType.value != TextAniType.typewriter ||
           //         player.model!.aniType.value != TextAniType.wavy ||
           //         player.model!.aniType.value != TextAniType.fidget)) {
-          //   fontSize = StudioConst.maxFontSize * StudioVariables.applyScale;
+          //   fontSize = CretaConst.maxFontSize * StudioVariables.applyScale;
           // }
 
           // FontWeight? fontWeight = StudioConst.fontWeight2Type[player.model!.fontWeight.value];

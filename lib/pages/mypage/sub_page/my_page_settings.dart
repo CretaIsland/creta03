@@ -1,7 +1,7 @@
 import 'package:creta03/data_io/user_property_manager.dart';
 import 'package:creta03/design_system/buttons/creta_toggle_button.dart';
-import 'package:creta03/design_system/creta_color.dart';
-import 'package:creta03/design_system/creta_font.dart';
+import 'package:creta_common/common/creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
 import 'package:creta03/design_system/menu/creta_widget_drop_down.dart';
 import 'package:creta03/lang/creta_mypage_lang.dart';
 import 'package:creta_common/model/app_enums.dart';

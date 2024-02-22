@@ -4,7 +4,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_final_fields, must_be_immutable
 
 import 'package:flutter/material.dart';
-import '../creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 
 class CretaDoubleButton extends StatefulWidget {
   final double width;

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 
 import '../../../../data_io/frame_manager.dart';
-import '../../../../design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import '../../../../model/contents_model.dart';
 import '../../book_main_page.dart';
 

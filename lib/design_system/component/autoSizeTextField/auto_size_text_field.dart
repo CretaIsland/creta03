@@ -4,7 +4,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../pages/studio/studio_constant.dart';
+import 'package:creta_common/common/creta_const.dart';
+
 
 /// Flutter widget that automatically resizes text field to fit perfectly within its bounds.
 ///
@@ -661,7 +662,7 @@ class AutoSizeTextFieldState extends State<AutoSizeTextField> {
     if (widget.data.isEmpty) {
       //skpark
       _textSpanWidth = 1.0;
-      return [style!.fontSize ?? StudioConst.defaultFontSize, false];
+      return [style!.fontSize ?? CretaConst.defaultFontSize, false];
     }
 
     var span = TextSpan(

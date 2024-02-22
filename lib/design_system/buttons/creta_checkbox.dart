@@ -5,8 +5,8 @@ import 'package:hycop/common/util/logger.dart';
 //import 'package:flutter_awesome_select/flutter_awesome_select.dart';
 //import 'package:roundcheckbox/roundcheckbox.dart';
 
-import '../creta_color.dart';
-import '../creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 
 class CretaCheckbox extends StatefulWidget {
   final Map<String, bool> valueMap; // value and title map

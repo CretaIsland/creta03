@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:creta03/design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import 'package:flutter/material.dart';
 
 class SeekBar extends StatefulWidget {

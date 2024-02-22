@@ -11,14 +11,14 @@ import 'package:routemaster/routemaster.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 
 //import 'package:url_strategy/url_strategy.dart';
-import '../../design_system/creta_color.dart';
-import '../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 //import '../../design_system/component/snippet.dart';
 //import '../../design_system/menu/creta_drop_down.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 //import '../../design_system/text_field/creta_search_bar.dart';
-//import '../design_system/creta_color.dart';
+//import 'package:creta_common/common/creta_color.dart';
 //import 'package:image_network/image_network.dart';
 //import 'package:cached_network_image/cached_network_image.dart';
 //import '../../common/cross_common_job.dart';

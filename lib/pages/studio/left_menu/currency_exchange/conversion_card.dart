@@ -7,7 +7,7 @@ import 'package:hycop/hycop.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../data_io/frame_manager.dart';
-import '../../../../design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
 import '../../../../model/page_model.dart';

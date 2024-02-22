@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/frame_manager.dart';
-import '../../../../design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import '../../book_main_page.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';

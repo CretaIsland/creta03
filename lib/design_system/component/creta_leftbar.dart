@@ -8,7 +8,7 @@ import 'package:url_launcher/link.dart';
 //import 'package:creta_common/lang/creta_lang.dart';
 import '../buttons/creta_button_wrapper.dart';
 import '../buttons/creta_tapbar_button.dart';
-import '../creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import '../menu/creta_popup_menu.dart';
 import 'snippet.dart';
 //import '../../pages/login_page.dart';

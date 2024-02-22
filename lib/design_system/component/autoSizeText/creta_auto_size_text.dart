@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../../../pages/studio/studio_constant.dart';
+import 'package:creta_common/common/creta_const.dart';
 import 'font_size_changing_notifier.dart';
 
 /// Flutter widget that automatically resizes text to fit perfectly within its
@@ -440,8 +440,8 @@ class CretaAutoSizeTextState extends State<CretaAutoSizeText> {
   Widget _buildText(double fontSize, TextStyle style, int? maxLines) {
     // 보이는 폰트 사이즈가 10 보다 작을 수 없다. skpark
     //fontSize = (fontSize * 0.99).floorToDouble(); //skpark textField 보다 크기 때문에 4% 정도 작게 해준다.
-    if (fontSize < StudioConst.minFontSize) {
-      fontSize = StudioConst.minFontSize;
+    if (fontSize < CretaConst.minFontSize) {
+      fontSize = CretaConst.minFontSize;
     }
     AutoSizeGroup.autoSizeMap[widget.mid] = fontSize; //skpark
 

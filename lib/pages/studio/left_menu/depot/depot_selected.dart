@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import '../../../../data_io/depot_manager.dart';
 import '../../../../design_system/component/creta_right_mouse_menu.dart';
-import '../../../../design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import '../../../../design_system/menu/creta_popup_menu.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/depot_model.dart';

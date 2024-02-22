@@ -4,7 +4,7 @@ import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 
-import '../creta_font.dart';
+import 'package:creta_common/common/creta_font.dart';
 
 class CretaTabButton extends StatefulWidget {
   final double width;

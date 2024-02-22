@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../pages/studio/studio_variables.dart';
 import '../buttons/creta_button_wrapper.dart';
-import '../creta_font.dart';
+import 'package:creta_common/common/creta_font.dart';
 
 class CretaPopup {
   static Future<void> popup({

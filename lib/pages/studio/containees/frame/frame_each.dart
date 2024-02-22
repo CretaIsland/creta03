@@ -18,7 +18,7 @@ import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/depot_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/component/snippet.dart';
-import '../../../../design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import '../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import 'package:creta_common/model/app_enums.dart';
 import '../../../../model/contents_model.dart';

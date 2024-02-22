@@ -12,8 +12,9 @@ import '../../../../../data_io/frame_manager.dart';
 import '../../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import '../../../../../design_system/component/creta_right_mouse_menu.dart';
-import '../../../../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_font.dart';
 import '../../../../../design_system/drag_and_drop/drop_zone_widget.dart';
+import '../../../../../design_system/extra_text_style.dart';
 import '../../../../../design_system/menu/creta_popup_menu.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import '../../../../../lang/creta_studio_lang.dart';
@@ -670,18 +671,18 @@ class _DraggableStickersState extends State<DraggableStickers> {
           CretaMenuItem(
               caption: CretaStudioLang.copyStyle,
               onPressed: () {
-                ContentsModel.setStyleInClipBoard(contentsModel, context);
+                ExtraTextStyle.setStyleInClipBoard(contentsModel, context);
               }),
         if (StudioVariables.isPreview == false &&
             frameModel.isTextType() &&
             contentsModel != null &&
             contentsModel.isText() &&
-            ContentsModel.sytleInClipBoard != null)
+            ExtraTextStyle.sytleInClipBoard != null)
           CretaMenuItem(
               caption: CretaStudioLang.pasteStyle,
               onPressed: () {
                 mychangeStack.startTrans();
-                ContentsModel.pasteStyle(contentsModel);
+                ExtraTextStyle.pasteStyle(contentsModel);
                 mychangeStack.endTrans();
                 contentsManager?.notify();
                 if (contentsModel.isAutoFrameOrSide()) {

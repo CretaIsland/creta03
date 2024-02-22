@@ -5,8 +5,8 @@ import 'package:creta_common/common/creta_common_utils.dart';
 
 //import 'package:flutter_inner_shadow/flutter_inner_shadow.dart';
 
-import '../../creta_color.dart';
-import '../../creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 
 class ShadowIndicator extends StatefulWidget {
   final Color color;

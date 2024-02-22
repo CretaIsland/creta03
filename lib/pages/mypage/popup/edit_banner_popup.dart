@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'package:creta_common/common/creta_common_utils.dart';
 
 import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
-import 'package:creta03/design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import 'package:creta03/design_system/dialog/creta_dialog.dart';
 import 'package:creta03/pages/login/creta_account_manager.dart';
 import 'package:flutter/material.dart';

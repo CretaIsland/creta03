@@ -1,4 +1,5 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_final_fields
+import 'package:creta_common/common/creta_const.dart';
 import 'package:provider/provider.dart';
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:creta03/pages/studio/left_menu/music/music_player_frame.dart';
@@ -22,8 +23,9 @@ import '../../../../design_system/buttons/creta_tab_button.dart';
 import '../../../../design_system/buttons/creta_toggle_button.dart';
 import '../../../../design_system/component/creta_proprty_slider.dart';
 import '../../../../design_system/component/time_input_widget.dart';
-import '../../../../design_system/creta_color.dart';
-import '../../../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
+import '../../../../design_system/extra_text_style.dart';
 import '../../../../design_system/menu/creta_drop_down_button.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import '../../../../lang/creta_studio_lang.dart';
@@ -35,6 +37,7 @@ import '../../book_main_page.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../../studio_snippet.dart';
+import '../../studio_variables.dart';
 import '../property_mixin.dart';
 
 class ContentsProperty extends StatefulWidget {
@@ -291,7 +294,10 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         onOpacityDragComplete: (value) {
           //setState(() {
           widget.model.opacity.set(value);
-          ContentsModel.setLastTextStyle(widget.model.makeTextStyle(context), widget.model);
+          ExtraTextStyle.setLastTextStyle(
+            widget.model.makeTextStyle(context, applyScale: StudioVariables.applyScale),
+            widget.model,
+          );
 
           _contentsManager?.notify();
           if (widget.model.textType == TextType.clock || widget.model.textType == TextType.date) {
@@ -303,12 +309,16 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
           widget.model.opacity.set(value);
           _contentsManager?.notify();
           //_sendEvent!.sendEvent(widget.model);
-          ContentsModel.setLastTextStyle(widget.model.makeTextStyle(context), widget.model);
+          ExtraTextStyle.setLastTextStyle(
+              widget.model.makeTextStyle(context, applyScale: StudioVariables.applyScale),
+              widget.model);
         },
         onColor1Changed: (color) {
           setState(() {
             widget.model.fontColor.set(color);
-            ContentsModel.setLastTextStyle(widget.model.makeTextStyle(context), widget.model);
+            ExtraTextStyle.setLastTextStyle(
+                widget.model.makeTextStyle(context, applyScale: StudioVariables.applyScale),
+                widget.model);
           });
           //_contentsManager?.notify();
           _sendEvent!.sendEvent(widget.model);
@@ -323,7 +333,10 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         onDelete: () {
           setState(() {
             widget.model.fontColor.set(Colors.black);
-            ContentsModel.setLastTextStyle(widget.model.makeTextStyle(context), widget.model);
+            ExtraTextStyle.setLastTextStyle(
+              widget.model.makeTextStyle(context, applyScale: StudioVariables.applyScale),
+              widget.model,
+            );
           });
           _sendEvent!.sendEvent(widget.model);
           if (widget.model.textType == TextType.clock) {
@@ -435,7 +448,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                             ? TextDecoration.lineThrough
                             : TextDecoration.none,
                 //fontWeight: model!.isBold.value ? FontWeight.bold : FontWeight.normal,
-                fontWeight: StudioConst.fontWeight2Type[widget.model.fontWeight.value],
+                fontWeight: CretaConst.fontWeight2Type[widget.model.fontWeight.value],
                 fontStyle: widget.model.isItalic.value ? FontStyle.italic : FontStyle.normal)),
         hasRemoveButton: false,
         onDelete: () {},
@@ -709,7 +722,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   //       //disabled: widget.model.fontSizeType.value != FontSizeType.userDefine,
   //       key: GlobalKey(),
   //       min: 6,
-  //       max: StudioConst.maxFontSize,
+  //       max: CretaConst.maxFontSize,
   //       value: widget.model.fontSize.value,
   //       valueType: SliderValueType.normal,
   //       sliderWidth: 136,

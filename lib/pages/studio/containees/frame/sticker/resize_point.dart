@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../../../design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import '../../../studio_constant.dart';
 
 import 'draggable_point.dart';

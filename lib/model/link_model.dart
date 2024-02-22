@@ -6,7 +6,7 @@ import 'package:hycop/hycop.dart';
 
 import 'package:creta_common/common/creta_common_utils.dart';
 
-import '../design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 
 // ignore: must_be_immutable
 class LinkModel extends CretaModel {

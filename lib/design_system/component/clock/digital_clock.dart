@@ -4,7 +4,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import '../../../model/contents_model.dart';
-import '../../../pages/studio/studio_constant.dart';
+import 'package:creta_common/common/creta_const.dart';
+
 import 'clock_painter.dart';
 
 class DigitalClock extends StatefulWidget {
@@ -154,7 +155,7 @@ class _DigitalClockState extends State<DigitalClock> {
     String minute = datetime.minute.toString().padLeft(2, "0");
     String second = datetime.second.toString().padLeft(2, "0");
     String textToBeDisplayed = "$hour:$minute${showSeconds ? ":$second" : ""}$meridiem";
-    double defaultFontSize = StudioConst.defaultFontSize * widget.scaleFactor * textScaleFactor;
+    double defaultFontSize = CretaConst.defaultFontSize * widget.scaleFactor * textScaleFactor;
 
     if (widget.contentsModel != null) {
       widget.contentsModel!.remoteUrl = textToBeDisplayed;

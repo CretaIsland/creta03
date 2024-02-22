@@ -12,7 +12,7 @@ import 'package:url_launcher/link.dart';
 import 'package:creta03/design_system/buttons/creta_tapbar_button.dart';
 import 'package:creta03/design_system/component/creta_basic_layout_mixin.dart';
 import 'package:creta03/design_system/component/snippet.dart';
-import 'package:creta03/design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import 'package:creta03/design_system/menu/creta_popup_menu.dart';
 import 'package:creta03/lang/creta_mypage_lang.dart';
 import 'package:creta03/data_io/creta_manager.dart';

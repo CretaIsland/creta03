@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 
 import '../buttons/creta_button_wrapper.dart';
-import '../creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 
 enum ToggleButtonStyle {
   floating_l,

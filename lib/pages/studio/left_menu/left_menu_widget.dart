@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../../design_system/buttons/creta_tab_button.dart';
-import '../../../design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import '../../../design_system/text_field/creta_search_bar.dart';
 import '../studio_constant.dart';
 import 'clock/left_menu_clock.dart';

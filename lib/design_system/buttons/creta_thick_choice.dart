@@ -5,7 +5,7 @@ import 'package:hycop/common/util/logger.dart';
 //import 'package:flutter_awesome_select/flutter_awesome_select.dart';
 //import 'package:roundcheckbox/roundcheckbox.dart';
 
-import '../creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 
 class CretaThickChoice extends StatefulWidget {
   final List<int> valueList; // value and title map
@@ -165,7 +165,7 @@ class _CretaThickChoiceState extends State<CretaThickChoice> {
 
 // import 'package:flutter/material.dart';
 
-// import '../creta_color.dart';
+// import 'package:creta_common/common/creta_color.dart';
 
 // class CretaThickChoice extends StatefulWidget {
 //   final double thickness;

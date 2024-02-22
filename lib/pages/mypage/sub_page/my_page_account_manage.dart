@@ -2,8 +2,8 @@ import 'package:creta03/data_io/channel_manager.dart';
 import 'package:creta03/data_io/user_property_manager.dart';
 import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
 import 'package:creta03/design_system/buttons/creta_toggle_button.dart';
-import 'package:creta03/design_system/creta_color.dart';
-import 'package:creta03/design_system/creta_font.dart';
+import 'package:creta_common/common/creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
 import 'package:creta03/lang/creta_mypage_lang.dart';
 import 'package:creta03/pages/login/creta_account_manager.dart';
 import 'package:creta03/pages/mypage/mypage_common_widget.dart';
@@ -16,8 +16,6 @@ import 'package:image_picker/image_picker.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 
-
-
 class MyPageAccountManage extends StatefulWidget {
   final double width;
   final double height;
@@ -28,183 +26,192 @@ class MyPageAccountManage extends StatefulWidget {
 }
 
 class _MyPageAccountManageState extends State<MyPageAccountManage> {
-
   XFile? _selectedImg;
-
 
   @override
   Widget build(BuildContext context) {
     return Consumer2<UserPropertyManager, ChannelManager>(
       builder: (context, userPropertyManager, channelManager, child) {
         return Container(
-          width: widget.width,
-          height: widget.height,
-          color: Colors.white,
-          child: SingleChildScrollView(
-            child: widget.width > 800 ? Padding(
-              padding: const EdgeInsets.only(left: 165.0, top: 72.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('계정 관리', style: CretaFont.displaySmall.copyWith(fontWeight: FontWeight.w600)),
-                  MyPageCommonWidget.divideLine(width: widget.width * .6, padding: const EdgeInsets.only(top: 22, bottom: 32)),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(width: 12.0),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('용도 설정', style: CretaFont.titleELarge),
-                          const SizedBox(height: 37),
-                          Text('프레젠테이션 기능 사용하기', style: CretaFont.titleMedium),
-                          const SizedBox(height: 25),
-                          Text('디지털 사이니지 기능 사용하기', style: CretaFont.titleMedium)
-                        ],
-                      ),
-                      const SizedBox(width: 80),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 58),
-                          CretaToggleButton(
-                            defaultValue: true,
-                            isActive: false,
-                            onSelected: (value) {},
+            width: widget.width,
+            height: widget.height,
+            color: Colors.white,
+            child: SingleChildScrollView(
+              child: widget.width > 800
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 165.0, top: 72.0),
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text('계정 관리',
+                            style: CretaFont.displaySmall.copyWith(fontWeight: FontWeight.w600)),
+                        MyPageCommonWidget.divideLine(
+                            width: widget.width * .6,
+                            padding: const EdgeInsets.only(top: 22, bottom: 32)),
+                        Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          const SizedBox(width: 12.0),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('용도 설정', style: CretaFont.titleELarge),
+                              const SizedBox(height: 37),
+                              Text('프레젠테이션 기능 사용하기', style: CretaFont.titleMedium),
+                              const SizedBox(height: 25),
+                              Text('디지털 사이니지 기능 사용하기', style: CretaFont.titleMedium)
+                            ],
                           ),
-                          const SizedBox(height: 16),
-                          CretaToggleButton(
-                            defaultValue: userPropertyManager.userPropertyModel!.useDigitalSignage,
-                            onSelected: (value) {
-                              userPropertyManager.userPropertyModel!.useDigitalSignage = value;
-                              userPropertyManager.setToDB(userPropertyManager.userPropertyModel!);
-                            },
-                          )
-                        ]
-                      )
-                    ]
-                  ),
-                  MyPageCommonWidget.divideLine(width: widget.width * .6, padding: const EdgeInsets.only(top: 27, bottom: 32)),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('요금제', style: CretaFont.titleELarge),
-                        const SizedBox(height: 32),
-                        Row(
-                          children: [
-                            Text(
-                              CretaMyPageLang.ratePlanList[userPropertyManager.userPropertyModel!.ratePlan.index],
-                              style: CretaFont.titleMedium
-                            ),
-                            const SizedBox(width: 24),
-                            BTN.line_blue_t_m(
-                              text: '요금제 변경',
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => PopUpRatePlan.ratePlanPopUp(context),
-                                );
-                              }
-                            )
-                          ],
-                        ),
-                        const SizedBox(height: 13),
-                        Text('팀 요금제를 사용해보세요!', style: CretaFont.bodySmall.copyWith(color: CretaColor.text.shade400)),
-                      ],
-                    ),
-                  ),
-                  MyPageCommonWidget.divideLine(width: widget.width * .6, padding: const EdgeInsets.only(top: 34, bottom: 32)),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('채널 설정', style: CretaFont.titleELarge),
-                        const SizedBox(height: 32),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("프로필 공개", style: CretaFont.titleMedium),
-                            const SizedBox(width: 100),
+                          const SizedBox(width: 80),
+                          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            const SizedBox(height: 58),
                             CretaToggleButton(
+                              defaultValue: true,
+                              isActive: false,
+                              onSelected: (value) {},
+                            ),
+                            const SizedBox(height: 16),
+                            CretaToggleButton(
+                              defaultValue:
+                                  userPropertyManager.userPropertyModel!.useDigitalSignage,
                               onSelected: (value) {
-                                userPropertyManager.userPropertyModel!.isPublicProfile = value;
+                                userPropertyManager.userPropertyModel!.useDigitalSignage = value;
                                 userPropertyManager.setToDB(userPropertyManager.userPropertyModel!);
-                              }, 
-                              defaultValue: userPropertyManager.userPropertyModel!.isPublicProfile
+                              },
                             )
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Text("모든 사람들에게 프로필이 공개됩니다.", style: CretaFont.bodySmall.copyWith(color: CretaColor.text.shade400)),
-                        const SizedBox(height: 32),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("배경 이미지", style: CretaFont.titleMedium),
-                            const SizedBox(width: 50),
-                            MyPageCommonWidget.channelBannerImgComponent(
-                              width: widget.width * .6, 
-                              bannerImgUrl: CretaAccountManager.getChannel!.bannerImgUrl, 
-                              onPressed: () async {
-                                try {
-                                  _selectedImg = await ImagePicker().pickImage(source: ImageSource.gallery);
-                                  if (_selectedImg != null) {
-                                    _selectedImg!.readAsBytes().then((fileBytes) {
-                                      if (fileBytes.isNotEmpty) {
-                                      // popup 호출
+                          ])
+                        ]),
+                        MyPageCommonWidget.divideLine(
+                            width: widget.width * .6,
+                            padding: const EdgeInsets.only(top: 27, bottom: 32)),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('요금제', style: CretaFont.titleELarge),
+                              const SizedBox(height: 32),
+                              Row(
+                                children: [
+                                  Text(
+                                      CretaMyPageLang.ratePlanList[
+                                          userPropertyManager.userPropertyModel!.ratePlan.index],
+                                      style: CretaFont.titleMedium),
+                                  const SizedBox(width: 24),
+                                  BTN.line_blue_t_m(
+                                      text: '요금제 변경',
+                                      onPressed: () {
                                         showDialog(
                                           context: context,
-                                          builder: (context) {
-                                            return EditBannerImgPopUp(bannerImgBytes: fileBytes, selectedImg: _selectedImg!);
-                                          }
+                                          builder: (context) =>
+                                              PopUpRatePlan.ratePlanPopUp(context),
                                         );
-                                      }
-                                    });
-                                  }
-                                } catch (error) {
-                                  logger.info('something wrong in my_page_team_manage >> $error');
-                                }
-                              }
-                            )
+                                      })
+                                ],
+                              ),
+                              const SizedBox(height: 13),
+                              Text('팀 요금제를 사용해보세요!',
+                                  style: CretaFont.bodySmall
+                                      .copyWith(color: CretaColor.text.shade400)),
+                            ],
+                          ),
+                        ),
+                        MyPageCommonWidget.divideLine(
+                            width: widget.width * .6,
+                            padding: const EdgeInsets.only(top: 34, bottom: 32)),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('채널 설정', style: CretaFont.titleELarge),
+                              const SizedBox(height: 32),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("프로필 공개", style: CretaFont.titleMedium),
+                                  const SizedBox(width: 100),
+                                  CretaToggleButton(
+                                      onSelected: (value) {
+                                        userPropertyManager.userPropertyModel!.isPublicProfile =
+                                            value;
+                                        userPropertyManager
+                                            .setToDB(userPropertyManager.userPropertyModel!);
+                                      },
+                                      defaultValue:
+                                          userPropertyManager.userPropertyModel!.isPublicProfile)
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Text("모든 사람들에게 프로필이 공개됩니다.",
+                                  style: CretaFont.bodySmall
+                                      .copyWith(color: CretaColor.text.shade400)),
+                              const SizedBox(height: 32),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("배경 이미지", style: CretaFont.titleMedium),
+                                  const SizedBox(width: 50),
+                                  MyPageCommonWidget.channelBannerImgComponent(
+                                      width: widget.width * .6,
+                                      bannerImgUrl: CretaAccountManager.getChannel!.bannerImgUrl,
+                                      onPressed: () async {
+                                        try {
+                                          _selectedImg = await ImagePicker()
+                                              .pickImage(source: ImageSource.gallery);
+                                          if (_selectedImg != null) {
+                                            _selectedImg!.readAsBytes().then((fileBytes) {
+                                              if (fileBytes.isNotEmpty) {
+                                                // popup 호출
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return EditBannerImgPopUp(
+                                                          bannerImgBytes: fileBytes,
+                                                          selectedImg: _selectedImg!);
+                                                    });
+                                              }
+                                            });
+                                          }
+                                        } catch (error) {
+                                          logger.info(
+                                              'something wrong in my_page_team_manage >> $error');
+                                        }
+                                      })
+                                ],
+                              ),
+                              const SizedBox(height: 32),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("채널 소개", style: CretaFont.titleMedium),
+                                  const SizedBox(width: 64),
+                                  MyPageCommonWidget.channelDescriptionComponent(
+                                      width: widget.width * .6)
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                        MyPageCommonWidget.divideLine(
+                            width: widget.width * .6,
+                            padding: const EdgeInsets.only(top: 34, bottom: 32)),
+                        Row(
+                          children: [
+                            const SizedBox(width: 12),
+                            Text(CretaMyPageLang.allDeviceLogout, style: CretaFont.titleMedium),
+                            const SizedBox(width: 24.0),
+                            BTN.line_red_t_m(text: CretaMyPageLang.logoutBTN, onPressed: () {}),
+                            const SizedBox(width: 80.0),
+                            Text(CretaMyPageLang.removeAccount, style: CretaFont.titleMedium),
+                            const SizedBox(width: 24.0),
+                            BTN.fill_red_t_m(
+                                text: CretaMyPageLang.removeAccountBTN,
+                                width: 81,
+                                onPressed: () {}),
                           ],
                         ),
-                        const SizedBox(height: 32),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("채널 소개", style: CretaFont.titleMedium),
-                            const SizedBox(width: 64),
-                            MyPageCommonWidget.channelDescriptionComponent(width: widget.width * .6)
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                  MyPageCommonWidget.divideLine(width: widget.width * .6, padding: const EdgeInsets.only(top: 34, bottom: 32)),
-                  Row(
-                    children: [
-                      const SizedBox(width: 12),
-                      Text(CretaMyPageLang.allDeviceLogout, style: CretaFont.titleMedium),
-                      const SizedBox(width: 24.0),
-                      BTN.line_red_t_m(text: CretaMyPageLang.logoutBTN, onPressed: () {}),
-                      const SizedBox(width: 80.0),
-                      Text(CretaMyPageLang.removeAccount, style: CretaFont.titleMedium),
-                      const SizedBox(width: 24.0),
-                      BTN.fill_red_t_m(text: CretaMyPageLang.removeAccountBTN, width: 81, onPressed: () {}),
-                    ],
-                  ),
-                  const SizedBox(height: 142)
-                ]
-              )
-            ) : const SizedBox.shrink(),
-          )
-        );
+                        const SizedBox(height: 142)
+                      ]))
+                  : const SizedBox.shrink(),
+            ));
       },
     );
   }
-
-
 }

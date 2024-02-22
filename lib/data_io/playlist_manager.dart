@@ -16,8 +16,8 @@ import '../model/book_model.dart';
 import '../model/channel_model.dart';
 import 'creta_manager.dart';
 import '../../../design_system/dialog/creta_dialog.dart';
-import '../../../design_system/creta_color.dart';
-import '../../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 import '../../../design_system/component/custom_image.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 

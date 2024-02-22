@@ -2,13 +2,13 @@
 
 import 'package:flutter/material.dart';
 
-import '../creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 
 //import 'package:elegant_radio_button_group/elegant_radio_button_group.dart';
 //import 'package:radio_grouped_buttons/radio_grouped_buttons.dart';
 
-//import '../creta_color.dart';
-//import '../creta_font.dart';
+//import 'package:creta_common/common/creta_color.dart';
+//import 'package:creta_common/common/creta_font.dart';
 
 class CretaToggleButton extends StatefulWidget {
   final void Function(bool value) onSelected;
@@ -17,14 +17,13 @@ class CretaToggleButton extends StatefulWidget {
   final double height;
   final bool isActive;
 
-  const CretaToggleButton({
-    super.key,
-    required this.onSelected,
-    required this.defaultValue,
-    this.width = 54,
-    this.height = 28,
-    this.isActive = true
-  });
+  const CretaToggleButton(
+      {super.key,
+      required this.onSelected,
+      required this.defaultValue,
+      this.width = 54,
+      this.height = 28,
+      this.isActive = true});
 
   @override
   State<CretaToggleButton> createState() => _CretaRadioButton2State();
@@ -50,17 +49,17 @@ class _CretaRadioButton2State extends State<CretaToggleButton> {
         height: widget.height,
         width: widget.width,
         decoration: BoxDecoration(
-          //border: Border.all(color: CretaColor.primary, width: 1.0),
-          borderRadius: BorderRadius.circular(18.0),
-          color: widget.isActive ? toggleValue
-              ? hover
-                  ? CretaColor.primary[500]!
-                  : CretaColor.primary
-              : hover
-                  ? CretaColor.primary[300]!
-                  : CretaColor.primary[200]!
-            : CretaColor.text[200]!
-        ),
+            //border: Border.all(color: CretaColor.primary, width: 1.0),
+            borderRadius: BorderRadius.circular(18.0),
+            color: widget.isActive
+                ? toggleValue
+                    ? hover
+                        ? CretaColor.primary[500]!
+                        : CretaColor.primary
+                    : hover
+                        ? CretaColor.primary[300]!
+                        : CretaColor.primary[200]!
+                : CretaColor.text[200]!),
         child: InkWell(
           onHover: (value) {
             setState(() {
@@ -68,7 +67,7 @@ class _CretaRadioButton2State extends State<CretaToggleButton> {
             });
           },
           onTap: () {
-            if(widget.isActive) {
+            if (widget.isActive) {
               setState(() {
                 toggleValue = !toggleValue;
               });

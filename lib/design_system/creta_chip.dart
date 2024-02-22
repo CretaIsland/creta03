@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'creta_color.dart';
-import 'creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 
 class CretaChip extends StatelessWidget {
   const CretaChip({

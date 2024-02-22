@@ -375,15 +375,15 @@ class CretaTextPlayer extends CretaAbsPlayer {
   //           model.aniType.value != TextAniType.typewriter ||
   //           model.aniType.value != TextAniType.wavy ||
   //           model.aniType.value != TextAniType.fidget)) {
-  //     fontSize = StudioConst.maxFontSize * applyScale;
+  //     fontSize = CretaConst.maxFontSize * applyScale;
   //   }
   //   //fontSize = fontSize.roundToDouble();
   //   if (isThumbnail == false) {
-  //     double minFontSize = StudioConst.minFontSize / applyScale;
-  //     if (fontSize < StudioConst.minFontSize) fontSize = minFontSize;
+  //     double minFontSize = CretaConst.minFontSize / applyScale;
+  //     if (fontSize < CretaConst.minFontSize) fontSize = minFontSize;
   //   }
-  //   if (fontSize > StudioConst.maxFontSize * applyScale) {
-  //     fontSize = StudioConst.maxFontSize * applyScale;
+  //   if (fontSize > CretaConst.maxFontSize * applyScale) {
+  //     fontSize = CretaConst.maxFontSize * applyScale;
   //   }
 
   //   FontWeight? fontWeight = StudioConst.fontWeight2Type[model.fontWeight.value];

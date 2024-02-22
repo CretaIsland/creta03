@@ -13,7 +13,7 @@ import 'package:creta03/design_system/component/shape/creta_clipper.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/component/snippet.dart';
-import '../../../../design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/model/app_enums.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';

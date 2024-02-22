@@ -16,7 +16,7 @@ import 'package:hycop/hycop.dart';
 //import '../../design_system/menu/creta_drop_down.dart';
 //import '../../design_system/menu/creta_popup_menu.dart';
 //import '../../design_system/text_field/creta_search_bar.dart';
-//import '../design_system/creta_color.dart';
+//import 'package:creta_common/common/creta_color.dart';
 // import 'package:image_network/image_network.dart';
 // import 'package:cached_network_image/cached_network_image.dart';
 //import '../../common/cross_common_job.dart';
@@ -181,8 +181,11 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
         hintText: '',
         //onClickedAdd: _onClickedAdd,
         onClickedRemove:
-            (widget.isAdminMode || data.userId == AccountManager.currentLoginUser.email) ? _onClickedRemove : null,
-        onClickedModify: (data.userId == AccountManager.currentLoginUser.email) ? _onClickedModify : null,
+            (widget.isAdminMode || data.userId == AccountManager.currentLoginUser.email)
+                ? _onClickedRemove
+                : null,
+        onClickedModify:
+            (data.userId == AccountManager.currentLoginUser.email) ? _onClickedModify : null,
         onClickedReply: _onClickedReply,
         onClickedShowReply: _onClickedShowReply,
         //editModeOnly: false,
@@ -316,9 +319,11 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
                   ),
                 ),
           Container(
-            padding: EdgeInsets.fromLTRB(16, (AccountManager.currentLoginUser.isLoginedUser == false) ? 0 : 20, 0, 0),
+            padding: EdgeInsets.fromLTRB(
+                16, (AccountManager.currentLoginUser.isLoginedUser == false) ? 0 : 20, 0, 0),
             child: Column(
-              children: _getCommentWidgetList(widget.paneWidth == null ? 0 : widget.paneWidth! - 16),
+              children:
+                  _getCommentWidgetList(widget.paneWidth == null ? 0 : widget.paneWidth! - 16),
             ),
           ),
         ],

@@ -3,8 +3,8 @@ import 'package:hycop/common/util/logger.dart';
 
 import '../buttons/creta_checkbox.dart';
 import '../buttons/creta_ex_slider.dart';
-import '../creta_color.dart';
-import '../creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 
 enum SliderValueType {
   normal,

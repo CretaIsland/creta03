@@ -1,8 +1,8 @@
 import 'package:creta03/pages/studio/left_menu/weather/wether_variables.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../design_system/creta_color.dart';
-import '../../../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 
 class WeatherElement extends StatefulWidget {
   final WeatherInfoType infoType;

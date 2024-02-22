@@ -9,7 +9,7 @@ import '../../../../../data_io/contents_manager.dart';
 import '../../../../../data_io/frame_manager.dart';
 import '../../../../../design_system/buttons/creta_button.dart';
 import '../../../../../design_system/buttons/creta_button_wrapper.dart';
-import '../../../../../design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import '../../../../../lang/creta_studio_lang.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';

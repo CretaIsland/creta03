@@ -4,12 +4,13 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:widget_and_text_animator/widget_and_text_animator.dart';
-import '../../design_system/creta_color.dart';
-import '../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 import '../../model/contents_model.dart';
 import '../../pages/studio/book_main_page.dart';
 import '../../pages/studio/left_menu/music/music_player_frame.dart';
-import '../../pages/studio/studio_constant.dart';
+import 'package:creta_common/common/creta_const.dart';
+
 import '../../pages/studio/studio_variables.dart';
 import 'creta_music_player.dart';
 
@@ -74,8 +75,7 @@ mixin CretaMusicMixin {
                 incomingEffect: WidgetTransitionEffects.incomingSlideInFromLeft(),
                 atRestEffect: WidgetRestingEffects.fidget(),
                 style: CretaFont.titleELarge.copyWith(
-                    color: CretaColor.secondary,
-                    fontSize: StudioConst.defaultFontSize * applyScale),
+                    color: CretaColor.secondary, fontSize: CretaConst.defaultFontSize * applyScale),
                 textAlign: TextAlign.center,
               )),
         ],

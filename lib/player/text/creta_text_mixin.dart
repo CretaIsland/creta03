@@ -9,6 +9,7 @@ import 'package:widget_and_text_animator/widget_and_text_animator.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
+import 'package:creta_common/common/creta_const.dart';
 
 import '../../common/creta_utils.dart';
 import '../../design_system/component/autoSizeText/creta_auto_size_text.dart';
@@ -72,7 +73,7 @@ mixin CretaTextMixin {
     //         model.aniType.value != TextAniType.typewriter ||
     //         model.aniType.value != TextAniType.wavy ||
     //         model.aniType.value != TextAniType.fidget)) {
-    //   fontSize = StudioConst.maxFontSize * applyScale;
+    //   fontSize = CretaConst.maxFontSize * applyScale;
     // }
     // //fontSize = fontSize.roundToDouble();
     // if (fontSize == 0) fontSize = 1;
@@ -147,7 +148,7 @@ mixin CretaTextMixin {
       color: Colors.transparent,
       // padding: model.isAutoFontSize()
       //     ? EdgeInsets.symmetric(
-      //         vertical: padding, horizontal: padding + (StudioConst.stepGranularity))
+      //         vertical: padding, horizontal: padding + (CretaConst.stepGranularity))
       //     : EdgeInsets.all(padding),
 
       padding: EdgeInsets.all(padding),
@@ -240,8 +241,8 @@ mixin CretaTextMixin {
             },
             textAlign: model.align.value,
             style: style,
-            stepGranularity: StudioConst.stepGranularity,
-            minFontSize: StudioConst.minFontSize,
+            stepGranularity: CretaConst.stepGranularity,
+            minFontSize: CretaConst.minFontSize,
             //textScaleFactor: (model.scaleFactor.value / 100) * applyScale
           )
         : Text(
@@ -266,8 +267,8 @@ mixin CretaTextMixin {
               mid: model.mid,
               textAlign: model.align.value,
               style: outlineStyle,
-              stepGranularity: StudioConst.stepGranularity,
-              minFontSize: StudioConst.minFontSize,
+              stepGranularity: CretaConst.stepGranularity,
+              minFontSize: CretaConst.minFontSize,
             )
           : Text(
               text,
@@ -536,8 +537,8 @@ mixin CretaTextMixin {
                       },
                       textAlign: model.align.value,
                       style: style,
-                      stepGranularity: StudioConst.stepGranularity,
-                      minFontSize: StudioConst.minFontSize,
+                      stepGranularity: CretaConst.stepGranularity,
+                      minFontSize: CretaConst.minFontSize,
                     )
                   : Text(
                       text,
@@ -590,8 +591,8 @@ mixin CretaTextMixin {
                     },
                     textAlign: model.align.value,
                     style: style,
-                    stepGranularity: StudioConst.stepGranularity,
-                    minFontSize: StudioConst.minFontSize,
+                    stepGranularity: CretaConst.stepGranularity,
+                    minFontSize: CretaConst.minFontSize,
                   )
                 : Text(text, textAlign: model.align.value, style: style),
             color: model.outLineColor.value == Colors.transparent
@@ -620,8 +621,8 @@ mixin CretaTextMixin {
                 },
                 textAlign: model.align.value,
                 style: style,
-                stepGranularity: StudioConst.stepGranularity,
-                minFontSize: StudioConst.minFontSize,
+                stepGranularity: CretaConst.stepGranularity,
+                minFontSize: CretaConst.minFontSize,
               )
             : Text(
                 text,
@@ -649,7 +650,7 @@ mixin CretaTextMixin {
   //   double fontRatio = sqrt(realSize.width * realSize.height) / sqrt(idealWidth * idealHeight);
 
   //   fontSize *= fontRatio;
-  //   double minFontSize = StudioConst.minFontSize / applyScale;
+  //   double minFontSize = CretaConst.minFontSize / applyScale;
   //   if (fontSize < minFontSize) fontSize = minFontSize;
   //   return fontSize;
   //   //logHolder.log("font = ${model!.font.value}, fontRatio=$fontRatio, fontSize=$fontSize",

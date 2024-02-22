@@ -13,7 +13,7 @@ import '../../design_system/buttons/creta_button_wrapper.dart';
 //import '../../design_system/menu/creta_drop_down.dart';
 //import '../../design_system/menu/creta_popup_menu.dart';
 //import '../../design_system/text_field/creta_search_bar.dart';
-import '../../design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import '../../design_system/component/snippet.dart';
 //import 'package:image_network/image_network.dart';
 //import 'package:cached_network_image/cached_network_image.dart';
@@ -23,9 +23,8 @@ import '../../design_system/component/snippet.dart';
 //import 'community_sample_data.dart';
 //import '../../design_system/component/custom_image.dart';
 import '../../design_system/component/custom_image.dart';
-import '../../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_font.dart';
 import '../../model/book_model.dart';
-
 
 // const double _rightViewTopPane = 40;
 //const double _rightViewLeftPane = 40;
@@ -126,7 +125,7 @@ class _CretaPlaylistDetailItemState extends State<CretaPlaylistDetailItem> {
                     child: Stack(
                       children: [
                         CustomImage(
-                          key: GlobalKey(),//widget.cretaBookData.imgKey,
+                          key: GlobalKey(), //widget.cretaBookData.imgKey,
                           width: 120,
                           height: 67,
                           image: widget.bookModel.thumbnailUrl.value,
@@ -146,7 +145,8 @@ class _CretaPlaylistDetailItemState extends State<CretaPlaylistDetailItem> {
                             : SizedBox(
                                 width: 120,
                                 height: 67,
-                                child: Center(child: Icon(Icons.play_arrow, size: 18, color: Colors.white)),
+                                child: Center(
+                                    child: Icon(Icons.play_arrow, size: 18, color: Colors.white)),
                               ),
                       ],
                     ),
@@ -189,7 +189,9 @@ class _CretaPlaylistDetailItemState extends State<CretaPlaylistDetailItem> {
                 icon: Icons.close_outlined,
                 iconSize: 16,
                 buttonColor: CretaButtonColor.transparent,
-                onPressed: () { widget.removeBook?.call(widget.index); },
+                onPressed: () {
+                  widget.removeBook?.call(widget.index);
+                },
               ),
             ],
           ),

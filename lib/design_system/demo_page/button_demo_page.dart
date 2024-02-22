@@ -14,9 +14,9 @@ import '../buttons/creta_thick_choice.dart';
 import '../buttons/creta_toggle_button.dart';
 import '../component/creta_proprty_slider.dart';
 import '../component/snippet.dart';
-import '../creta_color.dart';
-//import '../creta_color.dart';
-//import '../creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+//import 'package:creta_common/common/creta_color.dart';
+//import 'package:creta_common/common/creta_font.dart';
 
 class ButtonDemoPage extends StatefulWidget {
   ButtonDemoPage({super.key});

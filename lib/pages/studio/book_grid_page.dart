@@ -15,7 +15,7 @@ import 'package:hycop/hycop/account/account_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/component/creta_basic_layout_mixin.dart';
 import '../../design_system/component/snippet.dart';
-import '../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_font.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../model/book_model.dart';

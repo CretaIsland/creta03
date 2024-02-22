@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../pages/studio/studio_snippet.dart';
-import '../creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import '../menu/creta_drop_down_button.dart';
 
 class CretaFontSelector extends StatefulWidget {

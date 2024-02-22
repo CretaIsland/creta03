@@ -4,8 +4,8 @@ import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 //import 'package:creta_common/lang/creta_lang.dart';
-import '../creta_color.dart';
-import '../creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 import 'creta_popup_menu.dart';
 
 class CretaDropDownButton extends StatefulWidget {

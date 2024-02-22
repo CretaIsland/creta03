@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors, prefer_const_literals_to_create_immutables, must_be_immutable, avoid_print
 
-import 'package:creta03/design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 

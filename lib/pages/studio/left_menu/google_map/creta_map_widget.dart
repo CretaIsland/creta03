@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import 'google_map.dart';
 
 class CretaMapWidget extends StatefulWidget {

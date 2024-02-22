@@ -1,5 +1,5 @@
 import 'package:creta03/data_io/depot_manager.dart';
-import 'package:creta03/design_system/creta_font.dart';
+import 'package:creta_common/common/creta_font.dart';
 import 'package:creta03/model/depot_model.dart';
 import 'package:creta03/pages/login/creta_account_manager.dart';
 import 'package:flutter/material.dart';

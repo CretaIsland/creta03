@@ -12,7 +12,7 @@ import 'package:creta_common/common/creta_common_utils.dart';
 import '../../../../design_system/buttons/creta_radio_button.dart';
 import '../../../../design_system/component/creta_proprty_slider.dart';
 //import '../../../../design_system/component/example_box_mixin.dart';
-import '../../../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_font.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
 import '../../../../model/book_model.dart';

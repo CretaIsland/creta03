@@ -11,7 +11,7 @@ import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 
-import '../pages/studio/studio_constant.dart';
+//import '../pages/studio/studio_constant.dart';
 import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_common/model/creta_model.dart';
 import 'book_mixin.dart';
@@ -47,7 +47,7 @@ class BookModel extends CretaModel with BookMixin {
   List<String> hashtags = [];
   List<String> channels = [];
 
-  Size realSize = Size(LayoutConst.minPageSize, LayoutConst.minPageSize);
+  //Size realSize = Size(LayoutConst.minPageSize, LayoutConst.minPageSize);
 
   bool _isEditable = false; // not saved attributes
   bool _isCopyable = false; // not saved attributes
@@ -351,19 +351,19 @@ class BookModel extends CretaModel with BookMixin {
     return Size(width.value, height.value);
   }
 
-  Size getRealSize() {
-    if (key.currentContext != null) {
-      RenderBox box = key.currentContext?.findRenderObject() as RenderBox;
-      realSize = box.size; //this is global position
-    }
-    //logger.finest("kye.currentContext is null $realSize", level: 6);
-    return realSize; //보관된 realSize 값을 리턴한다.
-  }
+  // Size getRealSize() {
+  //   if (key.currentContext != null) {
+  //     RenderBox box = key.currentContext?.findRenderObject() as RenderBox;
+  //     realSize = box.size; //this is global position
+  //   }
+  //   //logger.finest("kye.currentContext is null $realSize", level: 6);
+  //   return realSize; //보관된 realSize 값을 리턴한다.
+  // }
 
-  Size getRealRatio() {
-    Size size = getRealSize();
-    return Size(size.width / width.value, size.height / height.value);
-  }
+  // Size getRealRatio() {
+  //   Size size = getRealSize();
+  //   return Size(size.width / width.value, size.height / height.value);
+  // }
 
   List<String> getShares(List<String> ownerList, List<String> writerList, List<String> readerList) {
     List<String> valueList = [];
@@ -412,6 +412,4 @@ class BookModel extends CretaModel with BookMixin {
     _isCopyable =
         writers.contains(publicCopyable) | writers.contains(privateCopyable) | _isEditable;
   }
-
- 
 }

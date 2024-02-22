@@ -8,8 +8,8 @@ import 'package:creta_common/common/creta_common_utils.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../pages/studio/studio_constant.dart';
 import '../creta_chip.dart';
-import '../creta_color.dart';
-import '../creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 import '../text_field/creta_text_field.dart';
 
 class HashTagWrapper {

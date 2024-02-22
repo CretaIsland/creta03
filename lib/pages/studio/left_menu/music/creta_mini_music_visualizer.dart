@@ -1,6 +1,6 @@
 library mini_music_visualizer;
 
-import "package:creta03/pages/studio/studio_constant.dart";
+import "package:creta_common/model/app_enums.dart";
 import "package:flutter/material.dart";
 
 import "../../../../model/contents_model.dart";

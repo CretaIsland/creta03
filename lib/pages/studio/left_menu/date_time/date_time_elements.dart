@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../design_system/creta_color.dart';
-import '../../../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 import 'date_time_type.dart';
 
 class DateTimeElements extends StatefulWidget {

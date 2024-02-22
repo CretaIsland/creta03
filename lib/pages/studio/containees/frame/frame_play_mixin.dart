@@ -8,7 +8,7 @@
 // import 'package:hycop/hycop/enum/model_enums.dart';
 
 // import '../../../../data_io/contents_manager.dart';
-
+import 'package:creta_common/common/creta_const.dart';
 import 'package:creta03/pages/studio/containees/frame/sticker/mini_menu.dart';
 import 'package:creta03/pages/studio/left_menu/clock/count_down_timer.dart';
 import 'package:creta03/pages/studio/left_menu/currency_exchange/rate_result.dart';
@@ -27,6 +27,7 @@ import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/component/clock/analog_clock.dart';
 import '../../../../design_system/component/clock/digital_clock.dart';
+import '../../../../design_system/extra_text_style.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
 import '../../../../model/contents_model.dart';
@@ -241,7 +242,7 @@ mixin FramePlayMixin {
         //print('contentModel is null');
         style = DefaultTextStyle.of(context)
             .style
-            .copyWith(fontSize: StudioConst.defaultFontSize * applyScale);
+            .copyWith(fontSize: CretaConst.defaultFontSize * applyScale);
       }
       //print('width,height = $width, $height');
 
@@ -489,7 +490,7 @@ mixin FramePlayMixin {
     ContentsModel model =
         await _defaultTextModel(frameModel.mid, frameModel.realTimeKey, fontSizeType: fontSizeType);
     model.setTextStyleProperty(
-      //fontSize: fontSize / StudioVariables.applyScale,
+      applyScale: StudioVariables.applyScale,
       fontSize: fontSize,
     );
     model.playTime.set(-1);
@@ -508,14 +509,14 @@ mixin FramePlayMixin {
 
     late TextStyle style;
     ExtraTextStyle? extraStyle;
-    (style, extraStyle) = ContentsModel.getLastTextStyle(context);
-    double fontSize = StudioConst.defaultFontSize * StudioVariables.applyScale;
+    (style, extraStyle) = ExtraTextStyle.getLastTextStyle(context);
+    double fontSize = CretaConst.defaultFontSize * StudioVariables.applyScale;
     if (style.fontSize != null) {
       //print('use style.fontSize=${style.fontSize}');
       fontSize = style.fontSize!;
     } else {
       style = style.copyWith(fontSize: fontSize);
-      ContentsModel.setLastTextStyle(style, null);
+      ExtraTextStyle.setLastTextStyle(style, null);
     }
     double height = (fontSize / StudioVariables.applyScale) +
         (StudioConst.defaultTextPadding * 2); // 모델상의 크기다. 실제 크기가 아니다.
@@ -549,10 +550,9 @@ mixin FramePlayMixin {
       name: 'Text',
       remoteUrl: 'Sample Text',
     );
-    model.setTextStyle(style);
-    if (extraStyle != null) {
-      model.setExtraTextStyle(extraStyle);
-    }
+    model.setTextStyle(style,  StudioVariables.applyScale);
+    extraStyle?.setExtraTextStyle(model);
+
     model.autoSizeType.set(AutoSizeType.autoFrameSize); // 가로 세로 모두 늘어나는 모드
     //print('createTextByClieck');
     model.playTime.set(-1);

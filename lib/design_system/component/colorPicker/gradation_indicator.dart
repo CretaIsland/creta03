@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:creta_common/model/app_enums.dart';
 import '../../../pages/studio/studio_snippet.dart';
-import '../../creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 
 class GradationIndicator extends StatefulWidget {
   final GradationType gradationType;

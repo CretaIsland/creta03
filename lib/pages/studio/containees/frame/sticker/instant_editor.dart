@@ -4,6 +4,7 @@ import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
+import 'package:creta_common/common/creta_const.dart';
 
 import '../../../../../common/creta_utils.dart';
 import '../../../../../data_io/contents_manager.dart';
@@ -11,7 +12,7 @@ import '../../../../../data_io/frame_manager.dart';
 import '../../../../../data_io/key_handler.dart';
 import '../../../../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import '../../../../../design_system/component/autoSizeTextField/auto_size_text_field.dart';
-import '../../../../../design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/model/app_enums.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
@@ -383,7 +384,7 @@ class InstantEditorState extends CretaState<InstantEditor> {
           height: applySize.height,
           padding: model.isAutoFontSize()
               ? EdgeInsets.symmetric(
-                  vertical: _padding, horizontal: _padding + (StudioConst.stepGranularity))
+                  vertical: _padding, horizontal: _padding + (CretaConst.stepGranularity))
               : EdgeInsets.all(_padding),
           //padding: EdgeInsets.all(_padding),
           child: editorWidget),
@@ -421,8 +422,8 @@ class InstantEditorState extends CretaState<InstantEditor> {
       key: _textFieldKey,
       cursorWidth: cursorWidth,
       cursorColor: CretaCommonUtils.luminance(widget.frameModel.bgColor1.value),
-      stepGranularity: StudioConst.stepGranularity, // <-- 폰트 사이즈 정밀도, 작을수록 속도가 느리다.  0.1 이 최소
-      minFontSize: StudioConst.minFontSize,
+      stepGranularity: CretaConst.stepGranularity, // <-- 폰트 사이즈 정밀도, 작을수록 속도가 느리다.  0.1 이 최소
+      minFontSize: CretaConst.minFontSize,
       strutStyle: const StrutStyle(forceStrutHeight: true, height: 1.0),
       decoration: const InputDecoration(
         border: InputBorder.none,
@@ -449,7 +450,7 @@ class InstantEditorState extends CretaState<InstantEditor> {
       textAlign: model.align.value,
       textAlignVertical: intToTextAlignVertical(model.valign.value),
       style: _style!.copyWith(
-          fontSize: StudioConst.maxFontSize *
+          fontSize: CretaConst.maxFontSize *
               StudioVariables.applyScale), // _style!.copyWith(backgroundColor: Colors.green),
       controller: _textController,
       onEditingComplete: () {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../design_system/buttons/creta_transparent_button.dart';
-import '../../design_system/creta_color.dart';
-import '../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 import '../../lang/creta_studio_lang.dart';
 import 'studio_constant.dart';
 import 'studio_variables.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:creta_common/lang/creta_lang.dart';
-import '../creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import '../text_field/creta_text_field.dart';
 
 class TimeInputWidget extends StatefulWidget {

@@ -1,8 +1,8 @@
 import 'package:creta03/data_io/team_manager.dart';
 import 'package:creta03/data_io/user_property_manager.dart';
 import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
-import 'package:creta03/design_system/creta_color.dart';
-import 'package:creta03/design_system/creta_font.dart';
+import 'package:creta_common/common/creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
 import 'package:creta03/lang/creta_mypage_lang.dart';
 import 'package:creta03/model/team_model.dart';
 import 'package:creta03/model/user_property_model.dart';
@@ -13,20 +13,18 @@ import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 
-
-
 class MyPageDashBoard extends StatefulWidget {
   final double width;
   final double height;
   final Color replaceColor;
-  const MyPageDashBoard({super.key, required this.width, required this.height, required this.replaceColor});
+  const MyPageDashBoard(
+      {super.key, required this.width, required this.height, required this.replaceColor});
 
   @override
   State<MyPageDashBoard> createState() => _MyPageDashBoardState();
 }
 
 class _MyPageDashBoardState extends State<MyPageDashBoard> {
-
   // 계정 정보 컴포넌트
   Widget accountInfo(UserPropertyModel userProperty) {
     TextStyle propertyFontStyle = CretaFont.bodyMedium.copyWith(color: CretaColor.text.shade400);
@@ -34,17 +32,16 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
       width: 400,
       height: 400,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade200),
-        borderRadius: BorderRadius.circular(20)
-      ),
+          border: Border.all(color: Colors.grey.shade200), borderRadius: BorderRadius.circular(20)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top:34, left: 28),
+            padding: const EdgeInsets.only(top: 34, left: 28),
             child: Text("계정 정보", style: CretaFont.titleELarge),
           ),
-          MyPageCommonWidget.divideLine(width: 400, padding: const EdgeInsets.only(top: 30 , bottom: 48)),
+          MyPageCommonWidget.divideLine(
+              width: 400, padding: const EdgeInsets.only(top: 30, bottom: 48)),
           Row(
             children: [
               const SizedBox(width: 30),
@@ -64,13 +61,15 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(CretaMyPageLang.cretaGradeList[userProperty.cretaGrade.index], style: CretaFont.bodyMedium),
+                  Text(CretaMyPageLang.cretaGradeList[userProperty.cretaGrade.index],
+                      style: CretaFont.bodyMedium),
                   const SizedBox(height: 28),
                   Text("${userProperty.bookCount}", style: CretaFont.bodyMedium),
                   const SizedBox(height: 20),
                   Row(
                     children: [
-                      Text(CretaMyPageLang.ratePlanList[userProperty.ratePlan.index], style: CretaFont.bodyMedium),
+                      Text(CretaMyPageLang.ratePlanList[userProperty.ratePlan.index],
+                          style: CretaFont.bodyMedium),
                       const SizedBox(width: 24),
                       BTN.line_blue_t_m(height: 32, text: "요금제 변경", onPressed: () {})
                     ],
@@ -93,17 +92,16 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
       width: 400,
       height: 400,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade200),
-        borderRadius: BorderRadius.circular(20)
-      ),
+          border: Border.all(color: Colors.grey.shade200), borderRadius: BorderRadius.circular(20)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top:34, left: 28),
+            padding: const EdgeInsets.only(top: 34, left: 28),
             child: Text("계정 정보", style: CretaFont.titleELarge),
           ),
-          MyPageCommonWidget.divideLine(width: 400, padding: const EdgeInsets.only(top: 30 , bottom: 48)),
+          MyPageCommonWidget.divideLine(
+              width: 400, padding: const EdgeInsets.only(top: 30, bottom: 48)),
           Row(
             children: [
               const SizedBox(width: 30),
@@ -145,34 +143,29 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
       width: 400,
       height: 400,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade200),
-        borderRadius: BorderRadius.circular(20)
-      ),
+          border: Border.all(color: Colors.grey.shade200), borderRadius: BorderRadius.circular(20)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top:34, left: 28),
+            padding: const EdgeInsets.only(top: 34, left: 28),
             child: Text("내 팀", style: CretaFont.titleELarge),
           ),
-          MyPageCommonWidget.divideLine(width: 400, padding: const EdgeInsets.only(top: 30 , bottom: 48)), 
+          MyPageCommonWidget.divideLine(
+              width: 400, padding: const EdgeInsets.only(top: 30, bottom: 48)),
           Padding(
             padding: const EdgeInsets.only(left: 30),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for(var team in teamList)...[
-                  Text(team.name, style: CretaFont.bodyMedium),
-                  const SizedBox(height: 28.0)
-                ]
-              ]   
-            ),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              for (var team in teamList) ...[
+                Text(team.name, style: CretaFont.bodyMedium),
+                const SizedBox(height: 28.0)
+              ]
+            ]),
           ),
         ],
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -183,44 +176,48 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
           height: widget.height,
           color: Colors.white,
           child: SingleChildScrollView(
-            child: widget.width > 400 ? Column(
-              children: [
-                const SizedBox(height: 60),
-                MyPageCommonWidget.profileImgComponent(
-                  width: 200, 
-                  height: 200, 
-                  profileImgUrl: userPropertyManager.userPropertyModel!.profileImgUrl,
-                  userName: userPropertyManager.userPropertyModel!.nickname,
-                  replaceColor: widget.replaceColor,
-                  borderRadius: BorderRadius.circular(200),
-                ),
-                const SizedBox(height: 40.0),
-                Text(userPropertyManager.userPropertyModel!.nickname, style: CretaFont.displaySmall.copyWith(fontWeight: FontWeight.w600)),
-                const SizedBox(height: 16),
-                Text(userPropertyManager.userPropertyModel!.email, style: CretaFont.buttonLarge.copyWith(color: CretaColor.text.shade400)),
-                const SizedBox(height: 86.0),
-                widget.width > 1600 ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    accountInfo(userPropertyManager.userPropertyModel!),
-                    SizedBox(width: widget.width * .024),
-                    recentLogInfo(userPropertyManager.userPropertyModel!),
-                    SizedBox(width: widget.width * .024),
-                    teamInfo(teamManager.teamModelList)
-                  ],
-                ) : Column(
-                  children: [
-                    accountInfo(userPropertyManager.userPropertyModel!),
-                    const SizedBox(height: 40),
-                    recentLogInfo(userPropertyManager.userPropertyModel!),
-                    const SizedBox(height: 40),
-                    teamInfo(teamManager.teamModelList)
-                  ],
-                )
-              ],
-            ) : const SizedBox.shrink()
-          ),
-
+              child: widget.width > 400
+                  ? Column(
+                      children: [
+                        const SizedBox(height: 60),
+                        MyPageCommonWidget.profileImgComponent(
+                          width: 200,
+                          height: 200,
+                          profileImgUrl: userPropertyManager.userPropertyModel!.profileImgUrl,
+                          userName: userPropertyManager.userPropertyModel!.nickname,
+                          replaceColor: widget.replaceColor,
+                          borderRadius: BorderRadius.circular(200),
+                        ),
+                        const SizedBox(height: 40.0),
+                        Text(userPropertyManager.userPropertyModel!.nickname,
+                            style: CretaFont.displaySmall.copyWith(fontWeight: FontWeight.w600)),
+                        const SizedBox(height: 16),
+                        Text(userPropertyManager.userPropertyModel!.email,
+                            style: CretaFont.buttonLarge.copyWith(color: CretaColor.text.shade400)),
+                        const SizedBox(height: 86.0),
+                        widget.width > 1600
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  accountInfo(userPropertyManager.userPropertyModel!),
+                                  SizedBox(width: widget.width * .024),
+                                  recentLogInfo(userPropertyManager.userPropertyModel!),
+                                  SizedBox(width: widget.width * .024),
+                                  teamInfo(teamManager.teamModelList)
+                                ],
+                              )
+                            : Column(
+                                children: [
+                                  accountInfo(userPropertyManager.userPropertyModel!),
+                                  const SizedBox(height: 40),
+                                  recentLogInfo(userPropertyManager.userPropertyModel!),
+                                  const SizedBox(height: 40),
+                                  teamInfo(teamManager.teamModelList)
+                                ],
+                              )
+                      ],
+                    )
+                  : const SizedBox.shrink()),
         );
       },
     );

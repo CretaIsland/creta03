@@ -2,7 +2,7 @@
 import 'dart:html';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:creta03/design_system/creta_font.dart';
+import 'package:creta_common/common/creta_font.dart';
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
@@ -14,7 +14,7 @@ import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/component/creta_property_card.dart';
 import '../../../design_system/component/custom_image.dart';
 import '../../../design_system/component/snippet.dart';
-import '../../../design_system/creta_color.dart';
+import 'package:creta_common/common/creta_color.dart';
 import '../../../design_system/text_field/creta_search_bar.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../studio_constant.dart';

@@ -40,8 +40,8 @@ import '../../design_system/component/autoSizeText/font_size_changing_notifier.d
 import '../../design_system/component/creta_popup.dart';
 import '../../design_system/component/custom_image.dart';
 import '../../design_system/component/snippet.dart';
-import '../../design_system/creta_color.dart';
-import '../../design_system/creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 import '../../design_system/dialog/creta_alert_dialog.dart';
 //import '../../design_system/dialog/creta_dialog.dart';
 import '../../design_system/uploading_popup.dart';

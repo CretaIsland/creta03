@@ -3,14 +3,10 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
-import '../creta_color.dart';
-import '../creta_font.dart';
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 
-enum CretaDropDownType {
-  normal,
-  small,
-  large
-}
+enum CretaDropDownType { normal, small, large }
 
 class CretaDropDown extends StatefulWidget {
   final List<String> items;
