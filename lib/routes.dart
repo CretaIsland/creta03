@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 //import 'package:appflowy_editor/appflowy_editor.dart';
-//import 'package:creta03/model/contents_model.dart';
+//import 'package:creta_studio_model/model/contents_model.dart';
 import 'package:creta03/pages/landing_page.dart';
 import 'package:creta03/pages/mypage/mypage.dart';
 import 'package:creta03/pages/privacy_policy_page.dart';
@@ -20,7 +20,7 @@ import 'design_system/demo_page/text_field_demo_page.dart';
 //import 'pages/login_page.dart';
 import 'developer/gen_collections_page.dart';
 // import 'pages/intro_page.dart';
-import 'model/book_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
 import 'pages/login/creta_account_manager.dart';
 import 'pages/studio/book_grid_page.dart';
 import 'pages/studio/book_main_page.dart';

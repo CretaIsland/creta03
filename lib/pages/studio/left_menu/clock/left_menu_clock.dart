@@ -10,9 +10,9 @@ import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/component/clock/analog_clock.dart';
 import '../../../../design_system/component/clock/digital_clock.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../../../../model/contents_model.dart';
-import '../../../../model/frame_model.dart';
-import '../../../../model/page_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
+import 'package:creta_studio_model/model/page_model.dart';
 import '../../book_main_page.dart';
 import '../left_menu_ele_button.dart';
 

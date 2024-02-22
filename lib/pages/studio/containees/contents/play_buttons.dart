@@ -4,7 +4,7 @@ import 'package:hycop/common/util/logger.dart';
 // ignore: depend_on_referenced_packages
 
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
-import '../../../../model/frame_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
 import '../../../../player/creta_play_timer.dart';
 import '../../book_main_page.dart';
 

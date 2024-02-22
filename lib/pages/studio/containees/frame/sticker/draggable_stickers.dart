@@ -19,12 +19,13 @@ import '../../../../../design_system/menu/creta_popup_menu.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import '../../../../../lang/creta_studio_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../../../../../model/book_model.dart';
-import '../../../../../model/contents_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
 import 'package:creta_common/model/creta_model.dart';
-import '../../../../../model/depot_model.dart';
-import '../../../../../model/frame_model.dart';
-import '../../../../../model/page_model.dart';
+import 'package:creta_studio_model/model/depot_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
+import '../../../../../model/frame_model_util.dart';
+import 'package:creta_studio_model/model/page_model.dart';
 import '../../../../login/creta_account_manager.dart';
 import '../../../book_main_page.dart';
 import '../../../left_menu/depot/depot_display.dart';
@@ -352,8 +353,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
   Widget _dragableResizable(
       Sticker sticker, FrameModel frameModel, bool isVerticalResiable, bool isHorizontalResiable) {
-    double posX = frameModel.getRealPosX();
-    double posY = frameModel.getRealPosY();
+    double posX = FrameModelUtil.getRealPosX(frameModel);
+    double posY = FrameModelUtil.getRealPosY(frameModel);
 
     // GlobalObjectKey<DraggableResizableState> draggableResizableKey =
     //     GlobalObjectKey<DraggableResizableState>(
@@ -633,14 +634,14 @@ class _DraggableStickersState extends State<DraggableStickers> {
                 _notifyToThumbnail();
               });
             }),
-        if (frameModel.isBackgroundMusic() == false)
+        if (FrameModelUtil.isBackgroundMusic(frameModel) == false)
           CretaMenuItem(
               caption: frameModel.isShow.value ? CretaStudioLang.unshow : CretaStudioLang.show,
               onPressed: () {
                 BookMainPage.containeeNotifier!.setFrameClick(true);
                 mychangeStack.startTrans();
                 frameModel.isShow.set(!frameModel.isShow.value);
-                frameModel.changeOrderByIsShow(widget.frameManager!);
+                widget.frameManager?.changeOrderByIsShow(frameModel);
                 mychangeStack.endTrans();
                 widget.onFrameShowUnshow?.call(frameModel.mid);
                 if (frameModel.isOverlay.value == true) {
@@ -695,14 +696,18 @@ class _DraggableStickersState extends State<DraggableStickers> {
           CretaMenuItem(caption: '', onPressed: () {}), //divider
         if (StudioVariables.isPreview == false && frameModel.isMusicType() == true) // 뮤직의 경우
           CretaMenuItem(
-              caption: frameModel.isBackgroundMusic()
+              caption: FrameModelUtil.isBackgroundMusic(frameModel)
                   ? CretaStudioLang.foregroundMusic
                   : CretaStudioLang.backgroundMusic,
               onPressed: () {
                 logger.fine('${CretaStudioLang.backgroundMusic} menu clicked');
                 setState(() {
-                  frameModel.toggeleBackgoundMusic(
-                      !frameModel.isBackgroundMusic(), widget.frameManager!, widget.book);
+                  FrameModelUtil.toggeleBackgoundMusic(
+                    !FrameModelUtil.isBackgroundMusic(frameModel),
+                    widget.frameManager!,
+                    widget.book,
+                    frameModel,
+                  );
                   //_sendEvent!.sendEvent(frameModel);
                   BookMainPage.pageManagerHolder!.notify();
                 });
@@ -715,7 +720,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
               onPressed: () {
                 logger.fine('${CretaStudioLang.overlayFrame} menu clicked');
                 setState(() {
-                  frameModel.toggeleOverlay(!frameModel.isOverlay.value, widget.frameManager!);
+                  FrameModelUtil.toggeleOverlay(
+                      !frameModel.isOverlay.value, widget.frameManager!, frameModel);
                   //_sendEvent!.sendEvent(frameModel);
                   //BookMainPage.pageManagerHolder!.notify();
                 });

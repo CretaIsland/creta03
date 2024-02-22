@@ -29,9 +29,9 @@ import '../../model/user_property_model.dart';
 import '../../model/team_model.dart';
 import '../../model/channel_model.dart';
 import '../../model/enterprise_model.dart';
-import '../../model/frame_model.dart';
-import '../../model/page_model.dart';
-import '../../model/book_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
+import 'package:creta_studio_model/model/page_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
 import '../../pages/studio/studio_constant.dart';
 
 class CretaAccountManager {

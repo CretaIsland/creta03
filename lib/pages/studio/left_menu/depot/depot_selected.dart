@@ -1,4 +1,4 @@
-//import 'package:creta03/model/contents_model.dart';
+//import 'package:creta_studio_model/model/contents_model.dart';
 
 import 'package:flutter/material.dart';
 import '../../../../data_io/depot_manager.dart';
@@ -6,7 +6,7 @@ import '../../../../design_system/component/creta_right_mouse_menu.dart';
 import 'package:creta_common/common/creta_color.dart';
 import '../../../../design_system/menu/creta_popup_menu.dart';
 import '../../../../lang/creta_studio_lang.dart';
-import '../../../../model/depot_model.dart';
+import 'package:creta_studio_model/model/depot_model.dart';
 import '../../studio_variables.dart';
 import 'depot_display.dart';
 //import 'selection_manager.daxt';

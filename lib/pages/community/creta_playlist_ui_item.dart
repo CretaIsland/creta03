@@ -29,7 +29,7 @@ import '../../routes.dart';
 //import '../../pages/login_page.dart';
 import '../../pages/login/creta_account_manager.dart';
 import '../../design_system/component/custom_image.dart';
-import '../../model/book_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
 import '../../model/playlist_model.dart';
 import 'sub_pages/community_right_playlist_detail_pane.dart';
 

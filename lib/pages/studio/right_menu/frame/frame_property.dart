@@ -28,9 +28,10 @@ import '../../../../design_system/menu/creta_widget_drop_down.dart';
 import '../../../../design_system/text_field/creta_text_field.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../../../../model/book_model.dart';
-import '../../../../model/frame_model.dart';
-import '../../../../model/page_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
+import '../../../../model/frame_model_util.dart';
+import 'package:creta_studio_model/model/page_model.dart';
 import '../../book_main_page.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
@@ -2314,7 +2315,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       return;
     }
     setState(() {
-      widget.model.toggeleOverlay(value, _frameManager!);
+      FrameModelUtil.toggeleOverlay(value, _frameManager!, widget.model);
     });
     _sendEvent?.sendEvent(widget.model);
     _notifyToThumbnail();

@@ -6,7 +6,7 @@ import 'dart:async';
 
 //import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
-import '../../../../model/contents_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
 
 enum DateTimeFormat {
   date,

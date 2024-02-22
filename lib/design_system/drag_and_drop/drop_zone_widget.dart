@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:hycop/common/util/logger.dart';
 
-import '../../model/contents_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
 //import 'package:dotted_border/dotted_border.dart';
 
 class DropZoneWidget extends StatefulWidget {

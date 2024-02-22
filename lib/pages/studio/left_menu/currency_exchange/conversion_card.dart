@@ -10,7 +10,7 @@ import '../../../../data_io/frame_manager.dart';
 import 'package:creta_common/common/creta_color.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../../../../model/page_model.dart';
+import 'package:creta_studio_model/model/page_model.dart';
 import '../../book_main_page.dart';
 
 class ConversionCard extends StatefulWidget {

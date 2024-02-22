@@ -16,11 +16,11 @@ import '../../../../design_system/menu/creta_popup_menu.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../../../../model/book_model.dart';
-import '../../../../model/contents_model.dart';
-import '../../../../model/frame_model.dart';
-import '../../../../model/link_model.dart';
-import '../../../../model/page_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
+import 'package:creta_studio_model/model/link_model.dart';
+import 'package:creta_studio_model/model/page_model.dart';
 import '../../../../player/creta_play_timer.dart';
 import '../../book_main_page.dart';
 import '../../book_preview_menu.dart';
@@ -219,7 +219,7 @@ class _LinkWidgetState extends State<LinkWidget> {
                 BookMainPage.containeeNotifier!.setFrameClick(true);
 
                 widget.frameModel.isShow.set(!widget.frameModel.isShow.value);
-                widget.frameModel.changeOrderByIsShow(widget.frameManager);
+                widget.frameManager.changeOrderByIsShow(widget.frameModel);
                 //widget.frameModel.isTempVisible = widget.frameModel.isShow.value;
                 widget.onFrameShowUnshow.call();
               }),
@@ -463,7 +463,7 @@ class _LinkWidgetState extends State<LinkWidget> {
             if (childModel.isShow.value == true) {
               double order = widget.frameManager.getMaxOrder();
               if (childModel.order.value < order) {
-                childModel.changeOrderByIsShow(widget.frameManager);
+                widget.frameManager.changeOrderByIsShow(childModel);
                 widget.frameManager.reOrdering();
               }
               // 여기서 연결선을 연결한다....
@@ -479,7 +479,7 @@ class _LinkWidgetState extends State<LinkWidget> {
               LinkParams.connectedMid = '';
               LinkParams.connectedClass = '';
               LinkParams.connectedName = '';
-              childModel.changeOrderByIsShow(widget.frameManager);
+              widget.frameManager.changeOrderByIsShow(childModel);
               widget.frameManager.reOrdering();
             }
             model.showLinkLine = childModel.isShow.value;

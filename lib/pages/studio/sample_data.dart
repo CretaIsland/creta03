@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import '../../lang/creta_studio_lang.dart';
-import '../../model/book_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
 
 class SampleData {
   static BookModel sampleBook = BookModel('');

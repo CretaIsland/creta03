@@ -12,7 +12,7 @@ import 'package:hycop/hycop/enum/model_enums.dart';
 //import '../pages/studio/studio_constant.dart';
 //import 'app_enums.dart';
 import 'package:creta_common/model/creta_model.dart';
-import 'book_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
 //import 'creta_style_mixin.dart';
 
 // ignore: camel_case_types

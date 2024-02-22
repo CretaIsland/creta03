@@ -10,7 +10,7 @@ import '../../../../design_system/dialog/creta_dialog.dart';
 import '../../../../design_system/text_field/creta_text_field.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import '../../../../lang/creta_studio_lang.dart';
-import '../../../../model/book_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
 import '../../../../model/filter_model.dart';
 //import '../../../login_page.dart';
 import '../../../login/creta_account_manager.dart';

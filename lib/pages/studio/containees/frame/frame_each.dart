@@ -21,10 +21,11 @@ import '../../../../design_system/component/snippet.dart';
 import 'package:creta_common/common/creta_color.dart';
 import '../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../../../../model/contents_model.dart';
-import '../../../../model/depot_model.dart';
-import '../../../../model/frame_model.dart';
-import '../../../../model/page_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
+import 'package:creta_studio_model/model/depot_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
+import '../../../../model/frame_model_util.dart';
+import 'package:creta_studio_model/model/page_model.dart';
 import '../../../../player/creta_play_timer.dart';
 import '../../book_main_page.dart';
 import '../../left_menu/depot/depot_display.dart';
@@ -217,7 +218,7 @@ class FrameEachState extends CretaState<FrameEach> with ContaineeMixin, FramePla
     // );
 
     Widget dropTarget = Center(
-      child: widget.model.isDropAble()
+      child: FrameModelUtil.isDropAble(widget.model)
           ? DragTarget<CretaModel>(
               // 보관함에서 끌어다 넣기
               builder: (context, candidateData, rejectedData) {

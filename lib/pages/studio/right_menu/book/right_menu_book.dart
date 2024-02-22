@@ -10,7 +10,7 @@ import '../../../../data_io/book_manager.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_font.dart';
 import '../../../../lang/creta_studio_lang.dart';
-import '../../../../model/book_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
 import '../../book_main_page.dart';
 import '../../studio_constant.dart';
 import 'book_editor_property.dart';

@@ -4,7 +4,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:creta_common/common/creta_color.dart';
-import 'package:creta03/model/contents_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
 import 'package:creta03/pages/studio/left_menu/music/control_buttons.dart';
 import 'package:creta_common/model/app_enums.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +17,7 @@ import 'package:creta_common/common/creta_common_utils.dart';
 
 import '../../../../data_io/contents_manager.dart';
 import '../../../../lang/creta_studio_lang.dart';
-import '../../../../model/frame_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
 import '../../book_main_page.dart';
 import '../../right_menu/property_mixin.dart';
 import '../../studio_constant.dart';

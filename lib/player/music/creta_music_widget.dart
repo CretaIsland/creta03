@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 
-import '../../model/contents_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
 import '../../data_io/key_handler.dart';
 import '../../pages/studio/studio_getx_controller.dart';
 import '../creta_abs_media_widget.dart';

@@ -1,7 +1,8 @@
 import 'package:creta03/pages/studio/studio_constant.dart';
+import 'package:creta_common/model/app_enums.dart';
 import 'package:flutter/material.dart';
 import '../../../../design_system/component/snippet.dart';
-import '../../../../model/frame_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
 import 'article_model.dart';
 import 'news_api.dart';
 import 'news_tile.dart';
@@ -94,6 +95,8 @@ class _ArticleViewState extends State<ArticleView> {
         return itemHeight * 0.45;
       case NewsSizeEnum.Small:
         return itemHeight * 2.5;
+      default:
+        return itemHeight;
     }
   }
 

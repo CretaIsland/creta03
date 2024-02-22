@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
+import 'package:creta03/model/frame_model_util.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
@@ -14,8 +15,8 @@ import '../../../../../design_system/component/autoSizeText/creta_auto_size_text
 import '../../../../../design_system/component/autoSizeTextField/auto_size_text_field.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../../../../../model/contents_model.dart';
-import '../../../../../model/frame_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
 import '../../../../../player/text/creta_text_player.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_constant.dart';
@@ -249,8 +250,8 @@ class InstantEditorState extends CretaState<InstantEditor> {
 
     //_offset = widget.sticker.position +
     // 얘네들은 Frame 의 외곽선에 해당하는 부분이 없으므로, 그만큼 더해줘야 한다.
-    _posX = widget.frameModel.getRealPosX() + (LayoutConst.stikerOffset / 2);
-    _posY = widget.frameModel.getRealPosY() + (LayoutConst.stikerOffset / 2);
+    _posX = FrameModelUtil.getRealPosX(widget.frameModel) + (LayoutConst.stikerOffset / 2);
+    _posY = FrameModelUtil.getRealPosY(widget.frameModel) + (LayoutConst.stikerOffset / 2);
 
     //print('_pos instantEditor = $_posX, $_posY');
 

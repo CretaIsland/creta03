@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import '../../../../../model/frame_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
 import '../../../../login/creta_account_manager.dart';
 import 'models/word.dart';
 

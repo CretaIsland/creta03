@@ -9,7 +9,7 @@ import '../../design_system/component/creta_popup.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
-import '../../model/book_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
 import '../../routes.dart';
 import 'book_grid_page.dart';
 import 'book_main_page.dart';

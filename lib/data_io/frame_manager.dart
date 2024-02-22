@@ -12,11 +12,11 @@ import 'package:hycop/hycop/database/abs_database.dart';
 //import '../common/creta_utils.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../model/book_model.dart';
-import '../model/contents_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
 import 'package:creta_common/model/creta_model.dart';
-import '../model/frame_model.dart';
-import '../model/page_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
+import 'package:creta_studio_model/model/page_model.dart';
 import '../pages/studio/book_preview_menu.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
 import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
@@ -1233,5 +1233,26 @@ class FrameManager extends CretaManager {
           cloneToPublishedBook: cloneToPublishedBook);
     }
     return true;
+  }
+
+  void changeOrderByIsShow(FrameModel model) {
+    if (model.isShow.value == false) {
+      double minOrder = getMinOrder();
+      if (minOrder == model.order.value) {
+        return;
+      }
+      if (minOrder > 2) {
+        minOrder = minOrder - 1;
+      } else {
+        minOrder = minOrder / 2;
+      }
+      //print('$minOrder #########################################');
+      model.prevOrder = model.order.value;
+      //order.set(prevOrder < 0 ? frameManager.getMinOrder() : prevOrder, save: false, noUndo: true);
+      model.order.set(minOrder, save: false, noUndo: true);
+      return;
+    }
+    model.prevOrder = model.order.value;
+    model.order.set(getMaxOrder() + 1, save: false, noUndo: true);
   }
 }

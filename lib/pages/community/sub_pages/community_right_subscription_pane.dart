@@ -37,7 +37,7 @@ import '../../../model/subscription_model.dart';
 import '../../../model/channel_model.dart';
 import '../../../model/user_property_model.dart';
 import '../../../model/team_model.dart';
-import '../../../model/book_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
 import '../../../model/favorites_model.dart';
 import '../../../model/playlist_model.dart';
 import '../../../data_io/creta_manager.dart';

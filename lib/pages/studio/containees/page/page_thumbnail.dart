@@ -12,10 +12,11 @@ import 'package:hycop/common/util/logger.dart';
 //import '../../../../common/creta_utils.dart';
 import '../../../../data_io/frame_manager.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../../../../model/book_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
 import '../../../../data_io/creta_manager.dart';
-import '../../../../model/frame_model.dart';
-import '../../../../model/page_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
+import '../../../../model/frame_model_util.dart';
+import 'package:creta_studio_model/model/page_model.dart';
 //import '../../../../player/abs_player.dart';
 import '../../book_main_page.dart';
 import '../../studio_constant.dart';
@@ -304,8 +305,8 @@ class PageThumbnailState extends CretaState<PageThumbnail> with ContaineeMixin {
           FrameModel frameModel = model as FrameModel;
 
           //if (_frameManager!.isVisible(model) == false) {
-          if (frameModel.isVisible(widget.pageModel.mid) == false &&
-              frameModel.isBackgroundMusic() == false) {
+          if (FrameModelUtil.isVisible(widget.pageModel.mid, frameModel) == false &&
+              FrameModelUtil.isBackgroundMusic(frameModel) == false) {
             return SizedBox.shrink();
           }
           // if (frameModel.parentMid.value != widget.pageModel.mid) {

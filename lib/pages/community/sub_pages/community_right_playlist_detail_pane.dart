@@ -35,7 +35,7 @@ import '../../../data_io/favorites_manager.dart';
 import '../../../data_io/playlist_manager.dart';
 //import 'package:creta_common/model/app_enums.dart';
 //import '../../../design_system/component/snippet.dart';
-import '../../../model/book_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
 import '../../../model/playlist_model.dart';
 
 //import '../../../design_system/component/custom_image.dart';

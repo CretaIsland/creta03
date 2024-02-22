@@ -6,7 +6,7 @@ import '../../../../../design_system/buttons/creta_button.dart';
 import '../../../../../design_system/buttons/creta_button_wrapper.dart';
 import 'package:creta_common/common/creta_color.dart';
 import '../../../../../lang/creta_studio_lang.dart';
-import '../../../../../model/contents_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_constant.dart';
 

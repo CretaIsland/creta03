@@ -21,12 +21,6 @@ enum LeftMenuEnum {
   None,
 }
 
-enum NewsSizeEnum {
-  Big,
-  Medium,
-  Small,
-}
-
 class LayoutConst {
   //
   static const double maxPageCount = 99;

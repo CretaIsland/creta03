@@ -11,8 +11,9 @@ import '../../../../../design_system/buttons/creta_button.dart';
 import '../../../../../design_system/buttons/creta_button_wrapper.dart';
 import 'package:creta_common/common/creta_color.dart';
 import '../../../../../lang/creta_studio_lang.dart';
-import '../../../../../model/contents_model.dart';
-import '../../../../../model/frame_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
+import '../../../../../model/frame_model_util.dart';
 import '../../../book_main_page.dart';
 import '../../../left_menu/left_menu_page.dart';
 import '../../../studio_constant.dart';
@@ -139,8 +140,8 @@ class MiniMenuState extends State<MiniMenu> {
     //     LayoutConst.miniMenuGap +
     //     LayoutConst.dragHandle;
 
-    double posX = _frameModel.getRealPosX();
-    double posY = _frameModel.getRealPosY();
+    double posX = FrameModelUtil.getRealPosX(_frameModel);
+    double posY = FrameModelUtil.getRealPosY(_frameModel);
 
     //print('pos=$posX, $posY');
 
@@ -256,7 +257,7 @@ class MiniMenuState extends State<MiniMenu> {
             BookMainPage.containeeNotifier!.setFrameClick(true);
             logger.fine("MinuMenu onShowUnshow");
             _frameModel.isShow.set(!_frameModel.isShow.value);
-            _frameModel.changeOrderByIsShow(widget.frameManager);
+            widget.frameManager.changeOrderByIsShow(_frameModel);
             widget.onFrameShowUnshow.call();
             LeftMenuPage.treeInvalidate();
             setState(() {});

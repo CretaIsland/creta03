@@ -8,8 +8,8 @@ import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import 'package:creta_common/common/creta_font.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../../../../model/contents_model.dart';
-import '../../../../model/frame_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
 
 // 콘텐츠 넘김효과,  즉 카로셀등을 구현하기 위한 Widget
 class TransitionTypes extends StatefulWidget {

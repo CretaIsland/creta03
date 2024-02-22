@@ -44,7 +44,7 @@ import '../../../data_io/user_property_manager.dart';
 import '../../../data_io/channel_manager.dart';
 import 'package:creta_common/model/app_enums.dart';
 //import '../../../design_system/component/snippet.dart';
-import '../../../model/book_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
 import '../../../model/watch_history_model.dart';
 import '../../../model/favorites_model.dart';
 import '../../../model/team_model.dart';

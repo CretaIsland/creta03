@@ -30,9 +30,9 @@ import '../../../../design_system/component/clock/digital_clock.dart';
 import '../../../../design_system/extra_text_style.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../../../../model/contents_model.dart';
-import '../../../../model/frame_model.dart';
-import '../../../../model/page_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
+import 'package:creta_studio_model/model/page_model.dart';
 import '../../book_main_page.dart';
 import '../../left_menu/clock/stop_watch.dart';
 import '../../left_menu/google_map/creta_map_widget.dart';
@@ -48,9 +48,9 @@ import '../../left_menu/weather/weather_base.dart';
 import '../../left_menu/weather/weather_sticker_elements.dart';
 import '../../studio_constant.dart';
 import '../../studio_variables.dart';
-// import '../../../../model/contents_model.dart';
-// import '../../../../model/frame_model.dart';
-// import '../../../../model/page_model.dart';
+// import 'package:creta_studio_model/model/contents_model.dart';
+// import 'package:creta_studio_model/model/frame_model.dart';
+// import 'package:creta_studio_model/model/page_model.dart';
 // import '../../book_main_page.dart';
 // import '../../studio_snippet.dart';
 // import '../containee_nofifier.dart';
@@ -550,7 +550,7 @@ mixin FramePlayMixin {
       name: 'Text',
       remoteUrl: 'Sample Text',
     );
-    model.setTextStyle(style,  StudioVariables.applyScale);
+    model.setTextStyle(style, StudioVariables.applyScale);
     extraStyle?.setExtraTextStyle(model);
 
     model.autoSizeType.set(AutoSizeType.autoFrameSize); // 가로 세로 모두 늘어나는 모드

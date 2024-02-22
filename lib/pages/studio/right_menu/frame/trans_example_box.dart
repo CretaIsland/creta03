@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import '../../../../data_io/frame_manager.dart';
 //import '../../../../design_system/dialog/creta_alert_dialog.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../../../../model/frame_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
 
 class TransExampleBox extends StatefulWidget {
   final FrameModel model;

@@ -1,6 +1,6 @@
+import 'package:creta_common/model/app_enums.dart';
 import 'package:flutter/material.dart';
-import '../../../../model/frame_model.dart';
-import '../../studio_constant.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
 
 class NewsTile extends StatefulWidget {
   final String? imgUrl, title, desc, content, posturl;
@@ -29,6 +29,8 @@ class _NewsTileState extends State<NewsTile> {
         return newsTileMed(context);
       case NewsSizeEnum.Small:
         return newsTileSmall(context);
+      default:
+        return newsTileFull(context);
     }
   }
 

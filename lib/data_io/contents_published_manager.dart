@@ -1,7 +1,7 @@
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/database/abs_database.dart';
 
-import '../model/contents_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
 import 'package:creta_common/model/creta_model.dart';
 import 'contents_manager.dart';
 import 'creta_manager.dart';

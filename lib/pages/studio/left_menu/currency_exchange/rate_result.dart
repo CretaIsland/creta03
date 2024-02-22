@@ -4,7 +4,7 @@ import 'package:creta03/pages/studio/left_menu/currency_exchange/currency_api.da
 import 'package:flutter/material.dart';
 
 import '../../../../design_system/component/snippet.dart';
-import '../../../../model/frame_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
 import 'conversion_card.dart';
 import 'model/rates_model.dart';
 

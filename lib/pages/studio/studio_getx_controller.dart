@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'package:get/get.dart';
 
-import '../../model/contents_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
 import 'package:creta_common/model/creta_model.dart';
 
 class StudioEventController extends GetxController {

@@ -24,7 +24,7 @@ import '../../design_system/component/snippet.dart';
 //import '../../design_system/component/custom_image.dart';
 import '../../design_system/component/custom_image.dart';
 import 'package:creta_common/common/creta_font.dart';
-import '../../model/book_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
 
 // const double _rightViewTopPane = 40;
 //const double _rightViewLeftPane = 40;

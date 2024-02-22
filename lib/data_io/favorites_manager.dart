@@ -1,13 +1,13 @@
-import 'package:creta03/model/depot_model.dart';
+import 'package:creta_studio_model/model/depot_model.dart';
 import 'package:hycop/hycop.dart';
 //import '../common/creta_utils.dart';
 //import '../design_system/menu/creta_popup_menu.dart';
 //import 'package:creta_common/lang/creta_lang.dart';
 //import '../lang/creta_studio_lang.dart';
 //import 'package:creta_common/model/app_enums.dart';
-//import '../model/book_model.dart';
+//import 'package:creta_studio_model/model/book_model.dart';
 import '../model/favorites_model.dart';
-import '../model/book_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
 import 'package:creta_common/model/creta_model.dart';
 import 'creta_manager.dart';
 

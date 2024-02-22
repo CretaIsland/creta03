@@ -6,11 +6,11 @@ import 'package:creta03/data_io/creta_manager.dart';
 import 'package:creta_common/model/creta_model.dart';
 import '../design_system/component/tree/flutter_treeview.dart' as tree;
 
-import '../model/book_model.dart';
-import '../model/contents_model.dart';
-import '../model/frame_model.dart';
-import '../model/link_model.dart';
-import '../model/page_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
+import 'package:creta_studio_model/model/link_model.dart';
+import 'package:creta_studio_model/model/page_model.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
 import '../pages/studio/left_menu/left_menu_page.dart';

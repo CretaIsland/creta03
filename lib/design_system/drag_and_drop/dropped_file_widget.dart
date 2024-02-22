@@ -1,7 +1,7 @@
 //import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../model/contents_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
 
 abstract class DroppedFile {
   void add(ContentsModel f);

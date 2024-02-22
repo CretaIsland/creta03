@@ -3,7 +3,7 @@
 import 'dart:async';
 
 import 'package:creta03/data_io/contents_manager.dart';
-import 'package:creta03/model/frame_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
 import 'package:creta03/pages/studio/left_menu/date_time/date_time_elements.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/undo.dart';
@@ -11,8 +11,8 @@ import 'package:hycop/hycop/enum/model_enums.dart';
 import '../../../../data_io/frame_manager.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../../../../model/contents_model.dart';
-import '../../../../model/page_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
+import 'package:creta_studio_model/model/page_model.dart';
 import '../../book_main_page.dart';
 import 'date_time_type.dart';
 

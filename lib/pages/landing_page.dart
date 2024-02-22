@@ -6,7 +6,7 @@ import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
 import 'package:creta_common/common/creta_font.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/model/app_enums.dart';
-import 'package:creta03/model/book_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
 import 'package:creta03/pages/login/creta_account_manager.dart';
 import 'package:creta03/pages/login/login_dialog.dart';
 import 'package:creta03/routes.dart';

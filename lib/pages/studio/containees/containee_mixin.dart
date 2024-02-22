@@ -11,7 +11,7 @@ import 'package:starsview/starsview.dart';
 
 import '../../../design_system/effect/confetti.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../../../model/creta_style_mixin.dart';
+import 'package:creta_studio_model/model/creta_style_mixin.dart';
 import '../studio_variables.dart';
 
 mixin ContaineeMixin {

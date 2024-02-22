@@ -7,7 +7,7 @@ import '../../../../design_system/component/hash_tag_wrapper.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_font.dart';
 import '../../../../lang/creta_studio_lang.dart';
-import '../../../../model/book_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
 import '../../book_info_mixin.dart';
 import '../../studio_constant.dart';
 

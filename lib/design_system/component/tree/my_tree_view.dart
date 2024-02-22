@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 //import 'package:flutter_treeview/flutter_treeview.dart';
 import '../../../data_io/link_manager.dart';
 import '../../../lang/creta_studio_lang.dart';
-import '../../../model/link_model.dart';
+import 'package:creta_studio_model/model/link_model.dart';
 import '../../../pages/studio/book_main_page.dart';
 import '../../../pages/studio/containees/containee_nofifier.dart';
 import '../../../pages/studio/containees/frame/sticker/draggable_stickers.dart';
@@ -24,10 +24,10 @@ import 'package:hycop/hycop/enum/model_enums.dart';
 import '../../../data_io/contents_manager.dart';
 import '../../../data_io/frame_manager.dart';
 import '../../../data_io/page_manager.dart';
-import '../../../model/contents_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
 import 'package:creta_common/model/creta_model.dart';
-import '../../../model/frame_model.dart';
-import '../../../model/page_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
+import 'package:creta_studio_model/model/page_model.dart';
 import 'package:creta_common/common/creta_color.dart';
 
 class MyTreeView extends StatefulWidget {

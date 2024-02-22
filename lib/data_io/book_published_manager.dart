@@ -8,7 +8,7 @@ import '../design_system/menu/creta_popup_menu.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import '../lang/creta_studio_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../model/book_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
 import 'package:creta_common/model/creta_model.dart';
 import 'creta_manager.dart';
 import 'page_published_manager.dart';

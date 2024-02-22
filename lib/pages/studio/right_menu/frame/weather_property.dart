@@ -16,7 +16,7 @@ import 'package:weather_animation/weather_animation.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/buttons/creta_radio_button.dart';
 import '../../../../lang/creta_studio_lang.dart';
-import '../../../../model/frame_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
 import '../property_mixin.dart';
 
 class WeatherProperty extends StatefulWidget {

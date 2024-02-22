@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../model/page_model.dart';
+import 'package:creta_studio_model/model/page_model.dart';
 import '../../../book_main_page.dart';
 
 class PageBottomLayer extends StatefulWidget {

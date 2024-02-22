@@ -36,7 +36,12 @@ dependencies:
   creta_common:
     git:
       url: https://github.com/CretaIsland/creta_common.git
-      ref: main  # 또는 사용하고 싶은 특정 브랜치, 태그, 커밋
+      ref: main  
+  creta_studio_model:
+    git:
+      url: https://github.com/CretaIsland/creta_studio_model.git
+      ref: main  
+
   cupertino_icons: ^1.0.2
   flutter_riverpod: ^1.0.4
   flutter_speed_dial: ^6.1.0+1

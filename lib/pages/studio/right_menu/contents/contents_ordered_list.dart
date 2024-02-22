@@ -30,10 +30,10 @@ import '../../../../design_system/menu/creta_drop_down_button.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../../../../model/book_model.dart';
-import '../../../../model/contents_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
 import 'package:creta_common/model/creta_model.dart';
-import '../../../../model/frame_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
 import '../../book_main_page.dart';
 import '../../left_menu/left_menu_page.dart';
 import '../../left_menu/music/music_player_frame.dart';
@@ -267,7 +267,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     //('orderedList=${model.name}, ${model.isRemoved.value}');
 
     String? uri = model.thumbnailUrl;
-    if (uri == null || uri.isEmpty) {
+    if (uri != null && uri.isEmpty) {
       if (model.isImage()) {
         uri = model.getURI();
       }
@@ -1052,7 +1052,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         },
         onChannged: (val) {
           model.lineHeight.set(val);
-          ExtraTextStyle.setLastTextStyle(model.makeTextStyle(context, applyScale: StudioVariables.applyScale), model);
+          ExtraTextStyle.setLastTextStyle(
+              model.makeTextStyle(context, applyScale: StudioVariables.applyScale), model);
           // widget.contentsManager.notify();
           //if (model.textType == TextType.clock) {
           //print('ddddddddddddddddddddd');

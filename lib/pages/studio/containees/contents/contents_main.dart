@@ -14,10 +14,10 @@ import '../../../../data_io/frame_manager.dart';
 import '../../../../data_io/link_manager.dart';
 import '../../../../data_io/key_handler.dart';
 import '../../../../design_system/component/autoSizeText/creta_auto_size_text.dart';
-import '../../../../model/contents_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
 import '../../../../data_io/creta_manager.dart';
-import '../../../../model/frame_model.dart';
-import '../../../../model/page_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
+import 'package:creta_studio_model/model/page_model.dart';
 import '../../../../player/creta_play_timer.dart';
 import '../../studio_getx_controller.dart';
 

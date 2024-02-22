@@ -14,7 +14,7 @@ import 'package:creta_common/common/creta_const.dart';
 import '../../common/creta_utils.dart';
 import '../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../../model/contents_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
 import '../../pages/studio/book_main_page.dart';
 import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_getx_controller.dart';

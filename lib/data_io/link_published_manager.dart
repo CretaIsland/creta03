@@ -2,8 +2,8 @@ import 'package:creta03/data_io/page_published_manager.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/database/abs_database.dart';
 
-import '../model/frame_model.dart';
-import '../model/link_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
+import 'package:creta_studio_model/model/link_model.dart';
 import 'package:creta_common/model/creta_model.dart';
 import 'frame_published_manager.dart';
 import 'link_manager.dart';

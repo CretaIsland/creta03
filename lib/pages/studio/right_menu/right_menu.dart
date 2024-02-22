@@ -11,11 +11,11 @@ import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/buttons/creta_label_text_editor.dart';
 import 'package:creta_common/common/creta_color.dart';
 import '../../../lang/creta_studio_lang.dart';
-import '../../../model/book_model.dart';
-import '../../../model/contents_model.dart';
-import '../../../model/frame_model.dart';
-import '../../../model/link_model.dart';
-import '../../../model/page_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
+import 'package:creta_studio_model/model/link_model.dart';
+import 'package:creta_studio_model/model/page_model.dart';
 import '../book_main_page.dart';
 
 import 'package:creta_common/common/creta_font.dart';
@@ -324,7 +324,7 @@ class _RightMenuState
         {
           FrameManager? frameManager = BookMainPage.pageManagerHolder?.getSelectedFrameManager();
           FrameModel? frameModel = BookMainPage.pageManagerHolder?.getSelectedFrame();
-          if (frameModel == null || frameManager == null) {
+          if (frameManager == null || frameModel == null) {
             return Container();
           }
           ContentsModel? contents = frameManager.getCurrentModel(frameModel.mid);
@@ -346,7 +346,7 @@ class _RightMenuState
           String title = 'Link';
           FrameManager? frameManager = BookMainPage.pageManagerHolder?.getSelectedFrameManager();
           FrameModel? frameModel = BookMainPage.pageManagerHolder?.getSelectedFrame();
-          if (frameModel != null && frameManager != null) {
+          if (frameManager != null && frameModel != null) {
             ContentsManager? contentsManager = frameManager.getContentsManager(frameModel.mid);
             if (contentsManager != null) {
               ContentsModel? contentsModel = frameManager.getCurrentModel(frameModel.mid);

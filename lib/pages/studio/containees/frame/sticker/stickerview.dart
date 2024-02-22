@@ -5,10 +5,11 @@ import '../../../../../data_io/frame_manager.dart';
 import '../../../../../data_io/key_handler.dart';
 import '../../../../../data_io/page_manager.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../../../../../model/book_model.dart';
-import '../../../../../model/contents_model.dart';
-import '../../../../../model/frame_model.dart';
-import '../../../../../model/page_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
+import '../../../../../model/frame_model_util.dart';
+import 'package:creta_studio_model/model/page_model.dart';
 import '../../../../../player/music/creta_music_mixin.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_variables.dart';
@@ -441,9 +442,9 @@ class StickerState extends CretaState<Sticker> with CretaMusicMixin {
 
   @override
   Widget build(BuildContext context) {
-    bool isVisible = widget.model.isVisible(widget.pageMid);
+    bool isVisible = FrameModelUtil.isVisible(widget.pageMid, widget.model);
 
-    if (widget.model.isBackgroundMusic() &&
+    if (FrameModelUtil.isBackgroundMusic(widget.model) &&
         isVisible == false &&
         StudioVariables.isPreview == false) {
       //print('showBGM');

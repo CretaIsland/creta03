@@ -39,7 +39,7 @@ import '../../../data_io/channel_manager.dart';
 import '../../../data_io/user_property_manager.dart';
 import '../../../data_io/team_manager.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../../../model/book_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
 import '../../../model/channel_model.dart';
 import '../../../model/user_property_model.dart';
 import '../../../model/team_model.dart';

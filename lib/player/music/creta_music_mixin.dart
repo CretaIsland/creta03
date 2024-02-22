@@ -6,7 +6,7 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:widget_and_text_animator/widget_and_text_animator.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_font.dart';
-import '../../model/contents_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
 import '../../pages/studio/book_main_page.dart';
 import '../../pages/studio/left_menu/music/music_player_frame.dart';
 import 'package:creta_common/common/creta_const.dart';

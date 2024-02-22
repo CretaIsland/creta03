@@ -15,7 +15,7 @@ import '../../design_system/menu/creta_popup_menu.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../../model/contents_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
 import 'studio_constant.dart';
 import 'studio_variables.dart';
 

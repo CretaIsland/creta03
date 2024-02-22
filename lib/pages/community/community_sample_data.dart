@@ -5,8 +5,8 @@
 // //import 'package:flutter/cupertino.dart';
 //
 // //import '../../lang/creta_studio_lang.dart';
-// //import '../../model/book_model.dart';
-// //import '../../model/page_model.dart';
+// //import 'package:creta_studio_model/model/book_model.dart';
+// //import 'package:creta_studio_model/model/page_model.dart';
 //
 // class CommunitySampleData {
 //   static int _randomIndex = 2;

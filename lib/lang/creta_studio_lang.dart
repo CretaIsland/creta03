@@ -257,8 +257,6 @@ class CretaStudioLang {
   static const String newPage = '새 페이지 추가';
   static const String newFrame = '새 프레임 추가';
   static const String treePage = '자세히 보기';
-  static const String noNamepage = '이름없는 페이지';
-  static const String noNameframe = '이름없는 프레임';
   static const String newText = '기본 텍스트';
 
   static const String textEditorToolbar = '텍스트 편집기 열기';

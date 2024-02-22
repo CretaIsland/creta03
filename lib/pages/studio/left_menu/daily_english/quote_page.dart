@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:quoter/quoter.dart';
 import 'package:translator_plus/translator_plus.dart';
-import '../../../../model/frame_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
 
 class QuotePage extends StatefulWidget {
   final double? width;

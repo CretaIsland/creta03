@@ -4,7 +4,7 @@ import 'package:hycop/hycop.dart';
 
 import '../../../../data_io/frame_manager.dart';
 import 'package:creta_common/common/creta_color.dart';
-import '../../../../model/contents_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
 import '../../book_main_page.dart';
 
 class GiphySelectedWidget extends StatefulWidget {

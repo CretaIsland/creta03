@@ -2,7 +2,7 @@
 // import 'package:hycop/hycop/database/abs_database.dart';
 
 // import 'package:creta_common/model/app_enums.dart';
-// import '../model/frame_model.dart';
+// import 'package:creta_studio_model/model/frame_model.dart';
 // import 'frame_manager.dart';
 
 // class FrameTemplateManager extends FrameManager {

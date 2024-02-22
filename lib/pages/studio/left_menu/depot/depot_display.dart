@@ -1,6 +1,6 @@
 import 'package:creta03/data_io/depot_manager.dart';
 import 'package:creta_common/common/creta_font.dart';
-import 'package:creta03/model/depot_model.dart';
+import 'package:creta_studio_model/model/depot_model.dart';
 import 'package:creta03/pages/login/creta_account_manager.dart';
 import 'package:flutter/material.dart';
 //import 'package:get/get.dart';
@@ -8,7 +8,7 @@ import 'package:hycop/hycop.dart';
 import '../../../../design_system/component/custom_image.dart';
 import '../../../../design_system/component/snippet.dart';
 import 'package:creta_common/lang/creta_lang.dart';
-import '../../../../model/contents_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
 import '../../../../model/team_model.dart';
 import '../../studio_variables.dart';
 import 'depot_selected.dart';

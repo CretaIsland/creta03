@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../../../model/frame_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
 import '../../studio_snippet.dart';
 
 mixin FrameMixin {

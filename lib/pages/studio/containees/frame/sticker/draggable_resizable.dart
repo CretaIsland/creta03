@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:creta_common/common/creta_color.dart';
 import '../../../../../data_io/key_handler.dart';
-import '../../../../../model/frame_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_constant.dart';
 import 'draggable_point.dart';

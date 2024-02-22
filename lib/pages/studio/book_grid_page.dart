@@ -18,7 +18,7 @@ import '../../design_system/component/snippet.dart';
 import 'package:creta_common/common/creta_font.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_studio_lang.dart';
-import '../../model/book_model.dart';
+import 'package:creta_studio_model/model/book_model.dart';
 import '../../routes.dart';
 //import '../login_page.dart';
 import '../login/creta_account_manager.dart';

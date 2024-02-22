@@ -20,10 +20,11 @@ import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_font.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../../../../model/contents_model.dart';
+import 'package:creta_studio_model/model/contents_model.dart';
 import '../../../../data_io/creta_manager.dart';
-import '../../../../model/frame_model.dart';
-import '../../../../model/page_model.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
+import '../../../../model/frame_model_util.dart';
+import 'package:creta_studio_model/model/page_model.dart';
 import '../../../../player/text/creta_text_mixin.dart';
 import '../../book_main_page.dart';
 import '../../left_menu/music/music_player_frame.dart';
@@ -167,7 +168,7 @@ class ContentsThumbnailState extends CretaState<ContentsThumbnail>
             });
       } else if (widget.frameModel.isMusicType()) {
         //print('this is music frame'); // 뮤직의 경우
-        if (widget.frameModel.isBackgroundMusic()) {
+        if (FrameModelUtil.isBackgroundMusic(widget.frameModel)) {
           return showBGM(applyScale);
         }
         return StreamBuilder<AbsExModel>(
