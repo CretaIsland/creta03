@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_studio_model/model/frame_model.dart';
 import '../../../studio_constant.dart';
-import 'package:creta03/data_io/creta_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'resize_point.dart';
 
 // ignore: must_be_immutable

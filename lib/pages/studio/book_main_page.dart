@@ -29,7 +29,7 @@ import 'package:creta_common/common/creta_const.dart';
 import '../../data_io/book_manager.dart';
 import '../../data_io/connected_user_manager.dart';
 import '../../data_io/contents_manager.dart';
-import '../../data_io/creta_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 import '../../data_io/filter_manager.dart';
 import '../../data_io/frame_manager.dart';
 import '../../data_io/page_manager.dart';

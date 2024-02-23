@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import 'package:creta_common/common/creta_const.dart';
-import '../../data_io/creta_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'package:creta_common/model/creta_model.dart';
 import 'package:creta_studio_model/model/frame_model.dart';
 import 'package:creta_studio_model/model/page_model.dart';
@@ -37,7 +37,7 @@ class StudioVariables {
 
   static double displayWidth = 1920;
   static double displayHeight = 961;
-  
+
   static double workWidth = 1920 - 80;
   static double workHeight = 961;
   static double workRatio = 1;

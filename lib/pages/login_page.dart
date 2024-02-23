@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 // import 'package:flutter/gestures.dart';
 //
 // import '../data_io/enterprise_manager.dart';
-// import '../data_io/user_property_manager.dart';
-// import '../data_io/team_manager.dart';
+// import 'package:creta_user_io/data_io/user_property_manager.dart';
+// import 'package:creta_user_io/data_io/team_manager.dart';
 // import '../data_io/channel_manager.dart';
 // import '../design_system/buttons/creta_button_wrapper.dart';
 //import '../design_system/buttons/creta_checkbox.dart';

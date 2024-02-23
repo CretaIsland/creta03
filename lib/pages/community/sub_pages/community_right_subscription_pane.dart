@@ -40,14 +40,14 @@ import 'package:creta_user_model/model/team_model.dart';
 import 'package:creta_studio_model/model/book_model.dart';
 import '../../../model/favorites_model.dart';
 import '../../../model/playlist_model.dart';
-import '../../../data_io/creta_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 import '../../../data_io/book_published_manager.dart';
 import '../../../data_io/channel_manager.dart';
 import '../../../data_io/favorites_manager.dart';
 import '../../../data_io/playlist_manager.dart';
 import '../../../data_io/subscription_manager.dart';
-import '../../../data_io/team_manager.dart';
-import '../../../data_io/user_property_manager.dart';
+import 'package:creta_user_io/data_io/team_manager.dart';
+import 'package:creta_user_io/data_io/user_property_manager.dart';
 import '../../../data_io/watch_history_manager.dart';
 
 //const double _rightViewTopPane = 40;

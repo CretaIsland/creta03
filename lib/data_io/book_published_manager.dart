@@ -7,7 +7,7 @@ import 'package:creta_common/common/creta_common_utils.dart';
 
 import 'package:creta_studio_model/model/book_model.dart';
 import 'package:creta_common/model/creta_model.dart';
-import 'creta_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'page_published_manager.dart';
 
 class BookPublishedManager extends CretaManager {

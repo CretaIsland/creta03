@@ -23,7 +23,7 @@ import '../pages/studio/containees/frame/sticker/stickerview.dart';
 import '../pages/studio/left_menu/left_menu_page.dart';
 import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_variables.dart';
-import 'creta_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'book_manager.dart';
 import 'frame_manager.dart';
 import 'key_handler.dart';

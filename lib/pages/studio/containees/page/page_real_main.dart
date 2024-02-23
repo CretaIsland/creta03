@@ -15,7 +15,7 @@ import '../../../../data_io/key_handler.dart';
 import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_studio_model/model/book_model.dart';
 //import 'package:creta_studio_model/model/contents_model.dart';
-import '../../../../data_io/creta_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 //import 'package:creta_studio_model/model/frame_model.dart';
 //import 'package:creta_studio_model/model/link_model.dart';
 import 'package:creta_studio_model/model/page_model.dart';

@@ -6,7 +6,7 @@ import 'package:creta_common/model/creta_model.dart';
 import 'package:creta_studio_model/model/frame_model.dart';
 import 'contents_manager.dart';
 import 'contents_published_manager.dart';
-import 'creta_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'frame_manager.dart';
 
 class FramePublishedManager extends CretaManager {

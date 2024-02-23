@@ -1,6 +1,6 @@
 import 'package:hycop/hycop.dart';
 
-import 'package:creta03/data_io/creta_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'package:creta_common/model/creta_model.dart';
 import '../model/connected_user_model.dart';
 import 'package:creta_user_model/model/user_property_model.dart';

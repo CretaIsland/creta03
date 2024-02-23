@@ -1,7 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:creta03/data_io/creta_manager.dart';
-import 'package:creta03/data_io/team_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
+import 'package:creta_user_io/data_io/team_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/common/undo/undo.dart';

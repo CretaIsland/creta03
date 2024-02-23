@@ -29,12 +29,12 @@ import 'package:creta_common/common/creta_common_utils.dart';
 
 import '../../../design_system/component/creta_layout_rect.dart';
 import '../creta_book_ui_item.dart';
-import '../../../data_io/creta_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 import '../../../data_io/favorites_manager.dart';
 import '../../../data_io/book_published_manager.dart';
 import '../../../data_io/watch_history_manager.dart';
-import '../../../data_io/team_manager.dart';
-import '../../../data_io/user_property_manager.dart';
+import 'package:creta_user_io/data_io/team_manager.dart';
+import 'package:creta_user_io/data_io/user_property_manager.dart';
 import '../../../data_io/channel_manager.dart';
 //import '../community_sample_data.dart';
 //import 'community_right_pane_mixin.dart';

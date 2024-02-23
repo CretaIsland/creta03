@@ -37,12 +37,12 @@ import 'package:creta_common/model/app_enums.dart';
 import '../../../model/comment_model.dart';
 import 'package:creta_user_model/model/user_property_model.dart';
 import '../../../data_io/comment_manager.dart';
-import '../../../data_io/user_property_manager.dart';
+import 'package:creta_user_io/data_io/user_property_manager.dart';
 //import '../../../pages/login_page.dart';
 import '../../../pages/login/creta_account_manager.dart';
 
 //import '../../../data_io/watch_history_manager.dart';
-//import '../../../data_io/creta_manager.dart';
+//import 'package:creta_user_io/data_io/creta_manager.dart';
 
 // const double _rightViewTopPane = 40;
 // const double _rightViewLeftPane = 40;

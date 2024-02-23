@@ -1,5 +1,5 @@
 import 'package:creta03/data_io/depot_manager.dart';
-import 'package:creta03/data_io/team_manager.dart';
+import 'package:creta_user_io/data_io/team_manager.dart';
 import 'package:creta03/pages/studio/left_menu/depot/depot_display.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';

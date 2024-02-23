@@ -14,7 +14,7 @@ import '../model/playlist_model.dart';
 import 'package:creta_common/model/creta_model.dart';
 import 'package:creta_studio_model/model/book_model.dart';
 import '../model/channel_model.dart';
-import 'creta_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 import '../../../design_system/dialog/creta_dialog.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_font.dart';

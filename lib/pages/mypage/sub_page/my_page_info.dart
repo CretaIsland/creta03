@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:creta03/data_io/user_property_manager.dart';
+import 'package:creta_user_io/data_io/user_property_manager.dart';
 import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
 import 'package:creta_common/common/creta_font.dart';
 import 'package:creta_common/common/creta_color.dart';

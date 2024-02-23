@@ -1,6 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'package:creta03/data_io/creta_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'package:creta03/design_system/buttons/creta_button.dart';
 import 'package:creta03/pages/popup/creta_version_popup.dart';
 import 'package:flutter/foundation.dart';

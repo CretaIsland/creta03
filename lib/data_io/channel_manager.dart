@@ -9,7 +9,7 @@ import 'package:hycop/hycop.dart';
 //import 'package:creta_studio_model/model/book_model.dart';
 import 'package:creta_common/model/creta_model.dart';
 import '../model/channel_model.dart';
-import 'creta_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 
 class ChannelManager extends CretaManager {
   //ChannelModel? channelModel;

@@ -28,7 +28,7 @@ import '../pages/studio/studio_variables.dart';
 import '../player/creta_abs_player.dart';
 import '../player/creta_play_timer.dart';
 import '../player/video/creta_video_player.dart';
-import 'creta_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 //import 'depot_manager.dart';
 import 'depot_manager.dart';
 import 'book_manager.dart';

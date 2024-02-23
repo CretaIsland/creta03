@@ -11,7 +11,7 @@ import 'package:creta_studio_model/model/frame_model.dart';
 import 'package:creta_studio_model/model/page_model.dart';
 import '../pages/studio/book_main_page.dart';
 import 'contents_manager.dart';
-import 'creta_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 
 enum DepotOrderEnum {
   latest,

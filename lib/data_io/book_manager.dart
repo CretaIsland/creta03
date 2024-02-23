@@ -3,8 +3,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
-import 'package:creta03/data_io/team_manager.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
+import 'package:creta_user_io/data_io/team_manager.dart';
 import 'package:creta_user_model/model/user_property_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -25,7 +26,6 @@ import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
 import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_variables.dart';
-import 'creta_manager.dart';
 import 'page_manager.dart';
 //import 'frame_manager.dart';
 //import 'contents_manager.dart';

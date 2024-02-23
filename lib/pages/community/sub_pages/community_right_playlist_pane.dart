@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:creta03/data_io/creta_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'package:creta03/pages/login/creta_account_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -36,8 +36,8 @@ import '../../../data_io/book_published_manager.dart';
 import '../../../data_io/favorites_manager.dart';
 import '../../../data_io/playlist_manager.dart';
 import '../../../data_io/channel_manager.dart';
-import '../../../data_io/user_property_manager.dart';
-import '../../../data_io/team_manager.dart';
+import 'package:creta_user_io/data_io/user_property_manager.dart';
+import 'package:creta_user_io/data_io/team_manager.dart';
 import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_studio_model/model/book_model.dart';
 import '../../../model/channel_model.dart';

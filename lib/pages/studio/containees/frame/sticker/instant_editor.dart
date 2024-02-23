@@ -21,7 +21,7 @@ import '../../../../../player/text/creta_text_player.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_constant.dart';
 import '../../../studio_variables.dart';
-import 'package:creta03/data_io/creta_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 
 class InstantEditor extends StatefulWidget {
   final FrameManager? frameManager;

@@ -1,6 +1,6 @@
 import 'package:creta03/data_io/channel_manager.dart';
-import 'package:creta03/data_io/team_manager.dart';
-import 'package:creta03/data_io/user_property_manager.dart';
+import 'package:creta_user_io/data_io/team_manager.dart';
+import 'package:creta_user_io/data_io/user_property_manager.dart';
 import 'package:creta_common/common/creta_const.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +16,7 @@ import 'package:creta03/design_system/component/snippet.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta03/design_system/menu/creta_popup_menu.dart';
 import 'package:creta03/lang/creta_mypage_lang.dart';
-import 'package:creta03/data_io/creta_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 //import 'package:creta03/pages/login_page.dart';
 import 'package:creta03/pages/mypage/sub_page/my_page_account_manage.dart';
 import 'package:creta03/pages/mypage/sub_page/my_page_dashboard.dart';

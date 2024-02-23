@@ -62,14 +62,14 @@ import 'package:creta_studio_model/model/frame_model.dart';
 import 'package:creta_studio_model/model/page_model.dart';
 import 'package:creta_user_model/model/user_property_model.dart';
 import '../../../model/playlist_model.dart';
-import '../../../data_io/creta_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 import '../../../data_io/book_published_manager.dart';
 import '../../../data_io/channel_manager.dart';
 import '../../../data_io/favorites_manager.dart';
 import '../../../data_io/playlist_manager.dart';
 import '../../../data_io/subscription_manager.dart';
-import '../../../data_io/team_manager.dart';
-import '../../../data_io/user_property_manager.dart';
+import 'package:creta_user_io/data_io/team_manager.dart';
+import 'package:creta_user_io/data_io/user_property_manager.dart';
 import '../../../data_io/contents_manager.dart';
 import '../../../data_io/enterprise_manager.dart';
 

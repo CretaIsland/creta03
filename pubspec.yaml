@@ -45,6 +45,10 @@ dependencies:
     git:
       url: https://github.com/CretaIsland/creta_studio_model.git
       ref: main  
+  creta_user_io:
+    git:
+      url: https://github.com/CretaIsland/creta_user_io.git
+      ref: main  
 
   cupertino_icons: ^1.0.2
   flutter_riverpod: ^1.0.4

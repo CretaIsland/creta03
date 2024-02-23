@@ -21,7 +21,7 @@ import 'package:creta_common/common/creta_font.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_studio_model/model/contents_model.dart';
-import '../../../../data_io/creta_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'package:creta_studio_model/model/frame_model.dart';
 import '../../../../model/frame_model_util.dart';
 import 'package:creta_studio_model/model/page_model.dart';

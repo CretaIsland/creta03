@@ -18,7 +18,7 @@ import 'package:creta_studio_model/model/frame_model.dart';
 import 'package:creta_studio_model/model/link_model.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
-import 'package:creta03/data_io/creta_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 import '../pages/studio/left_menu/left_menu_page.dart';
 import '../pages/studio/studio_variables.dart';
 import 'creta_abs_player.dart';

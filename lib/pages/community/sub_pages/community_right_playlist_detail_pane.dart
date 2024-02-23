@@ -29,7 +29,7 @@ import '../../../design_system/component/creta_layout_rect.dart';
 //import '../community_sample_data.dart';
 //import 'community_right_pane_mixin.dart';
 import '../creta_playlist_detail_ui_item.dart';
-import '../../../data_io/creta_manager.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 import '../../../data_io/book_published_manager.dart';
 import '../../../data_io/favorites_manager.dart';
 import '../../../data_io/playlist_manager.dart';
