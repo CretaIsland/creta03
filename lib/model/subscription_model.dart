@@ -12,8 +12,8 @@ import 'package:hycop/hycop/enum/model_enums.dart';
 //import 'app_enums.dart';
 import 'package:creta_common/model/creta_model.dart';
 import 'channel_model.dart';
-import 'user_property_model.dart';
-import 'team_model.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
+import 'package:creta_user_model/model/team_model.dart';
 //import 'creta_style_mixin.dart';
 
 // ignore: camel_case_types
@@ -73,7 +73,8 @@ class SubscriptionModel extends CretaModel {
       }.entries);
   }
 
-  void getModelFromMaps(Map<String, ChannelModel> channelMap, Map<String, UserPropertyModel> userMap, Map<String, TeamModel> teamMap) {
+  void getModelFromMaps(Map<String, ChannelModel> channelMap,
+      Map<String, UserPropertyModel> userMap, Map<String, TeamModel> teamMap) {
     subscriptionChannel = channelMap[subscriptionChannelId];
     subscriptionChannel?.getModelFromMaps(userMap, teamMap);
   }

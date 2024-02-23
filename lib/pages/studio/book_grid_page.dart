@@ -3,6 +3,10 @@
 import 'dart:math';
 
 import 'package:creta03/data_io/creta_manager.dart';
+import 'package:creta_common/common/creta_const.dart';
+import 'package:creta_common/lang/creta_lang.dart';
+import 'package:creta_common/model/app_enums.dart';
+import 'package:creta_user_model/model/team_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routemaster/routemaster.dart';
@@ -21,7 +25,6 @@ import '../../lang/creta_studio_lang.dart';
 import 'package:creta_studio_model/model/book_model.dart';
 import '../../routes.dart';
 //import '../login_page.dart';
-import '../login/creta_account_manager.dart';
 import 'book_grid_item.dart';
 import 'studio_constant.dart';
 
@@ -105,10 +108,10 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         }
       });
     } else if (widget.selectedPage == SelectedPage.teamPage) {
-      if (CretaAccountManager.getCurrentTeam == null) {
+      if (TeamModel.getCurrentTeam == null) {
         logger.warning('CurrentTeam is null}');
       } else {
-        logger.fine('CurrentTeam=${CretaAccountManager.getCurrentTeam!.name}');
+        logger.fine('CurrentTeam=${TeamModel.getCurrentTeam!.name}');
         bookManagerHolder!.teamData().then((value) {
           if (value.isNotEmpty) {
             bookManagerHolder!.addRealTimeListen(value.first.mid);
@@ -165,8 +168,8 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
       ),
     ];
 
-    _dropDownMenuItemList1 = bookManagerHolder!.getFilterMenu((() => setState(() {})));
-    _dropDownMenuItemList2 = bookManagerHolder!.getSortMenu((() => setState(() {})));
+    _dropDownMenuItemList1 = getFilterMenu((() => setState(() {})));
+    _dropDownMenuItemList2 = getSortMenu((() => setState(() {})));
 
     logger.fine('initState end');
   }
@@ -300,15 +303,15 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     double itemHeight = -1;
 
     // print('rightPaneRect.childWidth=${rightPaneRect.childWidth}');
-    // print('LayoutConst.cretaPaddingPixel=${LayoutConst.cretaPaddingPixel}');
-    // print('LayoutConst.bookThumbSize.width=${LayoutConst.bookThumbSize.width}');
-    // int columnCount = (rightPaneRect.childWidth - LayoutConst.cretaPaddingPixel * 2) ~/
-    //     LayoutConst.bookThumbSize.width;
+    // print('CretaConst.cretaPaddingPixel=${CretaConst.cretaPaddingPixel}');
+    // print('CretaConst.bookThumbSize.width=${CretaConst.bookThumbSize.width}');
+    // int columnCount = (rightPaneRect.childWidth - CretaConst.cretaPaddingPixel * 2) ~/
+    //     CretaConst.bookThumbSize.width;
 
-    int columnCount = ((rightPaneRect.childWidth - LayoutConst.cretaPaddingPixel * 2) /
+    int columnCount = ((rightPaneRect.childWidth - CretaConst.cretaPaddingPixel * 2) /
             (itemWidth > 0
-                ? min(itemWidth, LayoutConst.bookThumbSize.width)
-                : LayoutConst.bookThumbSize.width))
+                ? min(itemWidth, CretaConst.bookThumbSize.width)
+                : CretaConst.bookThumbSize.width))
         .ceil();
 
     //print('columnCount=$columnCount');
@@ -389,7 +392,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
           childAspectRatio:
-              LayoutConst.bookThumbSize.width / LayoutConst.bookThumbSize.height, // 가로÷세로 비율
+              CretaConst.bookThumbSize.width / CretaConst.bookThumbSize.height, // 가로÷세로 비율
           mainAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수평 Padding
           crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
         ),
@@ -401,10 +404,10 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
                   builder: (BuildContext context, BoxConstraints constraints) {
                     itemWidth = constraints.maxWidth;
                     itemHeight = constraints.maxHeight;
-                    // double ratio = itemWidth / 267; //LayoutConst.bookThumbSize.width;
+                    // double ratio = itemWidth / 267; //CretaConst.bookThumbSize.width;
                     // // 너무 커지는 것을 막기위해.
                     // if (ratio > 1) {
-                    //   itemWidth = 267; //LayoutConst.bookThumbSize.width;
+                    //   itemWidth = 267; //CretaConst.bookThumbSize.width;
                     //   itemHeight = itemHeight / ratio;
                     // }
 
@@ -422,5 +425,81 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
   void saveItem(BookManager bookManager, int index) async {
     BookModel savedItem = bookManager.findByIndex(index) as BookModel;
     await bookManager.setToDB(savedItem);
+  }
+
+  List<CretaMenuItem> getSortMenu(Function? onModelSorted) {
+    return [
+      CretaMenuItem(
+          caption: CretaLang.basicBookSortFilter[0],
+          onPressed: () {
+            bookManagerHolder?.toSorted('updateTime',
+                descending: true, onModelSorted: onModelSorted);
+          },
+          selected: true),
+      CretaMenuItem(
+          caption: CretaLang.basicBookSortFilter[1],
+          onPressed: () {
+            bookManagerHolder?.toSorted('name', onModelSorted: onModelSorted);
+          },
+          selected: false),
+      CretaMenuItem(
+          caption: CretaLang.basicBookSortFilter[2],
+          onPressed: () {
+            bookManagerHolder?.toSorted('likeCount',
+                descending: true, onModelSorted: onModelSorted);
+          },
+          selected: false),
+      CretaMenuItem(
+          caption: CretaLang.basicBookSortFilter[3],
+          onPressed: () {
+            bookManagerHolder?.toSorted('viewCount',
+                descending: true, onModelSorted: onModelSorted);
+          },
+          selected: false),
+    ];
+  }
+
+  List<CretaMenuItem> getFilterMenu(Function? onModelFiltered) {
+    return [
+      CretaMenuItem(
+          caption: CretaLang.basicBookFilter[0],
+          onPressed: () {
+            bookManagerHolder?.toFiltered(null, null, AccountManager.currentLoginUser.email,
+                onModelFiltered: onModelFiltered);
+          },
+          selected: true),
+      CretaMenuItem(
+          caption: CretaLang.basicBookFilter[1],
+          onPressed: () {
+            bookManagerHolder?.toFiltered(
+                'bookType', BookType.presentaion.index, AccountManager.currentLoginUser.email,
+                onModelFiltered: onModelFiltered);
+          },
+          selected: false),
+      CretaMenuItem(
+          caption: CretaLang.basicBookFilter[2],
+          onPressed: () {
+            bookManagerHolder?.toFiltered(
+                'bookType', BookType.board.index, AccountManager.currentLoginUser.email,
+                onModelFiltered: onModelFiltered);
+          },
+          selected: false),
+      CretaMenuItem(
+          caption: CretaLang.basicBookFilter[3],
+          onPressed: () {
+            bookManagerHolder?.toFiltered(
+                'bookType', BookType.signage.index, AccountManager.currentLoginUser.email,
+                onModelFiltered: onModelFiltered);
+          },
+          selected: false),
+      CretaMenuItem(
+          caption: CretaLang.basicBookFilter[4],
+          onPressed: () {
+            bookManagerHolder?.toFiltered(
+                'bookType', BookType.etc.index, AccountManager.currentLoginUser.email,
+                onModelFiltered: onModelFiltered);
+          },
+          selected: false),
+    ];
   }
 }

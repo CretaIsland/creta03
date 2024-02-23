@@ -46,8 +46,8 @@ import '../../../model/channel_model.dart';
 import '../../../model/favorites_model.dart';
 import '../../../model/playlist_model.dart';
 import '../../../model/subscription_model.dart';
-import '../../../model/team_model.dart';
-import '../../../model/user_property_model.dart';
+import 'package:creta_user_model/model/team_model.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
 
 //const double _rightViewTopPane = 40;
 //const double _rightViewLeftPane = 40;

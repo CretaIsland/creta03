@@ -3,7 +3,7 @@
 import 'package:creta_common/model/app_enums.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
-
+import 'package:creta_common/common/creta_const.dart';
 import 'package:creta_common/common/creta_color.dart';
 
 enum LeftMenuEnum {
@@ -59,25 +59,21 @@ class LayoutConst {
   static const double maxPageSize = 1920 * 8;
   static const double minPageSize = 320;
 
-  static const double cretaBannerMinHeight = 196;
-
-  static const double cretaPaddingPixel = 40;
   static EdgeInsetsGeometry cretaPadding = const EdgeInsets.fromLTRB(
-    LayoutConst.cretaPaddingPixel,
-    LayoutConst.cretaBannerMinHeight,
-    LayoutConst.cretaPaddingPixel,
-    LayoutConst.cretaPaddingPixel / 2,
+    CretaConst.cretaPaddingPixel,
+    CretaConst.cretaBannerMinHeight,
+    CretaConst.cretaPaddingPixel,
+    CretaConst.cretaPaddingPixel / 2,
   );
   static EdgeInsetsGeometry cretaTopPadding = const EdgeInsets.fromLTRB(
-    LayoutConst.cretaPaddingPixel,
-    LayoutConst.cretaPaddingPixel,
-    LayoutConst.cretaPaddingPixel,
-    LayoutConst.cretaPaddingPixel / 2,
+    CretaConst.cretaPaddingPixel,
+    CretaConst.cretaPaddingPixel,
+    CretaConst.cretaPaddingPixel,
+    CretaConst.cretaPaddingPixel / 2,
   );
   static const double topMenuCursorSize = 24;
   static const Size defaultFrameSize = Size(600, 400);
-  static const Size bookThumbSize = Size(290.0, 256.0);
-  static const double bookThumbSpacing = cretaPaddingPixel / 2;
+  static const double bookThumbSpacing = CretaConst.cretaPaddingPixel / 2;
   static const double bookDescriptionHeight = 56;
 
   static const double cretaScrollbarWidth = 13;
@@ -85,11 +81,14 @@ class LayoutConst {
   static const double cretaTopTitleFilterHeightGap = 20;
   static const double cretaTopFilterHeight = 76;
   static const double cretaTopFilterItemHeight = 36;
-  static const Size cretaTopTitlePaddingLT = Size(cretaPaddingPixel, cretaPaddingPixel);
-  static const Size cretaTopTitlePaddingRB = Size(cretaPaddingPixel, cretaPaddingPixel);
-  static const Size cretaTopFilterPaddingLT = Size(
-      cretaPaddingPixel, cretaPaddingPixel + cretaTopTitleHeight + cretaTopTitleFilterHeightGap);
-  static const Size cretaTopFilterPaddingRB = Size(cretaPaddingPixel, cretaPaddingPixel / 2);
+  static const Size cretaTopTitlePaddingLT =
+      Size(CretaConst.cretaPaddingPixel, CretaConst.cretaPaddingPixel);
+  static const Size cretaTopTitlePaddingRB =
+      Size(CretaConst.cretaPaddingPixel, CretaConst.cretaPaddingPixel);
+  static const Size cretaTopFilterPaddingLT = Size(CretaConst.cretaPaddingPixel,
+      CretaConst.cretaPaddingPixel + cretaTopTitleHeight + cretaTopTitleFilterHeightGap);
+  static const Size cretaTopFilterPaddingRB =
+      Size(CretaConst.cretaPaddingPixel, CretaConst.cretaPaddingPixel / 2);
 
   static const double cornerDiameter = 20.0;
   //static const double floatingActionPadding = 24;
@@ -111,7 +110,6 @@ class LayoutConst {
 }
 
 class StudioConst {
-  static const double orderVar = 0.0000001;
   static const int maxFavColor = 7;
   // static const double stepGranularity = 2.0; // <-- 폰트 사이즈 정밀도, 작을수록 속도가 느리다.  0.1 이 최소
   // static const double minFontSize = stepGranularity * 5;
@@ -292,7 +290,6 @@ class StudioConst {
   }
 
   static const double bigNumber = 100000000;
-
 
   static Map<String, List<int>> fontWeightListMap = {
     'Pretendard': [100, 200, 300, 400, 500, 600, 700, 800, 900],

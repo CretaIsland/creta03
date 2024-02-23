@@ -16,7 +16,7 @@ import '../login/login_dialog.dart';
 import '../../pages/login/creta_account_manager.dart';
 //import '../../common/cross_common_job.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
-
+import 'package:creta_common/common/creta_const.dart';
 import 'package:creta_common/common/creta_font.dart';
 import 'package:creta_common/common/creta_color.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
@@ -33,8 +33,8 @@ import '../../data_io/favorites_manager.dart';
 import '../../data_io/subscription_manager.dart';
 import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_studio_model/model/book_model.dart';
-//import '../../model/team_model.dart';
-import '../../model/user_property_model.dart';
+//import 'package:creta_user_model/model/team_model.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
 import '../../model/channel_model.dart';
 import '../../model/subscription_model.dart';
 import '../../pages/studio/studio_constant.dart';
@@ -342,7 +342,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         setUsingBannerScrollBar(
           scrollChangedCallback: _scrollChangedCallback,
           bannerMaxHeight: 436 + 64,
-          bannerMinHeight: LayoutConst.cretaBannerMinHeight + 64,
+          bannerMinHeight: CretaConst.cretaBannerMinHeight + 64,
         );
         _rightTabMenuList = [
           CretaMenuItem(

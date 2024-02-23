@@ -41,8 +41,8 @@ import '../../../data_io/channel_manager.dart';
 import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_studio_model/model/book_model.dart';
 import '../../../model/favorites_model.dart';
-import '../../../model/team_model.dart';
-import '../../../model/user_property_model.dart';
+import 'package:creta_user_model/model/team_model.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
 import '../../../model/channel_model.dart';
 
 //const double _rightViewTopPane = 40;

@@ -874,7 +874,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         _sendEvent!.sendEvent(_frameModel);
         //widget.contentsManager.playTimer?.setCurrentModel(model); // 처음만든 Text 의 경우 이 모델이 바뀌지 않는다.
         //widget.contentsManager.notify();
-        //DraggableStickers.frameSelectNotifier!.notify();
+        //CretaManager.frameSelectNotifier!.notify();
         //   widget.frameManager?.notify();
 
         setState(() {});

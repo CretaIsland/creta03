@@ -21,7 +21,7 @@ import '../../../../../player/text/creta_text_player.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_constant.dart';
 import '../../../studio_variables.dart';
-import 'draggable_stickers.dart';
+import 'package:creta03/data_io/creta_manager.dart';
 
 class InstantEditor extends StatefulWidget {
   final FrameManager? frameManager;
@@ -468,7 +468,7 @@ class InstantEditorState extends CretaState<InstantEditor> {
           CretaAutoSizeText.fontSizeNotifier?.stop();
         } // rightMenu 에 전달
         //BookMainPage.containeeNotifier!.setFrameClick(true);
-        DraggableStickers.frameSelectNotifier?.set(widget.frameModel.mid);
+        CretaManager.frameSelectNotifier?.set(widget.frameModel.mid);
         widget.onTap?.call(widget.frameModel.mid); //frameMain onTap
 
         _focusNode?.unfocus();
@@ -582,7 +582,7 @@ class InstantEditorState extends CretaState<InstantEditor> {
   //     onTapOutside: (event) {
   //       _saveChanges(model);
   //       BookMainPage.containeeNotifier!.setFrameClick(true);
-  //       DraggableStickers.frameSelectNotifier?.set(widget.frameModel.mid);
+  //       CretaManager.frameSelectNotifier?.set(widget.frameModel.mid);
   //       widget.onTap?.call(widget.frameModel.mid); //frameMain onTap
   //     },
   //     onChanged: (value) {

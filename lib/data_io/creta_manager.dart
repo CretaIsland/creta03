@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_final_fields, depend_on_referenced_packages
 
+import 'package:creta_common/common/creta_const.dart';
+import 'package:creta_common/common/creta_vars.dart';
 import 'package:hycop/hycop.dart';
 import 'package:deep_collection/deep_collection.dart';
 //import 'package:sortedmap/sortedmap.dart';
@@ -7,14 +9,9 @@ import 'package:flutter/material.dart';
 //import 'package:sortedmap/sortedmap.dart';
 import 'package:mutex/mutex.dart';
 
-import '../design_system/component/snippet.dart';
-import '../design_system/menu/creta_popup_menu.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_common/model/creta_model.dart';
-import '../pages/studio/book_main_page.dart';
-import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
-import '../pages/studio/studio_constant.dart';
-import '../pages/studio/studio_variables.dart';
 
 enum DBState {
   none,
@@ -27,7 +24,22 @@ enum TransState {
   start,
 }
 
+class FrameSelectNotifier extends ChangeNotifier {
+  String? _selectedAssetId;
+  String? get selectedAssetId => _selectedAssetId;
+
+  void set(String val, {bool doNotify = true}) {
+    _selectedAssetId = val;
+    if (doNotify) {
+      notifyListeners();
+    }
+  }
+
+  void notify() => notifyListeners();
+}
+
 abstract class CretaManager extends AbsExModelManager {
+  static FrameSelectNotifier? frameSelectNotifier;
   static const int maxTotalLimit = 500;
   static const int maxPageLimit = 200;
   static const int defaultPageLimit = 50;
@@ -51,7 +63,7 @@ abstract class CretaManager extends AbsExModelManager {
           if (snapshot.hasData == false) {
             logger.finest("wait data ...(WaitDatat)");
             return Center(
-              child: waitFunc?.call() ?? Snippet.showWaitSign(),
+              child: waitFunc?.call() ?? CretaSnippet.showWaitSign(),
             );
           }
           if (snapshot.connectionState == ConnectionState.done) {
@@ -90,7 +102,7 @@ abstract class CretaManager extends AbsExModelManager {
           if (snapshot.hasData == false) {
             logger.finest("wait data ...(WaitData)");
             return Center(
-              child: waitFunc?.call() ?? Snippet.showWaitSign(),
+              child: waitFunc?.call() ?? CretaSnippet.showWaitSign(),
             );
           }
           if (snapshot.connectionState == ConnectionState.done) {
@@ -283,9 +295,9 @@ abstract class CretaManager extends AbsExModelManager {
     });
   }
 
-  List<CretaMenuItem> getSortMenu(Function? onModelSorted) {
-    return [];
-  }
+  // List<CretaMenuItem> getSortMenu(Function? onModelSorted) {
+  //   return [];
+  // }
 
   void toFiltered(String? name, dynamic value, String userId, {Function? onModelFiltered}) {
     logger.finest('toFiltered');
@@ -317,9 +329,9 @@ abstract class CretaManager extends AbsExModelManager {
     });
   }
 
-  List<CretaMenuItem> getFilterMenu(Function? onModelFiltered) {
-    return [];
-  }
+  // List<CretaMenuItem> getFilterMenu(Function? onModelFiltered) {
+  //   return [];
+  // }
 
   void onSearch(String value, Function afterSearch) {}
 
@@ -382,18 +394,18 @@ abstract class CretaManager extends AbsExModelManager {
   }
 
   int properLimit() {
-    if (StudioVariables.displaySize.width == 0 || StudioVariables.displaySize.height == 0) {
+    if (CretaVars.displaySize.width == 0 || CretaVars.displaySize.height == 0) {
       return _lastLimit == 0 ? CretaManager.defaultPageLimit : _lastLimit;
     }
-    double availWidth = StudioVariables.displaySize.width - CretaComponentLocation.TabBar.width;
-    double availHeight = StudioVariables.displaySize.height - LayoutConst.cretaBannerMinHeight;
+    double availWidth = CretaVars.displaySize.width - CretaComponentLocation.TabBar.width;
+    double availHeight = CretaVars.displaySize.height - CretaConst.cretaBannerMinHeight;
 
     double square = availHeight * availWidth;
     if (square <= 0) {
       return _lastLimit == 0 ? CretaManager.defaultPageLimit : _lastLimit;
     }
-    double gridSize = (LayoutConst.bookThumbSize.width + LayoutConst.cretaPaddingPixel) *
-        (LayoutConst.bookThumbSize.height + LayoutConst.cretaPaddingPixel);
+    double gridSize = (CretaConst.bookThumbSize.width + CretaConst.cretaPaddingPixel) *
+        (CretaConst.bookThumbSize.height + CretaConst.cretaPaddingPixel);
 
     int retval = (square / gridSize).ceil();
     if (retval < 10) {
@@ -920,7 +932,7 @@ abstract class CretaManager extends AbsExModelManager {
       if (min > 2) {
         return min - 1;
       }
-      return min - StudioConst.orderVar;
+      return min - CretaConst.orderVar;
     }
     int len = _orderMap.length;
     if (len == 0) return 1;
@@ -1039,7 +1051,7 @@ abstract class CretaManager extends AbsExModelManager {
     selectedMid = modelList[0].mid;
     String className = HycopUtils.getClassName(selectedMid);
     if (className != 'frame' && className != 'contents') {
-      DraggableStickers.frameSelectNotifier?.set("");
+      CretaManager.frameSelectNotifier?.set("");
     }
     logger.fine('selected1=$selectedMid, prev=$prevSelectedMid');
   }
@@ -1051,7 +1063,7 @@ abstract class CretaManager extends AbsExModelManager {
 
     String className = HycopUtils.getClassName(selectedMid);
     if (className != 'frame' && className != 'contents') {
-      DraggableStickers.frameSelectNotifier?.set("", doNotify: doNotify); // clear 한다는뜻.
+      CretaManager.frameSelectNotifier?.set("", doNotify: doNotify); // clear 한다는뜻.
     }
     if (doNotify) {
       notify();
@@ -1062,8 +1074,7 @@ abstract class CretaManager extends AbsExModelManager {
     prevSelectedMid = selectedMid;
     selectedMid = "";
     logger.finest('unselected, prev=$prevSelectedMid');
-    DraggableStickers.frameSelectNotifier?.set("", doNotify: true);
-    BookMainPage.miniMenuNotifier?.set(false, doNoti: true);
+    CretaManager.frameSelectNotifier?.set("", doNotify: true);
     //notify();
   }
 
@@ -1223,7 +1234,7 @@ abstract class CretaManager extends AbsExModelManager {
   //         if (snapshot.hasData == false) {
   //           logger.fine("wait data ...(WaitData)");
   //           return Center(
-  //             child: Snippet.showWaitSign(),
+  //             child: CretaSnippet.showWaitSign(),
   //           );
   //         }
   //         if (snapshot.connectionState == ConnectionState.done) {

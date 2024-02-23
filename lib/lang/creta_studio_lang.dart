@@ -229,9 +229,7 @@ class CretaStudioLang {
 
   static const String autoScale = "자동맞춤";
 
-  static const String sampleBookName = "이름없는 크레타북";
-
-  static const String publish = "발행하기";
+    static const String publish = "발행하기";
   static const String channelList = "채널 목록";
   static const String tooltipNoti = '알림이 있습니다';
   static const String tooltipNoNoti = '알림이 없습니다';

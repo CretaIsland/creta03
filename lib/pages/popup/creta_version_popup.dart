@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:creta03/design_system/component/snippet.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 import 'package:creta_common/common/creta_font.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta03/design_system/dialog/creta_dialog.dart';
@@ -88,7 +88,7 @@ class _CretaVersionPopUpState extends State<CretaVersionPopUp> {
                                   },
                                 )
                               : Center(
-                                  child: Snippet.showWaitSign(),
+                                  child: CretaSnippet.showWaitSign(),
                                 )),
                     )
             ],

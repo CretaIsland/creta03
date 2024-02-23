@@ -118,7 +118,7 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
                   // if (snapshot.hasData == false) {
                   //   logger.finest("wait data ...(WaitData)");
                   //   return Center(
-                  //     child: Snippet.showWaitSign(),
+                  //     child: CretaSnippet.showWaitSign(),
                   //   );
                   // }
                   // if (snapshot.connectionState != ConnectionState.done) {

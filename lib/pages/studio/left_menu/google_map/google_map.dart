@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../../../design_system/component/snippet.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 import 'package:http/http.dart' as http;
 
 import 'google_map_saved_list.dart';
@@ -151,7 +151,7 @@ class _GoogleMapClassState extends State<GoogleMapClass> {
       future: currentPosition,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Snippet.showWaitSign();
+          return CretaSnippet.showWaitSign();
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {

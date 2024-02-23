@@ -1,5 +1,5 @@
 import 'package:creta03/pages/studio/studio_variables.dart';
-import 'package:creta_common/common/creta_constant.dart';
+import 'package:creta_common/common/creta_const.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -83,7 +83,7 @@ class MyColorPicker {
       context,
       anchorPoint: Offset(
           StudioVariables.displayWidth - LayoutConst.rightMenuWidth - 40,
-          CretaConstant.appbarHeight +
+          CretaConst.appbarHeight +
               LayoutConst.topMenuBarHeight +
               LayoutConst.rightMenuTitleHeight +
               LayoutConst.innerMenuBarHeight +

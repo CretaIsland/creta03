@@ -463,7 +463,7 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
         // BookMainPage.containeeNotifier!.setFrameClick(true);
         // frameManager!.setSelectedMid(frameModel.mid);
         // BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents);
-        //DraggableStickers.frameSelectNotifier?.set(frameModel.mid);
+        //CretaManager.frameSelectNotifier?.set(frameModel.mid);
         //print('Its edit mode');
         return;
       }
@@ -510,6 +510,7 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
     //   frameManager?.clearSelectedMid();
     // }
     frameManager?.clearSelectedMid();
+    BookMainPage.miniMenuNotifier?.set(false, doNoti: true);
 
     //});
     if (LinkParams.isLinkNewMode == true) {

@@ -47,8 +47,8 @@ import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_studio_model/model/book_model.dart';
 import '../../../model/watch_history_model.dart';
 import '../../../model/favorites_model.dart';
-import '../../../model/team_model.dart';
-import '../../../model/user_property_model.dart';
+import 'package:creta_user_model/model/team_model.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
 import '../../../model/channel_model.dart';
 
 //const double _rightViewTopPane = 40;
@@ -429,7 +429,7 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
 
   // Widget _waitSignWidget() {
   //   if (kDebugMode) print('---_waitSignWidget');
-  //   return Center(child: Snippet.showWaitSign());
+  //   return Center(child: CretaSnippet.showWaitSign());
   // }
 
   // Future<List<AbsExModel>>? wait() async {
@@ -478,7 +478,7 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     //       if (snapshot.hasData == false) {
     //         logger.finest("wait data ...(WaitDatat)");
     //         return Center(
-    //           child: Snippet.showWaitSign(),
+    //           child: CretaSnippet.showWaitSign(),
     //         );
     //       }
     //       if (snapshot.connectionState == ConnectionState.done) {

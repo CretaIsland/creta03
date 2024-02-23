@@ -5,6 +5,7 @@
 //import 'dart:ui' as ui;
 //import 'dart:html' as html;
 import 'package:creta_common/common/creta_common_utils.dart';
+import 'package:creta_common/common/creta_vars.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:http/browser_client.dart';
@@ -45,8 +46,8 @@ class CretaUtils {
   static Size getDisplaySize(BuildContext context) {
     StudioVariables.displayWidth = MediaQuery.of(context).size.width;
     StudioVariables.displayHeight = MediaQuery.of(context).size.height;
-    StudioVariables.displaySize = Size(StudioVariables.displayWidth, StudioVariables.displayHeight);
-    return StudioVariables.displaySize;
+    CretaVars.displaySize = Size(StudioVariables.displayWidth, StudioVariables.displayHeight);
+    return CretaVars.displaySize;
   }
 
   static StrokeCap borderCap(BorderCapType aType) {

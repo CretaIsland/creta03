@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
 
+import 'package:creta03/data_io/creta_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/common/undo/undo.dart';
@@ -41,24 +42,9 @@ import 'mini_menu.dart';
 import 'page_bottom_layer.dart';
 import 'stickerview.dart';
 
-class FrameSelectNotifier extends ChangeNotifier {
-  String? _selectedAssetId;
-  String? get selectedAssetId => _selectedAssetId;
-
-  void set(String val, {bool doNotify = true}) {
-    _selectedAssetId = val;
-    if (doNotify) {
-      notifyListeners();
-    }
-  }
-
-  void notify() => notifyListeners();
-}
-
 class DraggableStickers extends StatefulWidget {
   //static String? selectedAssetId;
   static bool isFrontBackHover = false;
-  static FrameSelectNotifier? frameSelectNotifier;
 
   //List of stickers (elements)
   final bool isSelected;
@@ -139,7 +125,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
     // setState(() {
     //   stickers = widget.stickerList ?? [];
     // });
-    DraggableStickers.frameSelectNotifier ??= FrameSelectNotifier();
+    CretaManager.frameSelectNotifier ??= FrameSelectNotifier();
     final FrameEventController sendEvent = Get.find(tag: 'frame-property-to-main');
     _sendEvent = sendEvent;
     super.initState();
@@ -207,7 +193,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<FrameSelectNotifier>.value(
-          value: DraggableStickers.frameSelectNotifier!,
+          value: CretaManager.frameSelectNotifier!,
         ),
       ],
       child: Stack(
@@ -437,7 +423,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
         } else {
           stickers!.insert(listLength - 1, sticker);
         }
-        DraggableStickers.frameSelectNotifier?.set(sticker.id, doNotify: false);
+        CretaManager.frameSelectNotifier?.set(sticker.id, doNotify: false);
         logger.finest('onLayerTapped');
         setState(() {});
       },
@@ -467,7 +453,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
               //   if (selected == null) {
               //     // 클릭되어 있지 않으면 싱글클릭과 동일하게 동작한다.
               //     BookMainPage.containeeNotifier!.setFrameClick(true);
-              //     DraggableStickers.frameSelectNotifier?.set(sticker.id);
+              //     CretaManager.frameSelectNotifier?.set(sticker.id);
               //     widget.onTap?.call(sticker.id);
               //     selected = contentsManager.getSelected() as ContentsModel?;
               //     if (selected == null) {
@@ -480,15 +466,15 @@ class _DraggableStickersState extends State<DraggableStickers> {
               // },
               onSecondaryTapDown: (details) {
                 // 오른쪽 마우스 버튼 --> 메뉴
-                if (DraggableStickers.frameSelectNotifier != null) {
-                  if (DraggableStickers.frameSelectNotifier!.selectedAssetId != sticker.id) return;
+                if (CretaManager.frameSelectNotifier != null) {
+                  if (CretaManager.frameSelectNotifier!.selectedAssetId != sticker.id) return;
                 }
                 _showRightMouseMenu(details, frameModel, sticker);
               },
               onTap: () {
                 //print('DraggableSticker');
-                if (DraggableStickers.frameSelectNotifier != null &&
-                    DraggableStickers.frameSelectNotifier!.selectedAssetId == sticker.id) {
+                if (CretaManager.frameSelectNotifier != null &&
+                    CretaManager.frameSelectNotifier!.selectedAssetId == sticker.id) {
                   if (frameModel.isTextType()) {
                     ContentsManager? contentsManager =
                         widget.frameManager!.getContentsManager(frameModel.mid);
@@ -507,7 +493,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                 }
                 // single click action !!!
                 // To update the selected widget
-                DraggableStickers.frameSelectNotifier?.set(sticker.id);
+                CretaManager.frameSelectNotifier?.set(sticker.id);
                 widget.onTap?.call(sticker.id);
               },
               child: SizedBox(
@@ -545,7 +531,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
             frameModel.setIsEditMode(true);
             // 편집모드에서도, 선택했던 프레임이 다시 선택되어 있어야 한다.
             BookMainPage.containeeNotifier!.setFrameClick(true);
-            DraggableStickers.frameSelectNotifier?.set(sticker.id);
+            CretaManager.frameSelectNotifier?.set(sticker.id);
             widget.onTap?.call(sticker.id);
           },
         );
@@ -844,15 +830,15 @@ class _DraggableStickersState extends State<DraggableStickers> {
   }
 
   Sticker? _getSelectedSticker() {
-    if (DraggableStickers.frameSelectNotifier == null ||
-        DraggableStickers.frameSelectNotifier!.selectedAssetId == null) {
+    if (CretaManager.frameSelectNotifier == null ||
+        CretaManager.frameSelectNotifier!.selectedAssetId == null) {
       return null;
     }
     if (stickers == null) {
       return null;
     }
     for (Sticker sticker in stickers!) {
-      if (sticker.id == DraggableStickers.frameSelectNotifier!.selectedAssetId!) {
+      if (sticker.id == CretaManager.frameSelectNotifier!.selectedAssetId!) {
         return sticker;
       }
     }

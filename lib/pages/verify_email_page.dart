@@ -1,13 +1,14 @@
 // ignore_for_file: prefer_const_constructors
 
-//import 'package:creta03/model/user_property_model.dart';
-import 'package:creta03/model/user_property_model.dart';
+//import 'package:creta_user_model/model/user_property_model.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
 import 'package:creta03/pages/login/creta_account_manager.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hycop/hycop.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:url_launcher/link.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 
 import '../../routes.dart';
 import '../design_system/component/snippet.dart';
@@ -92,7 +93,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
     return _isJobProcessing
         ? BTN.line_blue_iwi_m(
             width: 294,
-            widget: Snippet.showWaitSign(color: Colors.white, size: 16),
+            widget: CretaSnippet.showWaitSign(color: Colors.white, size: 16),
             buttonColor: CretaButtonColor.skyTitle,
             decoType: CretaButtonDeco.fill,
             textColor: Colors.white,

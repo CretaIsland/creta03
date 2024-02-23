@@ -1,5 +1,5 @@
 import 'package:creta03/data_io/frame_manager.dart';
-import 'package:creta03/design_system/component/snippet.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_studio_model/model/page_model.dart';
 import 'package:creta03/pages/studio/book_main_page.dart';
@@ -63,7 +63,7 @@ class _LeftMenuCameraState extends State<LeftMenuCamera> {
                   },
                 );
               } else {
-                return Snippet.showWaitSign();
+                return CretaSnippet.showWaitSign();
               }
             },
           ),

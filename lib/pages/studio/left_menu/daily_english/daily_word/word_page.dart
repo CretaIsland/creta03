@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:creta03/design_system/component/snippet.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
@@ -106,7 +106,7 @@ class _WordPageState extends State<WordPage> {
                   logger.severe('Error: ${snapshot.error}');
                   return const Text('Unable to fetch word of the day T.T ');
                 }
-                return Center(child: Snippet.showWaitSign());
+                return Center(child: CretaSnippet.showWaitSign());
               },
             ),
           ),

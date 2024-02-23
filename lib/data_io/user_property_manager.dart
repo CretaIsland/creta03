@@ -8,12 +8,12 @@ import 'package:creta_common/common/creta_common_utils.dart';
 import 'package:creta03/data_io/creta_manager.dart';
 import 'package:creta_common/model/app_enums.dart';
 //import 'package:creta_studio_model/model/frame_model.dart';
-import 'package:creta03/model/user_property_model.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
 //import 'package:creta03/pages/studio/studio_constant.dart';
 import 'package:creta_common/model/creta_model.dart';
 import 'package:creta_common/common/creta_font.dart';
 import 'package:creta_common/lang/creta_lang.dart';
-import '../model/team_model.dart';
+import 'package:creta_user_model/model/team_model.dart';
 //import '../pages/login_page.dart';
 import '../pages/login/creta_account_manager.dart';
 
@@ -313,9 +313,7 @@ class UserPropertyManager extends CretaManager {
       } else {
         // 팀 mid 라고 생각한다. 보통 자기 팀이므로, 자기팀에서 먼저 찾는다.
         TeamModel? team = await CretaAccountManager.findTeamModel(email);
-        if (team != null) {
-          userModelList.add(makeDummyModel(team));
-        }
+        userModelList.add(makeDummyModel(team));
       }
     }
     return userModelList;

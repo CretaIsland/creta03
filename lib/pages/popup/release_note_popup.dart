@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:creta03/design_system/component/snippet.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 import 'package:creta03/design_system/dialog/creta_dialog.dart';
 import 'package:creta03/design_system/menu/creta_drop_down.dart';
 import 'package:creta03/pages/login/creta_account_manager.dart';
@@ -53,7 +53,7 @@ class _ReleaseNoteDialogState extends State<ReleaseNoteDialog> {
             releaseData.isEmpty
                 ? Padding(
                     padding: const EdgeInsets.only(top: 120.0),
-                    child: Snippet.showWaitSign(),
+                    child: CretaSnippet.showWaitSign(),
                   )
                 : SizedBox(
                     width: 600,

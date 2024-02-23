@@ -35,7 +35,7 @@ import '../../../design_system/text_field/creta_comment_bar.dart';
 import '../../../design_system/component/custom_image.dart';
 import 'package:creta_common/model/app_enums.dart';
 import '../../../model/comment_model.dart';
-import '../../../model/user_property_model.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
 import '../../../data_io/comment_manager.dart';
 import '../../../data_io/user_property_manager.dart';
 //import '../../../pages/login_page.dart';

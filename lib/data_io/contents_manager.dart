@@ -18,7 +18,6 @@ import 'package:creta_studio_model/model/frame_model.dart';
 import 'package:creta_studio_model/model/page_model.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
-import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
 import '../pages/studio/left_menu/depot/depot_display.dart';
 import '../pages/studio/left_menu/left_menu_page.dart';
 import '../pages/studio/left_menu/music/music_player_frame.dart';
@@ -1073,7 +1072,7 @@ class ContentsManager extends CretaManager {
       await contentsManager.createNextContents(contentsModel, doNotify: false);
     }
     BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);
-    DraggableStickers.frameSelectNotifier!.set(frameModel.mid, doNotify: false);
+    CretaManager.frameSelectNotifier!.set(frameModel.mid, doNotify: false);
     frameManager.setSelectedMid(frameModel.mid);
     LeftMenuPage.initTreeNodes();
     LeftMenuPage.treeInvalidate();

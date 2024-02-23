@@ -1,6 +1,7 @@
 import 'package:creta03/data_io/channel_manager.dart';
 import 'package:creta03/data_io/team_manager.dart';
 import 'package:creta03/data_io/user_property_manager.dart';
+import 'package:creta_common/common/creta_const.dart';
 import 'package:flutter/material.dart';
 
 import 'dart:math';
@@ -22,7 +23,6 @@ import 'package:creta03/pages/mypage/sub_page/my_page_dashboard.dart';
 import 'package:creta03/pages/mypage/sub_page/my_page_info.dart';
 import 'package:creta03/pages/mypage/sub_page/my_page_settings.dart';
 import 'package:creta03/pages/mypage/sub_page/my_page_team_manage.dart';
-import 'package:creta03/pages/studio/studio_constant.dart';
 import 'package:creta03/routes.dart';
 import '../login/creta_account_manager.dart';
 
@@ -184,7 +184,7 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
         leftMenu(),
         SizedBox(
             width: rightPaneRect.childWidth,
-            height: rightPaneRect.childHeight + LayoutConst.cretaBannerMinHeight,
+            height: rightPaneRect.childHeight + CretaConst.cretaBannerMinHeight,
             child: CretaManager.waitData(
                 consumerFunc: rightArea, manager: CretaAccountManager.enterpriseManagerHolder))
       ],

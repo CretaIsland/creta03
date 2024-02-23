@@ -1,4 +1,4 @@
-import 'package:creta03/design_system/component/snippet.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 import 'package:creta03/pages/studio/left_menu/currency_exchange/currency_api.dart';
 import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +52,7 @@ class _LeftMenuCurrencyState extends State<LeftMenuCurrency> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
-                  child: Snippet.showWaitSign(),
+                  child: CretaSnippet.showWaitSign(),
                 );
               } else {
                 return FutureBuilder<Map>(
@@ -60,7 +60,7 @@ class _LeftMenuCurrencyState extends State<LeftMenuCurrency> {
                   builder: (context, index) {
                     if (index.connectionState == ConnectionState.waiting) {
                       return Center(
-                        child: Snippet.showWaitSign(),
+                        child: CretaSnippet.showWaitSign(),
                       );
                     } else if (index.hasError) {
                       return Center(child: Text('Error: ${index.error}'));

@@ -1,7 +1,7 @@
 import 'package:creta03/pages/studio/studio_constant.dart';
 import 'package:creta_common/model/app_enums.dart';
 import 'package:flutter/material.dart';
-import '../../../../design_system/component/snippet.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 import 'package:creta_studio_model/model/frame_model.dart';
 import 'article_model.dart';
 import 'news_api.dart';
@@ -116,7 +116,7 @@ class _ArticleViewState extends State<ArticleView> {
           return SizedBox(
             height: 150,
             child: Center(
-              child: Snippet.showWaitSign(),
+              child: CretaSnippet.showWaitSign(),
             ),
           );
         } else if (snapshot.hasError) {

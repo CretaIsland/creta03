@@ -4,6 +4,7 @@ import 'package:creta_common/lang/creta_lang.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 
 import '../../../../common/creta_utils.dart';
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
@@ -15,8 +16,8 @@ import '../../../../design_system/text_field/creta_text_field.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_studio_model/model/book_model.dart';
-import '../../../../model/team_model.dart';
-import '../../../../model/user_property_model.dart';
+import 'package:creta_user_model/model/team_model.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
 //import '../../../login_page.dart';
 import '../../../login/creta_account_manager.dart';
 import '../../studio_snippet.dart';
@@ -81,7 +82,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
         builder: (context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.hasData == false) {
             //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
-            return Snippet.showWaitSign();
+            return CretaSnippet.showWaitSign();
           }
           if (snapshot.hasError) {
             //error가 발생하게 될 경우 반환하게 되는 부분

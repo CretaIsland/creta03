@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 
 import '../../data_io/key_handler.dart';
 import '../../design_system/component/snippet.dart';
@@ -74,7 +75,7 @@ class CretaVideoPlayerWidgetState extends CretaState<CretaVideoWidget> {
           if (snapshot.hasData == false) {
             //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
             if (player.isInit() == false) {
-              return Snippet.showWaitSign();
+              return CretaSnippet.showWaitSign();
             }
             return SizedBox.shrink(key: GlobalObjectKey('shrink-${player.keyString}'));
           }

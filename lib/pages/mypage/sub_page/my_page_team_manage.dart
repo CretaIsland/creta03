@@ -9,8 +9,8 @@ import 'package:creta03/design_system/buttons/creta_toggle_button.dart';
 import 'package:creta_common/common/creta_font.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta03/design_system/menu/creta_widget_drop_down.dart';
-import 'package:creta03/model/team_model.dart';
-import 'package:creta03/model/user_property_model.dart';
+import 'package:creta_user_model/model/team_model.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
 import 'package:creta03/pages/login/creta_account_manager.dart';
 import 'package:creta03/pages/mypage/mypage_common_widget.dart';
 import 'package:creta03/pages/mypage/popup/edit_banner_popup.dart';
@@ -34,8 +34,8 @@ class MyPageTeamManage extends StatefulWidget {
 }
 
 class _MyPageTeamManageState extends State<MyPageTeamManage> {
-  String? selectedTeamMid = CretaAccountManager.getCurrentTeam!.mid;
-  String? selectedChannelMid = CretaAccountManager.getCurrentTeam!.channelId;
+  String? selectedTeamMid = TeamModel.getCurrentTeam!.mid;
+  String? selectedChannelMid = TeamModel.getCurrentTeam!.channelId;
   XFile? _selectedProfileImg;
   Uint8List? _selectedProfileImgBytes;
   XFile? _selectedBannerImg;
@@ -56,7 +56,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
   Widget build(BuildContext context) {
     return Consumer3<UserPropertyManager, TeamManager, ChannelManager>(
       builder: (context, userPropertyManager, teamManager, channelManager, child) {
-        _teamNameController.text = CretaAccountManager.getCurrentTeam!.name;
+        _teamNameController.text = TeamModel.getCurrentTeam!.name;
         return Container(
           width: widget.width,
           height: widget.height,
@@ -122,8 +122,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                       MyPageCommonWidget.profileImgComponent(
                                           width: 200,
                                           height: 200,
-                                          profileImgUrl:
-                                              CretaAccountManager.getCurrentTeam!.profileImgUrl,
+                                          profileImgUrl: TeamModel.getCurrentTeam!.profileImgUrl,
                                           profileImgBytes: _selectedProfileImgBytes,
                                           userName: teamManager.currentTeam!.name,
                                           replaceColor: replaceColor,
@@ -151,7 +150,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                                                 _selectedProfileImgBytes!)
                                                             .then((value) {
                                                           if (value != null) {
-                                                            CretaAccountManager.getCurrentTeam!
+                                                            TeamModel.getCurrentTeam!
                                                                 .profileImgUrl = value.url;
                                                             teamManager.setToDB(CretaAccountManager
                                                                 .getCurrentTeam!);
@@ -242,13 +241,10 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                         Text("채널 공개", style: CretaFont.titleMedium),
                                         const SizedBox(width: 200),
                                         CretaToggleButton(
-                                          defaultValue:
-                                              CretaAccountManager.getCurrentTeam!.isPublicProfile,
+                                          defaultValue: TeamModel.getCurrentTeam!.isPublicProfile,
                                           onSelected: (value) {
-                                            CretaAccountManager.getCurrentTeam!.isPublicProfile =
-                                                value;
-                                            teamManager
-                                                .setToDB(CretaAccountManager.getCurrentTeam!);
+                                            TeamModel.getCurrentTeam!.isPublicProfile = value;
+                                            teamManager.setToDB(TeamModel.getCurrentTeam!);
                                           },
                                         )
                                       ],
@@ -263,13 +259,10 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                         Text("팀원 공개", style: CretaFont.titleMedium),
                                         const SizedBox(width: 200),
                                         CretaToggleButton(
-                                          defaultValue:
-                                              CretaAccountManager.getCurrentTeam!.isPublicProfile,
+                                          defaultValue: TeamModel.getCurrentTeam!.isPublicProfile,
                                           onSelected: (value) {
-                                            CretaAccountManager.getCurrentTeam!.isPublicProfile =
-                                                value;
-                                            teamManager
-                                                .setToDB(CretaAccountManager.getCurrentTeam!);
+                                            TeamModel.getCurrentTeam!.isPublicProfile = value;
+                                            teamManager.setToDB(TeamModel.getCurrentTeam!);
                                           },
                                         )
                                       ],
@@ -343,8 +336,8 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
   }
 
   Widget memberComponent(UserPropertyModel memberModel, TeamManager teamManager) {
-    int permission = checkPermission(
-        CretaAccountManager.currentLoginUser.email, CretaAccountManager.getCurrentTeam!);
+    int permission =
+        checkPermission(CretaAccountManager.currentLoginUser.email, TeamModel.getCurrentTeam!);
     return Row(
       children: [
         Container(
@@ -378,7 +371,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                 text: "내보내기",
                 onPressed: () {
                   teamManager.deleteTeamMember(memberModel.email,
-                      checkPermission(memberModel.email, CretaAccountManager.getCurrentTeam!));
+                      checkPermission(memberModel.email, TeamModel.getCurrentTeam!));
                 })
             : const SizedBox.shrink()
       ],

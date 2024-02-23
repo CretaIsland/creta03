@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 //import 'package:get/get.dart';
 import 'package:hycop/hycop.dart';
 import '../../../../design_system/component/custom_image.dart';
-import '../../../../design_system/component/snippet.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import 'package:creta_studio_model/model/contents_model.dart';
-import '../../../../model/team_model.dart';
+import 'package:creta_user_model/model/team_model.dart';
 import '../../studio_variables.dart';
 import 'depot_selected.dart';
 // ignore: depend_on_referenced_packages
@@ -208,14 +208,14 @@ class _DepotDisplayClassState extends State<DepotDisplay> {
                 padding: EdgeInsets.symmetric(vertical: verticalPadding),
                 height: 352.0,
                 alignment: Alignment.center,
-                child: Snippet.showWaitSign(),
+                child: CretaSnippet.showWaitSign(),
               );
               // if (_dbJobComplete == false) {
               //   return Container(
               //     padding: EdgeInsets.symmetric(vertical: verticalPadding),
               //     height: 352.0,
               //     alignment: Alignment.center,
-              //     child: Snippet.showWaitSign(),
+              //     child: CretaSnippet.showWaitSign(),
               //   );
               // } else {
               //   return const SizedBox.shrink();

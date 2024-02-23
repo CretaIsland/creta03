@@ -147,9 +147,9 @@ class _PinchPageState extends State<PinchPage> {
   //     body: PdfViewPinch(
   //       builders: PdfViewPinchBuilders<DefaultBuilderOptions>(
   //         options: const DefaultBuilderOptions(),
-  //         documentLoaderBuilder: (_) => Center(child: Snippet.showWaitSign()),
+  //         documentLoaderBuilder: (_) => Center(child: CretaSnippet.showWaitSign()),
   //         //pageLoaderBuilder: (_) => const Center(child: CircularProgressIndicator()),
-  //         pageLoaderBuilder: (_) => Center(child: Snippet.showWaitSign()),
+  //         pageLoaderBuilder: (_) => Center(child: CretaSnippet.showWaitSign()),
   //         errorBuilder: (_, error) => Center(child: Text(error.toString())),
   //       ),
   //       controller: _pdfControllerPinch,
@@ -183,8 +183,8 @@ class _PinchPageState extends State<PinchPage> {
           //         return child;
           //       },
           //     ),
-          //     documentLoaderBuilder: (_) => Center(child: Snippet.showWaitSign()),
-          //     pageLoaderBuilder: (_) => Center(child: Snippet.showWaitSign()),
+          //     documentLoaderBuilder: (_) => Center(child: CretaSnippet.showWaitSign()),
+          //     pageLoaderBuilder: (_) => Center(child: CretaSnippet.showWaitSign()),
           //     errorBuilder: (_, error) => Center(child: Text(error.toString())),
           //   ),
           //   controller: _pdfControllerPinch,

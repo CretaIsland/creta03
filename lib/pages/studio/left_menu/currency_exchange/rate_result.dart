@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:creta03/pages/studio/left_menu/currency_exchange/currency_api.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../design_system/component/snippet.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 import 'package:creta_studio_model/model/frame_model.dart';
 import 'conversion_card.dart';
 import 'model/rates_model.dart';
@@ -57,7 +57,7 @@ class _RateResultState extends State<RateResult> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
-            child: Snippet.showWaitSign(),
+            child: CretaSnippet.showWaitSign(),
           );
         } else {
           currentRate = snapshot.data?.rates;

@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, depend_on_referenced_packages
 
 import 'package:creta_common/common/creta_color.dart'; //import 'package:creta03/pages/studio/sample_data.dart';
+import 'package:creta_common/common/creta_vars.dart';
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,7 +9,6 @@ import 'package:hycop/hycop.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'package:logging/logging.dart';
 import 'package:get/get.dart';
-import 'package:creta_common/common/creta_constant.dart';
 import 'package:creta_common/common/cross_common_job.dart';
 import 'pages/studio/studio_constant.dart';
 import 'pages/studio/studio_getx_controller.dart';
@@ -49,7 +49,7 @@ class _MainRouteAppState extends ConsumerState<MainRouteApp> {
   void initState() {
     super.initState();
     CrossCommonJob ccj = CrossCommonJob();
-    CretaVariables.isCanvaskit = ccj.isInUsingCanvaskit();
+    CretaVars.isCanvaskit = ccj.isInUsingCanvaskit();
 
     saveManagerHolder = SaveManager();
   }

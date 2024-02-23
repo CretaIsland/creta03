@@ -259,7 +259,7 @@ class _LeftMenuFrameState extends State<LeftMenuFrame> with FrameMixin {
   //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
   //       crossAxisCount: 2, //1 개의 행에 보여줄 item 개수
   //       childAspectRatio:
-  //           LayoutConst.bookThumbSize.width / LayoutConst.bookThumbSize.height, // 가로÷세로 비율
+  //           CretaConst.bookThumbSize.width / CretaConst.bookThumbSize.height, // 가로÷세로 비율
   //       mainAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수평 Padding
   //       crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
   //     ),

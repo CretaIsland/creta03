@@ -14,7 +14,7 @@ import '../../studio_getx_controller.dart';
 import '../../studio_variables.dart';
 import '../containee_nofifier.dart';
 import '../frame/frame_play_mixin.dart';
-import '../frame/sticker/draggable_stickers.dart';
+import 'package:creta03/data_io/creta_manager.dart';
 
 class TopMenuTracer extends StatefulWidget {
   final FrameManager frameManager;
@@ -159,7 +159,7 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
 
         frameManager?.setSelectedMid(value.mid, doNotify: true);
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true);
-        DraggableStickers.frameSelectNotifier?.set(value.mid);
+        CretaManager.frameSelectNotifier?.set(value.mid);
 
         _sendEvent?.sendEvent(value);
         BookMainPage.pageManagerHolder!.invalidatThumbnail(frameManager!.pageModel.mid);

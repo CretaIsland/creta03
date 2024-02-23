@@ -14,8 +14,8 @@ import 'package:hycop/hycop/enum/model_enums.dart';
 //import 'app_enums.dart';
 import 'package:creta_common/model/creta_model.dart';
 
-import 'team_model.dart';
-import 'user_property_model.dart';
+import 'package:creta_user_model/model/team_model.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
 //import 'creta_style_mixin.dart';
 
 // ignore: camel_case_types
@@ -44,14 +44,14 @@ class ChannelModel extends CretaModel {
       ];
   ChannelModel(String pmid) : super(pmid: pmid, type: ExModelType.channel, parent: '');
 
-  ChannelModel.withName({
-    required this.userId,
-    required this.teamId,
-    this.followerCount = 0,
-    this.latestContentsTime = '',
-    this.bannerImgUrl = '',
-    this.description = ''
-  }) : super(pmid: '', type: ExModelType.channel, parent: '');
+  ChannelModel.withName(
+      {required this.userId,
+      required this.teamId,
+      this.followerCount = 0,
+      this.latestContentsTime = '',
+      this.bannerImgUrl = '',
+      this.description = ''})
+      : super(pmid: '', type: ExModelType.channel, parent: '');
 
   @override
   void copyFrom(AbsExModel src, {String? newMid, String? pMid}) {

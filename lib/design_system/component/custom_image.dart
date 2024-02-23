@@ -3,8 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
-import 'snippet.dart';
-
+import 'package:creta_common/common/creta_snippet.dart';
 // import 'snippet.dart';
 
 class ImageDetail {
@@ -150,7 +149,7 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
         return (value.isError && imageOnError != null)
             ? Center(child: imageOnError)
             : !value.isLoaded
-                ? Center(child: Snippet.showWaitSign())
+                ? Center(child: CretaSnippet.showWaitSign())
                 : Center(child: _show());
       }),
     );

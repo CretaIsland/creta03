@@ -96,7 +96,7 @@ class _CameraFrameState extends State<CameraFrame> {
     //     if(snapshot.connectionState == ConnectionState.done) {
     //       return RTCVideoView(renderer!);
     //     } else {
-    //        return Snippet.showWaitSign();
+    //        return CretaSnippet.showWaitSign();
     //     }
     //   },
     // );

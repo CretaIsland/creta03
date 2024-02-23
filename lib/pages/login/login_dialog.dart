@@ -13,7 +13,7 @@ import 'package:creta_common/common/creta_common_utils.dart';
 //import '../login_page.dart';
 import 'creta_account_manager.dart';
 //import '../../routes.dart';
-import '../../design_system/component/snippet.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 import '../../design_system/buttons/creta_button.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_checkbox.dart';
@@ -25,8 +25,8 @@ import '../../design_system/menu/creta_drop_down_button.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 import '../../design_system/text_field/creta_text_field.dart';
 import 'package:creta_common/model/app_enums.dart';
-import '../../model/user_property_model.dart';
-import '../../model/team_model.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
+import 'package:creta_user_model/model/team_model.dart';
 import '../../model/channel_model.dart';
 import '../../common/creta_utils.dart';
 import '../mypage/popup/popup_rateplan.dart';
@@ -591,7 +591,7 @@ enum LoginPageState {
 //           _isLoginProcessing
 //               ? BTN.line_blue_iwi_m(
 //                   width: 294,
-//                   widget: Snippet.showWaitSign(color: Colors.white, size: 16),
+//                   widget: CretaSnippet.showWaitSign(color: Colors.white, size: 16),
 //                   buttonColor: CretaButtonColor.skyTitle,
 //                   decoType: CretaButtonDeco.fill,
 //                   textColor: Colors.white,
@@ -2031,7 +2031,7 @@ class _LoginDialogState extends State<LoginDialog> {
             child: _isLoginProcessing
                 ? BTN.line_blue_iwi_m(
                     width: 326,
-                    widget: Snippet.showWaitSign(color: Colors.white, size: 16),
+                    widget: CretaSnippet.showWaitSign(color: Colors.white, size: 16),
                     buttonColor: CretaButtonColor.skyTitle,
                     decoType: CretaButtonDeco.fill,
                     textColor: Colors.white,
@@ -2165,7 +2165,7 @@ class _LoginDialogState extends State<LoginDialog> {
             child: _isLoginProcessing
                 ? BTN.line_blue_iwi_m(
                     width: 326,
-                    widget: Snippet.showWaitSign(color: Colors.white, size: 16),
+                    widget: CretaSnippet.showWaitSign(color: Colors.white, size: 16),
                     buttonColor: CretaButtonColor.skyTitle,
                     decoType: CretaButtonDeco.fill,
                     textColor: Colors.white,
@@ -2529,7 +2529,7 @@ class _LoginDialogState extends State<LoginDialog> {
             child: _isLoginProcessing
                 ? BTN.line_blue_iwi_m(
                     width: 326,
-                    widget: Snippet.showWaitSign(color: Colors.white, size: 16),
+                    widget: CretaSnippet.showWaitSign(color: Colors.white, size: 16),
                     buttonColor: CretaButtonColor.skyTitle,
                     decoType: CretaButtonDeco.fill,
                     textColor: Colors.white,

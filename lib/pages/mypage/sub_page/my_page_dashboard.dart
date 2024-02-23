@@ -4,8 +4,8 @@ import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
 import 'package:creta_common/common/creta_font.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta03/lang/creta_mypage_lang.dart';
-import 'package:creta03/model/team_model.dart';
-import 'package:creta03/model/user_property_model.dart';
+import 'package:creta_user_model/model/team_model.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
 import 'package:creta03/pages/mypage/mypage_common_widget.dart';
 
 import 'package:flutter/material.dart';

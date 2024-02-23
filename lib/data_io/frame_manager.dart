@@ -1,6 +1,7 @@
 //import 'dart:ui';
 
 import 'package:creta03/pages/studio/book_main_page.dart';
+import 'package:creta_common/common/creta_const.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter_treeview/flutter_treeview.dart';
 import '../design_system/component/tree/flutter_treeview.dart';
@@ -19,7 +20,6 @@ import 'package:creta_studio_model/model/frame_model.dart';
 import 'package:creta_studio_model/model/page_model.dart';
 import '../pages/studio/book_preview_menu.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
-import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
 //import '../pages/studio/containees/frame/sticker/stickerview.dart';
 import '../pages/studio/left_menu/left_menu_page.dart';
 import '../pages/studio/left_menu/music/music_player_frame.dart';
@@ -1001,17 +1001,17 @@ class FrameManager extends CretaManager {
   }
 
   bool clickedInsideSelectedFrame(Offset position) {
-    if (DraggableStickers.frameSelectNotifier == null) return false;
-    if (DraggableStickers.frameSelectNotifier!.selectedAssetId == null) return false;
+    if (CretaManager.frameSelectNotifier == null) return false;
+    if (CretaManager.frameSelectNotifier!.selectedAssetId == null) return false;
     // GlobalKey? key =
-    //     findStickerKey(pageModel.mid, DraggableStickers.frameSelectNotifier!.selectedAssetId!);
+    //     findStickerKey(pageModel.mid, CretaManager.frameSelectNotifier!.selectedAssetId!);
     // if (key == null) {
-    //   //print(' key is null , ${DraggableStickers.frameSelectNotifier!.selectedAssetId}');
+    //   //print(' key is null , ${CretaManager.frameSelectNotifier!.selectedAssetId}');
     //   return false;
     // }
     //return CretaCommonUtils.isMousePointerOnWidget(key, position);
     String keyString =
-        stickerKeyMangler(pageModel.mid, DraggableStickers.frameSelectNotifier!.selectedAssetId!);
+        stickerKeyMangler(pageModel.mid, CretaManager.frameSelectNotifier!.selectedAssetId!);
     return stickerKeyHandler.isMousePointerOnWidget(keyString, position);
   }
 
@@ -1082,7 +1082,7 @@ class FrameManager extends CretaManager {
       if (min > 2) {
         return min - 1;
       }
-      return min - StudioConst.orderVar;
+      return min - CretaConst.orderVar;
     }
     int len = getAvailLength();
     if (len == 0) return 1;

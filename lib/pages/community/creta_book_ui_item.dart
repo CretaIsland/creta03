@@ -43,7 +43,7 @@ import 'package:creta_studio_model/model/book_model.dart';
 //import 'package:creta_studio_model/model/page_model.dart';
 //import 'package:creta_studio_model/model/frame_model.dart';
 import '../../../model/watch_history_model.dart';
-import '../../../model/user_property_model.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
 import '../../../model/channel_model.dart';
 //import '../login/creta_account_manager.dart';
 //import 'package:creta_common/model/app_enums.dart';

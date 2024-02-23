@@ -1,4 +1,5 @@
 import 'package:creta03/design_system/buttons/creta_button.dart';
+import 'package:creta_common/common/creta_const.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
@@ -61,11 +62,11 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
         LayoutConst.cretaTopTitlePaddingLT.width -
         LayoutConst.cretaTopTitlePaddingRB.width;
     double heightDelta =
-        widget.height - (LayoutConst.cretaPaddingPixel + LayoutConst.cretaTopTitleHeight);
+        widget.height - (CretaConst.cretaPaddingPixel + LayoutConst.cretaTopTitleHeight);
     if (isExistFilter) {
       heightDelta -= LayoutConst.cretaTopFilterHeight;
     } else {
-      heightDelta -= LayoutConst.cretaPaddingPixel;
+      heightDelta -= CretaConst.cretaPaddingPixel;
     }
     bool isExistTabMenu = (widget.tabMenuList ?? []).isNotEmpty;
     if (isExistTabMenu) {

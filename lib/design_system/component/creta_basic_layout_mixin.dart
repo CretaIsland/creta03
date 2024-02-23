@@ -1,22 +1,21 @@
 import 'package:creta03/design_system/menu/creta_popup_menu.dart';
+import 'package:creta_common/common/creta_const.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 
 import '../../common/creta_utils.dart';
 
-import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_variables.dart';
 import 'creta_banner_pane.dart';
 import 'creta_leftbar.dart';
-import 'snippet.dart';
 //import 'creta_filter_pane.dart';
 import 'creta_layout_rect.dart';
 
 mixin CretaBasicLayoutMixin {
   ScrollController _bannerScrollController = ScrollController();
-  double _bannerHeight = LayoutConst.cretaBannerMinHeight;
-  double _bannerPaneMaxHeight = LayoutConst.cretaBannerMinHeight;
-  double _bannerPaneMinHeight = LayoutConst.cretaBannerMinHeight;
+  double _bannerHeight = CretaConst.cretaBannerMinHeight;
+  double _bannerPaneMaxHeight = CretaConst.cretaBannerMinHeight;
+  double _bannerPaneMinHeight = CretaConst.cretaBannerMinHeight;
   double _scrollOffset = 0;
   bool _usingBannerScrollbar = false;
   void Function(bool)? _scrollChangedCallback;
@@ -38,8 +37,8 @@ mixin CretaBasicLayoutMixin {
 
   void setUsingBannerScrollBar({
     required void Function(bool bannerSizeChanged) scrollChangedCallback,
-    double bannerMaxHeight = LayoutConst.cretaBannerMinHeight,
-    double bannerMinHeight = LayoutConst.cretaBannerMinHeight,
+    double bannerMaxHeight = CretaConst.cretaBannerMinHeight,
+    double bannerMinHeight = CretaConst.cretaBannerMinHeight,
   }) {
     _bannerHeight = bannerMaxHeight;
     _bannerPaneMaxHeight = bannerMaxHeight;
@@ -110,13 +109,13 @@ mixin CretaBasicLayoutMixin {
     );
     // gridArea = CretaLayoutRect.fromPadding(
     //   rightPaneRect.width,
-    //   rightPaneRect.height, // - LayoutConst.cretaBannerMinHeight,
+    //   rightPaneRect.height, // - CretaConst.cretaBannerMinHeight,
     //   40,
     //   40,
     //   40,
     //   40,
     // );
-    //gridArea = Size(rightPaneArea.width, rightPaneArea.height - LayoutConst.cretaBannerMinHeight);
+    //gridArea = Size(rightPaneArea.width, rightPaneArea.height - CretaConst.cretaBannerMinHeight);
     // logger.finest(
     //     'displayWidth=${StudioVariables.displayWidth}, displayHeight=${StudioVariables.displayHeight}');
     // logger.finest('topBannerArea=${topBannerArea.width}, ${topBannerArea.height}');

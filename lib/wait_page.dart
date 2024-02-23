@@ -1,4 +1,4 @@
-import 'package:creta03/design_system/component/snippet.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 import 'package:flutter/material.dart';
 
 class WaitPage extends StatelessWidget {
@@ -7,7 +7,7 @@ class WaitPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Snippet.showWaitSign(),
+      child: CretaSnippet.showWaitSign(),
     );
   }
 }

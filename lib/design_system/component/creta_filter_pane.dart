@@ -54,11 +54,11 @@ class _CretaFilterPaneState extends State<CretaFilterPane> {
     // double internalWidth =
     //     widget.width - LayoutConst.cretaTopTitlePaddingLT.width - LayoutConst.cretaTopTitlePaddingRB.width;
     // double heightDelta = widget.height -
-    //     (LayoutConst.cretaPaddingPixel + LayoutConst.cretaTopTitleHeight);
+    //     (CretaConst.cretaPaddingPixel + LayoutConst.cretaTopTitleHeight);
     // if (isExistFilter) {
     //   heightDelta -= LayoutConst.cretaTopFilterHeight;
     // } else {
-    //   heightDelta -= LayoutConst.cretaPaddingPixel;
+    //   heightDelta -= CretaConst.cretaPaddingPixel;
     // }
     return Container(
       width: widget.width,

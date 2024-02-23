@@ -9,7 +9,7 @@ import '../../../lang/creta_studio_lang.dart';
 import 'package:creta_studio_model/model/link_model.dart';
 import '../../../pages/studio/book_main_page.dart';
 import '../../../pages/studio/containees/containee_nofifier.dart';
-import '../../../pages/studio/containees/frame/sticker/draggable_stickers.dart';
+import 'package:creta03/data_io/creta_manager.dart';
 import '../../../pages/studio/containees/frame/sticker/mini_menu.dart';
 import '../../../pages/studio/left_menu/left_menu_page.dart';
 import '../../../pages/studio/studio_getx_controller.dart';
@@ -195,7 +195,7 @@ class MyTreeViewState extends State<MyTreeView> {
     //     builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
     //       if (snapshot.hasData == false) {
     //         //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
-    //         return Snippet.showWaitSign();
+    //         return CretaSnippet.showWaitSign();
     //       }
     //       if (snapshot.hasError) {
     //         //error가 발생하게 될 경우 반환하게 되는 부분
@@ -438,7 +438,7 @@ class MyTreeViewState extends State<MyTreeView> {
     MiniMenu.setShowFrame(true);
     //BookMainPage.miniMenuNotifier!.show();  // 안해도 된다.
     BookMainPage.containeeNotifier!.setFrameClick(true); // page 를 누른 것이 아닌것으로 하기 위해
-    DraggableStickers.frameSelectNotifier?.set(frameModel.mid); // 실제 frame이 select 되도록 하기 위해
+    CretaManager.frameSelectNotifier?.set(frameModel.mid); // 실제 frame이 select 되도록 하기 위해
     BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true); // right menu tab
     frameManager.setSelectedMid(frameModel.mid,
         doNotify: false); // 현재 선택된 것이 무엇인지 확실시, 이벤트는 날리지 않는다. page_main 으로 이벤트가 가기 때문이다.
@@ -452,7 +452,7 @@ class MyTreeViewState extends State<MyTreeView> {
     MiniMenu.setShowFrame(false);
     //BookMainPage.miniMenuNotifier!.show();  // 안해도 된다.
     BookMainPage.containeeNotifier!.setFrameClick(true); // page 를 누른 것이 아닌것으로 하기 위해
-    DraggableStickers.frameSelectNotifier?.set(frameModel.mid); // 실제 frame이 select 되도록 하기 위해
+    CretaManager.frameSelectNotifier?.set(frameModel.mid); // 실제 frame이 select 되도록 하기 위해
     BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true); // right menu tab
 
     frameManager.setSelectedMid(frameModel.mid, doNotify: false);

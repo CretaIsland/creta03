@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
-import '../../lang/creta_studio_lang.dart';
+import 'package:creta_common/lang/creta_lang.dart';
+
 import 'package:creta_studio_model/model/book_model.dart';
 
 class SampleData {
@@ -8,7 +9,7 @@ class SampleData {
 
   static initSample() {
     sampleBook.name
-        .set(CretaStudioLang.sampleBookName, save: false, noUndo: true, dontChangeBookTime: true);
+        .set(CretaLang.sampleBookName, save: false, noUndo: true, dontChangeBookTime: true);
     sampleBook.width.set(1920, save: false, noUndo: true, dontChangeBookTime: true);
     sampleBook.height.set(1080, save: false, noUndo: true, dontChangeBookTime: true);
 

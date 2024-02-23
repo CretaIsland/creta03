@@ -25,8 +25,8 @@ import '../../data_io/team_manager.dart';
 import '../../data_io/frame_manager.dart';
 import '../../data_io/channel_manager.dart';
 import '../../data_io/enterprise_manager.dart';
-import '../../model/user_property_model.dart';
-import '../../model/team_model.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
+import 'package:creta_user_model/model/team_model.dart';
 import '../../model/channel_model.dart';
 import '../../model/enterprise_model.dart';
 import 'package:creta_studio_model/model/frame_model.dart';
@@ -62,10 +62,10 @@ class CretaAccountManager {
   static set setTeamList(List<TeamModel> teamList) => _loginTeamList = [...teamList];
   static List<TeamModel> get getTeamList => _loginTeamList;
 
-  static TeamModel? _currentTeam;
-  static TeamModel? get getCurrentTeam => _currentTeam;
-  static final Map<String, List<UserPropertyModel>> _teamMemberMap = {};
-  static Map<String, List<UserPropertyModel>> get getTeamMemberMap => _teamMemberMap;
+  //static TeamModel? getCurrentTeam;
+  static TeamModel? get getCurrentTeam => TeamModel.getCurrentTeam;
+  //static final Map<String, List<UserPropertyModel>> getTeamMemberMap = {};
+  static Map<String, List<UserPropertyModel>> get getTeamMemberMap => TeamModel.getTeamMemberMap;
 
   static ChannelModel? _loginChannel;
   static set setChannel(ChannelModel? model) => _loginChannel = model;
@@ -280,7 +280,7 @@ class CretaAccountManager {
       for (var model in teamManagerHolder.modelList) {
         TeamModel teamModel = model as TeamModel;
         teamMap[teamModel.getMid] = teamModel;
-        _teamMemberMap[teamModel.getMid] =
+        getTeamMemberMap[teamModel.getMid] =
             await _getTeamMembers(teamModel.getMid, teamModel.teamMembers);
       }
       for (String teamMid in getUserProperty!.teams) {
@@ -296,8 +296,8 @@ class CretaAccountManager {
   }
 
   static List<UserPropertyModel>? getMyTeamMembers() {
-    if (_currentTeam == null) return null;
-    return _teamMemberMap[_currentTeam!.getMid];
+    if (getCurrentTeam == null) return null;
+    return getTeamMemberMap[getCurrentTeam!.getMid];
   }
 
   static Future<List<UserPropertyModel>> _getTeamMembers(
@@ -321,56 +321,56 @@ class CretaAccountManager {
   }
 
   static void deleteTeamMember(String targetEmail, int permission) {
-    if (_currentTeam == null) return;
+    if (getCurrentTeam == null) return;
     if (permission == 1) {
       //manager
-      _currentTeam!.managers.remove(targetEmail);
+      getCurrentTeam!.managers.remove(targetEmail);
     } else {
       // general
-      _currentTeam!.generalMembers.remove(targetEmail);
+      getCurrentTeam!.generalMembers.remove(targetEmail);
     }
 
-    _currentTeam!.teamMembers.remove(targetEmail);
-    _currentTeam!.removedMembers.add(targetEmail);
+    getCurrentTeam!.teamMembers.remove(targetEmail);
+    getCurrentTeam!.removedMembers.add(targetEmail);
 
-    _teamMemberMap[_currentTeam!.mid]!.removeWhere((element) => element.email == targetEmail);
-    teamManagerHolder.setToDB(_currentTeam!);
+    getTeamMemberMap[getCurrentTeam!.mid]!.removeWhere((element) => element.email == targetEmail);
+    teamManagerHolder.setToDB(getCurrentTeam!);
   }
 
   static void addTeamMember(String targetEmail) {
-    if (_currentTeam == null) return;
-    _currentTeam!.generalMembers.add(targetEmail);
-    _currentTeam!.teamMembers.add(targetEmail);
-    if (_currentTeam!.removedMembers.contains(targetEmail)) {
-      _currentTeam!.removedMembers.remove(targetEmail);
+    if (getCurrentTeam == null) return;
+    getCurrentTeam!.generalMembers.add(targetEmail);
+    getCurrentTeam!.teamMembers.add(targetEmail);
+    if (getCurrentTeam!.removedMembers.contains(targetEmail)) {
+      getCurrentTeam!.removedMembers.remove(targetEmail);
     }
-    teamManagerHolder.setToDB(_currentTeam!);
+    teamManagerHolder.setToDB(getCurrentTeam!);
     userPropertyManagerHolder.emailToModel(targetEmail).then((value) {
       if (value != null) {
-        _teamMemberMap[_currentTeam!.mid]!.add(value);
+        getTeamMemberMap[getCurrentTeam!.mid]!.add(value);
         teamManagerHolder.notify();
       }
     });
   }
 
   static void changePermission(String targetEmail, int presentPermission, int newPermission) {
-    if (_currentTeam == null) return;
+    if (getCurrentTeam == null) return;
     if (presentPermission == 1) {
       //manager
-      _currentTeam!.managers.remove(targetEmail);
+      getCurrentTeam!.managers.remove(targetEmail);
     } else {
       // general
-      _currentTeam!.generalMembers.remove(targetEmail);
+      getCurrentTeam!.generalMembers.remove(targetEmail);
     }
 
     if (newPermission == 1) {
       //manager
-      _currentTeam!.managers.add(targetEmail);
+      getCurrentTeam!.managers.add(targetEmail);
     } else {
       // general
-      _currentTeam!.generalMembers.add(targetEmail);
+      getCurrentTeam!.generalMembers.add(targetEmail);
     }
-    teamManagerHolder.setToDB(_currentTeam!);
+    teamManagerHolder.setToDB(getCurrentTeam!);
     teamManagerHolder.notify();
   }
 
@@ -378,7 +378,7 @@ class CretaAccountManager {
     if (index >= _loginTeamList.length) {
       return false;
     }
-    _currentTeam = _loginTeamList[index];
+    TeamModel.setCurrentTeam(_loginTeamList[index]);
     return true;
   }
 

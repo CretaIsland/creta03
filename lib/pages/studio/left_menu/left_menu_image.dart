@@ -13,7 +13,7 @@ import 'package:translator_plus/translator_plus.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/component/creta_property_card.dart';
 import '../../../design_system/component/custom_image.dart';
-import '../../../design_system/component/snippet.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 import 'package:creta_common/common/creta_color.dart';
 import '../../../design_system/text_field/creta_search_bar.dart';
 import '../../../lang/creta_studio_lang.dart';
@@ -415,7 +415,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
           child: SizedBox(
             height: 350.0,
             child: Center(
-              child: Snippet.showWaitSign(),
+              child: CretaSnippet.showWaitSign(),
             ),
           ),
         );

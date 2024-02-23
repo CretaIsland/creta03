@@ -3,7 +3,7 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:routemaster/routemaster.dart';
 
-import 'package:creta_common/common/creta_constant.dart';
+import 'package:creta_common/common/creta_vars.dart';
 import '../../data_io/book_manager.dart';
 import '../../design_system/component/creta_popup.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
@@ -29,13 +29,12 @@ class StudioMainMenu extends StatefulWidget {
       title: "${CretaStudioLang.export}      ",
       icon: Icons.file_download_outlined,
       question: CretaStudioLang.downloadConfirm,
-      noBtText: CretaVariables.isDeveloper
-          ? CretaStudioLang.noBtDnTextDeloper
-          : CretaStudioLang.noBtDnText,
+      noBtText:
+          CretaVars.isDeveloper ? CretaStudioLang.noBtDnTextDeloper : CretaStudioLang.noBtDnText,
       yesBtText: CretaStudioLang.yesBtDnText,
       yesIsDefault: true,
       onNo: () {
-        if (CretaVariables.isDeveloper) {
+        if (CretaVars.isDeveloper) {
           BookMainPage.bookManagerHolder?.download(context, BookMainPage.pageManagerHolder, false);
         }
       },

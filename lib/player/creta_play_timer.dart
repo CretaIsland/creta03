@@ -18,7 +18,7 @@ import 'package:creta_studio_model/model/frame_model.dart';
 import 'package:creta_studio_model/model/link_model.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
-import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
+import 'package:creta03/data_io/creta_manager.dart';
 import '../pages/studio/left_menu/left_menu_page.dart';
 import '../pages/studio/studio_variables.dart';
 import 'creta_abs_player.dart';
@@ -322,9 +322,9 @@ class CretaPlayTimer extends ChangeNotifier {
     if (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Contents) {
       ContentsModel? content = contentsManager.getCurrentModel();
       if (content != null &&
-          DraggableStickers.frameSelectNotifier != null &&
-          DraggableStickers.frameSelectNotifier!.selectedAssetId != null) {
-        if (content.parentMid.value == DraggableStickers.frameSelectNotifier!.selectedAssetId) {
+          CretaManager.frameSelectNotifier != null &&
+          CretaManager.frameSelectNotifier!.selectedAssetId != null) {
+        if (content.parentMid.value == CretaManager.frameSelectNotifier!.selectedAssetId) {
           logger.finest('notifyToProperty');
           contentsManager.setSelectedMid(content.mid, doNotify: false);
           BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);
@@ -504,8 +504,8 @@ class CretaPlayTimer extends ChangeNotifier {
         // Studio 에서 선택된 프레임의 경우, 플레이가 정지한다.
 
         if (StudioVariables.isPreview == false) {
-          if (DraggableStickers.frameSelectNotifier != null && _currentModel != null) {
-            if (DraggableStickers.frameSelectNotifier!.selectedAssetId ==
+          if (CretaManager.frameSelectNotifier != null && _currentModel != null) {
+            if (CretaManager.frameSelectNotifier!.selectedAssetId ==
                     _currentModel!.parentMid.value &&
                 _currentModel!.isRemoved.value == false) {
               if (_currentModel!.isVideo() || _isPauseTimer == false) {}

@@ -3,8 +3,8 @@ import 'package:hycop/hycop.dart';
 
 import 'package:creta03/data_io/creta_manager.dart';
 import 'package:creta_common/model/creta_model.dart';
-import 'package:creta03/model/team_model.dart';
-import 'package:creta03/model/user_property_model.dart';
+import 'package:creta_user_model/model/team_model.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
 //import 'package:creta03/pages/login_page.dart';
 
 class TeamManager extends CretaManager {
@@ -221,9 +221,9 @@ class TeamManager extends CretaManager {
   //   queryByAddedContitions();
   // }
 
-  TeamModel? get currentTeam => CretaAccountManager.getCurrentTeam;
+  TeamModel? get currentTeam => TeamModel.getCurrentTeam;
 
-  Map<String, List<UserPropertyModel>> get teamMemberMap => CretaAccountManager.getTeamMemberMap;
+  Map<String, List<UserPropertyModel>> get teamMemberMap => TeamModel.getTeamMemberMap;
 
   List<TeamModel> get teamModelList => CretaAccountManager.getTeamList;
 

@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
 
+import 'package:creta_common/common/creta_const.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
@@ -10,7 +11,6 @@ import '../buttons/creta_button_wrapper.dart';
 import '../buttons/creta_tapbar_button.dart';
 import 'package:creta_common/common/creta_color.dart';
 import '../menu/creta_popup_menu.dart';
-import 'snippet.dart';
 //import '../../pages/login_page.dart';
 import '../../pages/login/creta_account_manager.dart';
 import '../../routes.dart';

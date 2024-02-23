@@ -292,8 +292,8 @@ class _LinkWidgetState extends State<LinkWidget> {
     if (widget.frameModel.width.value * StudioVariables.applyScale < 96) return false;
 
     // Frame 이 선택된 경우에만 보이도록 수정한다.
-    // if (DraggableStickers.frameSelectNotifier != null) {
-    //   if (DraggableStickers.frameSelectNotifier!.selectedAssetId != widget.frameModel.mid) {
+    // if (CretaManager.frameSelectNotifier != null) {
+    //   if (CretaManager.frameSelectNotifier!.selectedAssetId != widget.frameModel.mid) {
     //     return false;
     //   }
     // }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
-import 'package:creta_common/common/creta_constant.dart';
+import 'package:creta_common/common/creta_const.dart';
 import '../../data_io/creta_manager.dart';
 import 'package:creta_common/model/creta_model.dart';
 import 'package:creta_studio_model/model/frame_model.dart';
@@ -25,7 +25,7 @@ class StudioVariables {
   static String selectedBookMid = ''; // selected book mid
   static double topMenuBarHeight = LayoutConst.topMenuBarHeight;
   static double menuStickWidth = LayoutConst.menuStickWidth;
-  static double appbarHeight = CretaConstant.appbarHeight;
+  static double appbarHeight = CretaConst.appbarHeight;
 
   static double verticalScrollOffset = 0;
   static double horizontalScrollOffset = 0;
@@ -37,8 +37,7 @@ class StudioVariables {
 
   static double displayWidth = 1920;
   static double displayHeight = 961;
-  static Size displaySize = Size.zero;
-
+  
   static double workWidth = 1920 - 80;
   static double workHeight = 961;
   static double workRatio = 1;

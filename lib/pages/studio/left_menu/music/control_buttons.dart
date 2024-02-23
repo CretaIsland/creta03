@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:just_audio/just_audio.dart';
 
-import '../../../../design_system/component/snippet.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 import '../../studio_constant.dart';
 
 class ControlButtons extends StatefulWidget {
@@ -188,7 +188,7 @@ class _ControlButtonsState extends State<ControlButtons> {
             margin: EdgeInsets.all(6.0 * widget.scaleVal),
             width: iconSize,
             height: iconSize,
-            child: Snippet.showWaitSign(),
+            child: CretaSnippet.showWaitSign(),
           );
         } else if (!(playing ?? false)) {
           return MusicControlBtn(

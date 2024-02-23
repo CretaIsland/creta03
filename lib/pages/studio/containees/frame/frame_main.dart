@@ -12,7 +12,7 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 
 //import '../../../../common/creta_utils.dart';
 //import '../../../../common/creta_utils.dart';
-import 'package:creta_common/common/creta_constant.dart';
+import 'package:creta_common/common/creta_vars.dart';
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
@@ -191,7 +191,7 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
               title: "${CretaStudioLang.deleteFrameTooltip}      ",
               icon: Icons.file_download_outlined,
               question: '${CretaStudioLang.isOverlayFrame} ${CretaStudioLang.deleteConfirm}',
-              noBtText: CretaVariables.isDeveloper
+              noBtText: CretaVars.isDeveloper
                   ? CretaStudioLang.noBtDnTextDeloper
                   : CretaStudioLang.noBtDnText,
               yesBtText: CretaStudioLang.yesBtDnText,

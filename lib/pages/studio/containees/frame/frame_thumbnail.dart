@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 
 import 'package:creta03/design_system/component/creta_texture_widget.dart';
 import 'package:creta03/design_system/component/shape/creta_clipper.dart';
@@ -160,7 +161,7 @@ class FrameThumbnailState extends CretaState<FrameThumbnail> with ContaineeMixin
         builder: (context, snapshot) {
           if (snapshot.hasData == false) {
             //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
-            return Snippet.showWaitSign();
+            return CretaSnippet.showWaitSign();
           }
           if (snapshot.hasError) {
             //error가 발생하게 될 경우 반환하게 되는 부분

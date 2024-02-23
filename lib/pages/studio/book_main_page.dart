@@ -23,8 +23,9 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:creta03/lang/creta_studio_lang.dart';
 import 'package:creta03/model/connected_user_model.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 
-import 'package:creta_common/common/creta_constant.dart';
+import 'package:creta_common/common/creta_const.dart';
 import '../../data_io/book_manager.dart';
 import '../../data_io/connected_user_manager.dart';
 import '../../data_io/contents_manager.dart';
@@ -995,7 +996,7 @@ class _BookMainPageState extends State<BookMainPage> {
           if (snapshot.hasData == false) {
             logger.finest("wait data ...(WaitData)");
             return Center(
-              child: Snippet.showWaitSign(),
+              child: CretaSnippet.showWaitSign(),
             );
           }
           if (snapshot.connectionState == ConnectionState.done) {
@@ -1121,7 +1122,7 @@ class _BookMainPageState extends State<BookMainPage> {
     } else {
       StudioVariables.topMenuBarHeight = LayoutConst.topMenuBarHeight;
       StudioVariables.menuStickWidth = LayoutConst.menuStickWidth;
-      StudioVariables.appbarHeight = CretaConstant.appbarHeight;
+      StudioVariables.appbarHeight = CretaConst.appbarHeight;
       StudioVariables.pageDisplayRate = 0.849;
     }
 
@@ -1513,13 +1514,13 @@ class _BookMainPageState extends State<BookMainPage> {
               //   title: "${CretaStudioLang.export}      ",
               //   icon: Icons.file_download_outlined,
               //   question: CretaStudioLang.downloadConfirm,
-              //   noBtText: CretaVariables.isDeveloper
+              //   noBtText: CretaVars.isDeveloper
               //       ? CretaStudioLang.noBtDnTextDeloper
               //       : CretaStudioLang.noBtDnText,
               //   yesBtText: CretaStudioLang.yesBtDnText,
               //   yesIsDefault: true,
               //   onNo: () {
-              //     if (CretaVariables.isDeveloper) {
+              //     if (CretaVars.isDeveloper) {
               //       BookMainPage.bookManagerHolder
               //           ?.download(context, BookMainPage.pageManagerHolder, false);
               //     }

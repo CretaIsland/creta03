@@ -4,13 +4,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'package:creta_common/common/creta_common_utils.dart';
-import 'package:creta03/model/user_property_model.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:hycop/hycop.dart';
 import '../common/creta_utils.dart';
 import '../design_system/component/tree/src/models/node.dart';
-import '../design_system/menu/creta_popup_menu.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import '../lang/creta_studio_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
@@ -18,7 +17,7 @@ import 'package:creta_studio_model/model/book_model.dart';
 import 'package:creta_studio_model/model/contents_model.dart';
 import 'package:creta_common/model/creta_model.dart';
 import 'package:creta_studio_model/model/page_model.dart';
-import '../model/team_model.dart';
+import 'package:creta_user_model/model/team_model.dart';
 //import '../pages/login_page.dart';
 import '../pages/login/creta_account_manager.dart';
 import '../pages/studio/book_main_page.dart';
@@ -56,78 +55,6 @@ class BookManager extends CretaManager {
   }
 
   @override
-  List<CretaMenuItem> getSortMenu(Function? onModelSorted) {
-    return [
-      CretaMenuItem(
-          caption: CretaLang.basicBookSortFilter[0],
-          onPressed: () {
-            toSorted('updateTime', descending: true, onModelSorted: onModelSorted);
-          },
-          selected: true),
-      CretaMenuItem(
-          caption: CretaLang.basicBookSortFilter[1],
-          onPressed: () {
-            toSorted('name', onModelSorted: onModelSorted);
-          },
-          selected: false),
-      CretaMenuItem(
-          caption: CretaLang.basicBookSortFilter[2],
-          onPressed: () {
-            toSorted('likeCount', descending: true, onModelSorted: onModelSorted);
-          },
-          selected: false),
-      CretaMenuItem(
-          caption: CretaLang.basicBookSortFilter[3],
-          onPressed: () {
-            toSorted('viewCount', descending: true, onModelSorted: onModelSorted);
-          },
-          selected: false),
-    ];
-  }
-
-  @override
-  List<CretaMenuItem> getFilterMenu(Function? onModelFiltered) {
-    return [
-      CretaMenuItem(
-          caption: CretaLang.basicBookFilter[0],
-          onPressed: () {
-            toFiltered(null, null, AccountManager.currentLoginUser.email,
-                onModelFiltered: onModelFiltered);
-          },
-          selected: true),
-      CretaMenuItem(
-          caption: CretaLang.basicBookFilter[1],
-          onPressed: () {
-            toFiltered(
-                'bookType', BookType.presentaion.index, AccountManager.currentLoginUser.email,
-                onModelFiltered: onModelFiltered);
-          },
-          selected: false),
-      CretaMenuItem(
-          caption: CretaLang.basicBookFilter[2],
-          onPressed: () {
-            toFiltered('bookType', BookType.board.index, AccountManager.currentLoginUser.email,
-                onModelFiltered: onModelFiltered);
-          },
-          selected: false),
-      CretaMenuItem(
-          caption: CretaLang.basicBookFilter[3],
-          onPressed: () {
-            toFiltered('bookType', BookType.signage.index, AccountManager.currentLoginUser.email,
-                onModelFiltered: onModelFiltered);
-          },
-          selected: false),
-      CretaMenuItem(
-          caption: CretaLang.basicBookFilter[4],
-          onPressed: () {
-            toFiltered('bookType', BookType.etc.index, AccountManager.currentLoginUser.email,
-                onModelFiltered: onModelFiltered);
-          },
-          selected: false),
-    ];
-  }
-
-  @override
   void onSearch(String value, Function afterSearch) {
     search(['name', 'hashTag'], value, afterSearch);
   }
@@ -140,7 +67,7 @@ class BookManager extends CretaManager {
     int randomNumber = random.nextInt(100);
     String url = 'https://picsum.photos/200/?random=$randomNumber';
 
-    String name = '${CretaStudioLang.sampleBookName} ';
+    String name = '${CretaLang.sampleBookName} ';
     name += CretaCommonUtils.getNowString(deli1: '', deli2: ' ', deli3: '', deli4: ' ');
 
     //print('old mid = ${onlyOne()!.mid}');
@@ -170,7 +97,7 @@ class BookManager extends CretaManager {
       '<${PermissionType.owner.name}>$userId',
       '<${PermissionType.owner.name}>public',
     ];
-    TeamModel? myTeam = CretaAccountManager.getCurrentTeam;
+    TeamModel? myTeam = TeamModel.getCurrentTeam;
     if (myTeam != null) {
       String myTeamId = myTeam.name;
       users.add('<${PermissionType.reader.name}>$myTeamId');
@@ -202,7 +129,7 @@ class BookManager extends CretaManager {
     Map<String, QueryValue> query = {};
     List<String> creators = [];
     List<String> queryVal = [];
-    TeamModel? myTeam = CretaAccountManager.getCurrentTeam;
+    TeamModel? myTeam = TeamModel.getCurrentTeam;
     if (myTeam != null) {
       String myTeamId = myTeam.name;
       queryVal.add('<${PermissionType.reader.name}>$myTeamId');

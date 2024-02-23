@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:creta03/pages/studio/left_menu/left_menu_ele_button.dart';
 import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
-import 'package:creta03/design_system/component/snippet.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 import 'package:hycop/common/undo/undo.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../lang/creta_studio_lang.dart';
@@ -71,7 +71,7 @@ class _LeftMenuNewsState extends State<LeftMenuNews> {
               return SizedBox(
                 height: 350.0,
                 child: Center(
-                  child: Snippet.showWaitSign(),
+                  child: CretaSnippet.showWaitSign(),
                 ),
               );
             } else if (snapshot.hasError) {

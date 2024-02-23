@@ -5,6 +5,7 @@ import 'package:hycop/hycop.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:url_launcher/link.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 
 import '../pages/login/creta_account_manager.dart';
 import '../../routes.dart';
@@ -79,7 +80,7 @@ class _ResetPasswordConfirmPageState extends State<ResetPasswordConfirmPage> {
     return _isJobProcessing
         ? BTN.line_blue_iwi_m(
             width: 326,
-            widget: Snippet.showWaitSign(color: Colors.white, size: 16),
+            widget: CretaSnippet.showWaitSign(color: Colors.white, size: 16),
             buttonColor: CretaButtonColor.skyTitle,
             decoType: CretaButtonDeco.fill,
             textColor: Colors.white,

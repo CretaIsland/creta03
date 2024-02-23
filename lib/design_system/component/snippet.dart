@@ -1,12 +1,12 @@
 // ignore_for_file: non_constant_identifier_names, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:creta03/data_io/creta_manager.dart';
 import 'package:creta03/design_system/buttons/creta_button.dart';
 import 'package:creta03/pages/popup/creta_version_popup.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
@@ -14,13 +14,13 @@ import 'package:creta_common/common/creta_common_utils.dart';
 //import 'package:hycop/common/util/logger.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:hycop/hycop.dart';
-import 'package:creta_common/common/creta_constant.dart';
+import 'package:creta_common/common/creta_const.dart';
+import 'package:creta_common/common/creta_Vars.dart';
 //import '../../common/creta_utils.dart';
 import '../../data_io/frame_manager.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../pages/studio/book_main_page.dart';
-import '../../pages/studio/containees/frame/sticker/draggable_stickers.dart';
 import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_variables.dart';
 import '../../routes.dart';
@@ -50,13 +50,6 @@ extension GlobalKeyExtension on GlobalKey {
 
 class Snippet {
   static List<LogicalKeyboardKey> keys = [];
-
-  static Widget showWaitSign({double size = 40.0, Color color = CretaColor.primary}) {
-    return LoadingAnimationWidget.fourRotatingDots(
-      color: color,
-      size: size,
-    );
-  }
 
   static Widget errMsgWidget(AsyncSnapshot<Object> snapshot) {
     return Padding(
@@ -103,7 +96,7 @@ class Snippet {
     return Scaffold(
         appBar: Snippet.CretaAppBarOfStudio(context, title, additionals, invalidate: invalidate),
         floatingActionButton:
-            CretaVariables.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
+            CretaVars.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         //body: child,
         body: StudioVariables.isHandToolMode == false
@@ -147,7 +140,7 @@ class Snippet {
                   }
                   // print(
                   //     'space clicked ${details.globalPosition}-------------------------------------------');
-                  DraggableStickers.frameSelectNotifier?.set("", doNotify: true);
+                  CretaManager.frameSelectNotifier?.set("", doNotify: true);
                   BookMainPage.miniMenuNotifier?.set(false, doNoti: true);
                 }),
                 child: child,
@@ -173,8 +166,7 @@ class Snippet {
         // onErrorReport: onErrorReport,
         getBuildContext: getBuildContext,
       ),
-      floatingActionButton:
-          CretaVariables.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
+      floatingActionButton: CretaVars.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
       body:
           // GestureDetector(
           //   behavior: HitTestBehavior.opaque,
@@ -237,7 +229,7 @@ class Snippet {
   }) {
     return AppBar(
       title: title,
-      toolbarHeight: CretaConstant.appbarHeight,
+      toolbarHeight: CretaConst.appbarHeight,
       backgroundColor: Colors.white,
       shadowColor: Colors.grey[500],
       actions: (!AccountManager.currentLoginUser.isLoginedUser)
@@ -333,8 +325,7 @@ class Snippet {
       {required Widget title, required BuildContext context, required Widget child}) {
     return Scaffold(
       appBar: Snippet.CretaAppBarOfMyPage(context, title),
-      floatingActionButton:
-          CretaVariables.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
+      floatingActionButton: CretaVars.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
       body: Container(
         color: Colors.white,
         child: child,
@@ -463,11 +454,10 @@ class Snippet {
         ),
         if (!kReleaseMode)
           CretaMenuItem(
-            caption: CretaVariables.isDeveloper
-                ? CretaLang.accountMenu[6]
-                : CretaLang.accountMenu[5], //개발자모드
+            caption:
+                CretaVars.isDeveloper ? CretaLang.accountMenu[6] : CretaLang.accountMenu[5], //개발자모드
             onPressed: () {
-              CretaVariables.isDeveloper = !CretaVariables.isDeveloper;
+              CretaVars.isDeveloper = !CretaVars.isDeveloper;
               invalidate?.call();
             },
           ),
@@ -482,7 +472,7 @@ class Snippet {
       BuildContext context, Widget title, Widget? additionals,
       {void Function()? invalidate}) {
     return AppBar(
-      toolbarHeight: CretaConstant.appbarHeight,
+      toolbarHeight: CretaConst.appbarHeight,
       title: title,
       actions: [
         Center(
@@ -554,7 +544,7 @@ class Snippet {
 
   static PreferredSizeWidget MyCretaAppBarOfStudio(BuildContext context, Widget title) {
     return PreferredSize(
-        preferredSize: Size.fromHeight(CretaConstant.appbarHeight),
+        preferredSize: Size.fromHeight(CretaConst.appbarHeight),
         child: Row(
           children: [
             title,
@@ -609,7 +599,7 @@ class Snippet {
 
   static PreferredSizeWidget CretaAppBar(BuildContext context, String title) {
     return AppBar(
-      toolbarHeight: CretaConstant.appbarHeight,
+      toolbarHeight: CretaConst.appbarHeight,
       title: Text(title),
       actions: AccountManager.currentLoginUser.isLoginedUser
           ? [
@@ -1009,37 +999,4 @@ class Snippet {
       ]),
     );
   }
-}
-
-class CretaComponentLocation {
-  EdgeInsets margin; // 바깥여백
-  EdgeInsets padding; // 안쪽여백
-  double width;
-  double height;
-
-  static const EdgeInsets noSpace = EdgeInsets.all(0);
-
-  CretaComponentLocation(
-      {this.margin = noSpace,
-      this.padding = noSpace,
-      this.width = double.infinity,
-      this.height = double.infinity});
-
-  // 각 컴포넌트 좌표 & 크기
-  static CretaComponentLocation BarTop = CretaComponentLocation(
-    height: 60,
-  );
-  static CretaComponentLocation TabBar = CretaComponentLocation(
-    padding: EdgeInsets.fromLTRB(32, 40, 32, 40),
-    width: 310.0,
-  );
-  static CretaComponentLocation ListInTabBar = CretaComponentLocation(
-    padding: EdgeInsets.fromLTRB(0, 0, 0, 40),
-    width: 246.0,
-  );
-  static CretaComponentLocation UserMenuInTabBar = CretaComponentLocation(
-    padding: EdgeInsets.fromLTRB(16, 20, 16, 20),
-    width: 246.0,
-    height: 192.0,
-  );
 }

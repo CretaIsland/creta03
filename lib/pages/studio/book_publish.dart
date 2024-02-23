@@ -2,12 +2,13 @@
 
 import 'dart:math';
 
-import 'package:creta03/model/user_property_model.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
 import 'package:flutter/material.dart';
 //import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop.dart';
 import 'package:progress_bar_steppers/steppers.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 
 import '../../common/creta_utils.dart';
 import '../../data_io/book_published_manager.dart';
@@ -26,7 +27,7 @@ import 'package:creta_common/lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_studio_model/model/book_model.dart';
-import '../../model/team_model.dart';
+import 'package:creta_user_model/model/team_model.dart';
 import '../../routes.dart';
 //import '../login_page.dart';
 import '../login/creta_account_manager.dart';
@@ -266,14 +267,14 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
           builder: (context, AsyncSnapshot<bool> snapshot) {
             if (snapshot.hasData == false) {
               //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
-              return SizedBox(width: width, height: height, child: Snippet.showWaitSign());
+              return SizedBox(width: width, height: height, child: CretaSnippet.showWaitSign());
             }
             if (snapshot.hasError) {
               //error가 발생하게 될 경우 반환하게 되는 부분
               return Snippet.errMsgWidget(snapshot);
             }
             if (snapshot.connectionState != ConnectionState.done) {
-              return SizedBox(width: width, height: height, child: Snippet.showWaitSign());
+              return SizedBox(width: width, height: height, child: CretaSnippet.showWaitSign());
             }
             return SafeArea(
               child: SizedBox(
@@ -461,17 +462,17 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
         builder: (context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.hasData == false) {
             //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
-            return SizedBox(width: width, height: 365, child: Snippet.showWaitSign());
+            return SizedBox(width: width, height: 365, child: CretaSnippet.showWaitSign());
           }
           if (snapshot.hasError) {
             //error가 발생하게 될 경우 반환하게 되는 부분
             return Snippet.errMsgWidget(snapshot);
           }
           if (snapshot.data == false) {
-            return SizedBox(width: width, height: 365, child: Snippet.showWaitSign());
+            return SizedBox(width: width, height: 365, child: CretaSnippet.showWaitSign());
           }
           if (snapshot.connectionState != ConnectionState.done) {
-            return SizedBox(width: width, height: 365, child: Snippet.showWaitSign());
+            return SizedBox(width: width, height: 365, child: CretaSnippet.showWaitSign());
           }
           return SizedBox(
             height: 365,
