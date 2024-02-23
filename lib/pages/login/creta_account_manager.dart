@@ -292,8 +292,7 @@ class CretaAccountManager {
   }
 
   static List<UserPropertyModel>? getMyTeamMembers() {
-    if (getCurrentTeam == null) return null;
-    return getTeamMemberMap[getCurrentTeam!.getMid];
+    return TeamManager.getMyTeamMembers();
   }
 
   static Future<List<UserPropertyModel>> _getTeamMembers(
