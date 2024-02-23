@@ -104,7 +104,7 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
   final Map<String, bool> _favoritesBookIdMap = {};
   final Map<String, BookModel> _cretaBooksMap = {}; // <Book.Mid, Book>
   final Map<String, String> _teamIdMap = {};
-  final Map<String, TeamModel> _teamMap = {}; // <TeamModel.mid, TeamModel>
+  final Map<String, TeamModel> _teamMap = {}; // <TeamManager.mid, TeamModel>
   final Map<String, String> _userIdMap = {};
   final Map<String, UserPropertyModel> _userPropertyMap =
       {}; // <UserPropertyModel.email, UserPropertyModel>

@@ -45,8 +45,8 @@ class CretaAccountManager {
   static FrameManager? _favFrameManagerHolder;
   //static FrameManager get frameManagerHolder => _favFrameManagerHolder!;
 
-  static TeamManager? _teamManagerHolder;
-  static TeamManager get teamManagerHolder => _teamManagerHolder!;
+  //static TeamManager? TeamManager.teamManagerHolder;
+  static TeamManager get teamManagerHolder => TeamManager.teamManagerHolder!;
 
   static UserPropertyManager? _userPropertyManagerHolder;
   static UserPropertyManager get userPropertyManagerHolder => _userPropertyManagerHolder!;
@@ -54,18 +54,16 @@ class CretaAccountManager {
   // accounts info
   static UserModel get currentLoginUser => AccountManager.currentLoginUser;
 
-  static UserPropertyModel? _loginUserProperty;
-  static set setUserProperty(UserPropertyModel? model) => _loginUserProperty = model;
-  static UserPropertyModel? get getUserProperty => _loginUserProperty;
-
-  static List<TeamModel> _loginTeamList = [];
-  static set setTeamList(List<TeamModel> teamList) => _loginTeamList = [...teamList];
-  static List<TeamModel> get getTeamList => _loginTeamList;
+  // static UserPropertyModel? _loginUserProperty;
+  // static set setUserProperty(UserPropertyModel? model) => _loginUserProperty = model;
+  static set setUserProperty(UserPropertyModel? model) =>
+      UserPropertyManager.setUserProperty(model);
+  static UserPropertyModel? get getUserProperty => UserPropertyManager.getUserProperty;
 
   //static TeamModel? getCurrentTeam;
-  static TeamModel? get getCurrentTeam => TeamModel.getCurrentTeam;
+  static TeamModel? get getCurrentTeam => TeamManager.getCurrentTeam;
   //static final Map<String, List<UserPropertyModel>> getTeamMemberMap = {};
-  static Map<String, List<UserPropertyModel>> get getTeamMemberMap => TeamModel.getTeamMemberMap;
+  static Map<String, List<UserPropertyModel>> get getTeamMemberMap => TeamManager.getTeamMemberMap;
 
   static ChannelModel? _loginChannel;
   static set setChannel(ChannelModel? model) => _loginChannel = model;
@@ -91,11 +89,9 @@ class CretaAccountManager {
       _userPropertyManagerHolder?.configEvent();
       _userPropertyManagerHolder?.clearAll();
     }
-    if (_teamManagerHolder == null) {
-      _teamManagerHolder = TeamManager();
-      _teamManagerHolder?.configEvent();
-      _teamManagerHolder?.clearAll();
-    }
+
+    TeamManager.initTeamManagerHolder();
+
     if (_favFrameManagerHolder == null) {
       _favFrameManagerHolder =
           FrameManager(pageModel: PageModel('', BookModel('')), bookModel: BookModel(''));
@@ -149,8 +145,8 @@ class CretaAccountManager {
     teamManagerHolder.clearAll();
     userPropertyManagerHolder.clearAll();
 
-    _loginUserProperty = null;
-    _loginTeamList.clear();
+    UserPropertyManager.setUserProperty(null);
+    TeamManager.getTeamList.clear();
     _loginChannel = null;
     _loginEnterprise = null;
     _loginFrameList.clear();
@@ -169,8 +165,8 @@ class CretaAccountManager {
     userPropertyManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     await userPropertyManagerHolder.queryByAddedContitions();
     AbsExModel? model = userPropertyManagerHolder.onlyOne();
-    _loginUserProperty = (model == null) ? null : model as UserPropertyModel;
-    return (_loginUserProperty != null);
+    UserPropertyManager.setUserProperty((model == null) ? null : model as UserPropertyModel);
+    return (UserPropertyManager.getUserProperty != null);
   }
 
   static Future<List<FrameModel>> _getFrameListFromDB() async {
@@ -267,7 +263,7 @@ class CretaAccountManager {
 
   static Future<void> _initTeam() async {
     await _getTeamList();
-    if (getTeamList.isNotEmpty) {
+    if (TeamManager.getTeamList.isNotEmpty) {
       setCurrentTeam(0);
     }
   }
@@ -286,9 +282,9 @@ class CretaAccountManager {
       for (String teamMid in getUserProperty!.teams) {
         TeamModel? teamModel = teamMap[teamMid];
         if (teamModel == null) continue;
-        _loginTeamList.add(teamModel);
+        TeamManager.getTeamList.add(teamModel);
       }
-      return _loginTeamList.length;
+      return TeamManager.getTeamList.length;
     } catch (error) {
       logger.fine('something wrong in teamManager >> $error');
       return 0;
@@ -338,19 +334,20 @@ class CretaAccountManager {
   }
 
   static void addTeamMember(String targetEmail) {
-    if (getCurrentTeam == null) return;
-    getCurrentTeam!.generalMembers.add(targetEmail);
-    getCurrentTeam!.teamMembers.add(targetEmail);
-    if (getCurrentTeam!.removedMembers.contains(targetEmail)) {
-      getCurrentTeam!.removedMembers.remove(targetEmail);
-    }
-    teamManagerHolder.setToDB(getCurrentTeam!);
-    userPropertyManagerHolder.emailToModel(targetEmail).then((value) {
-      if (value != null) {
-        getTeamMemberMap[getCurrentTeam!.mid]!.add(value);
-        teamManagerHolder.notify();
-      }
-    });
+    teamManagerHolder.addTeamMember(targetEmail, userPropertyManagerHolder);
+    // if (getCurrentTeam == null) return;
+    // getCurrentTeam!.generalMembers.add(targetEmail);
+    // getCurrentTeam!.teamMembers.add(targetEmail);
+    // if (getCurrentTeam!.removedMembers.contains(targetEmail)) {
+    //   getCurrentTeam!.removedMembers.remove(targetEmail);
+    // }
+    // teamManagerHolder.setToDB(getCurrentTeam!);
+    // userPropertyManagerHolder.emailToModel(targetEmail).then((value) {
+    //   if (value != null) {
+    //     getTeamMemberMap[getCurrentTeam!.mid]!.add(value);
+    //     teamManagerHolder.notify();
+    //   }
+    // });
   }
 
   static void changePermission(String targetEmail, int presentPermission, int newPermission) {
@@ -375,24 +372,25 @@ class CretaAccountManager {
   }
 
   static bool setCurrentTeam(int index) {
-    if (index >= _loginTeamList.length) {
+    if (index >= TeamManager.getTeamList.length) {
       return false;
     }
-    TeamModel.setCurrentTeam(_loginTeamList[index]);
+    TeamManager.setCurrentTeam(TeamManager.getTeamList[index]);
     return true;
   }
 
   static Future<TeamModel?> findTeamModel(String mid) async {
-    for (var ele in _loginTeamList) {
-      if (ele.mid == mid) {
-        return ele;
-      }
-    }
-    return await teamManagerHolder.getFromDB(mid) as TeamModel?;
+    return await teamManagerHolder.findTeamModel(mid);
+    // for (var ele in TeamManager.getTeamList) {
+    //   if (ele.mid == mid) {
+    //     return ele;
+    //   }
+    // }
+    // return await teamManagerHolder.getFromDB(mid) as TeamModel?;
   }
 
   static Future<TeamModel?> findTeamModelByName(String name, String enterpriseMid) async {
-    for (var teamModel in _loginTeamList) {
+    for (var teamModel in TeamManager.getTeamList) {
       if (teamModel.name == name) {
         return teamModel;
       }
@@ -444,7 +442,7 @@ class CretaAccountManager {
       await userPropertyManagerHolder.setToDB(getUserProperty!);
     }
     // get my teams's channel
-    for (var teamModel in _loginTeamList) {
+    for (var teamModel in TeamManager.getTeamList) {
       //bool isChannelExist = false;
       String channelId = teamModel.channelId;
       if (channelId.isEmpty) {

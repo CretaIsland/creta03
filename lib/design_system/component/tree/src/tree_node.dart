@@ -2,6 +2,7 @@
 
 import 'dart:math' show pi;
 
+import 'package:creta03/data_io/team_manager.dart';
 import 'package:creta03/pages/studio/book_main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/undo.dart';
@@ -14,7 +15,6 @@ import 'package:creta_common/model/creta_model.dart';
 import 'package:creta_studio_model/model/frame_model.dart';
 import 'package:creta_studio_model/model/link_model.dart';
 import 'package:creta_studio_model/model/page_model.dart';
-import '../../../../pages/login/creta_account_manager.dart';
 import '../../../../pages/studio/containees/containee_nofifier.dart';
 import '../../../../pages/studio/left_menu/left_menu_page.dart';
 import '../../../../pages/studio/studio_variables.dart';
@@ -534,7 +534,7 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
   }
 
   List<CretaMenuItem> _subMenuItems() {
-    List<CretaMenuItem> teamMenuList = CretaAccountManager.getTeamList.map((e) {
+    List<CretaMenuItem> teamMenuList = TeamManager.getTeamList.map((e) {
       String teamName = e.name;
       String teamId = e.mid;
       return CretaMenuItem(

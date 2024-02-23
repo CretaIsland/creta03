@@ -101,7 +101,7 @@ class _CommunityRightChannelPlaylistPaneState extends State<CommunityRightChanne
   ChannelModel? _currentChannelModel;
   final Map<String, UserPropertyModel> _userPropertyMap =
       {}; // <UserPropertyModel.email, UserPropertyModel>
-  final Map<String, TeamModel> _teamMap = {}; // <TeamModel.mid, TeamModel>
+  final Map<String, TeamModel> _teamMap = {}; // <TeamManager.mid, TeamModel>
   final List<PlaylistModel> _playlistModelList = [];
   final Map<String, BookModel> _playlistsBooksMap = {}; // <Book.mid, Playlists.books>
   //bool _onceDBGetComplete = false;

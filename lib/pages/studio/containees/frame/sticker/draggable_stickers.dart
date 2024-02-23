@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'package:creta03/data_io/creta_manager.dart';
+import 'package:creta03/data_io/team_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/common/undo/undo.dart';
@@ -27,7 +28,7 @@ import 'package:creta_studio_model/model/depot_model.dart';
 import 'package:creta_studio_model/model/frame_model.dart';
 import '../../../../../model/frame_model_util.dart';
 import 'package:creta_studio_model/model/page_model.dart';
-import '../../../../login/creta_account_manager.dart';
+
 import '../../../book_main_page.dart';
 import '../../../left_menu/depot/depot_display.dart';
 import '../../../left_menu/left_menu_page.dart';
@@ -753,7 +754,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
   }
 
   List<CretaMenuItem> _subMenuItems(FrameModel frameModel, bool isContents) {
-    List<CretaMenuItem> teamMenuList = CretaAccountManager.getTeamList.map((e) {
+    List<CretaMenuItem> teamMenuList = TeamManager.getTeamList.map((e) {
       String teamName = e.name;
       String teamId = e.mid;
       return CretaMenuItem(
@@ -779,7 +780,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
   // ignore: unused_element
   // void _showTeamListMenu(double dx, double dy, FrameModel frameModel, bool isContents) {
-  //   List<CretaMenuItem> teamMenuList = CretaAccountManager.getTeamList.map((e) {
+  //   List<CretaMenuItem> teamMenuList = TeamManager.getTeamList.map((e) {
   //     String teamName = e.name;
   //     return CretaMenuItem(
   //         caption: '$teamName${CretaStudioLang.putInTeamDepot}',

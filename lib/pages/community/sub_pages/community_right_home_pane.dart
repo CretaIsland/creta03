@@ -109,7 +109,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   final Map<String, String> _channelIdMap = {};
   final Map<String, ChannelModel> _channelMap = {}; // <Channel.mid, ChannelModel>
   final Map<String, String> _teamIdMap = {};
-  final Map<String, TeamModel> _teamMap = {}; // <TeamModel.mid, TeamModel>
+  final Map<String, TeamModel> _teamMap = {}; // <TeamManager.mid, TeamModel>
   final Map<String, String> _userIdMap = {};
   final Map<String, UserPropertyModel> _userPropertyMap =
       {}; // <UserPropertyModel.email, UserPropertyModel>

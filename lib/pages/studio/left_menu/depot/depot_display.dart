@@ -1,7 +1,7 @@
 import 'package:creta03/data_io/depot_manager.dart';
+import 'package:creta03/data_io/team_manager.dart';
 import 'package:creta_common/common/creta_font.dart';
 import 'package:creta_studio_model/model/depot_model.dart';
-import 'package:creta03/pages/login/creta_account_manager.dart';
 import 'package:flutter/material.dart';
 //import 'package:get/get.dart';
 import 'package:hycop/hycop.dart';
@@ -33,7 +33,7 @@ class DepotDisplay extends StatefulWidget {
   static final List<DepotManager> _depotTeamManagerList = [];
 
   static int initDepotTeamManagers() {
-    for (var ele in CretaAccountManager.getTeamList) {
+    for (var ele in TeamManager.getTeamList) {
       DepotDisplay._depotTeamManagerList.add(DepotManager(userEmail: ele.mid, myTeamMid: ele.mid));
     }
     return DepotDisplay._depotTeamManagerList.length;
@@ -65,7 +65,7 @@ class _DepotDisplayClassState extends State<DepotDisplay> {
   // bool _dbJobComplete = false;
 
   Future<List<ContentsModel>>? _contentInfo;
-  List<TeamModel> userTeam = CretaAccountManager.getTeamList;
+  List<TeamModel> userTeam = TeamManager.getTeamList;
   late DepotManager _localManager;
 
   @override

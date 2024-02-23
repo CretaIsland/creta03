@@ -34,8 +34,8 @@ class MyPageTeamManage extends StatefulWidget {
 }
 
 class _MyPageTeamManageState extends State<MyPageTeamManage> {
-  String? selectedTeamMid = TeamModel.getCurrentTeam!.mid;
-  String? selectedChannelMid = TeamModel.getCurrentTeam!.channelId;
+  String? selectedTeamMid = TeamManager.getCurrentTeam!.mid;
+  String? selectedChannelMid = TeamManager.getCurrentTeam!.channelId;
   XFile? _selectedProfileImg;
   Uint8List? _selectedProfileImgBytes;
   XFile? _selectedBannerImg;
@@ -56,7 +56,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
   Widget build(BuildContext context) {
     return Consumer3<UserPropertyManager, TeamManager, ChannelManager>(
       builder: (context, userPropertyManager, teamManager, channelManager, child) {
-        _teamNameController.text = TeamModel.getCurrentTeam!.name;
+        _teamNameController.text = TeamManager.getCurrentTeam!.name;
         return Container(
           width: widget.width,
           height: widget.height,
@@ -122,7 +122,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                       MyPageCommonWidget.profileImgComponent(
                                           width: 200,
                                           height: 200,
-                                          profileImgUrl: TeamModel.getCurrentTeam!.profileImgUrl,
+                                          profileImgUrl: TeamManager.getCurrentTeam!.profileImgUrl,
                                           profileImgBytes: _selectedProfileImgBytes,
                                           userName: teamManager.currentTeam!.name,
                                           replaceColor: replaceColor,
@@ -150,7 +150,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                                                 _selectedProfileImgBytes!)
                                                             .then((value) {
                                                           if (value != null) {
-                                                            TeamModel.getCurrentTeam!
+                                                            TeamManager.getCurrentTeam!
                                                                 .profileImgUrl = value.url;
                                                             teamManager.setToDB(CretaAccountManager
                                                                 .getCurrentTeam!);
@@ -241,10 +241,10 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                         Text("채널 공개", style: CretaFont.titleMedium),
                                         const SizedBox(width: 200),
                                         CretaToggleButton(
-                                          defaultValue: TeamModel.getCurrentTeam!.isPublicProfile,
+                                          defaultValue: TeamManager.getCurrentTeam!.isPublicProfile,
                                           onSelected: (value) {
-                                            TeamModel.getCurrentTeam!.isPublicProfile = value;
-                                            teamManager.setToDB(TeamModel.getCurrentTeam!);
+                                            TeamManager.getCurrentTeam!.isPublicProfile = value;
+                                            teamManager.setToDB(TeamManager.getCurrentTeam!);
                                           },
                                         )
                                       ],
@@ -259,10 +259,10 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                         Text("팀원 공개", style: CretaFont.titleMedium),
                                         const SizedBox(width: 200),
                                         CretaToggleButton(
-                                          defaultValue: TeamModel.getCurrentTeam!.isPublicProfile,
+                                          defaultValue: TeamManager.getCurrentTeam!.isPublicProfile,
                                           onSelected: (value) {
-                                            TeamModel.getCurrentTeam!.isPublicProfile = value;
-                                            teamManager.setToDB(TeamModel.getCurrentTeam!);
+                                            TeamManager.getCurrentTeam!.isPublicProfile = value;
+                                            teamManager.setToDB(TeamManager.getCurrentTeam!);
                                           },
                                         )
                                       ],
@@ -337,7 +337,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
 
   Widget memberComponent(UserPropertyModel memberModel, TeamManager teamManager) {
     int permission =
-        checkPermission(CretaAccountManager.currentLoginUser.email, TeamModel.getCurrentTeam!);
+        checkPermission(CretaAccountManager.currentLoginUser.email, TeamManager.getCurrentTeam!);
     return Row(
       children: [
         Container(
@@ -371,7 +371,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                 text: "내보내기",
                 onPressed: () {
                   teamManager.deleteTeamMember(memberModel.email,
-                      checkPermission(memberModel.email, TeamModel.getCurrentTeam!));
+                      checkPermission(memberModel.email, TeamManager.getCurrentTeam!));
                 })
             : const SizedBox.shrink()
       ],

@@ -1,5 +1,5 @@
 import 'package:creta03/data_io/depot_manager.dart';
-import 'package:creta03/pages/login/creta_account_manager.dart';
+import 'package:creta03/data_io/team_manager.dart';
 import 'package:creta03/pages/studio/left_menu/depot/depot_display.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +52,7 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
   }
 
   void _initMenuTabName() {
-    for (var ele in CretaAccountManager.getTeamList) {
+    for (var ele in TeamManager.getTeamList) {
       depotMenuTabBar[ele.name] = ele.mid;
     }
   }
@@ -113,8 +113,8 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
                 if (_selectedTab == menu[i]) {
                   if (i == 0) {
                     _myTeamId = null;
-                  } else if (i - 1 < CretaAccountManager.getTeamList.length) {
-                    _myTeamId = CretaAccountManager.getTeamList[i - 1].mid;
+                  } else if (i - 1 < TeamManager.getTeamList.length) {
+                    _myTeamId = TeamManager.getTeamList[i - 1].mid;
                   }
                 }
               }

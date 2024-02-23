@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'package:creta03/data_io/team_manager.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 import 'package:creta_user_model/model/user_property_model.dart';
 import 'package:flutter/material.dart';
@@ -97,7 +98,7 @@ class BookManager extends CretaManager {
       '<${PermissionType.owner.name}>$userId',
       '<${PermissionType.owner.name}>public',
     ];
-    TeamModel? myTeam = TeamModel.getCurrentTeam;
+    TeamModel? myTeam = TeamManager.getCurrentTeam;
     if (myTeam != null) {
       String myTeamId = myTeam.name;
       users.add('<${PermissionType.reader.name}>$myTeamId');
@@ -129,7 +130,7 @@ class BookManager extends CretaManager {
     Map<String, QueryValue> query = {};
     List<String> creators = [];
     List<String> queryVal = [];
-    TeamModel? myTeam = TeamModel.getCurrentTeam;
+    TeamModel? myTeam = TeamManager.getCurrentTeam;
     if (myTeam != null) {
       String myTeamId = myTeam.name;
       queryVal.add('<${PermissionType.reader.name}>$myTeamId');

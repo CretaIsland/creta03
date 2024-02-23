@@ -3,10 +3,10 @@
 import 'dart:math';
 
 import 'package:creta03/data_io/creta_manager.dart';
+import 'package:creta03/data_io/team_manager.dart';
 import 'package:creta_common/common/creta_const.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
-import 'package:creta_user_model/model/team_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routemaster/routemaster.dart';
@@ -108,10 +108,10 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         }
       });
     } else if (widget.selectedPage == SelectedPage.teamPage) {
-      if (TeamModel.getCurrentTeam == null) {
+      if (TeamManager.getCurrentTeam == null) {
         logger.warning('CurrentTeam is null}');
       } else {
-        logger.fine('CurrentTeam=${TeamModel.getCurrentTeam!.name}');
+        logger.fine('CurrentTeam=${TeamManager.getCurrentTeam!.name}');
         bookManagerHolder!.teamData().then((value) {
           if (value.isNotEmpty) {
             bookManagerHolder!.addRealTimeListen(value.first.mid);

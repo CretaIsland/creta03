@@ -122,7 +122,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
   final Map<String, UserPropertyModel> _userPropertyMap =
       {}; // <UserPropertyModel.email, UserPropertyModel>
   final Map<String, String> _teamIdMap = {};
-  final Map<String, TeamModel> _teamMap = {}; // <TeamModel.mid, TeamModel>
+  final Map<String, TeamModel> _teamMap = {}; // <TeamManager.mid, TeamModel>
   //bool _onceDBGetComplete = false;
   bool _hasNoChannelModel = false;
   late Future<bool> _dbGetComplete;

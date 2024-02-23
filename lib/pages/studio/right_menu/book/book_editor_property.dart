@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
 
+import 'package:creta03/data_io/team_manager.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
@@ -363,7 +364,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
   }
 
   List<Widget> _myTeams() {
-    return CretaAccountManager.getTeamList.map((e) {
+    return TeamManager.getTeamList.map((e) {
       return BTN.line_blue_wmi_m(
           leftWidget: CretaAccountManager.userPropertyManagerHolder
               .imageCircle(e.profileImgUrl, e.name, radius: 24),

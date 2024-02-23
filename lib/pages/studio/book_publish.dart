@@ -2,6 +2,7 @@
 
 import 'dart:math';
 
+import 'package:creta03/data_io/team_manager.dart';
 import 'package:creta_user_model/model/user_property_model.dart';
 import 'package:flutter/material.dart';
 //import 'package:hycop/common/util/logger.dart';
@@ -852,7 +853,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   }
 
   List<Widget> _myTeams() {
-    return CretaAccountManager.getTeamList.map((e) {
+    return TeamManager.getTeamList.map((e) {
       return BTN.line_blue_wmi_m(
           leftWidget: CretaAccountManager.userPropertyManagerHolder
               .imageCircle(e.profileImgUrl, e.name, radius: 24),
@@ -1118,7 +1119,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   }
 
   List<Widget> _myChannelTeams() {
-    return CretaAccountManager.getTeamList.map((e) {
+    return TeamManager.getTeamList.map((e) {
       return BTN.line_blue_wmi_m(
           leftWidget: CretaAccountManager.userPropertyManagerHolder
               .imageCircle(e.profileImgUrl, e.name, radius: 24),
@@ -1140,7 +1141,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   }
 
   TeamModel? _findTeamModel(String channelId) {
-    for (var teamModel in CretaAccountManager.getTeamList) {
+    for (var teamModel in TeamManager.getTeamList) {
       if (teamModel.channelId == channelId) {
         return teamModel;
       }
