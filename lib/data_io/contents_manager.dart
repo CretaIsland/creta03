@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'dart:html' as html;
 import 'dart:ui' as ui;
 
+import 'package:creta_studio_io/data_io/base_contents_manager.dart';
 import 'package:flutter/material.dart';
 import '../design_system/component/tree/flutter_treeview.dart' as tree;
 import 'package:get/get.dart';
@@ -36,10 +37,10 @@ import 'frame_manager.dart';
 import 'key_handler.dart';
 import 'link_manager.dart';
 
-class ContentsManager extends CretaManager {
-  final PageModel pageModel;
-  final FrameModel frameModel;
-  final bool isPublishedMode;
+class ContentsManager extends BaseContentsManager {
+  // final PageModel pageModel;
+  // final FrameModel frameModel;
+  // final bool isPublishedMode;
 
   // for text widget only start
 
@@ -131,12 +132,12 @@ class ContentsManager extends CretaManager {
   }
 
   ContentsManager({
-    required this.pageModel,
-    required this.frameModel,
+    required super.pageModel,
+    required super.frameModel,
     String tableName = 'creta_contents',
-    this.isPublishedMode = false,
-  }) : super(tableName, frameModel.mid) {
-    saveManagerHolder?.registerManager('contents', this, postfix: frameModel.mid);
+    super.isPublishedMode = false,
+  }) : super(tableName: tableName) {
+    //saveManagerHolder?.registerManager('contents', this, postfix: frameModel.mid);
     final ContentsEventController sendEventVar = Get.find(tag: 'contents-property-to-main');
     sendEvent = sendEventVar;
   }

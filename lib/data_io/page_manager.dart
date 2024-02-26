@@ -2,6 +2,7 @@
 
 import 'dart:async';
 
+import 'package:creta_studio_io/data_io/base_page_manager.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter_treeview/flutter_treeview.dart';
 import '../design_system/component/tree/flutter_treeview.dart';
@@ -23,7 +24,7 @@ import '../pages/studio/containees/frame/sticker/stickerview.dart';
 import '../pages/studio/left_menu/left_menu_page.dart';
 import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_variables.dart';
-import 'package:creta_user_io/data_io/creta_manager.dart';
+//import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'book_manager.dart';
 import 'frame_manager.dart';
 import 'key_handler.dart';
@@ -37,10 +38,10 @@ class PageInfo {
   PageInfo(this.pageModel, this.frameManager, this.stickerList);
 }
 
-class PageManager extends CretaManager {
-  BookModel? bookModel;
+class PageManager extends BasePageManager {
+  // BookModel? bookModel;
   Map<String, FrameManager?> frameManagerMap = {};
-  //Map<String, GlobalObjectKey> thumbKeyMap = {};
+  // //Map<String, GlobalObjectKey> thumbKeyMap = {};
 
   int updateContents(ContentsModel model) {
     int retval = 0;
@@ -160,31 +161,31 @@ class PageManager extends CretaManager {
   bool _transitForward = true;
   bool get transitForward => _transitForward;
 
-  final bool isPublishedMode;
+  // final bool isPublishedMode;
 
-  final Function? onGotoPrevBook;
-  final Function? onGotoNextBook;
+  // final Function? onGotoPrevBook;
+  // final Function? onGotoNextBook;
 
   static Map<String, String> oldNewMap = {}; // linkCopy 시에 필요하다.
   static bool isGotoNext = true;
 
   PageManager({
     String tableName = 'creta_page',
-    this.isPublishedMode = false,
-    this.onGotoPrevBook,
-    this.onGotoNextBook,
-  }) : super(tableName, null) {
-    saveManagerHolder?.registerManager('page', this);
+    super.isPublishedMode = false,
+    super.onGotoPrevBook,
+    super.onGotoNextBook,
+  }) : super(tableName: tableName) {
+    //saveManagerHolder?.registerManager('page', this);
   }
-  @override
-  CretaModel cloneModel(CretaModel src) {
-    PageModel retval = newModel(src.mid) as PageModel;
-    src.copyTo(retval);
-    return retval;
-  }
+  // @override
+  // CretaModel cloneModel(CretaModel src) {
+  //   PageModel retval = newModel(src.mid) as PageModel;
+  //   src.copyTo(retval);
+  //   return retval;
+  // }
 
-  @override
-  AbsExModel newModel(String mid) => PageModel(mid, bookModel!);
+  // @override
+  // AbsExModel newModel(String mid) => PageModel(mid, bookModel!);
 
   void setBook(BookModel book) {
     bookModel = book;

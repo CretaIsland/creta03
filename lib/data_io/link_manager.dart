@@ -1,8 +1,9 @@
 import 'dart:ui';
 
+import 'package:creta_studio_io/data_io/base_link_manager.dart';
 import 'package:hycop/hycop.dart';
 
-import 'package:creta_user_io/data_io/creta_manager.dart';
+//import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'package:creta_common/model/creta_model.dart';
 import '../design_system/component/tree/flutter_treeview.dart' as tree;
 
@@ -18,28 +19,28 @@ import 'book_manager.dart';
 import 'frame_manager.dart';
 import 'page_manager.dart';
 
-class LinkManager extends CretaManager {
-  final String bookMid;
-  final PageModel pageModel;
-  final FrameModel frameModel;
-  final bool isPublishedMode;
+class LinkManager extends BaseLinkManager {
+  // final String bookMid;
+  // final PageModel pageModel;
+  // final FrameModel frameModel;
+  // final bool isPublishedMode;
   LinkManager(
     String contentsMid,
-    this.bookMid,
-    this.pageModel,
-    this.frameModel, {
+    String bookMid,
+    PageModel pageModel,
+    FrameModel frameModel, {
     String tableName = 'creta_link',
-    this.isPublishedMode = false,
-  }) : super(tableName, contentsMid) {
-    saveManagerHolder?.registerManager('link', this, postfix: contentsMid);
+    super.isPublishedMode = false,
+  }) : super(contentsMid, bookMid, pageModel, frameModel, tableName: tableName) {
+    //saveManagerHolder?.registerManager('link', this, postfix: contentsMid);
   }
 
-  @override
-  CretaModel cloneModel(CretaModel src) {
-    LinkModel retval = newModel(src.mid) as LinkModel;
-    src.copyTo(retval);
-    return retval;
-  }
+  // @override
+  // CretaModel cloneModel(CretaModel src) {
+  //   LinkModel retval = newModel(src.mid) as LinkModel;
+  //   src.copyTo(retval);
+  //   return retval;
+  // }
 
   @override
   Future<int> copyBook(String newBookMid, String? newParentMid) async {
@@ -86,8 +87,8 @@ class LinkManager extends CretaManager {
     return newOne;
   }
 
-  @override
-  AbsExModel newModel(String mid) => LinkModel(mid, bookMid);
+  // @override
+  // AbsExModel newModel(String mid) => LinkModel(mid, bookMid);
 
   Future<int> getLink({required String contentsId}) async {
     startTransaction();

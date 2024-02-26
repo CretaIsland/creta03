@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'package:creta_common/common/creta_common_utils.dart';
+import 'package:creta_studio_io/data_io/base_book_manager.dart';
 import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'package:creta_user_io/data_io/team_manager.dart';
 import 'package:creta_user_model/model/user_property_model.dart';
@@ -30,7 +31,7 @@ import 'page_manager.dart';
 //import 'frame_manager.dart';
 //import 'contents_manager.dart';
 
-class BookManager extends CretaManager {
+class BookManager extends BaseBookManager {
   // contents 들의 url 모음, 다운로드 버튼을 눌렀을 때 생성된다.
   static Map<ContentsModel, String> contentsUrlMap = {};
 
@@ -38,22 +39,22 @@ class BookManager extends CretaManager {
 
   Timer? _downloadReceivetimer;
 
-  BookManager({String tableName = 'creta_book'}) : super(tableName, null) {
-    saveManagerHolder?.registerManager('book', this);
+  BookManager({String tableName = 'creta_book'}) : super(tableName: tableName) {
+    //saveManagerHolder?.registerManager('book', this);
   }
 
-  @override
-  AbsExModel newModel(String mid) {
-    parentMid = mid;
-    return BookModel(mid);
-  }
+  // @override
+  // AbsExModel newModel(String mid) {
+  //   parentMid = mid;
+  //   return BookModel(mid);
+  // }
 
-  @override
-  CretaModel cloneModel(CretaModel src) {
-    BookModel retval = newModel(src.mid) as BookModel;
-    src.copyTo(retval);
-    return retval;
-  }
+  // @override
+  // CretaModel cloneModel(CretaModel src) {
+  //   BookModel retval = newModel(src.mid) as BookModel;
+  //   src.copyTo(retval);
+  //   return retval;
+  // }
 
   @override
   void onSearch(String value, Function afterSearch) {

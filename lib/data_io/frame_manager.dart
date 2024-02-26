@@ -2,10 +2,11 @@
 
 import 'package:creta03/pages/studio/book_main_page.dart';
 import 'package:creta_common/common/creta_const.dart';
+import 'package:creta_studio_io/data_io/base_frame_manager.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter_treeview/flutter_treeview.dart';
 import '../design_system/component/tree/flutter_treeview.dart';
-import 'package:hycop/common/undo/save_manager.dart';
+//import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
@@ -33,9 +34,9 @@ import 'key_handler.dart';
 
 //FrameManager? frameManagerHolder;
 
-class FrameManager extends CretaManager {
-  final PageModel pageModel;
-  final BookModel bookModel;
+class FrameManager extends BaseFrameManager {
+  //final PageModel pageModel;
+  //final BookModel bookModel;
 
   static Map<FrameModel, FrameModel> oldNewMap = {}; // linkCopy 시에 필요하다.
   static FrameModel? findNew(String oldMid) {
@@ -316,15 +317,15 @@ class FrameManager extends CretaManager {
   //   _playerHandler = p;
   // }
 
-  final bool isPublishedMode;
+  //final bool isPublishedMode;
 
   FrameManager(
-      {required this.pageModel,
-      required this.bookModel,
+      {required super.pageModel,
+      required super.bookModel,
       String tableName = 'creta_frame',
-      this.isPublishedMode = false})
-      : super(tableName, pageModel.mid) {
-    saveManagerHolder?.registerManager('frame', this, postfix: pageModel.mid);
+      super.isPublishedMode = false})
+      : super(tableName: tableName) {
+    //saveManagerHolder?.registerManager('frame', this, postfix: pageModel.mid);
     //print('FrameManager created');
   }
 
