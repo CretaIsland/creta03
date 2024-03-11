@@ -66,6 +66,7 @@ class FrameEachState extends CretaState<FrameEach> with ContaineeMixin, FramePla
   ContentsManager? _contentsManager;
   CretaPlayTimer? _playTimer;
   late double _width;
+  // ignore: unused_field
   bool _onceInited = false;
 
   Future<bool>? _isInitialized;
