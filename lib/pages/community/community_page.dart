@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 //import 'dart:async';
+import 'package:creta_common/common/creta_vars.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -2100,7 +2101,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             gotoButtonPressed2: () {
               Routemaster.of(context).push(AppRoutes.deviceMainPage);
             },
-            gotoButtonTitle2: CretaCommuLang.myDeviceMenu,
+            gotoButtonTitle2: (CretaVars.serviceType == ServiceType.digitalBarricade)
+                ? CretaCommuLang.myDeviceMenu
+                : null,
 
             leftMenuItemList: _leftMenuItemList,
             bannerTitle: 'title',

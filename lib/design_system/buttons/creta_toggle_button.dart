@@ -40,6 +40,14 @@ class _CretaRadioButton2State extends State<CretaToggleButton> {
   }
 
   @override
+  void didUpdateWidget(covariant CretaToggleButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.defaultValue != widget.defaultValue) {
+      toggleValue = widget.defaultValue;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     double circleSize = widget.height - 2;
     return Center(

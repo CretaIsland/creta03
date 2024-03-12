@@ -1,7 +1,11 @@
 // ignore_for_file: prefer_const_constructors, depend_on_referenced_packages
 
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:html';
+
 import 'package:creta_common/common/creta_color.dart'; //import 'package:creta03/pages/studio/sample_data.dart';
 import 'package:creta_common/common/creta_vars.dart';
+import 'package:creta_common/model/app_enums.dart';
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,6 +35,30 @@ void main() async {
   // test code
   //myConfig!.serverConfig!.storageConnInfo.bucketId =
   //    "${HycopUtils.genBucketId(AccountManager.currentLoginUser.email, AccountManager.currentLoginUser.userId)}/";
+
+  var url = window.location.href;
+  var uri = Uri.parse(url);
+  var firstPartOfHost = uri.host.split('.').first;
+  switch (firstPartOfHost) {
+    case 'presentaion':
+      CretaVars.serviceType = ServiceType.presentaion;
+      break;
+    case 'barricade':
+      CretaVars.serviceType = ServiceType.digitalBarricade;
+      break;
+    case 'signage':
+      CretaVars.serviceType = ServiceType.signage;
+      break;
+    case 'escalator':
+      CretaVars.serviceType = ServiceType.escalator;
+      break;
+    case 'board':
+      CretaVars.serviceType = ServiceType.board;
+      break;
+    default:
+      CretaVars.serviceType = ServiceType.digitalBarricade;
+      break;
+  }
 
   runApp(const ProviderScope(child: MainRouteApp()));
   //runApp(const ProviderScope(child: MainRouteApp()));

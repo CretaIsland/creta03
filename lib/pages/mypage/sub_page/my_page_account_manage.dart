@@ -1,4 +1,5 @@
 import 'package:creta03/data_io/channel_manager.dart';
+//import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_user_io/data_io/user_property_manager.dart';
 import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
 import 'package:creta03/design_system/buttons/creta_toggle_button.dart';
@@ -41,42 +42,104 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                   ? Padding(
                       padding: const EdgeInsets.only(left: 165.0, top: 72.0),
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text('계정 관리',
+                        Text(CretaMyPageLang.accountManage,
+                            /*'계정 관리',*/
                             style: CretaFont.displaySmall.copyWith(fontWeight: FontWeight.w600)),
-                        MyPageCommonWidget.divideLine(
-                            width: widget.width * .6,
-                            padding: const EdgeInsets.only(top: 22, bottom: 32)),
-                        Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          const SizedBox(width: 12.0),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('용도 설정', style: CretaFont.titleELarge),
-                              const SizedBox(height: 37),
-                              Text('프레젠테이션 기능 사용하기', style: CretaFont.titleMedium),
-                              const SizedBox(height: 25),
-                              Text('디지털 사이니지 기능 사용하기', style: CretaFont.titleMedium)
-                            ],
-                          ),
-                          const SizedBox(width: 80),
-                          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            const SizedBox(height: 58),
-                            CretaToggleButton(
-                              defaultValue: true,
-                              isActive: false,
-                              onSelected: (value) {},
-                            ),
-                            const SizedBox(height: 16),
-                            CretaToggleButton(
-                              defaultValue:
-                                  userPropertyManager.userPropertyModel!.useDigitalSignage,
-                              onSelected: (value) {
-                                userPropertyManager.userPropertyModel!.useDigitalSignage = value;
-                                userPropertyManager.setToDB(userPropertyManager.userPropertyModel!);
-                              },
-                            )
-                          ])
-                        ]),
+                        // MyPageCommonWidget.divideLine(
+                        //     width: widget.width * .6,
+                        //     padding: const EdgeInsets.only(top: 22, bottom: 32)),
+                        // Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        //   const SizedBox(width: 12.0),
+                        //   Column(
+                        //     crossAxisAlignment: CrossAxisAlignment.start,
+                        //     children: [
+                        //       Text(CretaMyPageLang.purposeSetting,
+                        //           /*'용도 설정',*/ style: CretaFont.titleELarge),
+                        //       const SizedBox(height: 37),
+                        //       Text(CretaMyPageLang.usePresentation,
+                        //           /* '프레젠테이션 기능 사용하기1' */ style: CretaFont.titleMedium),
+                        //       const SizedBox(height: 25),
+                        //       Text(CretaMyPageLang.useDigitalSignage,
+                        //           /*'디지털 사이니지 기능 사용하기',*/ style: CretaFont.titleMedium),
+                        //       const SizedBox(height: 25),
+                        //       Text(CretaMyPageLang.useDigitalBarricade,
+                        //           /*'디지털 바리케이드 기능 사용하기',*/ style: CretaFont.titleMedium),
+                        //       const SizedBox(height: 25),
+                        //       Text(CretaMyPageLang.useBoard,
+                        //           /*'전자칠판 기능 사용하기',*/ style: CretaFont.titleMedium),
+                        //     ],
+                        //   ),
+                        //   const SizedBox(width: 80),
+                        //   Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        //     const SizedBox(height: 58),
+                        //     CretaToggleButton(
+                        //       // 프리젠테이션 기능
+                        //       defaultValue:
+                        //           userPropertyManager.userPropertyModel!.purpose.isPresentation(),
+                        //       onSelected: (value) {
+                        //         if (value == true) {
+                        //           userPropertyManager.userPropertyModel!.purpose
+                        //               .unset(BookType.digitalBarricade);
+                        //           userPropertyManager.userPropertyModel!.purpose
+                        //               .unset(BookType.board);
+                        //         }
+                        //         userPropertyManager.userPropertyModel!.purpose
+                        //             .set(BookType.presentaion);
+                        //         userPropertyManager.setToDB(userPropertyManager.userPropertyModel!);
+                        //       },
+                        //     ),
+                        //     const SizedBox(height: 16),
+                        //     CretaToggleButton(
+                        //       // 디지털 사이니지 기능
+                        //       defaultValue:
+                        //           userPropertyManager.userPropertyModel!.purpose.isDigitalSinage(),
+                        //       onSelected: (value) {
+                        //         if (value == true) {
+                        //           userPropertyManager.userPropertyModel!.purpose
+                        //               .unset(BookType.digitalBarricade);
+                        //           userPropertyManager.userPropertyModel!.purpose
+                        //               .unset(BookType.board);
+                        //         }
+                        //         userPropertyManager.userPropertyModel!.purpose
+                        //             .set(BookType.signage);
+                        //         userPropertyManager.setToDB(userPropertyManager.userPropertyModel!);
+                        //       },
+                        //     ),
+                        //     const SizedBox(height: 16), // 디지털 바리케이드 기능
+                        //     CretaToggleButton(
+                        //       defaultValue: userPropertyManager.userPropertyModel!.purpose
+                        //           .isDigitalBarricade(),
+                        //       onSelected: (value) {
+                        //         setState(() {
+                        //           if (value == true) {
+                        //             userPropertyManager.userPropertyModel!.purpose.clear();
+                        //           }
+                        //           userPropertyManager.userPropertyModel!.purpose
+                        //               .set(BookType.digitalBarricade);
+                        //           userPropertyManager
+                        //               .setToDB(userPropertyManager.userPropertyModel!);
+                        //         });
+                        //       },
+                        //     ),
+                        //     const SizedBox(height: 16),
+                        //     CretaToggleButton(
+                        //       // 전자질판 기능
+                        //       defaultValue:
+                        //           userPropertyManager.userPropertyModel!.purpose.isBoard(),
+                        //       onSelected: (value) {
+                        //         setState(() {
+                        //           if (value == true) {
+                        //             userPropertyManager.userPropertyModel!.purpose.clear();
+                        //           }
+                        //           userPropertyManager.userPropertyModel!.purpose
+                        //               .set(BookType.board);
+                        //           userPropertyManager
+                        //               .setToDB(userPropertyManager.userPropertyModel!);
+                        //         });
+                        //       },
+                        //     )
+                        //   ])
+                        // ]),
                         MyPageCommonWidget.divideLine(
                             width: widget.width * .6,
                             padding: const EdgeInsets.only(top: 27, bottom: 32)),

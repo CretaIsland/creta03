@@ -169,7 +169,8 @@ final routesLoggedOut = RouteMap(
     //     child:
     //     QuillFloatingToolBarWidget(document: ContentsModel.withFrame(parent: '', bookMid: ''))),
     AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
-    AppRoutes.deviceMainPage: (_) => TransitionPage(child: DeviceMainPage()),
+    AppRoutes.deviceMainPage: (_) =>
+        TransitionPage(child: DeviceMainPage(selectedPage: DeviceSelectedPage.myPage)),
     AppRoutes.studioBookMainPage: (routeData) {
       if (AccountManager.currentLoginUser.isLoginedUser) {
         //skpark test code
