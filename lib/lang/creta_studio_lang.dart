@@ -48,14 +48,15 @@ class CretaStudioLang {
     "End",
   ];
 
-  static List<String> bookTypeList = [
-    "None",
-    "프리젠테이션용",
-    "디지털사이니지용",
-    "전자칠판용",
-    "기타",
-    "End",
-  ];
+  // static List<String> bookTypeList = [
+  //   "None",
+  //   "프리젠테이션용",
+  //   "디지털사이니지용",
+  //   "디지털바리케이트용"
+  //       "전자칠판용",
+  //   "기타",
+  //   "End",
+  // ];
 
   static Map<String, String> bookInfoTabBar = {
     '크레타북 정보': 'book_info',
@@ -229,7 +230,7 @@ class CretaStudioLang {
 
   static const String autoScale = "자동맞춤";
 
-    static const String publish = "발행하기";
+  static const String publish = "발행하기";
   static const String channelList = "채널 목록";
   static const String tooltipNoti = '알림이 있습니다';
   static const String tooltipNoNoti = '알림이 없습니다';
@@ -349,7 +350,7 @@ class CretaStudioLang {
   static const String whenClosePage = "사라질 때";
 
   // 사라질때,
-    static List<String> nextContentTypes = [
+  static List<String> nextContentTypes = [
     "없음",
     "일반 캐로셀",
     "기울어진 캐로셀",

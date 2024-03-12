@@ -21,6 +21,8 @@ class CretaLeftBar extends StatefulWidget {
   final double width;
   final String gotoButtonTitle;
   final Function gotoButtonPressed;
+  final String? gotoButtonTitle2;
+  final Function? gotoButtonPressed2;
   final bool isIconText;
 
   const CretaLeftBar({
@@ -30,6 +32,8 @@ class CretaLeftBar extends StatefulWidget {
     required this.height,
     required this.gotoButtonTitle,
     required this.gotoButtonPressed,
+    this.gotoButtonTitle2,
+    this.gotoButtonPressed2,
     this.isIconText = false,
   });
 
@@ -59,6 +63,8 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
 
   @override
   Widget build(BuildContext context) {
+    bool hasTwoButton = (widget.gotoButtonTitle2 != null && widget.gotoButtonPressed2 != null);
+
     double userMenuHeight = widget.height -
         CretaComponentLocation.TabBar.padding.top -
         CretaComponentLocation.TabBar.padding.bottom;
@@ -109,7 +115,9 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
             ),
             clipBehavior: Clip.antiAlias, // crop method
             width: CretaComponentLocation.UserMenuInTabBar.width,
-            height: userMenuHeight, //CretaComponentLocation.UserMenuInTabBar.height,
+            height: hasTwoButton
+                ? userMenuHeight + 76
+                : userMenuHeight, //CretaComponentLocation.UserMenuInTabBar.height,
             padding: CretaComponentLocation.UserMenuInTabBar.padding,
             child: ListView.builder(
                 //padding: EdgeInsets.fromLTRB(leftMenuViewLeftPane, leftMenuViewTopPane, 0, 0),
@@ -141,6 +149,16 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
                         text: widget.gotoButtonTitle,
                         onPressed: widget.gotoButtonPressed,
                       ),
+                      if (hasTwoButton)
+                        const SizedBox(
+                          height: 20,
+                        ),
+                      if (hasTwoButton)
+                        BTN.fill_blue_ti_el(
+                          icon: Icons.arrow_forward_outlined,
+                          text: widget.gotoButtonTitle2!,
+                          onPressed: widget.gotoButtonPressed2!,
+                        ),
                     ],
                   );
                 }),

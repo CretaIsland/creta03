@@ -469,7 +469,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
           },
           selected: true),
       CretaMenuItem(
-          caption: CretaLang.basicBookFilter[1],
+          caption: CretaLang.basicBookFilter[1], // 프리젠테이션
           onPressed: () {
             bookManagerHolder?.toFiltered(
                 'bookType', BookType.presentaion.index, AccountManager.currentLoginUser.email,
@@ -477,7 +477,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
           },
           selected: false),
       CretaMenuItem(
-          caption: CretaLang.basicBookFilter[2],
+          caption: CretaLang.basicBookFilter[2], // 전자칠판
           onPressed: () {
             bookManagerHolder?.toFiltered(
                 'bookType', BookType.board.index, AccountManager.currentLoginUser.email,
@@ -485,7 +485,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
           },
           selected: false),
       CretaMenuItem(
-          caption: CretaLang.basicBookFilter[3],
+          caption: CretaLang.basicBookFilter[3], // 사이니지
           onPressed: () {
             bookManagerHolder?.toFiltered(
                 'bookType', BookType.signage.index, AccountManager.currentLoginUser.email,
@@ -493,7 +493,15 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
           },
           selected: false),
       CretaMenuItem(
-          caption: CretaLang.basicBookFilter[4],
+          caption: CretaLang.basicBookFilter[4], // 디지털 바리케이드
+          onPressed: () {
+            bookManagerHolder?.toFiltered(
+                'bookType', BookType.digitalBarricade.index, AccountManager.currentLoginUser.email,
+                onModelFiltered: onModelFiltered);
+          },
+          selected: false),
+      CretaMenuItem(
+          caption: CretaLang.basicBookFilter[5],
           onPressed: () {
             bookManagerHolder?.toFiltered(
                 'bookType', BookType.etc.index, AccountManager.currentLoginUser.email,

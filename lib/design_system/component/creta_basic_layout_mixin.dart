@@ -162,6 +162,8 @@ mixin CretaBasicLayoutMixin {
     required Function gotoButtonPressed,
     required String gotoButtonTitle,
     required String bannerTitle,
+    Function? gotoButtonPressed2,
+    String? gotoButtonTitle2,
     required String bannerDescription,
     required List<List<CretaMenuItem>> listOfListFilter,
     required Widget Function(BuildContext) mainWidget,
@@ -201,6 +203,8 @@ mixin CretaBasicLayoutMixin {
           menuItem: leftMenuItemList,
           gotoButtonPressed: gotoButtonPressed,
           gotoButtonTitle: gotoButtonTitle,
+          gotoButtonPressed2: gotoButtonPressed2,
+          gotoButtonTitle2: gotoButtonTitle2,
         ),
         Container(
           width: rightPaneRect.width,

@@ -10,6 +10,7 @@ import 'package:hycop/hycop.dart';
 import 'package:routemaster/routemaster.dart';
 //import 'package:url_strategy/url_strategy.dart';
 import 'package:url_launcher/link.dart';
+import '../../lang/creta_commu_lang.dart';
 import '../../routes.dart';
 //import '../../pages/login_page.dart';
 import '../login/login_dialog.dart';
@@ -209,8 +210,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         selected: false,
       ),
       CretaMenuItem(
-        caption: CretaLang.basicBookFilter[2], // 전차칠판용
-        iconData: Icons.article_outlined,
+        caption: CretaLang.basicBookFilter[2], // 전자칠판용
+        iconData: Icons.favorite_outline,
         onPressed: () {
           setState(() {
             _filterBookType = BookType.board;
@@ -220,11 +221,33 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         selected: false,
       ),
       CretaMenuItem(
-        caption: CretaLang.basicBookFilter[3], // 디지털사이니지용
-        iconData: Icons.favorite_outline,
+        caption: CretaLang.basicBookFilter[3], // 디지털사이니지용 전차칠판용
+        iconData: Icons.article_outlined,
         onPressed: () {
           setState(() {
             _filterBookType = BookType.signage;
+            setScrollOffset(0);
+          });
+        },
+        selected: false,
+      ),
+      CretaMenuItem(
+        caption: CretaLang.basicBookFilter[4], // 디지털바리케이드용
+        iconData: Icons.favorite_outline,
+        onPressed: () {
+          setState(() {
+            _filterBookType = BookType.digitalBarricade;
+            setScrollOffset(0);
+          });
+        },
+        selected: false,
+      ),
+      CretaMenuItem(
+        caption: CretaLang.basicBookFilter[5], // 기타
+        iconData: Icons.favorite_outline,
+        onPressed: () {
+          setState(() {
+            _filterBookType = BookType.etc;
             setScrollOffset(0);
           });
         },
@@ -2070,7 +2093,15 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                 Routemaster.of(context).push(AppRoutes.studioBookGridPage);
               }
             },
-            gotoButtonTitle: CretaAccountManager.experienceWithoutLogin ? '스튜디오 체험하기' : '내 크레타북 관리',
+            gotoButtonTitle: CretaAccountManager.experienceWithoutLogin
+                ? CretaCommuLang.tourStudio
+                : CretaCommuLang.myCretaBookMenu,
+
+            gotoButtonPressed2: () {
+              Routemaster.of(context).push(AppRoutes.deviceMainPage);
+            },
+            gotoButtonTitle2: CretaCommuLang.myDeviceMenu,
+
             leftMenuItemList: _leftMenuItemList,
             bannerTitle: 'title',
             bannerDescription: 'description',

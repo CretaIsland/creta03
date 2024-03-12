@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
 
+import 'package:creta_common/lang/creta_lang.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
@@ -247,7 +248,7 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(CretaStudioLang.bookType, style: titleStyle),
-            Text(CretaStudioLang.bookTypeList[widget.model.bookType.value.index], style: dataStyle),
+            Text(CretaLang.basicBookFilter[widget.model.bookType.value.index], style: dataStyle),
           ],
         ),
       )

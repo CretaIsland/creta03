@@ -21,6 +21,7 @@ import 'design_system/demo_page/text_field_demo_page.dart';
 import 'developer/gen_collections_page.dart';
 // import 'pages/intro_page.dart';
 import 'package:creta_studio_model/model/book_model.dart';
+import 'pages/device/device_main_page.dart';
 import 'pages/login/creta_account_manager.dart';
 import 'pages/studio/book_grid_page.dart';
 import 'pages/studio/book_main_page.dart';
@@ -96,6 +97,7 @@ abstract class AppRoutes {
   static const String quillDemoPage = '/quillDemoPage';
   static const String textFieldDemoPage = '/textFieldDemoPage';
   static const String studioBookMainPage = '/studio/bookMainPage';
+  static const String deviceMainPage = '/device/deviceMainPage';
   static const String studioBookPreviewPage = '/studio/studioBookMainPreviewPage';
   static const String studioBookGridPage = '/studio/bookGridPage';
   static const String studioBookSharedPage = '/studio/bookMySharedPage';
@@ -167,6 +169,7 @@ final routesLoggedOut = RouteMap(
     //     child:
     //     QuillFloatingToolBarWidget(document: ContentsModel.withFrame(parent: '', bookMid: ''))),
     AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
+    AppRoutes.deviceMainPage: (_) => TransitionPage(child: DeviceMainPage()),
     AppRoutes.studioBookMainPage: (routeData) {
       if (AccountManager.currentLoginUser.isLoginedUser) {
         //skpark test code
