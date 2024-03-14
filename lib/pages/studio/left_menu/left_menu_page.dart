@@ -25,6 +25,7 @@ import '../../../design_system/component/tree/my_tree_view.dart';
 import '../../../design_system/component/tree/src/models/node.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_font.dart';
+import '../../../design_system/dialog/creta_alert_dialog.dart';
 import '../../../design_system/menu/creta_popup_menu.dart';
 import '../../../lang/creta_studio_lang.dart';
 import 'package:creta_studio_model/model/book_model.dart';
@@ -33,6 +34,7 @@ import 'package:creta_common/model/creta_model.dart';
 import 'package:creta_studio_model/model/frame_model.dart';
 import 'package:creta_studio_model/model/link_model.dart';
 import 'package:creta_studio_model/model/page_model.dart';
+import '../../../model/template_model.dart';
 import '../containees/containee_nofifier.dart';
 import '../containees/page/page_thumbnail.dart';
 import '../studio_constant.dart';
@@ -119,12 +121,12 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   PageManager? _pageManager;
   late ScrollController _scrollController;
   final GlobalKey<CretaLabelTextEditorState> textFieldKey = GlobalKey<CretaLabelTextEditorState>();
+  TextEditingController templateNameController = TextEditingController();
 
   final double verticalPadding = 10;
   final double horizontalPadding = 24;
   //final double cardHeight = 246;
   final double headerHeight = 36;
-  final double menuBarHeight = 36;
 
   final double borderThick = 4;
 
@@ -257,7 +259,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
 
   Widget _menuBar() {
     return Container(
-      height: menuBarHeight,
+      height: LayoutConst.leftMenuBarHeight,
       color: CretaColor.text[100]!,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -425,7 +427,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                   textStyle: model.isShow.value
                       ? CretaFont.titleSmall
                       : CretaFont.titleSmall.copyWith(color: CretaColor.text[300]!),
-                  width: 180,
+                  width: 160,
                   height: 20,
                   onEditComplete: (value) {
                     setState(() {
@@ -505,6 +507,15 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                     // });
                   },
                 ),
+                if (_pageManager!.isSelected(model.mid) == true)
+                  BTN.fill_gray_i_m(
+                    tooltip: CretaStudioLang.newTemplate,
+                    tooltipBg: CretaColor.text[700]!,
+                    icon: Icons.file_copy,
+                    onPressed: () {
+                      _saveAsTemplate(model);
+                    },
+                  ),
                 //  BTN.fill_gray_i_m(
                 //   tooltip: CretaStudioLang.tooltipDelete,
                 //   tooltipBg: CretaColor.text[700]!,
@@ -680,11 +691,19 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                     }
                   }
                 }),
+            // if (_pageManager!.isSelected(model.mid) == true)
+            //   CretaMenuItem(
+            //       caption: CretaStudioLang.newTemplate,
+            //       onPressed: () async {
+            //         Navigator.of(context).pop();
+            //         await _saveAsTemplate(model);
+            //         //widget.onFrameShowUnshow.call(frameModel.mid);
+            //       }),
           ],
           itemHeight: 24,
           x: details.globalPosition.dx,
           y: details.globalPosition.dy,
-          width: 150,
+          width: 224,
           height: 110,
           //textStyle: CretaFont.bodySmall,
           iconSize: 12,
@@ -766,6 +785,87 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     );
   }
 
+  Future<void> _saveAsTemplate(PageModel pageModel) async {
+    String? templateName = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return CretaAlertDialog(
+          title: CretaStudioLang.inputTemplateName,
+          content: TextField(
+            controller: templateNameController,
+            autofocus: true,
+            decoration: InputDecoration(
+              labelText: CretaStudioLang.inputTemplateName,
+            ),
+            onSubmitted: (value) {
+              Navigator.of(context).pop(value);
+            },
+          ),
+          onPressedOK: () {
+            Navigator.of(context).pop(templateNameController.text);
+          },
+        );
+      },
+    );
+
+    // ignore: use_build_context_synchronously
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(),
+              Padding(
+                padding: EdgeInsets.only(left: 10),
+                child: Text(CretaStudioLang.templateCreating, style: CretaFont.bodyMedium),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    await takePageScreenShot();
+
+    if (templateName != null && templateName.isNotEmpty) {
+      String? alreadyExistMid = await BookMainPage.templateManagerHolder!
+          .isAlreadyExis(realTimeKey: pageModel.mid, name: templateName);
+
+      String userEmail = AccountManager.currentLoginUser.email;
+      TemplateModel templateModel = TemplateModel(alreadyExistMid ?? '');
+
+      //print('pageModel.thumbnailUrl = ${pageModel.thumbnailUrl.value}');
+
+      templateModel.copyFrom(pageModel, newMid: alreadyExistMid);
+      templateModel.parentMid.set(userEmail);
+      templateModel.name.set(templateName);
+      templateModel.setRealTimeKey(pageModel.mid);
+
+      //print('templateModel.thumbnailUrl = ${templateModel.thumbnailUrl.value}');
+
+      String message = CretaStudioLang.templateCreated;
+      if (alreadyExistMid != null) {
+        BookMainPage.templateManagerHolder!.setToDB(templateModel);
+        message = CretaStudioLang.templateUpdated;
+      } else {
+        BookMainPage.templateManagerHolder!.createToDB(templateModel);
+      }
+      FrameManager? frameManager = BookMainPage.pageManagerHolder!.findCurrentFrameManager();
+      if (frameManager == null) {
+        return;
+      }
+      frameManager.copyFrames(templateModel.mid, userEmail, samePage: false);
+      // ignore: use_build_context_synchronously
+
+      // ignore: use_build_context_synchronously
+      showSnackBar(context, message);
+      // ignore: use_build_context_synchronously
+      Navigator.of(context).pop();
+    }
+  }
   // Widget _thumnailArea(double width, double height, String url) {
   //   return CustomImage(
   //       key: UniqueKey(),
@@ -1047,11 +1147,12 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     }
 
     WindowScreenshot.uploadScreenshot(
-      bookId: bookModel.mid,
+      bookId: HycopUtils.midToKey(bookModel.mid),
       offset: area.topLeft,
       size: area.size,
     ).then((value) {
-      if (value.isNotEmpty) {
+      BookModel? bookModel = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
+      if (value.isNotEmpty && bookModel != null) {
         bookModel.thumbnailUrl.set(value, noUndo: true, save: false);
         bookModel.thumbnailType.set(ContentsType.image, noUndo: true, save: false);
         logger.fine('book Thumbnail saved !!! ${bookModel.mid}, $value');
@@ -1060,5 +1161,32 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       }
       return null;
     });
+  }
+
+  Future<void> takePageScreenShot() async {
+    PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+    if (pageModel == null) {
+      return;
+    }
+    Rect? thumbArea = BookMainPage.pageManagerHolder!.getThumbArea();
+    if (thumbArea == null) {
+      return;
+    }
+
+    //print('takePageScreenShot(${pageModel.mid})');
+
+    String url = await WindowScreenshot.uploadScreenshot(
+      bookId: HycopUtils.midToKey(pageModel.mid),
+      offset: thumbArea.topLeft,
+      size: thumbArea.size,
+    );
+    if (url.isNotEmpty) {
+      pageModel.thumbnailUrl.set(url, noUndo: true, save: false);
+      //print('page Thumbnail saved !!! ${pageModel.mid}, $url');
+      // 재귀적으로 계속 변경이 일어난 것으로 보고 계속 호출되는 것을 막기 위해, DB 에 직접 쓴다.
+      BookMainPage.pageManagerHolder?.setToDB(pageModel);
+    }
+
+    return;
   }
 }

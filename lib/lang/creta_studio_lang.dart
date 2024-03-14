@@ -39,6 +39,15 @@ class CretaStudioLang {
     "32:9 스크린",
   ];
 
+  static List<String> pageSizeListBarricade = [
+    "사용자지정",
+    "3장",
+    "1장",
+    "2장",
+    "4장",
+    "5장",
+  ];
+
   static List<String> copyWrightList = [
     "None",
     "자유로운 사용 가능",
@@ -247,6 +256,7 @@ class CretaStudioLang {
   static const String tooltipPlay = '미리보기';
   static const String tooltipScale = '항상 화면 크기에 알맞게 맞춥니다.';
   static const String tooltipDelete = '삭제하기';
+  static const String tooltipApply = '사용하기';
   static const String tooltipMenu = '메뉴';
   static const String tooltipLink = '연결하기';
 
@@ -254,9 +264,16 @@ class CretaStudioLang {
 
   static const String newBook = '새 크레타북';
   static const String newPage = '새 페이지 추가';
+  static const String newTemplate = '현재 페이지를 템플릿으로 저장';
   static const String newFrame = '새 프레임 추가';
   static const String treePage = '자세히 보기';
   static const String newText = '기본 텍스트';
+
+  static const String templateCreating = '템플릿을 생성중입니다...';
+  static const String templateCreated = '새로운 템플릿이 저장되었습니다.';
+  static const String templateUpdated = '템플릿이 업데이트 되었습니다.';
+  static const String inputTemplateName = '템플릿의 이름을 넣어주세요';
+  static const String templateName = '템플릿 이름';
 
   static const String textEditorToolbar = '텍스트 편집기 열기';
   static const String paragraphTemplate = '문단';

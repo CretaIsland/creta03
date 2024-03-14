@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'package:creta_common/common/creta_common_utils.dart';
+import 'package:creta_common/common/creta_vars.dart';
 import 'package:creta_studio_io/data_io/base_book_manager.dart';
 import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'package:creta_user_io/data_io/team_manager.dart';
@@ -62,9 +63,13 @@ class BookManager extends BaseBookManager {
   }
 
   BookModel createSample({
-    double width = 1920,
-    double height = 1080,
+    double? width,
+    double? height,
   }) {
+
+    width ??= CretaVars.defaultSize().width ;
+    height ??= CretaVars.defaultSize().height;
+    
     final Random random = Random();
     int randomNumber = random.nextInt(100);
     String url = 'https://picsum.photos/200/?random=$randomNumber';

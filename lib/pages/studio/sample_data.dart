@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:creta_common/lang/creta_lang.dart';
+import 'package:creta_common/common/creta_vars.dart';
 
 import 'package:creta_studio_model/model/book_model.dart';
 
@@ -10,8 +11,10 @@ class SampleData {
   static initSample() {
     sampleBook.name
         .set(CretaLang.sampleBookName, save: false, noUndo: true, dontChangeBookTime: true);
-    sampleBook.width.set(1920, save: false, noUndo: true, dontChangeBookTime: true);
-    sampleBook.height.set(1080, save: false, noUndo: true, dontChangeBookTime: true);
+    sampleBook.width
+        .set(CretaVars.defaultSize().width, save: false, noUndo: true, dontChangeBookTime: true);
+    sampleBook.height
+        .set(CretaVars.defaultSize().height, save: false, noUndo: true, dontChangeBookTime: true);
 
     // AccountManager.currentLoginUser.setValue('email', 'skpark@sqisoft.com');
     // AccountManager.currentLoginUser.setValue('name', 'Turtle Rabbit');

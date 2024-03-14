@@ -33,6 +33,7 @@ import 'package:creta_user_io/data_io/creta_manager.dart';
 import '../../data_io/filter_manager.dart';
 import '../../data_io/frame_manager.dart';
 import '../../data_io/page_manager.dart';
+import '../../data_io/template_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_label_text_editor.dart';
 import '../../design_system/buttons/creta_scale_button.dart';
@@ -78,6 +79,7 @@ class BookMainPage extends StatefulWidget {
   //static bool onceBookInfoOpened = false;
   static BookManager? bookManagerHolder;
   static PageManager? pageManagerHolder;
+  static TemplateManager? templateManagerHolder;
   static FilterManager? filterManagerHolder;
   static ConnectedUserManager? connectedUserHolder;
   // static FrameTemplateManager? polygonFrameManagerHolder;
@@ -270,6 +272,9 @@ class _BookMainPageState extends State<BookMainPage> {
             onGotoNextBook: widget.onGotoNextBook,
           )
         : PageManager();
+
+    BookMainPage.templateManagerHolder = TemplateManager();
+
     // BookMainPage.polygonFrameManagerHolder = FrameTemplateManager(frameType: FrameType.polygon);
     // BookMainPage.animationFrameManagerHolder = FrameTemplateManager(frameType: FrameType.animation);
     //BookMainPage.userPropertyManagerHolder = UserPropertyManager();

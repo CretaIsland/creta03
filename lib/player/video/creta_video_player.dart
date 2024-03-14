@@ -89,7 +89,8 @@ class CretaVideoPlayer extends CretaAbsPlayer {
 
   @override
   Future<void> play({bool byManual = false}) async {
-    // while (model!.state == PlayState.disposed) {
+    // //skpark 2024.03.14 init 되기전에 플레이되는 것을 막음
+    // while (wcontroller!.value.isInitialized == false) {
     //   await Future.delayed(const Duration(milliseconds: 100));
     // }
     logger.fine('play  ${model!.name}');

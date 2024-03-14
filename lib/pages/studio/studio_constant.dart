@@ -38,6 +38,8 @@ class LayoutConst {
   //static const double leftMenuWidth = 420;
   static const double leftMenuWidth = 380;
   static const double leftMenuWidthCollapsed = 100; // added by Mai 230516
+  static const double leftMenuBarHeight = 36;
+
   static const double rightMenuWidth = 380;
   static const double rightHideMenuWidth = 45;
   static const double rightMenuTitleHeight = 76;
@@ -171,6 +173,16 @@ class StudioConst {
     [Size(2705, 3827)],
     [Size(1913, 2705)],
     [Size(1346, 1913)],
+  ];
+
+  static List<List<Size>> barricadeResolution = [
+    [],
+    [Size(360, 28)],
+    [Size(120, 28)],
+    [Size(240, 28)],
+    [Size(480, 28)],
+    [Size(600, 28)],
+    [Size(720, 28)],
   ];
 
   static List<Size> musicPlayerSize = [

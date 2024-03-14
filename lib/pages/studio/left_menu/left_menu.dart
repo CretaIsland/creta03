@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:creta03/pages/studio/left_menu/left_menu_image.dart';
+import 'package:creta03/pages/studio/left_menu/left_menu_template.dart';
 import 'package:creta03/pages/studio/left_menu/left_menu_web_conference.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
@@ -186,7 +187,7 @@ class _LeftMenuState
   bool _isNotImpl(LeftMenuEnum selected) {
     switch (selected) {
       case LeftMenuEnum.Template:
-        return true;
+        return false;
       case LeftMenuEnum.Page:
         return false;
       case LeftMenuEnum.Frame:
@@ -215,7 +216,7 @@ class _LeftMenuState
   Widget eachWidget(LeftMenuEnum selected) {
     switch (selected) {
       case LeftMenuEnum.Template:
-        return Container();
+        return LeftMenuTemplate();
       case LeftMenuEnum.Page:
         return LeftMenuPage(isFolded: isCollapsed);
       case LeftMenuEnum.Frame:

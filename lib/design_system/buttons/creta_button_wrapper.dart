@@ -123,6 +123,36 @@ class BTN {
     );
   }
 
+  static CretaButton fill_gray_100_i_m_text({
+    required IconData icon,
+    required String text,
+    required Function onPressed,
+    double width = 172,
+    String? tooltip,
+    Color? tooltipBg,
+  }) {
+    return CretaButton(
+      tooltip: tooltip,
+      tooltipBg: tooltipBg,
+      width: width,
+      height: 32,
+      buttonType: CretaButtonType.child,
+      buttonColor: CretaButtonColor.gray100,
+      onPressed: onPressed,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            size: 16,
+            color: CretaColor.text[700]!,
+          ),
+          Text(text, style: CretaFont.buttonSmall.copyWith(color: CretaColor.text[700]!)),
+        ],
+      ),
+    );
+  }
+
   static CretaButton fill_gray_200_i_s({
     required IconData icon,
     required Function onPressed,

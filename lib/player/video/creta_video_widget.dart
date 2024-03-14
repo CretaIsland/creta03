@@ -51,7 +51,7 @@ class CretaVideoPlayerWidgetState extends CretaState<CretaVideoWidget> {
     //print('build');
     final CretaVideoPlayer player = widget.player as CretaVideoPlayer;
     if (player.isInitAlreadyDone) {
-      //print('====================================================${player.keyString}');
+      //print('player isInitAlreadyDonw !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
       return IgnorePointer(
         child: getClipRect(
           player.getSize()!,

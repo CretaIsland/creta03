@@ -139,42 +139,53 @@ class _LandingPageState extends State<LandingPage> {
     quickStartAnimationController =
         VideoPlayerController.asset("assets/landing_page/video/quick_start_animation.mp4");
 
-    initalizeVideoController().then((value) => setState(() {
-          presentationAnimationController.setVolume(0);
-          communityAnimationController.setVolume(0);
-          signageAnimationController.setVolume(0);
-          quickStartAnimationController.setVolume(0);
+    afterBuild();
+  }
 
-          presentationAnimationController.play();
-          communityAnimationController.play();
-          signageAnimationController.play();
-          quickStartAnimationController.play();
+  Future<void> afterBuild() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      initalizeVideoController().then((value) => setState(() {
+            presentationAnimationController.setVolume(0);
+            communityAnimationController.setVolume(0);
+            signageAnimationController.setVolume(0);
+            quickStartAnimationController.setVolume(0);
 
-          presentationAnimationController.setLooping(true);
-          communityAnimationController.setLooping(true);
-          signageAnimationController.setLooping(true);
-          quickStartAnimationController.setLooping(true);
-        }));
+            presentationAnimationController.play();
+            communityAnimationController.play();
+            signageAnimationController.play();
+            quickStartAnimationController.play();
 
-    searchCretaBook().then((value) => setState(() {}));
-    _verticalScroller = ScrollController();
-    _verticalScroller.addListener(() {
-      if (_verticalScroller.offset > 10) {
-        setState(() {
-          appBarShadow = BoxShadow(
-              color: const Color(0xff1A1A1A).withOpacity(0.12),
-              blurRadius: 12,
-              offset: const Offset(0, 2));
-        });
-      }
+            presentationAnimationController.setLooping(true);
+            communityAnimationController.setLooping(true);
+            signageAnimationController.setLooping(true);
+            quickStartAnimationController.setLooping(true);
+          }));
+
+      searchCretaBook().then((value) => setState(() {}));
+      _verticalScroller = ScrollController();
+      _verticalScroller.addListener(() {
+        if (_verticalScroller.offset > 10) {
+          setState(() {
+            appBarShadow = BoxShadow(
+                color: const Color(0xff1A1A1A).withOpacity(0.12),
+                blurRadius: 12,
+                offset: const Offset(0, 2));
+          });
+        }
+      });
+
+      Timer.periodic(const Duration(seconds: 3), (timer) {
+        _animationLogoImgPath.value =
+            (_animationLogoImgPath.value == "assets/landing_page/image/creta_animation_logo.png")
+                ? "assets/landing_page/image/creta_animation_logo2.png"
+                : "assets/landing_page/image/creta_animation_logo.png";
+      });
     });
+  }
 
-    Timer.periodic(const Duration(seconds: 3), (timer) {
-      _animationLogoImgPath.value =
-          (_animationLogoImgPath.value == "assets/landing_page/image/creta_animation_logo.png")
-              ? "assets/landing_page/image/creta_animation_logo2.png"
-              : "assets/landing_page/image/creta_animation_logo.png";
-    });
+  @override
+  void setState(VoidCallback fn) {
+    if (mounted) super.setState(fn);
   }
 
   @override
