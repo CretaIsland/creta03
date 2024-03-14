@@ -30,7 +30,7 @@ class TemplateManager extends CretaManager {
   AbsExModel newModel(String mid) => TemplateModel(mid);
 
   Future<List<TemplateModel>>? getTemplateList({String? queryText}) async {
-    print('getTemplateList =====================================');
+    //print('getTemplateList =====================================');
     List<TemplateModel> retval = [];
 
     await _getTemplateList(

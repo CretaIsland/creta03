@@ -99,8 +99,8 @@ class _LeftMenuTemplateState extends State<LeftMenuTemplate> {
         ),
       ],
       child: Consumer<TemplateManager>(builder: (context, manager, child) {
-        print(
-            'Consumer<TemplateManager>-----$refreshToggle------------------------------------------------------------------');
+        // print(
+        //     'Consumer<TemplateManager>-----$refreshToggle------------------------------------------------------------------');
         return Container(
           padding: EdgeInsets.symmetric(vertical: verticalPadding, horizontal: horizontalPadding),
           child: Column(
