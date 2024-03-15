@@ -26,7 +26,8 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   // screen vertical scroll controller
-  late ScrollController _verticalScroller;
+  final ScrollController _verticalScroller = ScrollController();
+
   // screen width
   double? _screenWidth;
 
@@ -162,7 +163,6 @@ class _LandingPageState extends State<LandingPage> {
           }));
 
       searchCretaBook().then((value) => setState(() {}));
-      _verticalScroller = ScrollController();
       _verticalScroller.addListener(() {
         if (_verticalScroller.offset > 10) {
           setState(() {
