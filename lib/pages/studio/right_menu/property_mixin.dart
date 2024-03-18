@@ -56,7 +56,7 @@ mixin PropertyMixin {
   }
 
   void notifyToThumbnail(PageModel pageModel) {
-    BookMainPage.pageManagerHolder?.invalidatThumbnail(pageModel.mid);
+    BookMainPage.pageManagerHolder?.invalidateThumbnail(pageModel.mid);
   }
 
   Widget propertyCard({

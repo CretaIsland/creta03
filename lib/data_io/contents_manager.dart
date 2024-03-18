@@ -1589,4 +1589,16 @@ class ContentsManager extends BaseContentsManager {
     }
     return true;
   }
+
+  Future<void> updateParent(FrameModel frame, PageModel page, String bookMid) async {
+    print('updateParent(${frame.mid})');
+    await _getContents();
+    for (var ele in modelList) {
+      print('contents = ${ele.mid}');
+      ContentsModel model = ele as ContentsModel;
+      ContentsModel newModel = ContentsModel('', bookMid);
+      newModel.copyFrom(model, newMid: newModel.mid, pMid: frame.mid);
+      await createToDB(newModel);
+    }
+  }
 }

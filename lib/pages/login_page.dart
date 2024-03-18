@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, avoid_web_libraries_in_flutter
 
 //import 'dart:async';
+import 'package:creta_common/common/creta_vars.dart';
 import 'package:flutter/material.dart';
 //import 'package:get/get.dart';
 // import 'package:hycop/hycop.dart';
@@ -858,7 +859,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Snippet.CretaScaffold(
-      title: Snippet.logo('Login page'),
+      title: Snippet.logo(CretaVars.serviceTypeString()),
       context: context,
       //child: _selectPage(),
       child: Container(),

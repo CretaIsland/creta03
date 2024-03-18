@@ -29,14 +29,14 @@ class TemplateManager extends CretaManager {
   @override
   AbsExModel newModel(String mid) => TemplateModel(mid);
 
-  Future<List<TemplateModel>>? getTemplateList({String? queryText}) async {
+  Future<List<TemplateModel>>? getTemplateList(String parentMid, {String? queryText}) async {
     //print('getTemplateList =====================================');
     List<TemplateModel> retval = [];
 
     await _getTemplateList(
         queryText: queryText,
         isNew: true,
-        parentMid: AccountManager.currentLoginUser.email); // 나의 템플릿
+        parentMid: parentMid); // 나의 템플릿
 
     for (var each in modelList) {
       logger.finest('each = ${each.toMap()}');

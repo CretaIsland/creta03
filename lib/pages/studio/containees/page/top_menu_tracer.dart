@@ -1,4 +1,5 @@
 import 'package:creta03/pages/studio/containees/page/top_menu_notifier.dart';
+import 'package:creta_common/common/creta_vars.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
@@ -106,16 +107,16 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
     }
     if (BookMainPage.topMenuNotifier!.isFrameCreate()) {
       Offset center = Offset(
-        (LayoutConst.defaultFrameSize.width / 2) * StudioVariables.applyScale,
-        (LayoutConst.defaultFrameSize.height / 2) * StudioVariables.applyScale,
+        (CretaVars.defaultFrameSize().width / 2) * StudioVariables.applyScale,
+        (CretaVars.defaultFrameSize().height / 2) * StudioVariables.applyScale,
       );
       Offset pos = _hoverPos! - center;
       return Positioned(
         left: pos.dx,
         top: pos.dy,
         child: Container(
-          width: LayoutConst.defaultFrameSize.width * StudioVariables.applyScale,
-          height: LayoutConst.defaultFrameSize.height * StudioVariables.applyScale,
+          width: CretaVars.defaultFrameSize().width * StudioVariables.applyScale,
+          height: CretaVars.defaultFrameSize().height * StudioVariables.applyScale,
           color: Colors.grey.withOpacity(0.2),
         ),
       );
@@ -145,8 +146,8 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
       // create frame box here
       //print('createFrame');
       Offset center = Offset(
-        (LayoutConst.defaultFrameSize.width / 2) * StudioVariables.applyScale,
-        (LayoutConst.defaultFrameSize.height / 2) * StudioVariables.applyScale,
+        (CretaVars.defaultFrameSize().width / 2) * StudioVariables.applyScale,
+        (CretaVars.defaultFrameSize().height / 2) * StudioVariables.applyScale,
       );
       Offset pos = BookMainPage.bookManagerHolder!.positionInPage(
         details.localPosition - center,
@@ -154,7 +155,7 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
         applyStickerOffset: false,
       );
       //Offset pos = Offset(details.localPosition.dx - center.dx, details.localPosition.dy - center.dy);
-      frameManager!.createNextFrame(pos: pos, size: LayoutConst.defaultFrameSize).then((value) {
+      frameManager!.createNextFrame(pos: pos, size: CretaVars.defaultFrameSize()).then((value) {
         //print('start ==================================================');
 
         frameManager?.setSelectedMid(value.mid, doNotify: true);
@@ -162,7 +163,7 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
         CretaManager.frameSelectNotifier?.set(value.mid);
 
         _sendEvent?.sendEvent(value);
-        BookMainPage.pageManagerHolder!.invalidatThumbnail(frameManager!.pageModel.mid);
+        BookMainPage.pageManagerHolder!.invalidateThumbnail(frameManager!.pageModel.mid);
         //Future.delayed(const Duration(milliseconds: 200), () {
         //print('miniMenu show');
         BookMainPage.miniMenuNotifier?.set(true, doNoti: true);

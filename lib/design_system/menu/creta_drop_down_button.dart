@@ -285,6 +285,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
                         child: ElevatedButton(
                           style: _buttonStyle(item.selected, true),
                           onPressed: () {
+                            if (item.disabled) return;
                             setState(() {
                               for (var ele in menuItem) {
                                 if (ele.selected == true) {
@@ -304,6 +305,9 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
                                       style: widget.textStyle?.copyWith(
                                         fontFamily: item.fontFamily,
                                         fontWeight: item.fontWeight,
+                                        color: item.disabled
+                                            ? CretaColor.text[300]!
+                                            : widget.allTextColor,
                                       ),
                                       overflow: TextOverflow.fade,
                                     )

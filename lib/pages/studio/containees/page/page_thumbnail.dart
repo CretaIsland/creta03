@@ -182,6 +182,7 @@ class PageThumbnailState extends CretaState<PageThumbnail> with ContaineeMixin {
 
   Widget _drawPage(bool useColor) {
     return Container(
+      key: BookMainPage.pageManagerHolder!.registerPageImageThumbnail(widget.pageModel.mid),
       decoration: useColor ? _pageDeco() : null,
       // width: widget.pageWidth,
       // height: widget.pageHeight,

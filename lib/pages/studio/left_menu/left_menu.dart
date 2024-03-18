@@ -43,10 +43,13 @@ class LeftMenu extends StatefulWidget {
   });
 
   @override
-  State<LeftMenu> createState() => _LeftMenuState();
+  State<LeftMenu> createState() => LeftMenuState();
+
+  static GlobalObjectKey<LeftMenuPageState> leftMenuPageKey =
+      GlobalObjectKey<LeftMenuPageState>('LeftMenuPage');
 }
 
-class _LeftMenuState
+class LeftMenuState
     extends State<LeftMenu> /* with SingleTickerProviderStateMixin,  LeftMenuMixin  */ {
   //final bool _closeWidget = false;
   bool isCollapsed = false;
@@ -218,7 +221,7 @@ class _LeftMenuState
       case LeftMenuEnum.Template:
         return LeftMenuTemplate();
       case LeftMenuEnum.Page:
-        return LeftMenuPage(isFolded: isCollapsed);
+        return LeftMenuPage(key: LeftMenu.leftMenuPageKey, isFolded: isCollapsed);
       case LeftMenuEnum.Frame:
         return LeftMenuFrame();
       case LeftMenuEnum.Storage:

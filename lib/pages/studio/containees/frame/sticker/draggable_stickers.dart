@@ -729,7 +729,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                     frameModel.removeOverlayExclude(sticker.pageMid);
                   }
                   _sendEvent!.sendEvent(frameModel);
-                  BookMainPage.pageManagerHolder?.invalidatThumbnail(sticker.pageMid);
+                  BookMainPage.pageManagerHolder?.invalidateThumbnail(sticker.pageMid);
                   //_notifyToThumbnail();
                   //BookMainPage.pageManagerHolder!.notify();
                 });
@@ -1138,7 +1138,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
   }
 
   void _notifyToThumbnail() {
-    BookMainPage.pageManagerHolder?.invalidatThumbnail(widget.page.mid);
+    BookMainPage.pageManagerHolder?.invalidateThumbnail(widget.page.mid);
   }
 
   // Widget _frameDropZone(Sticker sticker, {required Widget child}) {

@@ -2,6 +2,7 @@
 
 import 'dart:math';
 
+import 'package:creta_common/common/creta_vars.dart';
 import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'package:creta_common/common/creta_const.dart';
 import 'package:creta_common/lang/creta_lang.dart';
@@ -190,7 +191,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         ),
       ],
       child: Snippet.CretaScaffold(
-          title: Snippet.logo('device'),
+          title: Snippet.logo(CretaVars.serviceTypeString()),
           // additionals: SizedBox(
           //   height: 36,
           //   width: windowWidth > 535 ? 130 : 60,

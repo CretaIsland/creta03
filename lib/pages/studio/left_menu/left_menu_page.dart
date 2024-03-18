@@ -19,6 +19,7 @@ import '../../../data_io/page_manager.dart';
 import '../../../design_system/buttons/creta_button.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/buttons/creta_label_text_editor.dart';
+import '../../../design_system/buttons/creta_toggle_button.dart';
 import '../../../design_system/component/creta_right_mouse_menu.dart';
 import '../../../design_system/component/tree/my_tree_view.dart';
 //import '../../../design_system/component/tree/src/models/node.dart';
@@ -114,10 +115,10 @@ class LeftMenuPage extends StatefulWidget {
   const LeftMenuPage({super.key, this.isFolded = false});
 
   @override
-  State<LeftMenuPage> createState() => _LeftMenuPageState();
+  State<LeftMenuPage> createState() => LeftMenuPageState();
 }
 
-class _LeftMenuPageState extends State<LeftMenuPage> {
+class LeftMenuPageState extends State<LeftMenuPage> {
   PageManager? _pageManager;
   late ScrollController _scrollController;
   final GlobalKey<CretaLabelTextEditorState> textFieldKey = GlobalKey<CretaLabelTextEditorState>();
@@ -148,6 +149,9 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   Timer? _screenshotTimer;
   Rect? _thumbArea;
 
+  bool _resetPostion = false;
+  bool _saveAsSharedTemplate = false;
+
   //bool _flipToTree = true;
 
   //final int _firstPage = 100;
@@ -164,7 +168,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   void initState() {
     super.initState();
     //_scrollController.addListener(_scrollListener);
-    logger.finer('_LeftMenuPageState.initState');
+    logger.finer('LeftMenuPageState.initState');
     bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
     //bodyHeight = cardHeight - headerHeight;
     bodyHeight = bodyWidth * (1080 / 1920);
@@ -195,6 +199,12 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     //final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
     //_linkSendEvent = linkSendEvent;
     afterBuild();
+  }
+
+  void resetPosition() {
+    setState(() {
+      _resetPostion = true;
+    });
   }
 
   Future<void> afterBuild() async {
@@ -232,6 +242,9 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_resetPostion) {
+      _moveToPageEnd();
+    }
     return Consumer<PageManager>(builder: (context, pageManager, child) {
       _pageManager = pageManager;
       pageManager.reOrdering();
@@ -272,8 +285,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                 icon: Icons.add_outlined,
                 onPressed: (() {
                   _pageManager!.createNextPage(_pageCount + 1);
-                  _scrollController
-                      .jumpTo(_scrollController.position.maxScrollExtent + cardHeight * 3);
+                  _moveToPageEnd();
                 })),
           ),
           //BTN.fill_gray_100_i_s(icon: Icons.delete_outlined, onPressed: (() {})),
@@ -791,15 +803,35 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       builder: (BuildContext context) {
         return CretaAlertDialog(
           title: CretaStudioLang.inputTemplateName,
-          content: TextField(
-            controller: templateNameController,
-            autofocus: true,
-            decoration: InputDecoration(
-              labelText: CretaStudioLang.inputTemplateName,
-            ),
-            onSubmitted: (value) {
-              Navigator.of(context).pop(value);
-            },
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              TextField(
+                controller: templateNameController,
+                autofocus: true,
+                decoration: InputDecoration(
+                  labelText: CretaStudioLang.inputTemplateName,
+                ),
+                onSubmitted: (value) {
+                  Navigator.of(context).pop(value);
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 28.0),
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  Text(CretaStudioLang.saveAsSharedTemplate, style: CretaFont.bodyMedium),
+                  CretaToggleButton(
+                      width: 54,
+                      height: 28,
+                      onSelected: (value) {
+                        setState(() {
+                          _saveAsSharedTemplate = value;
+                        });
+                      },
+                      defaultValue: _saveAsSharedTemplate),
+                ]),
+              ),
+            ],
           ),
           onPressedOK: () {
             Navigator.of(context).pop(templateNameController.text);
@@ -834,7 +866,8 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       String? alreadyExistMid = await BookMainPage.templateManagerHolder!
           .isAlreadyExis(realTimeKey: pageModel.mid, name: templateName);
 
-      String userEmail = AccountManager.currentLoginUser.email;
+      String userEmail =
+          _saveAsSharedTemplate ? 'SHARED_TEMPLATE' : AccountManager.currentLoginUser.email;
       TemplateModel templateModel = TemplateModel(alreadyExistMid ?? '');
 
       //print('pageModel.thumbnailUrl = ${pageModel.thumbnailUrl.value}');
@@ -1045,7 +1078,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     if (pageViewArea == null) {
       return;
     }
-    _thumbArea = BookMainPage.pageManagerHolder!.getThumbArea();
+    _thumbArea = BookMainPage.pageManagerHolder!.getThumbImageArea();
 
     bool contained = false;
     if (_thumbArea != null) {
@@ -1105,7 +1138,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
 
       // 제일 첫번째를 가져온다.
 
-      _thumbArea = BookMainPage.pageManagerHolder!.getFirstThumbArea();
+      _thumbArea = BookMainPage.pageManagerHolder!.getFirstThumbImageArea();
       if (_thumbArea != null) {
         if (CretaCommonUtils.isRectContained(pageViewArea, _thumbArea!)) {
           // 이미 화면에 완전히 보인다.
@@ -1117,7 +1150,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       }
 
       // 이때는 selecte 된 Page thumbnail 을 찍는 다.
-      _thumbArea = BookMainPage.pageManagerHolder!.getThumbArea();
+      _thumbArea = BookMainPage.pageManagerHolder!.getThumbImageArea();
       if (_thumbArea != null) {
         if (CretaCommonUtils.isRectContained(pageViewArea, _thumbArea!)) {
           // 이미 화면에 완전히 보인다.
@@ -1136,7 +1169,8 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
 
   void _takeAScreenShot(Rect area) {
     BookMainPage.thumbnailChanged = false;
-    logger.fine('start _takeAScreenShot(${area.left},${area.top},${area.width},${area.height} )');
+    print(
+        'start _takeAScreenShot(${area.left.round()},${area.top.round()},${area.width.round()},${area.height.round()} )');
     BookModel? bookModel = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
     if (bookModel == null) {
       logger.warning('book model is null');
@@ -1168,12 +1202,13 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     if (pageModel == null) {
       return;
     }
-    Rect? thumbArea = BookMainPage.pageManagerHolder!.getThumbArea();
+    Rect? thumbArea = BookMainPage.pageManagerHolder!.getThumbImageArea();
     if (thumbArea == null) {
       return;
     }
 
-    //print('takePageScreenShot(${pageModel.mid})');
+    print(
+        '_takeAScreenShot(${thumbArea.left.round()},${thumbArea.top.round()},${thumbArea.width.round()},${thumbArea.height.round()} )');
 
     String url = await WindowScreenshot.uploadScreenshot(
       bookId: HycopUtils.midToKey(pageModel.mid),
@@ -1182,11 +1217,15 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     );
     if (url.isNotEmpty) {
       pageModel.thumbnailUrl.set(url, noUndo: true, save: false);
-      //print('page Thumbnail saved !!! ${pageModel.mid}, $url');
+      print('page Thumbnail saved !!! ${pageModel.mid}, $url');
       // 재귀적으로 계속 변경이 일어난 것으로 보고 계속 호출되는 것을 막기 위해, DB 에 직접 쓴다.
       BookMainPage.pageManagerHolder?.setToDB(pageModel);
     }
 
     return;
+  }
+
+  void _moveToPageEnd() {
+    _scrollController.jumpTo(_scrollController.position.maxScrollExtent + cardHeight * 3);
   }
 }

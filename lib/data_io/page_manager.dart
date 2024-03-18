@@ -57,29 +57,62 @@ class PageManager extends BasePageManager {
 /////////////////////////////////////////////////////////
   KeyHandler thumnKeyHandler = KeyHandler();
 
-  String thumbKkeyMangler(String pageMid) {
+  String thumbKeyMangler(String pageMid) {
     return 'Thumb$pageMid';
   }
 
   GlobalObjectKey<CretaState<StatefulWidget>> registerPageThumbnail(String pageMid) {
-    String keyString = thumbKkeyMangler(pageMid);
+    String keyString = thumbKeyMangler(pageMid);
     return thumnKeyHandler.registerKey(keyString);
   }
 
-  bool invalidatThumbnail(String pageMid) {
-    return thumnKeyHandler.invalidate(thumbKkeyMangler(pageMid));
+  bool invalidateThumbnail(String pageMid) {
+    return thumnKeyHandler.invalidate(thumbKeyMangler(pageMid));
   }
 
-  Rect? getThumbArea() {
+  // Rect? getThumbArea() {
+  //   PageModel? pageModel = getSelected() as PageModel?;
+  //   if (pageModel == null) {
+  //     return thumnKeyHandler.getFirstArea();
+  //   }
+  //   return thumnKeyHandler.getArea(thumbKkeyMangler(pageModel.mid));
+  // }
+
+  // Rect? getFirstThumbArea() {
+  //   return thumnKeyHandler.getFirstArea();
+  // }
+/////////////////////////////////////////////////////////
+// thumnKeyHandler area end
+/////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////
+// thumnKeyHandler area start
+/////////////////////////////////////////////////////////
+  KeyHandler thumbImageKeyHandler = KeyHandler();
+
+  String thumbImageKeyMangler(String pageMid) {
+    return 'ThumbImage$pageMid';
+  }
+
+  GlobalObjectKey<CretaState<StatefulWidget>> registerPageImageThumbnail(String pageMid) {
+    String keyString = thumbImageKeyMangler(pageMid);
+    return thumbImageKeyHandler.registerKey(keyString);
+  }
+
+  bool invalidateThumbnailImage(String pageMid) {
+    return thumbImageKeyHandler.invalidate(thumbImageKeyMangler(pageMid));
+  }
+
+  Rect? getThumbImageArea() {
     PageModel? pageModel = getSelected() as PageModel?;
     if (pageModel == null) {
-      return thumnKeyHandler.getFirstArea();
+      return thumbImageKeyHandler.getFirstArea();
     }
-    return thumnKeyHandler.getArea(thumbKkeyMangler(pageModel.mid));
+    return thumbImageKeyHandler.getArea(thumbImageKeyMangler(pageModel.mid));
   }
 
-  Rect? getFirstThumbArea() {
-    return thumnKeyHandler.getFirstArea();
+  Rect? getFirstThumbImageArea() {
+    return thumbImageKeyHandler.getFirstArea();
   }
 /////////////////////////////////////////////////////////
 // thumnKeyHandler area end
@@ -336,6 +369,22 @@ class PageManager extends BasePageManager {
     }
 
     return frameManager;
+  }
+
+  Future<PageModel> createNextPageByModel(PageModel defaultPage) async {
+    await _createNextPage(defaultPage);
+    MyChange<PageModel> c = MyChange<PageModel>(
+      defaultPage,
+      execute: () async {},
+      redo: () async {
+        await _redoCreateNextPage(defaultPage);
+      },
+      undo: (PageModel old) async {
+        await _undoCreateNextPage(old);
+      },
+    );
+    mychangeStack.add(c);
+    return defaultPage;
   }
 
   Future<PageModel> createNextPage(int pageIndex) async {
@@ -853,7 +902,7 @@ class PageManager extends BasePageManager {
       await frameManager?.copyFrames(newModel.mid, bookModel!.mid);
     }
 
-    await _createNextPage(newModel);
+    await createNextPageByModel(newModel);
     MyChange<PageModel> c = MyChange<PageModel>(
       newModel,
       execute: () async {},

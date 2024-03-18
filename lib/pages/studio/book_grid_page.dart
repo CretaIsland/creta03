@@ -2,6 +2,7 @@
 
 import 'dart:math';
 
+import 'package:creta_common/common/creta_vars.dart';
 import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'package:creta_user_io/data_io/team_manager.dart';
 import 'package:creta_common/common/creta_const.dart';
@@ -213,7 +214,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         ),
       ],
       child: Snippet.CretaScaffold(
-          title: Snippet.logo('studio'),
+          title: Snippet.logo(CretaVars.serviceTypeString()),
           additionals: SizedBox(
             height: 36,
             width: windowWidth > 535 ? 130 : 60,
@@ -462,52 +463,64 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
   List<CretaMenuItem> getFilterMenu(Function? onModelFiltered) {
     return [
       CretaMenuItem(
-          caption: CretaLang.basicBookFilter[0],
-          onPressed: () {
-            bookManagerHolder?.toFiltered(null, null, AccountManager.currentLoginUser.email,
-                onModelFiltered: onModelFiltered);
-          },
-          selected: true),
+        caption: CretaLang.basicBookFilter[0],
+        onPressed: () {
+          bookManagerHolder?.toFiltered(null, null, AccountManager.currentLoginUser.email,
+              onModelFiltered: onModelFiltered);
+        },
+        selected: CretaVars.serviceType == ServiceType.none,
+        disabled: CretaVars.serviceType != ServiceType.none,
+      ),
       CretaMenuItem(
-          caption: CretaLang.basicBookFilter[1], // 프리젠테이션
-          onPressed: () {
-            bookManagerHolder?.toFiltered(
-                'bookType', BookType.presentaion.index, AccountManager.currentLoginUser.email,
-                onModelFiltered: onModelFiltered);
-          },
-          selected: false),
+        caption: CretaLang.basicBookFilter[1], // 프리젠테이션
+        onPressed: () {
+          bookManagerHolder?.toFiltered(
+              'bookType', BookType.presentaion.index, AccountManager.currentLoginUser.email,
+              onModelFiltered: onModelFiltered);
+        },
+        selected: CretaVars.serviceType == ServiceType.presentaion,
+        disabled: CretaVars.serviceType != ServiceType.presentaion,
+      ),
       CretaMenuItem(
-          caption: CretaLang.basicBookFilter[2], // 전자칠판
-          onPressed: () {
-            bookManagerHolder?.toFiltered(
-                'bookType', BookType.board.index, AccountManager.currentLoginUser.email,
-                onModelFiltered: onModelFiltered);
-          },
-          selected: false),
+        caption: CretaLang.basicBookFilter[2], // 전자칠판
+        onPressed: () {
+          bookManagerHolder?.toFiltered(
+              'bookType', BookType.board.index, AccountManager.currentLoginUser.email,
+              onModelFiltered: onModelFiltered);
+        },
+        selected: CretaVars.serviceType == ServiceType.board,
+        disabled: CretaVars.serviceType != ServiceType.board,
+      ),
       CretaMenuItem(
-          caption: CretaLang.basicBookFilter[3], // 사이니지
-          onPressed: () {
-            bookManagerHolder?.toFiltered(
-                'bookType', BookType.signage.index, AccountManager.currentLoginUser.email,
-                onModelFiltered: onModelFiltered);
-          },
-          selected: false),
+        caption: CretaLang.basicBookFilter[3], // 사이니지
+        onPressed: () {
+          bookManagerHolder?.toFiltered(
+              'bookType', BookType.signage.index, AccountManager.currentLoginUser.email,
+              onModelFiltered: onModelFiltered);
+        },
+        selected: CretaVars.serviceType == ServiceType.signage,
+        disabled: CretaVars.serviceType != ServiceType.signage,
+      ),
       CretaMenuItem(
-          caption: CretaLang.basicBookFilter[4], // 디지털 바리케이드
-          onPressed: () {
-            bookManagerHolder?.toFiltered(
-                'bookType', BookType.digitalBarricade.index, AccountManager.currentLoginUser.email,
-                onModelFiltered: onModelFiltered);
-          },
-          selected: false),
+        caption: CretaLang.basicBookFilter[4], // 디지털 바리케이드
+        onPressed: () {
+          bookManagerHolder?.toFiltered(
+              'bookType', BookType.digitalBarricade.index, AccountManager.currentLoginUser.email,
+              onModelFiltered: onModelFiltered);
+        },
+        selected: CretaVars.serviceType == ServiceType.digitalBarricade,
+        disabled: CretaVars.serviceType != ServiceType.digitalBarricade,
+      ),
       CretaMenuItem(
-          caption: CretaLang.basicBookFilter[5],
-          onPressed: () {
-            bookManagerHolder?.toFiltered(
-                'bookType', BookType.etc.index, AccountManager.currentLoginUser.email,
-                onModelFiltered: onModelFiltered);
-          },
-          selected: false),
+        caption: CretaLang.basicBookFilter[5],
+        onPressed: () {
+          bookManagerHolder?.toFiltered(
+              'bookType', BookType.etc.index, AccountManager.currentLoginUser.email,
+              onModelFiltered: onModelFiltered);
+        },
+        selected: CretaVars.serviceType == ServiceType.etc,
+        disabled: CretaVars.serviceType != ServiceType.etc,
+      ),
     ];
   }
 }

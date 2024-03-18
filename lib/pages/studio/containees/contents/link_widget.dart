@@ -642,7 +642,7 @@ class _LinkWidgetState extends State<LinkWidget> {
   }
 
   void _notifyToThumbnail() {
-    BookMainPage.pageManagerHolder?.invalidatThumbnail(widget.frameModel.parentMid.value);
+    BookMainPage.pageManagerHolder?.invalidateThumbnail(widget.frameModel.parentMid.value);
   }
 
   // Widget _drawOrder(bool hasContents) {

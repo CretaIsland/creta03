@@ -407,4 +407,9 @@ flutter:
       fonts:
         - asset: fonts/Macondo/Macondo-Regular.ttf
           weight: 400
+    - family: GodoRounded
+      fonts:
+        - asset: fonts/GodoRounded/godoRounded-R.ttf
+          weight: 400
+          
 

@@ -1,4 +1,9 @@
 // ignore: avoid_web_libraries_in_flutter, depend_on_referenced_packages
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
+import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
+import 'package:hycop/hycop/account/account_manager.dart';
+// ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -26,10 +31,18 @@ class _LeftMenuTemplateState extends State<LeftMenuTemplate> {
   String searchText = '';
   bool refreshToggle = false;
 
+  late String _selectedTab = '';
+  Map<String, String> templateMenuTabBar = {};
+
   @override
   void initState() {
     logger.fine('_LeftMenuTemplateState.initState');
     bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
+
+    templateMenuTabBar[CretaStudioLang.myTemplate] = AccountManager.currentLoginUser.email;
+    templateMenuTabBar[CretaStudioLang.sharedTemplate] = 'SHARED_TEMPLATE';
+    _selectedTab = templateMenuTabBar.values.first;
+
     super.initState();
   }
 
@@ -42,7 +55,7 @@ class _LeftMenuTemplateState extends State<LeftMenuTemplate> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        //_menuBar(),
+        _menuBar(),
         _templateView(),
       ],
     );
@@ -91,6 +104,42 @@ class _LeftMenuTemplateState extends State<LeftMenuTemplate> {
   //   );
   // }
 
+  Widget _menuBar() {
+    return Container(
+        height: LayoutConst.innerMenuBarHeight, // heihgt: 36
+        width: LayoutConst.rightMenuWidth, // width: 380
+        color: CretaColor.text[100],
+        alignment: Alignment.centerLeft,
+        child: CustomRadioButton(
+          wrapAlignment: WrapAlignment.spaceEvenly,
+          radioButtonValue: (value) {
+            setState(() {
+              _selectedTab = value;
+            });
+          },
+          spacing: 100,
+          width: 95,
+          autoWidth: true,
+          height: 24,
+          buttonTextStyle: ButtonTextStyle(
+            selectedColor: CretaColor.primary,
+            unSelectedColor: CretaColor.text[700]!,
+            textStyle: CretaFont.buttonMedium,
+          ),
+          selectedColor: Colors.white,
+          unSelectedColor: CretaColor.text[100]!,
+          defaultSelected: _selectedTab,
+          buttonLables: templateMenuTabBar.keys.toList(),
+          buttonValues: templateMenuTabBar.values.toList(),
+          selectedBorderColor: Colors.transparent,
+          unSelectedBorderColor: Colors.transparent,
+          elevation: 0,
+          enableButtonWrap: true,
+          enableShape: true,
+          shapeRadius: 60,
+        ));
+  }
+
   Widget _templateView() {
     return MultiProvider(
       providers: [
@@ -108,6 +157,7 @@ class _LeftMenuTemplateState extends State<LeftMenuTemplate> {
               _textQuery(),
               TemplateList(
                 key: GlobalKey(),
+                selectedTab: _selectedTab,
                 queryText: searchText,
                 width: bodyWidth,
                 refreshToggle: !refreshToggle,

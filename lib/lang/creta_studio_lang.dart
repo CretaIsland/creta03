@@ -719,4 +719,8 @@ class CretaStudioLang {
   static String deleteConfirm = '정말로 삭제하시겠습니까?';
 
   static String gobackToStudio = 'Studio로 돌아가기';
+
+  static String myTemplate = '나의 템플릿';
+  static String sharedTemplate = '공용 템플릿';
+  static String saveAsSharedTemplate = '공용 템플릿으로 저장';
 }

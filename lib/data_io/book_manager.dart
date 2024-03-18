@@ -66,10 +66,9 @@ class BookManager extends BaseBookManager {
     double? width,
     double? height,
   }) {
-
-    width ??= CretaVars.defaultSize().width ;
+    width ??= CretaVars.defaultSize().width;
     height ??= CretaVars.defaultSize().height;
-    
+
     final Random random = Random();
     int randomNumber = random.nextInt(100);
     String url = 'https://picsum.photos/200/?random=$randomNumber';
@@ -110,6 +109,11 @@ class BookManager extends BaseBookManager {
       users.add('<${PermissionType.reader.name}>$myTeamId');
       users.add('<${PermissionType.writer.name}>$myTeamId');
       users.add('<${PermissionType.owner.name}>$myTeamId');
+    }
+
+    BookType bookType = CretaVars.defaultBookType();
+    if (bookType != BookType.none) {
+      query['bookType'] = QueryValue(value: bookType.index);
     }
 
     modelList.clear();
@@ -154,6 +158,12 @@ class BookManager extends BaseBookManager {
       queryVal.add('<${PermissionType.writer.name}>${ele.email}');
       queryVal.add('<${PermissionType.owner.name}>${ele.email}');
     }
+
+    BookType bookType = CretaVars.defaultBookType();
+    if (bookType != BookType.none) {
+      query['bookType'] = QueryValue(value: bookType.index);
+    }
+
     query['creator'] = QueryValue(value: creators, operType: OperType.whereIn);
     //query['shares'] = QueryValue(value: queryVal, operType: OperType.arrayContainsAny);
     query['isRemoved'] = QueryValue(value: false);

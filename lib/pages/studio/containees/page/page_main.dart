@@ -493,11 +493,11 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
     //   // create frame box here
     //   //print('createFrame');
     //   Offset center = Offset(
-    //     (LayoutConst.defaultFrameSize.width / 2) * StudioVariables.applyScale,
-    //     (LayoutConst.defaultFrameSize.height / 2) * StudioVariables.applyScale,
+    //     (CretaVars.defaultFrameSize().width / 2) * StudioVariables.applyScale,
+    //     (CretaVars.defaultFrameSize().height / 2) * StudioVariables.applyScale,
     //   );
     //   Offset pos = CretaCommonUtils.positionInPage(details.localPosition - center, null);
-    //   frameManager!.createNextFrame(pos: pos, size: LayoutConst.defaultFrameSize).then((value) {
+    //   frameManager!.createNextFrame(pos: pos, size: CretaVars.defaultFrameSize()).then((value) {
     //     frameManager!.notify();
     //     return null;
     //   });

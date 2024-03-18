@@ -74,7 +74,7 @@ class LayoutConst {
     CretaConst.cretaPaddingPixel / 2,
   );
   static const double topMenuCursorSize = 24;
-  static const Size defaultFrameSize = Size(600, 400);
+  //static const Size defaultFrameSize = Size(600, 400);
   static const double bookThumbSpacing = CretaConst.cretaPaddingPixel / 2;
   static const double bookDescriptionHeight = 56;
 

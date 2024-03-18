@@ -90,7 +90,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   bool _bookIsFavorites = false;
   Function? _addToPlaylist;
 
-  BookType _filterBookType = BookType.none;
+  late BookType _filterBookType;
   BookSort _filterBookSort = BookSort.updateTime;
   PermissionType _filterPermissionType = PermissionType.none;
   String _filterSearchKeyword = '';
@@ -111,6 +111,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   @override
   void initState() {
     super.initState();
+
+    _filterBookType = CretaVars.defaultBookType();
 
     favoritesManagerHolder = FavoritesManager();
     StudioVariables.isFullscreen = false;
@@ -197,7 +199,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             setScrollOffset(0);
           });
         },
-        selected: true,
+        selected: CretaVars.serviceType == ServiceType.none,
+        disabled: CretaVars.serviceType != ServiceType.none,
       ),
       CretaMenuItem(
         caption: CretaLang.basicBookFilter[1], // 프리젠테이션용
@@ -208,7 +211,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             setScrollOffset(0);
           });
         },
-        selected: false,
+        selected: CretaVars.serviceType == ServiceType.presentaion,
+        disabled: CretaVars.serviceType != ServiceType.presentaion,
       ),
       CretaMenuItem(
         caption: CretaLang.basicBookFilter[2], // 전자칠판용
@@ -219,7 +223,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             setScrollOffset(0);
           });
         },
-        selected: false,
+        selected: CretaVars.serviceType == ServiceType.board,
+        disabled: CretaVars.serviceType != ServiceType.board,
       ),
       CretaMenuItem(
         caption: CretaLang.basicBookFilter[3], // 디지털사이니지용 전차칠판용
@@ -230,7 +235,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             setScrollOffset(0);
           });
         },
-        selected: false,
+        selected: CretaVars.serviceType == ServiceType.signage,
+        disabled: CretaVars.serviceType != ServiceType.signage,
       ),
       CretaMenuItem(
         caption: CretaLang.basicBookFilter[4], // 디지털바리케이드용
@@ -241,7 +247,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             setScrollOffset(0);
           });
         },
-        selected: false,
+        selected: CretaVars.serviceType == ServiceType.digitalBarricade,
+        disabled: CretaVars.serviceType != ServiceType.digitalBarricade,
       ),
       CretaMenuItem(
         caption: CretaLang.basicBookFilter[5], // 기타
@@ -252,7 +259,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             setScrollOffset(0);
           });
         },
-        selected: false,
+        selected: CretaVars.serviceType == ServiceType.etc,
+        disabled: CretaVars.serviceType != ServiceType.etc,
       ),
     ];
     //
@@ -2076,6 +2084,11 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
               },
             ),
           ),
+          SizedBox(
+            width: 5,
+          ),
+          Text(CretaVars.serviceTypeString(),
+              style: CretaFont.logoStyle.copyWith(color: CretaColor.primary)),
         ],
       ),
       context: context,

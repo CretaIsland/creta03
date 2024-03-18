@@ -2,6 +2,7 @@
 
 import 'package:creta03/pages/studio/book_main_page.dart';
 import 'package:creta_common/common/creta_const.dart';
+import 'package:creta_common/common/creta_vars.dart';
 import 'package:creta_studio_io/data_io/base_frame_manager.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter_treeview/flutter_treeview.dart';
@@ -428,20 +429,21 @@ class FrameManager extends BaseFrameManager {
 
   Future<FrameModel> createNextFrame(
       {bool doNotify = true,
-      Size size = LayoutConst.defaultFrameSize,
+      Size? size,
       Offset? pos,
       Color? bgColor1,
       FrameType? type,
       int? subType,
       ShapeType? shape}) async {
+    size ??= CretaVars.defaultSize();
+    pos ??= Offset.zero;
+
     logger.fine('createNextFrame()');
     FrameModel defaultFrame = FrameModel.makeSample(safeLastOrder() + 1, pageModel.mid, bookModel);
     defaultFrame.width.set(size.width.roundToDouble(), save: false, noUndo: true);
     defaultFrame.height.set(size.height.roundToDouble(), save: false, noUndo: true);
-    if (pos != null) {
-      defaultFrame.posX.set(pos.dx, save: false, noUndo: true);
-      defaultFrame.posY.set(pos.dy, save: false, noUndo: true);
-    }
+    defaultFrame.posX.set(pos.dx, save: false, noUndo: true);
+    defaultFrame.posY.set(pos.dy, save: false, noUndo: true);
     if (bgColor1 != null) {
       defaultFrame.bgColor1.set(bgColor1, save: false, noUndo: true);
     }
@@ -561,7 +563,7 @@ class FrameManager extends BaseFrameManager {
       //print('copy Frames');
       newModel.copyFrom(org, newMid: newModel.mid, pMid: pageMid);
       newModel.order.set(order++, save: false, noUndo: true);
-      logger.fine('create new FrameModel ${newModel.name},${newModel.mid}');
+      print('create new FrameModel ${newModel.name},${newModel.mid}, $pageMid');
 
       ContentsManager contentsManager = findOrCreateContentsManager(org);
       await contentsManager.copyContents(newModel.mid, bookMid, samePage: samePage);
@@ -589,15 +591,17 @@ class FrameManager extends BaseFrameManager {
     return frameCount;
   }
 
-  Future<int> _getFrames({int limit = 99}) async {
-    logger.finest('getFrames');
+  Future<int> _getFrames({int limit = 99, String? parentMid}) async {
+    parentMid ??= pageModel.mid;
+    print('getFrames($parentMid)');
+
     Map<String, QueryValue> query = {};
-    query['parentMid'] = QueryValue(value: pageModel.mid);
+    query['parentMid'] = QueryValue(value: parentMid);
     query['isRemoved'] = QueryValue(value: false);
     Map<String, OrderDirection> orderBy = {};
     orderBy['order'] = OrderDirection.ascending;
     await queryFromDB(query, orderBy: orderBy, limit: limit);
-    logger.finest('getFrames ${modelList.length}');
+    print('getFrames ${modelList.length}');
     return modelList.length;
   }
 
@@ -749,10 +753,10 @@ class FrameManager extends BaseFrameManager {
       frameModel.posY.set(0, save: false, noUndo: !undo);
     }
 
-    frameModel.width
-        .set(contentsWidth.roundToDouble(), save: false, noUndo: !undo, dontRealTime: true);
-    frameModel.height
-        .set(contentsHeight.roundToDouble(), save: false, noUndo: !undo, dontRealTime: true);
+    frameModel.width.set(pageWidth > contentsWidth ? contentsWidth.roundToDouble() : pageWidth,
+        save: false, noUndo: !undo, dontRealTime: true);
+    frameModel.height.set(pageHeight > contentsHeight ? contentsHeight.roundToDouble() : pageHeight,
+        save: false, noUndo: !undo, dontRealTime: true);
 
     if (isFixedRatio == true) {
       frameModel.isFixedRatio.set(true, save: false, noUndo: !undo, dontRealTime: true);
@@ -1255,5 +1259,22 @@ class FrameManager extends BaseFrameManager {
     }
     model.prevOrder = model.order.value;
     model.order.set(getMaxOrder() + 1, save: false, noUndo: true);
+  }
+
+  Future<void> updateParent(String templateMid, PageModel page, String bookMid) async {
+    print('updateParent($templateMid)');
+    await _getFrames(parentMid: templateMid);
+    print('modelList.length(${modelList.length})');
+
+    for (var ele in modelList) {
+      print('frame = ${ele.mid}');
+      FrameModel model = ele as FrameModel;
+      FrameModel newModel = FrameModel('', bookMid);
+      newModel.copyFrom(model, newMid: newModel.mid, pMid: page.mid);
+      await createToDB(newModel);
+
+      ContentsManager contentsManager = ContentsManager(pageModel: page, frameModel: model);
+      await contentsManager.updateParent(newModel, page, bookMid);
+    }
   }
 }
