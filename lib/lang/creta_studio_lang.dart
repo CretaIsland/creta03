@@ -723,4 +723,10 @@ class CretaStudioLang {
   static String myTemplate = '나의 템플릿';
   static String sharedTemplate = '공용 템플릿';
   static String saveAsSharedTemplate = '공용 템플릿으로 저장';
+
+  static String startDate = '시작 일자';
+  static String startTime = '시작 시간';
+  static String endDate = '종료 일자';
+  static String endTime = '종료 시간';
+  static String timeBasePage = '시간 지정';
 }
