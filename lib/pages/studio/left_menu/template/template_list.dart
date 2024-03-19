@@ -248,10 +248,10 @@ class _TemplateListClassState extends State<TemplateList> {
               pageModel.setRealTimeKey(book.mid);
               pageModel.order.set(BookMainPage.pageManagerHolder!.safeLastOrder() + 1);
 
-              print('templateModel!.mid = ${templateModel.mid}');
-              print('pageModel.mid = ${pageModel.mid}');
-              print('pageModel.parentMid = ${pageModel.parentMid.value}');
-              print('pageModel.type = ${pageModel.type}');
+              // print('templateModel!.mid = ${templateModel.mid}');
+              // print('pageModel.mid = ${pageModel.mid}');
+              // print('pageModel.parentMid = ${pageModel.parentMid.value}');
+              // print('pageModel.type = ${pageModel.type}');
 
               FrameManager frameManager = FrameManager(pageModel: templateModel, bookModel: book);
               await frameManager.updateParent(templateModel.mid, pageModel, book.mid);

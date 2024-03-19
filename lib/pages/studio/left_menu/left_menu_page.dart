@@ -1169,8 +1169,8 @@ class LeftMenuPageState extends State<LeftMenuPage> {
 
   void _takeAScreenShot(Rect area) {
     BookMainPage.thumbnailChanged = false;
-    print(
-        'start _takeAScreenShot(${area.left.round()},${area.top.round()},${area.width.round()},${area.height.round()} )');
+    // print(
+    //     'start _takeAScreenShot(${area.left.round()},${area.top.round()},${area.width.round()},${area.height.round()} )');
     BookModel? bookModel = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
     if (bookModel == null) {
       logger.warning('book model is null');
@@ -1207,8 +1207,8 @@ class LeftMenuPageState extends State<LeftMenuPage> {
       return;
     }
 
-    print(
-        '_takeAScreenShot(${thumbArea.left.round()},${thumbArea.top.round()},${thumbArea.width.round()},${thumbArea.height.round()} )');
+    // print(
+    //     '_takeAScreenShot(${thumbArea.left.round()},${thumbArea.top.round()},${thumbArea.width.round()},${thumbArea.height.round()} )');
 
     String url = await WindowScreenshot.uploadScreenshot(
       bookId: HycopUtils.midToKey(pageModel.mid),
@@ -1217,7 +1217,7 @@ class LeftMenuPageState extends State<LeftMenuPage> {
     );
     if (url.isNotEmpty) {
       pageModel.thumbnailUrl.set(url, noUndo: true, save: false);
-      print('page Thumbnail saved !!! ${pageModel.mid}, $url');
+      //print('page Thumbnail saved !!! ${pageModel.mid}, $url');
       // 재귀적으로 계속 변경이 일어난 것으로 보고 계속 호출되는 것을 막기 위해, DB 에 직접 쓴다.
       BookMainPage.pageManagerHolder?.setToDB(pageModel);
     }

@@ -729,4 +729,5 @@ class CretaStudioLang {
   static String endDate = '종료 일자';
   static String endTime = '종료 시간';
   static String timeBasePage = '시간 지정';
+  static String useTimeBasePage = '시간 지정 사용';
 }

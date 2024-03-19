@@ -5,6 +5,7 @@ import 'package:creta_common/lang/creta_lang.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 //import 'package:flutter_animate/flutter_animate.dart';
@@ -52,7 +53,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
   DateTime _endDate = DateTime.now().add(Duration(days: 1));
   TimeOfDay _startTime = TimeOfDay.now();
   TimeOfDay _endTime = TimeOfDay.now();
-  bool _isTimeSettingEnabled = true;
+  bool _isTimeSettingEnabled = false;
 
   @override
   void initState() {
@@ -62,6 +63,15 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
 
     final PageEventController sendEvent = Get.find(tag: 'page-property-to-main');
     _sendEvent = sendEvent;
+
+    initializeDateFormatting('ko');
+    PageModel? page = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+    _isTimeSettingEnabled =
+        page != null && page.startTime.value.isNotEmpty && page.endTime.value.isNotEmpty;
+
+    DateTime dateTime = DateTime.parse(page!.startTime.value);
+    _startDate = DateTime(dateTime.year, dateTime.month, dateTime.day);
+    _startTime = TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
   }
 
   @override
@@ -72,7 +82,6 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
 
   @override
   Widget build(BuildContext context) {
-    _isTimeSettingEnabled = _model!.startTime.value.isNotEmpty && _model!.endTime.value.isNotEmpty;
     return Consumer<PageManager>(builder: (context, pageManager, child) {
       _book = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
       if (_book == null) {
@@ -94,6 +103,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           },
         );
       }
+
       return //SizedBox(
           //padding: EdgeInsets.all(horizontalPadding),
           //width: LayoutConst.rightMenuWidth,
@@ -495,10 +505,26 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         titleWidget: Text(CretaStudioLang.timeBasePage, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
         trailWidget: _model!.startTime.value.isNotEmpty && _model!.endTime.value.isNotEmpty
-            ? Text(
-                '${_model!.startTime.value} ~ ${_model!.endTime.value}',
-                textAlign: TextAlign.right,
-                style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
+            ? Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: 120,
+                    child: Text(
+                      _model!.startTime.value,
+                      textAlign: TextAlign.right,
+                      style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 120,
+                    child: Text(
+                      _model!.endTime.value,
+                      textAlign: TextAlign.right,
+                      style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
+                    ),
+                  ),
+                ],
               )
             : SizedBox.shrink(),
         hasRemoveButton: _model!.startTime.value.isNotEmpty && _model!.endTime.value.isNotEmpty,
@@ -506,6 +532,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           setState(() {
             _model!.startTime.set('');
             _model!.endTime.set('');
+            _isTimeSettingEnabled = false;
           });
           BookMainPage.pageManagerHolder!.notify();
         },
@@ -518,17 +545,27 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 16.0),
+          padding: const EdgeInsets.only(top: 12, left: 30, right: 40),
           child: Row(
-            //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(child: Text(CretaStudioLang.timeBasePage)),
+              Expanded(child: Text(CretaStudioLang.useTimeBasePage, style: titleStyle)),
               Expanded(
                 child: CretaToggleButton(
-                  defaultValue: _isTimeSettingEnabled,
+                  width: 54 * 0.75,
+                  height: 28 * 0.75,
+                  defaultValue:
+                      _model!.startTime.value.isNotEmpty && _model!.endTime.value.isNotEmpty,
                   onSelected: (bool value) {
                     setState(() {
                       _isTimeSettingEnabled = value;
+                      if (value == true) {
+                        _model!.startTime.set(formatDateTime(_startDate, _startTime));
+                        _model!.endTime.set(formatDateTime(_endDate, _endTime));
+                      } else {
+                        _model!.startTime.set('');
+                        _model!.endTime.set('');
+                      }
                     });
                   },
                 ),
@@ -536,100 +573,112 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
             ],
           ),
         ),
-        if (_isTimeSettingEnabled) ...[
-          Row(
-            children: [
-              Expanded(
-                child: ListTile(
-                  title: Text(CretaStudioLang.startDate),
-                  subtitle: Text(DateFormat('yyyy/MM/dd').format(_startDate)),
-                  onTap: () async {
-                    final date = await showDatePicker(
-                      context: context,
-                      initialDate: _startDate,
-                      firstDate: DateTime.now(),
-                      lastDate: DateTime.now().add(Duration(days: 365)),
-                    );
-                    if (date != null) {
-                      setState(() {
-                        _startDate = date;
-                        _model!.startTime.set(formatDateTime(_startDate, _startTime));
-                      });
-                    }
-                  },
+        Visibility(
+          visible: _isTimeSettingEnabled,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: ListTile(
+                    title: Text(CretaStudioLang.startDate, style: titleStyle),
+                    subtitle: Text(DateFormat('yyyy-MM-dd').format(_startDate), style: dataStyle),
+                    onTap: () async {
+                      final date = await showDatePicker(
+                        context: context,
+                        initialDate: _startDate,
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime.now().add(Duration(days: 365)),
+                      );
+                      if (date != null) {
+                        setState(() {
+                          _startDate = date;
+                          _model!.startTime.set(formatDateTime(_startDate, _startTime));
+                        });
+                      }
+                    },
+                  ),
                 ),
-              ),
-              Expanded(
-                child: ListTile(
-                  title: Text(CretaStudioLang.startTime),
-                  subtitle: Text(_startTime.format(context)),
-                  onTap: () async {
-                    final time = await showTimePicker(
-                      context: context,
-                      initialTime: _startTime,
-                    );
-                    if (time != null) {
-                      setState(() {
-                        _startTime = time;
-                        _model!.startTime.set(formatDateTime(_startDate, _startTime));
-                      });
-                    }
-                  },
+                Expanded(
+                  child: ListTile(
+                    title: Text(CretaStudioLang.startTime, style: titleStyle),
+                    subtitle: Text(_startTime.format(context), style: dataStyle),
+                    onTap: () async {
+                      final time = await showTimePicker(
+                        context: context,
+                        initialTime: _startTime,
+                      );
+                      if (time != null) {
+                        setState(() {
+                          _startTime = time;
+                          _model!.startTime.set(formatDateTime(_startDate, _startTime));
+                        });
+                      }
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          Row(
-            children: [
-              Expanded(
-                child: ListTile(
-                  title: Text(CretaStudioLang.endDate),
-                  subtitle: Text(DateFormat('yyyy/MM/dd').format(_endDate)),
-                  onTap: () async {
-                    final date = await showDatePicker(
-                      context: context,
-                      initialDate: _endDate,
-                      firstDate: DateTime.now(),
-                      lastDate: DateTime.now().add(Duration(days: 365)),
-                    );
-                    if (date != null) {
-                      setState(() {
-                        _endDate = date;
-                        _model!.endTime.set(formatDateTime(_endDate, _endTime));
-                      });
-                    }
-                  },
+        ),
+        Visibility(
+          visible: _isTimeSettingEnabled,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: ListTile(
+                    title: Text(CretaStudioLang.endDate, style: titleStyle),
+                    subtitle: Text(DateFormat('yyyy-MM-dd').format(_endDate), style: dataStyle),
+                    onTap: () async {
+                      final date = await showDatePicker(
+                        context: context,
+                        initialDate: _endDate,
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime.now().add(Duration(days: 365)),
+                      );
+                      if (date != null) {
+                        setState(() {
+                          _endDate = date;
+                          _model!.endTime.set(formatDateTime(_endDate, _endTime));
+                        });
+                      }
+                    },
+                  ),
                 ),
-              ),
-              Expanded(
-                child: ListTile(
-                  title: Text(CretaStudioLang.endTime),
-                  subtitle: Text(_endTime.format(context)),
-                  onTap: () async {
-                    final time = await showTimePicker(
-                      context: context,
-                      initialTime: _endTime,
-                    );
-                    if (time != null) {
-                      setState(() {
-                        _endTime = time;
-                        _model!.endTime.set(formatDateTime(_endDate, _endTime));
-                      });
-                    }
-                  },
+                Expanded(
+                  child: ListTile(
+                    title: Text(CretaStudioLang.endTime, style: titleStyle),
+                    subtitle: Text(_endTime.format(context), style: dataStyle),
+                    onTap: () async {
+                      final time = await showTimePicker(
+                        context: context,
+                        initialTime: _endTime,
+                      );
+                      if (time != null) {
+                        setState(() {
+                          _endTime = time;
+                          _model!.endTime.set(formatDateTime(_endDate, _endTime));
+                        });
+                      }
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ],
+        ),
       ],
     );
   }
 
   String formatDateTime(DateTime date, TimeOfDay time) {
     final dateTime = DateTime(date.year, date.month, date.day, time.hour, time.minute);
-    //return DateFormat('yyyy/MM/dd HH:mm:ss').format(dateTime);
-    return DateFormat.EEEE('ko').format(dateTime);
+    return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
+    //return DateFormat.EEEE('ko').format(dateTime);
   }
 
   // Widget _durationTypeWidget() {

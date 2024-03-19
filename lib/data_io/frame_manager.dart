@@ -563,7 +563,7 @@ class FrameManager extends BaseFrameManager {
       //print('copy Frames');
       newModel.copyFrom(org, newMid: newModel.mid, pMid: pageMid);
       newModel.order.set(order++, save: false, noUndo: true);
-      print('create new FrameModel ${newModel.name},${newModel.mid}, $pageMid');
+      //print('create new FrameModel ${newModel.name},${newModel.mid}, $pageMid');
 
       ContentsManager contentsManager = findOrCreateContentsManager(org);
       await contentsManager.copyContents(newModel.mid, bookMid, samePage: samePage);
@@ -593,7 +593,7 @@ class FrameManager extends BaseFrameManager {
 
   Future<int> _getFrames({int limit = 99, String? parentMid}) async {
     parentMid ??= pageModel.mid;
-    print('getFrames($parentMid)');
+    //print('getFrames($parentMid)');
 
     Map<String, QueryValue> query = {};
     query['parentMid'] = QueryValue(value: parentMid);
@@ -601,7 +601,7 @@ class FrameManager extends BaseFrameManager {
     Map<String, OrderDirection> orderBy = {};
     orderBy['order'] = OrderDirection.ascending;
     await queryFromDB(query, orderBy: orderBy, limit: limit);
-    print('getFrames ${modelList.length}');
+    //print('getFrames ${modelList.length}');
     return modelList.length;
   }
 
@@ -1262,12 +1262,12 @@ class FrameManager extends BaseFrameManager {
   }
 
   Future<void> updateParent(String templateMid, PageModel page, String bookMid) async {
-    print('updateParent($templateMid)');
+    //print('updateParent($templateMid)');
     await _getFrames(parentMid: templateMid);
-    print('modelList.length(${modelList.length})');
+    //print('modelList.length(${modelList.length})');
 
     for (var ele in modelList) {
-      print('frame = ${ele.mid}');
+      //print('frame = ${ele.mid}');
       FrameModel model = ele as FrameModel;
       FrameModel newModel = FrameModel('', bookMid);
       newModel.copyFrom(model, newMid: newModel.mid, pMid: page.mid);
