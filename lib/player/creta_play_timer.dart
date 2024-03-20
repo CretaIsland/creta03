@@ -461,6 +461,10 @@ class CretaPlayTimer extends ChangeNotifier {
   Future<void> _timerExpired(Timer timer) async {
     await _lock.synchronized(
       () async {
+        if (BookMainPage.pageManagerHolder!.checkTimeBasePage()) {
+// todo : 여기 하다가 말았음.
+        }
+
         if (contentsManager.isEmpty()) {
           return;
         }

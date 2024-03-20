@@ -489,13 +489,19 @@ class LeftMenuPageState extends State<LeftMenuPage> {
                       setState(() {});
                     }),
                 BTN.fill_gray_i_m(
-                  tooltip: CretaStudioLang.showUnshow,
+                  tooltip: model.isTimeBase()
+                      ? CretaStudioLang.timeBasePage
+                      : CretaStudioLang.showUnshow,
                   tooltipBg: CretaColor.text[700]!,
-                  icon: model.isShow.value
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
+                  icon: model.isTimeBase()
+                      ? Icons.timer_outlined
+                      : model.isShow.value
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
                   onPressed: () {
-                    _showUnshowPage(model);
+                    if (model.isTimeBase() == false) {
+                      _showUnshowPage(model);
+                    }
                   },
                 ),
                 BTN.fill_gray_image_m(
@@ -647,6 +653,91 @@ class LeftMenuPageState extends State<LeftMenuPage> {
     double height = 0;
     double pageHeight = 0;
     double pageWidth = 0;
+
+    // 실제 페이지를 그리는 부분
+    Widget drwaArea = LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+      // width = constraints.maxWidth - borderThick * 2;
+      // height = constraints.maxHeight - borderThick * 2;
+      width = constraints.maxWidth;
+      height = constraints.maxHeight;
+      if (pageRatio > 1) {
+        // 세로형
+        pageHeight = height;
+        pageWidth = pageHeight * (1 / pageRatio);
+      } else {
+        // 가로형
+        pageWidth = width;
+        pageHeight = pageWidth * pageRatio;
+        if (pageHeight > height) {
+          // 화면에서 page 를 표시하는 영역은 항상 가로형으로 항상 세로는
+          // 가로보다 작다.  이러다 보니, 세로 사이지그 화면의 영역을 오버하는
+          // 경우가 생기게 된다.  그러나 세로형의 경우는 이런 일이 발생하지 않는다.
+          pageHeight = height;
+          pageWidth = pageHeight * (1 / pageRatio);
+        }
+      }
+      //logger.finest("pl:width=$width, height=$height, ratio=$pageRatio");
+      //logger.finest("pl:pageWidth=$pageWidth, pageHeight=$pageHeight");
+      return SafeArea(
+        child: Container(
+          height: pageHeight,
+          width: pageWidth,
+          decoration: BoxDecoration(
+            border: Border.all(
+                width: borderThick,
+                color: _pageManager!.isSelected(model.mid)
+                    ? CretaColor.primary
+                    : CretaColor.text[300]!),
+            color:
+                _pageManager!.isSelected(model.mid) ? CretaColor.text[100]! : CretaColor.text[200]!,
+          ),
+          child: Stack(
+            alignment: AlignmentDirectional.center,
+            children: [
+              //_thumnailArea(pageWidth, pageHeight, model.thumbnailUrl.value),
+              widget.isFolded
+                  ? Container(
+                      color: Colors.white,
+                      child: Center(
+                        child: Text(
+                          (pageIndex + 1).toString().padLeft(2, '0'),
+                          style: model.isShow.value
+                              ? CretaFont.titleLarge
+                              : CretaFont.titleLarge.copyWith(color: CretaColor.text[300]!),
+                        ),
+                      ),
+                    )
+                  : _thumnailAreaReal(pageIndex, pageWidth, pageHeight, model),
+              if (model.isShow.value == false)
+                Container(
+                    height: pageHeight, width: pageWidth, color: Colors.white.withOpacity(0.75)),
+            ],
+          ),
+        ),
+      );
+    });
+
+    Widget timeBase = Container(
+      color: Colors.white.withOpacity(0.5),
+      height: _bodyHeight - borderThick * 2,
+      width: _bodyWidth - borderThick * 2,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              model.startTime.value,
+              style: CretaFont.titleMedium.copyWith(color: CretaColor.primary),
+            ),
+            Text(
+              model.endTime.value,
+              style: CretaFont.titleMedium.copyWith(color: CretaColor.primary),
+            ),
+          ],
+        ),
+      ),
+    );
+
     return GestureDetector(
       key: ValueKey(model.mid),
       onTapDown: (details) {
@@ -723,77 +814,23 @@ class LeftMenuPageState extends State<LeftMenuPage> {
           borderRadius: 8,
         );
       },
-      child: SizedBox(
-        // 실제 페이지를 그리는 부분
-        height: _bodyHeight,
-        width: _bodyWidth,
-        child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-          // width = constraints.maxWidth - borderThick * 2;
-          // height = constraints.maxHeight - borderThick * 2;
-          width = constraints.maxWidth;
-          height = constraints.maxHeight;
-          if (pageRatio > 1) {
-            // 세로형
-            pageHeight = height;
-            pageWidth = pageHeight * (1 / pageRatio);
-          } else {
-            // 가로형
-            pageWidth = width;
-            pageHeight = pageWidth * pageRatio;
-            if (pageHeight > height) {
-              // 화면에서 page 를 표시하는 영역은 항상 가로형으로 항상 세로는
-              // 가로보다 작다.  이러다 보니, 세로 사이지그 화면의 영역을 오버하는
-              // 경우가 생기게 된다.  그러나 세로형의 경우는 이런 일이 발생하지 않는다.
-              pageHeight = height;
-              pageWidth = pageHeight * (1 / pageRatio);
-            }
-          }
-          //logger.finest("pl:width=$width, height=$height, ratio=$pageRatio");
-          //logger.finest("pl:pageWidth=$pageWidth, pageHeight=$pageHeight");
-
-          return SafeArea(
-            child: Container(
-              height: pageHeight,
-              width: pageWidth,
-              decoration: BoxDecoration(
-                border: Border.all(
-                    width: borderThick,
-                    color: _pageManager!.isSelected(model.mid)
-                        ? CretaColor.primary
-                        : CretaColor.text[300]!),
-                color: _pageManager!.isSelected(model.mid)
-                    ? CretaColor.text[100]!
-                    : CretaColor.text[200]!,
-              ),
-              child: Stack(
-                alignment: AlignmentDirectional.center,
-                children: [
-                  //_thumnailArea(pageWidth, pageHeight, model.thumbnailUrl.value),
-                  widget.isFolded
-                      ? Container(
-                          color: Colors.white,
-                          child: Center(
-                            child: Text(
-                              (pageIndex + 1).toString().padLeft(2, '0'),
-                              style: model.isShow.value
-                                  ? CretaFont.titleLarge
-                                  : CretaFont.titleLarge.copyWith(color: CretaColor.text[300]!),
-                            ),
-                          ),
-                        )
-                      : _thumnailAreaReal(pageIndex, pageWidth, pageHeight, model),
-                  model.isShow.value == false
-                      ? Container(
-                          height: pageHeight,
-                          width: pageWidth,
-                          color: Colors.white.withOpacity(0.75))
-                      : Container(),
-                ],
-              ),
+      child: (model.isTimeBase() == true)
+          ? Stack(
+              alignment: Alignment.center,
+              children: [
+                SizedBox(
+                  height: _bodyHeight,
+                  width: _bodyWidth,
+                  child: drwaArea,
+                ),
+                timeBase,
+              ],
+            )
+          : SizedBox(
+              height: _bodyHeight,
+              width: _bodyWidth,
+              child: drwaArea,
             ),
-          );
-        }),
-      ),
     );
   }
 

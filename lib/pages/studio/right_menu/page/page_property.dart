@@ -69,9 +69,16 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
     _isTimeSettingEnabled =
         page != null && page.startTime.value.isNotEmpty && page.endTime.value.isNotEmpty;
 
-    DateTime dateTime = DateTime.parse(page!.startTime.value);
-    _startDate = DateTime(dateTime.year, dateTime.month, dateTime.day);
-    _startTime = TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
+    if (page != null && page.startTime.value.isNotEmpty) {
+      DateTime dateTime = DateTime.parse(page.startTime.value);
+      _startDate = DateTime(dateTime.year, dateTime.month, dateTime.day);
+      _startTime = TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
+    }
+    if (page != null && page.endTime.value.isNotEmpty) {
+      DateTime dateTime = DateTime.parse(page.endTime.value);
+      _endDate = DateTime(dateTime.year, dateTime.month, dateTime.day);
+      _endTime = TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
+    }
   }
 
   @override
@@ -566,6 +573,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
                         _model!.startTime.set('');
                         _model!.endTime.set('');
                       }
+                      BookMainPage.pageManagerHolder?.notify();
                     });
                   },
                 ),
@@ -596,6 +604,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
                           _startDate = date;
                           _model!.startTime.set(formatDateTime(_startDate, _startTime));
                         });
+                        BookMainPage.pageManagerHolder?.notify();
                       }
                     },
                   ),
@@ -614,6 +623,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
                           _startTime = time;
                           _model!.startTime.set(formatDateTime(_startDate, _startTime));
                         });
+                        BookMainPage.pageManagerHolder?.notify();
                       }
                     },
                   ),
@@ -645,6 +655,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
                           _endDate = date;
                           _model!.endTime.set(formatDateTime(_endDate, _endTime));
                         });
+                        BookMainPage.pageManagerHolder?.notify();
                       }
                     },
                   ),
@@ -663,6 +674,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
                           _endTime = time;
                           _model!.endTime.set(formatDateTime(_endDate, _endTime));
                         });
+                        BookMainPage.pageManagerHolder?.notify();
                       }
                     },
                   ),

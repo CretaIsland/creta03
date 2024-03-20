@@ -350,4 +350,11 @@ class CretaUtils {
     }
     return false;
   }
+
+  static bool isCurrentTimeBetween(String startTime, String endTime) {
+    DateTime now = DateTime.now();
+    DateTime start = DateTime.parse(startTime);
+    DateTime end = DateTime.parse(endTime);
+    return now.isAfter(start) && now.isBefore(end);
+  }
 }

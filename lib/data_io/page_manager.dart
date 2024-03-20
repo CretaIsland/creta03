@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:creta_studio_io/data_io/base_page_manager.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter_treeview/flutter_treeview.dart';
+import '../common/creta_utils.dart';
 import '../design_system/component/tree/flutter_treeview.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/undo/undo.dart';
@@ -566,6 +567,20 @@ class PageManager extends BasePageManager {
             continue;
           }
         }
+        // timeBase 처리
+        if (pageModel.isTimeBase()) {
+          if (CretaUtils.isCurrentTimeBetween(pageModel.startTime.value, pageModel.endTime.value) ==
+              false) {
+            continue;
+          }
+        }
+
+        // 빈페이지도 나오지 말아야 한다.
+        FrameManager? frameManager = findFrameManager(pageModel.mid);
+        if (frameManager == null || frameManager.getAvailLength() == 0) {
+          continue;
+        }
+
         return pageModel;
         //return getNth(ele) as PageModel?;
       }
@@ -687,6 +702,14 @@ class PageManager extends BasePageManager {
 
         if (pageModel.isShow.value == false) {
           continue;
+        }
+
+        // timeBase 처리
+        if (pageModel.isTimeBase()) {
+          if (CretaUtils.isCurrentTimeBetween(pageModel.startTime.value, pageModel.endTime.value) ==
+              false) {
+            continue;
+          }
         }
         return pageModel;
       }
@@ -1096,5 +1119,32 @@ class PageManager extends BasePageManager {
       }
     }
     return true;
+  }
+
+  PageModel? hasTimeBaseNow() {
+    PageModel? retval;
+    orderMapIterator((val) {
+      // 현재 시간에 걸린 타임베이스 페이지 중 가장 order  가 높은 timebase page 를 리턴한다.
+      PageModel page = val as PageModel;
+      if (page.isTimeBase()) {
+        if (CretaUtils.isCurrentTimeBetween(page.startTime.value, page.endTime.value)) {
+          retval = page;
+        }
+      }
+      return null;
+    });
+    return retval;
+  }
+
+  bool checkTimeBasePage() {
+    PageModel? pageModel = hasTimeBaseNow();
+    if (pageModel != null) {
+      if (selectedMid != pageModel.mid) {
+        print('******************************** timebase start !!!!!!!!');
+        setSelectedMid(pageModel.mid);
+        return true;
+      }
+    }
+    return false;
   }
 }
