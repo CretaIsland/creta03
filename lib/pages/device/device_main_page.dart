@@ -22,9 +22,11 @@ import 'package:creta_common/common/creta_font.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_device_lang.dart';
 import '../../lang/creta_studio_lang.dart';
-import 'package:creta_studio_model/model/book_model.dart';
+import '../../model/host_model.dart';
 import '../../routes.dart';
 import '../studio/studio_constant.dart';
+import 'device_detail_page.dart';
+import 'host_grid_item.dart';
 //import '../login_page.dart';
 
 enum DeviceSelectedPage {
@@ -56,6 +58,9 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
   HostManager? hostManagerHolder;
   bool _onceDBGetComplete = false;
 
+  bool _openDetail = false;
+  HostModel? selectedHost;
+
   // ignore: unused_field
 
   late List<CretaMenuItem> _leftMenuItemList;
@@ -86,6 +91,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
     hostManagerHolder!.configEvent(notifyModify: false);
     hostManagerHolder!.clearAll();
 
+    //print('--------------->>> widget.selectedPage = ${widget.selectedPage}');
     if (widget.selectedPage == DeviceSelectedPage.myPage) {
       hostManagerHolder!
           .myDataOnly(
@@ -270,13 +276,13 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       /*List<AbsExModel>? data*/
       ) {
     logger.finest('consumerFunc');
-    return Consumer<HostManager>(builder: (context, bookManager, child) {
-      logger.fine('Consumer  ${bookManager.getLength() + 1}');
-      return _gridViewer(bookManager);
+    return Consumer<HostManager>(builder: (context, hostManager, child) {
+      logger.fine('Consumer  ${hostManager.getLength() + 1}');
+      return _gridViewer(hostManager);
     });
   }
 
-  Widget _gridViewer(HostManager bookManager) {
+  Widget _gridViewer(HostManager hostManager) {
     double itemWidth = -1;
     double itemHeight = -1;
 
@@ -304,19 +310,21 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       }
     }
     bool isValidIndex(int index) {
-      return index > 0 && index - 1 < bookManager.getLength();
+      return index > 0 && index - 1 < hostManager.getLength();
     }
 
     Widget hostGridItem(int index) {
-      if (index > bookManager.getLength()) {
-        if (bookManager.isShort()) {
+      //print('hostGridItem($index),  ${hostManager.getLength()}');
+      if (index > hostManager.getLength()) {
+        if (hostManager.isShort()) {
+          //print('hostManager.isShort');
           return SizedBox(
             width: itemWidth,
             height: itemHeight,
             child: Center(
               child: TextButton(
                 onPressed: () {
-                  bookManager.next().then((value) => setState(() {}));
+                  hostManager.next().then((value) => setState(() {}));
                 },
                 child: Text(
                   "more...",
@@ -330,30 +338,47 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       }
 
       if (isValidIndex(index)) {
-        BookModel? model = bookManager.findByIndex(index - 1) as BookModel?;
+        HostModel? model = hostManager.findByIndex(index - 1) as HostModel?;
         if (model == null) {
           logger.warning("$index th model not founded");
           return Container();
         }
 
         if (model.isRemoved.value == true) {
-          logger.warning('removed BookModel.name = ${model.name.value}');
+          logger.warning('removed HostModel.name = ${model.hostName}');
           return Container();
         }
-        //logger.fine('BookModel.name = ${model.name.value}');
+        //logger.fine('HostModel.name = ${model.name.value}');
       }
-
+      //print('----------------------');
       //if (isValidIndex(index)) {
-      return SizedBox.shrink();
+      return HostGridItem(
+        hostManager: hostManager,
+        index: index - 1,
+        itemKey: GlobalKey<HostGridItemState>(),
+        // key: isValidIndex(index)
+        //     ? (bookManager.findByIndex(index - 1) as CretaModel).key
+        //     : GlobalKey(),
+        hostModel: isValidIndex(index) ? hostManager.findByIndex(index - 1) as HostModel : null,
+        width: itemWidth,
+        height: itemHeight,
+        selectedPage: widget.selectedPage,
+        onClick: (hostModel) {
+          setState(() {
+            _openDetail = true;
+            selectedHost = hostModel;
+          });
+        },
+      );
     }
 
-    return Scrollbar(
+    Widget listView = Scrollbar(
       thumbVisibility: true,
       controller: _controller,
       child: GridView.builder(
         controller: _controller,
         padding: LayoutConst.cretaPadding,
-        itemCount: bookManager.getLength() + 2, //item 개수
+        itemCount: hostManager.getLength() + 2, //item 개수
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
           childAspectRatio:
@@ -385,11 +410,36 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         },
       ),
     );
+
+    Widget detailView = selectedHost != null
+        ? Center(
+            child: Container(
+            color: Colors.amberAccent,
+            width: 800,
+            height: 600,
+            child: Center(
+                child: DeviceDetailPage(
+              hostModel: selectedHost!,
+              onExit: () {
+                setState(() {
+                  _openDetail = false;
+                  selectedHost = null;
+                });
+              },
+            )),
+          ))
+        : SizedBox.shrink();
+
+    if (selectedHost != null && _openDetail) {
+      return detailView;
+    }
+
+    return listView;
   }
 
-  void saveItem(HostManager bookManager, int index) async {
-    BookModel savedItem = bookManager.findByIndex(index) as BookModel;
-    await bookManager.setToDB(savedItem);
+  void saveItem(HostManager hostManager, int index) async {
+    HostModel savedItem = hostManager.findByIndex(index) as HostModel;
+    await hostManager.setToDB(savedItem);
   }
 
   List<CretaMenuItem> getSortMenu(Function? onModelSorted) {
@@ -407,72 +457,80 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
             hostManagerHolder?.toSorted('name', onModelSorted: onModelSorted);
           },
           selected: false),
-      CretaMenuItem(
-          caption: CretaLang.basicBookSortFilter[2],
-          onPressed: () {
-            hostManagerHolder?.toSorted('likeCount',
-                descending: true, onModelSorted: onModelSorted);
-          },
-          selected: false),
-      CretaMenuItem(
-          caption: CretaLang.basicBookSortFilter[3],
-          onPressed: () {
-            hostManagerHolder?.toSorted('viewCount',
-                descending: true, onModelSorted: onModelSorted);
-          },
-          selected: false),
     ];
   }
 
   List<CretaMenuItem> getFilterMenu(Function? onModelFiltered) {
     return [
       CretaMenuItem(
-          caption: CretaLang.basicBookFilter[0],
-          onPressed: () {
-            hostManagerHolder?.toFiltered(null, null, AccountManager.currentLoginUser.email,
-                onModelFiltered: onModelFiltered);
-          },
-          selected: true),
+        caption: CretaDeviceLang.basicHostFilter[0],
+        onPressed: () {
+          hostManagerHolder?.toFiltered(null, null, AccountManager.currentLoginUser.email,
+              onModelFiltered: onModelFiltered);
+        },
+        selected: CretaVars.serviceType == ServiceType.none,
+        disabled: CretaVars.serviceType != ServiceType.none,
+      ),
       CretaMenuItem(
-          caption: CretaLang.basicBookFilter[1], // 프리젠테이션
-          onPressed: () {
-            hostManagerHolder?.toFiltered(
-                'bookType', BookType.presentaion.index, AccountManager.currentLoginUser.email,
-                onModelFiltered: onModelFiltered);
-          },
-          selected: false),
+        caption: CretaDeviceLang.basicHostFilter[1], //
+        onPressed: () {
+          hostManagerHolder?.toFiltered(
+              'hostType', HostType.signage.index, AccountManager.currentLoginUser.email,
+              onModelFiltered: onModelFiltered);
+        },
+        selected: CretaVars.serviceType == ServiceType.signage,
+        disabled: CretaVars.serviceType != ServiceType.signage,
+      ),
       CretaMenuItem(
-          caption: CretaLang.basicBookFilter[2], // 전자칠판
-          onPressed: () {
-            hostManagerHolder?.toFiltered(
-                'bookType', BookType.board.index, AccountManager.currentLoginUser.email,
-                onModelFiltered: onModelFiltered);
-          },
-          selected: false),
+        caption: CretaDeviceLang.basicHostFilter[2], //
+        onPressed: () {
+          hostManagerHolder?.toFiltered(
+              'hostType', HostType.barricade.index, AccountManager.currentLoginUser.email,
+              onModelFiltered: onModelFiltered);
+        },
+        selected: CretaVars.serviceType == ServiceType.digitalBarricade,
+        disabled: CretaVars.serviceType != ServiceType.digitalBarricade,
+      ),
       CretaMenuItem(
-          caption: CretaLang.basicBookFilter[3], // 사이니지
-          onPressed: () {
-            hostManagerHolder?.toFiltered(
-                'bookType', BookType.signage.index, AccountManager.currentLoginUser.email,
-                onModelFiltered: onModelFiltered);
-          },
-          selected: false),
+        caption: CretaDeviceLang.basicHostFilter[3], //
+        onPressed: () {
+          hostManagerHolder?.toFiltered(
+              'hostType', HostType.escalator.index, AccountManager.currentLoginUser.email,
+              onModelFiltered: onModelFiltered);
+        },
+        selected: CretaVars.serviceType == ServiceType.escalator,
+        disabled: CretaVars.serviceType != ServiceType.escalator,
+      ),
       CretaMenuItem(
-          caption: CretaLang.basicBookFilter[4], // 디지털 바리케이드
-          onPressed: () {
-            hostManagerHolder?.toFiltered(
-                'bookType', BookType.digitalBarricade.index, AccountManager.currentLoginUser.email,
-                onModelFiltered: onModelFiltered);
-          },
-          selected: false),
+        caption: CretaDeviceLang.basicHostFilter[4], //
+        onPressed: () {
+          hostManagerHolder?.toFiltered(
+              'hostType', HostType.board.index, AccountManager.currentLoginUser.email,
+              onModelFiltered: onModelFiltered);
+        },
+        selected: CretaVars.serviceType == ServiceType.board,
+        disabled: CretaVars.serviceType != ServiceType.board,
+      ),
       CretaMenuItem(
-          caption: CretaLang.basicBookFilter[5],
-          onPressed: () {
-            hostManagerHolder?.toFiltered(
-                'bookType', BookType.etc.index, AccountManager.currentLoginUser.email,
-                onModelFiltered: onModelFiltered);
-          },
-          selected: false),
+        caption: CretaDeviceLang.basicHostFilter[5],
+        onPressed: () {
+          hostManagerHolder?.toFiltered(
+              'hostType', HostType.cdu.index, AccountManager.currentLoginUser.email,
+              onModelFiltered: onModelFiltered);
+        },
+        selected: CretaVars.serviceType == ServiceType.cdu,
+        disabled: CretaVars.serviceType != ServiceType.cdu,
+      ),
+      CretaMenuItem(
+        caption: CretaDeviceLang.basicHostFilter[6],
+        onPressed: () {
+          hostManagerHolder?.toFiltered(
+              'hostType', HostType.etc.index, AccountManager.currentLoginUser.email,
+              onModelFiltered: onModelFiltered);
+        },
+        selected: CretaVars.serviceType == ServiceType.etc,
+        disabled: CretaVars.serviceType != ServiceType.etc,
+      ),
     ];
   }
 }

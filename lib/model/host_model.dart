@@ -8,6 +8,7 @@ enum HostType {
   escalator,
   board,
   cdu,
+  etc,
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
@@ -20,7 +21,8 @@ class HostModel extends CretaModel {
   String hostName = '';
   String ip = '';
   String interfaceName = '';
-  String siteId = '';
+  String creator = '';
+  String location = '';
   bool isConnected = false;
   String description = '';
   HostType hostType = HostType.signage;
@@ -30,16 +32,21 @@ class HostModel extends CretaModel {
   bool isUsed = true;
   String licenseTime = '';
   String initializeTime = '';
+  String thumbnailUrl = '';
 
   HostModel(String pmid) : super(pmid: pmid, type: ExModelType.host, parent: '');
+
   HostModel.withName({
     super.type = ExModelType.host,
-    super.parent = 'local',
     this.hostName = '',
+    super.parent = '',
     this.interfaceName = '',
     this.ip = '',
     this.isConnected = false,
+    this.thumbnailUrl = '',
     required super.pmid,
+    required this.creator,
+    required this.hostType,
   });
 
   @override
@@ -49,8 +56,10 @@ class HostModel extends CretaModel {
         interfaceName,
         ip,
         isConnected,
-        siteId,
+        creator,
+        location,
         description,
+        thumbnailUrl,
         hostType,
         os,
         isInitialized,
@@ -69,8 +78,10 @@ class HostModel extends CretaModel {
     interfaceName = srcHost.interfaceName;
     ip = srcHost.ip;
     isConnected = srcHost.isConnected;
-    siteId = srcHost.siteId;
+    creator = srcHost.creator;
+    location = srcHost.location;
     description = srcHost.description;
+    thumbnailUrl = srcHost.thumbnailUrl;
     hostType = srcHost.hostType;
     os = srcHost.os;
     isInitialized = srcHost.isInitialized;
@@ -88,8 +99,10 @@ class HostModel extends CretaModel {
     interfaceName = srcHost.interfaceName;
     ip = srcHost.ip;
     isConnected = srcHost.isConnected;
-    siteId = srcHost.siteId;
+    creator = srcHost.creator;
+    location = srcHost.location;
     description = srcHost.description;
+    thumbnailUrl = srcHost.thumbnailUrl;
     hostType = srcHost.hostType;
     os = srcHost.os;
     isInitialized = srcHost.isInitialized;
@@ -106,9 +119,11 @@ class HostModel extends CretaModel {
     interfaceName = map["interfaceName"] ?? '';
     ip = map["ip"] ?? '';
     isConnected = map["isConnected"] ?? false;
-    siteId = map["siteId"] ?? '';
+    creator = map["creator"] ?? '';
+    location = map["location"] ?? '';
     description = map["description"] ?? '';
-    hostType = map["hostType"] ?? HostType.signage;
+    thumbnailUrl = map["thumbnailUrl"] ?? '';
+    hostType = HostType.fromInt(map["hostType"] ?? HostType.signage.index);
     os = map["os"] ?? '';
     isInitialized = map["isInitialized"] ?? false;
     isValidLicense = map["isValidLicense"] ?? false;
@@ -125,9 +140,11 @@ class HostModel extends CretaModel {
         "interfaceName": interfaceName,
         "ip": ip,
         "isConnected": isConnected,
-        "siteId": siteId,
+        "creator": creator,
+        "location": location,
         "description": description,
-        "hostType": hostType,
+        "thumbnailUrl": thumbnailUrl,
+        "hostType": hostType.index,
         "os": os,
         "isInitialized": isInitialized,
         "isValidLicense": isValidLicense,

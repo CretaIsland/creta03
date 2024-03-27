@@ -461,15 +461,20 @@ class CretaPlayTimer extends ChangeNotifier {
   Future<void> _timerExpired(Timer timer) async {
     await _lock.synchronized(
       () async {
-        if (BookMainPage.pageManagerHolder!.checkTimeBasePage()) {
+        if (StudioVariables.isPreview == true) {
+          if (BookMainPage.pageManagerHolder!.checkTimeBasePage()) {
 // todo : 여기 하다가 말았음.
+            frameManager.nextPageListener(contentsManager.frameModel);
+            return;
+          }
         }
 
         if (contentsManager.isEmpty()) {
+          logger.info('contentsManager is empty');
           return;
         }
         if (contentsManager.iamBusy) {
-          logger.fine('i am busy');
+          logger.info('i am busy');
           return;
         }
 
@@ -490,6 +495,7 @@ class CretaPlayTimer extends ChangeNotifier {
             _currentModel?.resumeState();
           }
         }
+        //BookMainPage.pageManagerHolder!.printSelectedMid(1);
 
         // 아무것도 돌고 있지 않다면,
         if (_currentOrder < 0) {
@@ -499,11 +505,13 @@ class CretaPlayTimer extends ChangeNotifier {
             return; // 돌릴게 없다.
           }
         }
+        //BookMainPage.pageManagerHolder!.printSelectedMid(2);
         _setCurrentModel();
         if (_currentModel == null) {
           logger.warning('_curentModel is null');
           return;
         }
+        //BookMainPage.pageManagerHolder!.printSelectedMid(3);
 
         // Studio 에서 선택된 프레임의 경우, 플레이가 정지한다.
 

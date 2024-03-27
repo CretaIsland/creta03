@@ -98,6 +98,7 @@ abstract class AppRoutes {
   static const String textFieldDemoPage = '/textFieldDemoPage';
   static const String studioBookMainPage = '/studio/bookMainPage';
   static const String deviceMainPage = '/device/deviceMainPage';
+  //static const String deviceDetailPage = '/device/deviceDetailPage';
   static const String studioBookPreviewPage = '/studio/studioBookMainPreviewPage';
   static const String studioBookGridPage = '/studio/bookGridPage';
   static const String studioBookSharedPage = '/studio/bookMySharedPage';
@@ -171,6 +172,7 @@ final routesLoggedOut = RouteMap(
     AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
     AppRoutes.deviceMainPage: (_) =>
         TransitionPage(child: DeviceMainPage(selectedPage: DeviceSelectedPage.myPage)),
+    //AppRoutes.deviceDetailPage: (_) => TransitionPage(child: DeviceDetailPage()),
     AppRoutes.studioBookMainPage: (routeData) {
       if (AccountManager.currentLoginUser.isLoginedUser) {
         //skpark test code

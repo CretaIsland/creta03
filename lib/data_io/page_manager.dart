@@ -548,6 +548,16 @@ class PageManager extends BasePageManager {
     // if (selectedOrder < 0) {
     //   return null;
     // }
+
+    // timebase 를 먼저 처리를 해야 한다.
+    if (StudioVariables.isPreview == true) {
+      PageModel? pageModel = hasTimeBaseNow();
+      if (pageModel != null) {
+        //print(' timebase founded !!!!!!!!');
+        return pageModel;
+      }
+    }
+
     Iterable<double> keys = orderKeys().toList();
     for (double ele in keys) {
       if (matched == true) {
@@ -570,9 +580,10 @@ class PageManager extends BasePageManager {
         // timeBase 처리
         if (pageModel.isTimeBase()) {
           if (CretaUtils.isCurrentTimeBetween(pageModel.startTime.value, pageModel.endTime.value) ==
-              false) {
-            continue;
+              true) {
+            return pageModel;
           }
+          continue;
         }
 
         // 빈페이지도 나오지 말아야 한다.
@@ -1139,12 +1150,25 @@ class PageManager extends BasePageManager {
   bool checkTimeBasePage() {
     PageModel? pageModel = hasTimeBaseNow();
     if (pageModel != null) {
+      //print('before selectedMid=$selectedMid pageModel.mid=${pageModel.mid}');
       if (selectedMid != pageModel.mid) {
-        print('******************************** timebase start !!!!!!!!');
-        setSelectedMid(pageModel.mid);
+        //if (StudioVariables.isPreview == true) {
+        //print('******************************** timebase start !!!!!!!!');
+        //}
+        //setSelectedMid(pageModel.mid);
+        gotoNext();
+        // if (StudioVariables.isPreview == true) {
+        //   print('after selectedMid=$selectedMid pageModel.mid=${pageModel.mid}');
+        // }
         return true;
       }
     }
     return false;
   }
+
+  // void printSelectedMid(int index) {
+  //   if (StudioVariables.isPreview == true) {
+  //     print('$index : selectedMid=$selectedMid');
+  //   }
+  // }
 }

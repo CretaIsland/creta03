@@ -967,6 +967,7 @@ class FrameManager extends BaseFrameManager {
       return;
     }
     BookPreviewMenu.previewMenuPressed = true;
+    //BookMainPage.pageManagerHolder?.printSelectedMid(4);
     BookMainPage.pageManagerHolder?.gotoNext();
   }
 

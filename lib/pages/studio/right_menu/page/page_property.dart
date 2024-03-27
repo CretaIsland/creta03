@@ -596,7 +596,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
                       final date = await showDatePicker(
                         context: context,
                         initialDate: _startDate,
-                        firstDate: DateTime.now(),
+                        firstDate: _startDate.subtract(Duration(days: 365)),
                         lastDate: DateTime.now().add(Duration(days: 365)),
                       );
                       if (date != null) {
@@ -617,6 +617,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
                       final time = await showTimePicker(
                         context: context,
                         initialTime: _startTime,
+                        initialEntryMode: TimePickerEntryMode.input,
                       );
                       if (time != null) {
                         setState(() {
@@ -647,7 +648,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
                       final date = await showDatePicker(
                         context: context,
                         initialDate: _endDate,
-                        firstDate: DateTime.now(),
+                        firstDate: _endDate.subtract(Duration(days: 365)),
                         lastDate: DateTime.now().add(Duration(days: 365)),
                       );
                       if (date != null) {
@@ -668,6 +669,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
                       final time = await showTimePicker(
                         context: context,
                         initialTime: _endTime,
+                        initialEntryMode: TimePickerEntryMode.input,
                       );
                       if (time != null) {
                         setState(() {
