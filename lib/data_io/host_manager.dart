@@ -2,7 +2,6 @@
 import 'dart:math';
 
 import 'package:creta_common/common/creta_vars.dart';
-import 'package:creta_common/common/creta_common_utils.dart';
 import 'package:creta_user_io/data_io/team_manager.dart';
 import 'package:hycop/hycop.dart';
 //import '../common/creta_utils.dart';
@@ -44,18 +43,19 @@ class HostManager extends CretaManager {
     return retval;
   }
 
-  HostModel createSample() {
+  HostModel createSample(String hostId, String hostName) {
     final Random random = Random();
     int randomNumber = random.nextInt(100);
     String url = 'https://picsum.photos/200/?random=$randomNumber';
 
-    String name = 'Host-';
-    name += CretaCommonUtils.getNowString(deli1: '', deli2: ' ', deli3: '', deli4: ' ');
+    // String name = 'Host-';
+    // name += CretaCommonUtils.getNowString(deli1: '', deli2: ' ', deli3: '', deli4: ' ');
 
     //print('old mid = ${onlyOne()!.mid}');
     HostModel sampleHost = HostModel.withName(
         pmid: '',
-        hostName: name,
+        hostId: hostId,
+        hostName: hostName,
         parent: TeamManager.getCurrentTeam!.name,
         hostType: HostType.fromInt(CretaVars.serviceType.index),
         creator: AccountManager.currentLoginUser.email,

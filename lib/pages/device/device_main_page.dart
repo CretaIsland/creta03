@@ -413,20 +413,14 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
 
     Widget detailView = selectedHost != null
         ? Center(
-            child: Container(
-            color: Colors.amberAccent,
-            width: 800,
-            height: 600,
-            child: Center(
-                child: DeviceDetailPage(
-              hostModel: selectedHost!,
-              onExit: () {
-                setState(() {
-                  _openDetail = false;
-                  selectedHost = null;
-                });
-              },
-            )),
+            child: DeviceDetailPage(
+            hostModel: selectedHost!,
+            onExit: () {
+              setState(() {
+                _openDetail = false;
+                selectedHost = null;
+              });
+            },
           ))
         : SizedBox.shrink();
 

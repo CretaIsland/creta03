@@ -506,7 +506,79 @@ class HostGridItemState extends State<HostGridItem> {
     // await widget.hostManager.createToDB(host);
     // widget.hostManager.insert(host);
 
-    HostModel host = widget.hostManager.createSample();
+    String hostId = '';
+    String hostName = '';
+    final formKey = GlobalKey<FormState>();
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(CretaDeviceLang.inputHostInfo),
+          content: SizedBox(
+            height: 200,
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      onChanged: (value) => hostId = value,
+                      decoration: InputDecoration(hintText: CretaDeviceLang.deviceId),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return CretaDeviceLang.shouldInputDeviceId;
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      onChanged: (value) => hostName = value,
+                      decoration: InputDecoration(hintText: CretaDeviceLang.deviceName),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return CretaDeviceLang.shouldInputDeviceName;
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                hostId = '';
+                hostName = '';
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    if (hostId.isEmpty || hostName.isEmpty) {
+      return;
+    }
+
+    HostModel host = widget.hostManager.createSample(hostId, hostName);
     await widget.hostManager.createNewHost(host);
     //StudioVariables.selectedhostMid = host.mid;
     // ignore: use_build_context_synchronously
