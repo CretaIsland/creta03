@@ -24,6 +24,7 @@ class CretaFilterPane extends StatefulWidget {
   final void Function(String)? onSearch;
   final List<List<CretaMenuItem>>? listOfListFilterOnRight;
   final CrossAxisAlignment rowCrossAxisAlignment;
+  final Widget? toolbar;
   //final bool? scrollbarOnRight;
   const CretaFilterPane({
     super.key,
@@ -39,6 +40,7 @@ class CretaFilterPane extends StatefulWidget {
     //this.scrollbarOnRight,
     this.onSearch,
     this.rowCrossAxisAlignment = CrossAxisAlignment.center,
+    this.toolbar,
   });
 
   @override
@@ -64,7 +66,14 @@ class _CretaFilterPaneState extends State<CretaFilterPane> {
       width: widget.width,
       height: widget.height,
       color: Colors.white,
-      child: _filterPane(),
+      child: widget.toolbar != null
+          ? Column(
+              children: [
+                widget.toolbar!,
+                Expanded(child: _filterPane()),
+              ],
+            )
+          : _filterPane(),
     );
   }
 

@@ -23,6 +23,8 @@ enum LeftMenuEnum {
 
 class LayoutConst {
   //
+  static const double deviceToolbarHeight = 60;
+
   static const double maxPageCount = 99;
   static const double minWorkWidth = 465;
 

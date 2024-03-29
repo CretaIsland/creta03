@@ -2,6 +2,7 @@
 
 import 'dart:math';
 
+import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_vars.dart';
 import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'package:creta_common/common/creta_const.dart';
@@ -16,6 +17,7 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 
 import '../../data_io/host_manager.dart';
+import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/component/creta_basic_layout_mixin.dart';
 import '../../design_system/component/snippet.dart';
 import 'package:creta_common/common/creta_font.dart';
@@ -71,6 +73,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
   GlobalKey dropDownButtonKey = GlobalKey();
 
   late ScrollController _controller;
+
+  List<bool> selectedItems = [];
 
   @override
   void initState() {
@@ -267,8 +271,12 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       manager: hostManagerHolder!,
       //userId: AccountManager.currentLoginUser.email,
       consumerFunc: consumerFunc,
+      completeFunc: () {
+        _onceDBGetComplete = true;
+        selectedItems = List.generate(hostManagerHolder!.getLength() + 2, (index) => false);
+      },
     );
-    _onceDBGetComplete = true;
+
     return retval;
   }
 
@@ -276,6 +284,10 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       /*List<AbsExModel>? data*/
       ) {
     logger.finest('consumerFunc');
+
+    // _onceDBGetComplete = true;
+    // selectedItems = List.generate(hostManagerHolder!.getAvailLength() + 2, (index) => false);
+
     return Consumer<HostManager>(builder: (context, hostManager, child) {
       logger.fine('Consumer  ${hostManager.getLength() + 1}');
       return _gridViewer(hostManager);
@@ -309,105 +321,53 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         return SizedBox.shrink();
       }
     }
-    bool isValidIndex(int index) {
-      return index > 0 && index - 1 < hostManager.getLength();
-    }
-
-    Widget hostGridItem(int index) {
-      //print('hostGridItem($index),  ${hostManager.getLength()}');
-      if (index > hostManager.getLength()) {
-        if (hostManager.isShort()) {
-          //print('hostManager.isShort');
-          return SizedBox(
-            width: itemWidth,
-            height: itemHeight,
-            child: Center(
-              child: TextButton(
-                onPressed: () {
-                  hostManager.next().then((value) => setState(() {}));
-                },
-                child: Text(
-                  "more...",
-                  style: CretaFont.displaySmall,
-                ),
-              ),
-            ),
-          );
-        }
-        return Container();
-      }
-
-      if (isValidIndex(index)) {
-        HostModel? model = hostManager.findByIndex(index - 1) as HostModel?;
-        if (model == null) {
-          logger.warning("$index th model not founded");
-          return Container();
-        }
-
-        if (model.isRemoved.value == true) {
-          logger.warning('removed HostModel.name = ${model.hostName}');
-          return Container();
-        }
-        //logger.fine('HostModel.name = ${model.name.value}');
-      }
-      //print('----------------------');
-      //if (isValidIndex(index)) {
-      return HostGridItem(
-        hostManager: hostManager,
-        index: index - 1,
-        itemKey: GlobalKey<HostGridItemState>(),
-        // key: isValidIndex(index)
-        //     ? (bookManager.findByIndex(index - 1) as CretaModel).key
-        //     : GlobalKey(),
-        hostModel: isValidIndex(index) ? hostManager.findByIndex(index - 1) as HostModel : null,
-        width: itemWidth,
-        height: itemHeight,
-        selectedPage: widget.selectedPage,
-        onClick: (hostModel) {
-          setState(() {
-            _openDetail = true;
-            selectedHost = hostModel;
-          });
-        },
-      );
-    }
 
     Widget listView = Scrollbar(
       thumbVisibility: true,
       controller: _controller,
-      child: GridView.builder(
-        controller: _controller,
+      child: Padding(
         padding: LayoutConst.cretaPadding,
-        itemCount: hostManager.getLength() + 2, //item 개수
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
-          childAspectRatio:
-              CretaConst.bookThumbSize.width / CretaConst.bookThumbSize.height, // 가로÷세로 비율
-          mainAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수평 Padding
-          crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
-        ),
-        itemBuilder: (BuildContext context, int index) {
-          //if (isValidIndex(index)) {
-          return (itemWidth >= 0 && itemHeight >= 0)
-              ? hostGridItem(index)
-              : LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                    itemWidth = constraints.maxWidth;
-                    itemHeight = constraints.maxHeight;
-                    // double ratio = itemWidth / 267; //CretaConst.bookThumbSize.width;
-                    // // 너무 커지는 것을 막기위해.
-                    // if (ratio > 1) {
-                    //   itemWidth = 267; //CretaConst.bookThumbSize.width;
-                    //   itemHeight = itemHeight / ratio;
-                    // }
+        child: Column(
+          children: [
+            _toolbar(),
+            Expanded(
+              child: GridView.builder(
+                controller: _controller,
+                //padding: LayoutConst.cretaPadding,
+                itemCount: hostManager.getLength() + 2, //item 개수
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
+                  childAspectRatio:
+                      CretaConst.bookThumbSize.width / CretaConst.bookThumbSize.height, // 가로÷세로 비율
+                  mainAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수평 Padding
+                  crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
+                ),
+                itemBuilder: (BuildContext context, int index) {
+                  //if (isValidIndex(index)) {
+                  return (itemWidth >= 0 && itemHeight >= 0)
+                      ? hostGridItem(index, itemWidth, itemHeight, hostManager)
+                      : LayoutBuilder(
+                          builder: (BuildContext context, BoxConstraints constraints) {
+                            itemWidth = constraints.maxWidth;
+                            itemHeight = constraints.maxHeight;
+                            // double ratio = itemWidth / 267; //CretaConst.bookThumbSize.width;
+                            // // 너무 커지는 것을 막기위해.
+                            // if (ratio > 1) {
+                            //   itemWidth = 267; //CretaConst.bookThumbSize.width;
+                            //   itemHeight = itemHeight / ratio;
+                            // }
 
-                    //print('first data, $itemWidth, $itemHeight');
-                    return hostGridItem(index);
-                  },
-                );
-          //}
-          //return SizedBox.shrink();
-        },
+                            //print('first data, $itemWidth, $itemHeight');
+                            return hostGridItem(index, itemWidth, itemHeight, hostManager);
+                          },
+                        );
+                  //}
+                  //return SizedBox.shrink();
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
 
@@ -429,6 +389,135 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
     }
 
     return listView;
+  }
+
+  bool isValidIndex(int index, HostManager hostManager) {
+    return index > 0 && index - 1 < hostManager.getLength();
+  }
+
+  Widget hostGridItem(int index, double itemWidth, double itemHeight, HostManager hostManager) {
+    //print('hostGridItem($index),  ${hostManager.getLength()}');
+    if (index > hostManager.getLength()) {
+      if (hostManager.isShort()) {
+        //print('hostManager.isShort');
+        return SizedBox(
+          width: itemWidth,
+          height: itemHeight,
+          child: Center(
+            child: TextButton(
+              onPressed: () {
+                hostManager.next().then((value) => setState(() {}));
+              },
+              child: Text(
+                "more...",
+                style: CretaFont.displaySmall,
+              ),
+            ),
+          ),
+        );
+      }
+      return Container();
+    }
+
+    if (isValidIndex(index, hostManager)) {
+      HostModel? model = hostManager.findByIndex(index - 1) as HostModel?;
+      if (model == null) {
+        logger.warning("$index th model not founded");
+        return Container();
+      }
+
+      if (model.isRemoved.value == true) {
+        logger.warning('removed HostModel.name = ${model.hostName}');
+        return Container();
+      }
+      //logger.fine('HostModel.name = ${model.name.value}');
+    }
+    //print('----------------------');
+    //if (isValidIndex(index)) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedItems[index] = !selectedItems[index];
+        });
+      },
+      child:
+
+          // HostGridItem(
+          //   hostManager: hostManager,
+          //   index: index - 1,
+          //   itemKey: GlobalKey<HostGridItemState>(),
+          //   // key: isValidIndex(index)
+          //   //     ? (bookManager.findByIndex(index - 1) as CretaModel).key
+          //   //     : GlobalKey(),
+          //   hostModel: isValidIndex(index, hostManager)
+          //       ? hostManager.findByIndex(index - 1) as HostModel
+          //       : null,
+          //   width: itemWidth,
+          //   height: itemHeight,
+          //   selectedPage: widget.selectedPage,
+          //   onEdit: (hostModel) {
+          //     setState(() {
+          //       _openDetail = true;
+          //       selectedHost = hostModel;
+          //     });
+          //   },
+          // ),
+
+          Stack(
+        fit: StackFit.expand,
+        children: [
+          HostGridItem(
+            hostManager: hostManager,
+            index: index - 1,
+            itemKey: GlobalKey<HostGridItemState>(),
+            // key: isValidIndex(index)
+            //     ? (bookManager.findByIndex(index - 1) as CretaModel).key
+            //     : GlobalKey(),
+            hostModel: isValidIndex(index, hostManager)
+                ? hostManager.findByIndex(index - 1) as HostModel
+                : null,
+            width: itemWidth,
+            height: itemHeight,
+            selectedPage: widget.selectedPage,
+            onEdit: (hostModel) {
+              setState(() {
+                _openDetail = true;
+                selectedHost = hostModel;
+              });
+            },
+          ),
+          if (_isSelected(index))
+            Positioned(
+              top: 4,
+              left: 4,
+              child: Container(
+                //padding: EdgeInsets.all(2), // Adjust padding as needed
+                decoration: BoxDecoration(
+                  // border: Border.all(
+                  //   color: Colors.white, // Change border color as needed
+                  //   width: 2, // Change border width as needed
+                  // ),
+                  shape: BoxShape.circle,
+                  color: Colors.white.withOpacity(0.5),
+                ),
+                child: Icon(
+                  Icons.check_circle_outline,
+                  size: 42,
+                  color: CretaColor.primary,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  bool _isSelected(int index) {
+    return index < selectedItems.length ? selectedItems[index] : false;
+  }
+
+  bool hasSelected() {
+    return selectedItems.contains(true);
   }
 
   void saveItem(HostManager hostManager, int index) async {
@@ -526,5 +615,63 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         disabled: CretaVars.serviceType != ServiceType.etc,
       ),
     ];
+  }
+
+  Widget _toolbar() {
+    Widget buttons = Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        BTN.fill_gray_it_l(
+          text: CretaDeviceLang.editHost,
+          icon: Icons.edit_outlined,
+          onPressed: () {
+            // Handle menu button press
+          },
+        ),
+        BTN.fill_gray_it_l(
+          text: CretaDeviceLang.setBook,
+          icon: Icons.play_circle_outline,
+          onPressed: () {
+            // Handle menu button press
+          },
+        ),
+        BTN.fill_gray_it_l(
+          text: CretaDeviceLang.powerOff,
+          icon: Icons.power_off_outlined,
+          onPressed: () {
+            // Handle menu button press
+          },
+        ),
+        BTN.fill_gray_it_l(
+          text: CretaDeviceLang.reboot,
+          icon: Icons.power_outlined,
+          onPressed: () {
+            // Handle menu button press
+          },
+        ),
+        BTN.fill_gray_it_l(
+          width: 130,
+          text: CretaDeviceLang.setPower,
+          icon: Icons.power_settings_new_outlined,
+          onPressed: () {
+            // Handle menu button press
+          },
+        ),
+      ],
+    );
+    return SizedBox(
+      //padding: EdgeInsets.symmetric(horizontal: 10.0),
+      height: LayoutConst.deviceToolbarHeight,
+      //color: Colors.amberAccent,
+      child: hasSelected() == false
+          ? Stack(fit: StackFit.expand, children: [
+              buttons,
+              Positioned.fill(
+                  child: Container(
+                      //padding: EdgeInsets.symmetric(horizontal: 10.0),
+                      color: Colors.white.withOpacity(0.5))),
+            ])
+          : buttons,
+    );
   }
 }

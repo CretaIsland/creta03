@@ -16,7 +16,7 @@ import '../../design_system/component/custom_image.dart';
 import '../../design_system/component/snippet.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_font.dart';
-import '../../design_system/menu/creta_popup_menu.dart';
+//import '../../design_system/menu/creta_popup_menu.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import '../../lang/creta_device_lang.dart';
 import '../../model/host_model.dart';
@@ -31,7 +31,7 @@ class HostGridItem extends StatefulWidget {
   final HostManager hostManager;
   final GlobalKey<HostGridItemState> itemKey;
   final DeviceSelectedPage selectedPage;
-  final void Function(HostModel? hostModel) onClick;
+  final void Function(HostModel? hostModel) onEdit;
 
   const HostGridItem({
     required this.itemKey,
@@ -41,7 +41,7 @@ class HostGridItem extends StatefulWidget {
     required this.width,
     required this.height,
     required this.selectedPage,
-    required this.onClick,
+    required this.onEdit,
   }) : super(key: itemKey);
 
   @override
@@ -49,7 +49,7 @@ class HostGridItem extends StatefulWidget {
 }
 
 class HostGridItemState extends State<HostGridItem> {
-  late List<CretaMenuItem> _popupMenuList;
+  //late List<CretaMenuItem> _popupMenuList;
   bool mouseOver = false;
   int counter = 0;
   final Random random = Random();
@@ -65,18 +65,18 @@ class HostGridItemState extends State<HostGridItem> {
 
     defaultThumbnailNumber = random.nextInt(1000);
 
-    _popupMenuList = [
-      CretaMenuItem(
-        caption: CretaLang.play,
-        onPressed: () {},
-      ),
-      CretaMenuItem(
-        caption: CretaLang.edit,
-        onPressed: () {
-          //openHost(AppRoutes.deviceDetailPage);
-        },
-      ),
-    ];
+    // _popupMenuList = [
+    //   CretaMenuItem(
+    //     caption: CretaLang.play,
+    //     onPressed: () {},
+    //   ),
+    //   CretaMenuItem(
+    //     caption: CretaLang.edit,
+    //     onPressed: () {
+    //       widget.onEdit.call(widget.hostModel);
+    //     },
+    //   ),
+    // ];
   }
 
   @override
@@ -217,183 +217,186 @@ class HostGridItemState extends State<HostGridItem> {
     //print('controllAreaHeight = $controllAreaHeight');
 
     if (mouseOver) {
-      return InkWell(
-        onTap: () async {
-          //openHost(AppRoutes.deviceDetailPage);
-          widget.onClick.call(widget.hostModel);
-        },
-        onDoubleTap: () {
-          // if (readOnly == false) {
-          //   logger.finest('${widget.hostModel!.hostName} double clicked');
-          //   AppRoutes.launchTab(url);
-          // }
-        },
-        child: Container(
-          padding: const EdgeInsets.only(top: 8.0, right: 8),
-          alignment: AlignmentDirectional.topEnd,
-          decoration: mouseOver
-              ? Snippet.gradationShadowDeco()
-              : BoxDecoration(
-                  color: Colors.transparent,
-                ),
-          //width: aWidth,
-          height: controllAreaHeight, //aHeight - LayoutConst.hostDescriptionHeight,
-          //color: CretaColor.text[200]!.withOpacity(0.2),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Icon(
-                    widget.hostModel!.isValidLicense ? Icons.label : Icons.label_off,
-                    color: Colors.white,
-                    size: 12,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: Text(
-                      widget.hostModel!.isValidLicense
-                          ? CretaDeviceLang.licensed
-                          : CretaDeviceLang.unLicensed,
-                      overflow: TextOverflow.fade,
-                      style: CretaFont.buttonSmall.copyWith(color: Colors.white),
-                    ),
-                  ),
-                  Icon(
-                    widget.hostModel!.isUsed ? Icons.circle_outlined : Icons.close_outlined,
-                    color: Colors.white,
-                    size: 12,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: Text(
-                      widget.hostModel!.isUsed ? CretaDeviceLang.used : CretaDeviceLang.unUsed,
-                      overflow: TextOverflow.fade,
-                      style: CretaFont.buttonSmall.copyWith(color: Colors.white),
-                    ),
-                  ),
-                  if (readOnly == false)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      child: BTN.opacity_gray_i_s(
-                        icon: Icons.delete_outline,
-                        onPressed: () {
-                          logger.finest('delete pressed');
-                          CretaPopup.yesNoDialog(
-                            context: context,
-                            title: CretaLang.deleteConfirmTitle,
-                            icon: Icons.file_download_outlined,
-                            question: CretaLang.deleteConfirm,
-                            noBtText: CretaStudioLang.noBtDnText,
-                            yesBtText: CretaStudioLang.yesBtDnText,
-                            yesIsDefault: true,
-                            onNo: () {
-                              //Navigator.of(context).pop();
-                            },
-                            onYes: () {
-                              logger.fine('onPressedOK(${widget.hostModel!.hostName})');
-
-                              _removeItem(widget.hostModel).then((value) {
-                                if (value == null) return null;
-                                if (widget.hostManager.isShort(offset: 1)) {
-                                  widget.hostManager.reGet(AccountManager.currentLoginUser.email,
-                                      onModelFiltered: () {
-                                    widget.hostManager.notify();
-                                    logger.fine('removeItem complete');
-                                    return value;
-                                  });
-                                }
-                                // ignore: use_build_context_synchronously
-
-                                return value;
-                              });
-                              // ignore: use_build_context_synchronously
-                              //Navigator.of(context).pop();
-                            },
-                          );
-                          // showDialog(
-                          //     context: context,
-                          //     builder: (context) {
-                          //       return CretaAlertDialog(
-                          //         height: 200,
-                          //         title: CretaLang.deleteConfirmTitle,
-                          //         content: Text(
-                          //           CretaLang.deleteConfirm,
-                          //           style: CretaFont.titleMedium,
-                          //         ),
-                          //         onPressedOK: () async {
-                          //           logger
-                          //               .fine('onPressedOK(${widget.hostModel!.hostName})');
-
-                          //           _removeItem(widget.hostModel).then((value) {
-                          //             if (value == null) return null;
-                          //             if (widget.hostManager.isShort(offset: 1)) {
-                          //               widget.hostManager
-                          //                   .reGet(AccountManager.currentLoginUser.email,
-                          //                       onModelFiltered: () {
-                          //                 widget.hostManager.notify();
-                          //                 logger.fine('removeItem complete');
-                          //                 return value;
-                          //               });
-                          //             }
-                          //             // ignore: use_build_context_synchronously
-
-                          //             return value;
-                          //           });
-                          //           // ignore: use_build_context_synchronously
-                          //           Navigator.of(context).pop();
-                          //         },
-                          //       );
-                          //     });
-                        },
-                        tooltip: CretaStudioLang.tooltipDelete,
-                      ),
-                    ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 4.0),
-                    child: BTN.opacity_gray_i_s(
-                      icon: Icons.menu_outlined,
-                      onPressed: () {
-                        logger.finest('menu pressed');
-                        setState(() {
-                          CretaPopupMenu.showMenu(
-                              context: context,
-                              globalKey: widget.itemKey,
-                              popupMenu: _popupMenuList,
-                              initFunc: () {
-                                dropDownButtonOpened = true;
-                              }).then((value) {
-                            logger.finest('팝업메뉴 닫기');
-                            setState(() {
-                              dropDownButtonOpened = false;
-                            });
-                          });
-                          dropDownButtonOpened = !dropDownButtonOpened;
-                        });
-                      },
-                      tooltip: CretaStudioLang.tooltipMenu,
-                    ),
-                  ),
-                ],
+      return
+          // InkWell(
+          //   onTap: () async {
+          //     //openHost(AppRoutes.deviceDetailPage);
+          //     widget.onEdit.call(widget.hostModel);
+          //   },
+          //   onDoubleTap: () {
+          //     // if (readOnly == false) {
+          //     //   logger.finest('${widget.hostModel!.hostName} double clicked');
+          //     //   AppRoutes.launchTab(url);
+          //     // }
+          //   },
+          //  child:
+          Container(
+        padding: const EdgeInsets.only(top: 8.0, right: 8),
+        alignment: AlignmentDirectional.topEnd,
+        decoration: mouseOver
+            ? Snippet.gradationShadowDeco()
+            : BoxDecoration(
+                color: Colors.transparent,
               ),
-              if (aHeight > 186)
+        //width: aWidth,
+        height: controllAreaHeight, //aHeight - LayoutConst.hostDescriptionHeight,
+        //color: CretaColor.text[200]!.withOpacity(0.2),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Icon(
+                  widget.hostModel!.isValidLicense ? Icons.label : Icons.label_off,
+                  color: Colors.white,
+                  size: 12,
+                ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0, left: 8),
-                  child: Container(
-                    color: Colors.transparent,
-                    height: 16,
-                    child: Text(
-                      widget.hostModel!.description,
-                      overflow: TextOverflow.ellipsis,
-                      style: CretaFont.bodyESmall.copyWith(color: Colors.white),
-                    ),
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  child: Text(
+                    widget.hostModel!.isValidLicense
+                        ? CretaDeviceLang.licensed
+                        : CretaDeviceLang.unLicensed,
+                    overflow: TextOverflow.fade,
+                    style: CretaFont.buttonSmall.copyWith(color: Colors.white),
                   ),
                 ),
-            ],
-          ),
+                Icon(
+                  widget.hostModel!.isUsed ? Icons.circle_outlined : Icons.close_outlined,
+                  color: Colors.white,
+                  size: 12,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  child: Text(
+                    widget.hostModel!.isUsed ? CretaDeviceLang.used : CretaDeviceLang.unUsed,
+                    overflow: TextOverflow.fade,
+                    style: CretaFont.buttonSmall.copyWith(color: Colors.white),
+                  ),
+                ),
+                if (readOnly == false)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: BTN.opacity_gray_i_s(
+                      icon: Icons.delete_outline,
+                      onPressed: () {
+                        logger.finest('delete pressed');
+                        CretaPopup.yesNoDialog(
+                          context: context,
+                          title: CretaLang.deleteConfirmTitle,
+                          icon: Icons.file_download_outlined,
+                          question: CretaLang.deleteConfirm,
+                          noBtText: CretaStudioLang.noBtDnText,
+                          yesBtText: CretaStudioLang.yesBtDnText,
+                          yesIsDefault: true,
+                          onNo: () {
+                            //Navigator.of(context).pop();
+                          },
+                          onYes: () {
+                            logger.fine('onPressedOK(${widget.hostModel!.hostName})');
+
+                            _removeItem(widget.hostModel).then((value) {
+                              if (value == null) return null;
+                              if (widget.hostManager.isShort(offset: 1)) {
+                                widget.hostManager.reGet(AccountManager.currentLoginUser.email,
+                                    onModelFiltered: () {
+                                  widget.hostManager.notify();
+                                  logger.fine('removeItem complete');
+                                  return value;
+                                });
+                              }
+                              // ignore: use_build_context_synchronously
+
+                              return value;
+                            });
+                            // ignore: use_build_context_synchronously
+                            //Navigator.of(context).pop();
+                          },
+                        );
+                        // showDialog(
+                        //     context: context,
+                        //     builder: (context) {
+                        //       return CretaAlertDialog(
+                        //         height: 200,
+                        //         title: CretaLang.deleteConfirmTitle,
+                        //         content: Text(
+                        //           CretaLang.deleteConfirm,
+                        //           style: CretaFont.titleMedium,
+                        //         ),
+                        //         onPressedOK: () async {
+                        //           logger
+                        //               .fine('onPressedOK(${widget.hostModel!.hostName})');
+
+                        //           _removeItem(widget.hostModel).then((value) {
+                        //             if (value == null) return null;
+                        //             if (widget.hostManager.isShort(offset: 1)) {
+                        //               widget.hostManager
+                        //                   .reGet(AccountManager.currentLoginUser.email,
+                        //                       onModelFiltered: () {
+                        //                 widget.hostManager.notify();
+                        //                 logger.fine('removeItem complete');
+                        //                 return value;
+                        //               });
+                        //             }
+                        //             // ignore: use_build_context_synchronously
+
+                        //             return value;
+                        //           });
+                        //           // ignore: use_build_context_synchronously
+                        //           Navigator.of(context).pop();
+                        //         },
+                        //       );
+                        //     });
+                      },
+                      tooltip: CretaStudioLang.tooltipDelete,
+                    ),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 4.0),
+                  child: BTN.opacity_gray_i_s(
+                    icon: Icons.edit_outlined,
+                    onPressed: () {
+                      logger.finest('menu pressed');
+                      widget.onEdit.call(widget.hostModel);
+                      // setState(() {
+                      //   CretaPopupMenu.showMenu(
+                      //       context: context,
+                      //       globalKey: widget.itemKey,
+                      //       popupMenu: _popupMenuList,
+                      //       initFunc: () {
+                      //         dropDownButtonOpened = true;
+                      //       }).then((value) {
+                      //     logger.finest('팝업메뉴 닫기');
+                      //     setState(() {
+                      //       dropDownButtonOpened = false;
+                      //     });
+                      //   });
+                      //   dropDownButtonOpened = !dropDownButtonOpened;
+                      // });
+                    },
+                    tooltip: CretaStudioLang.tooltipMenu,
+                  ),
+                ),
+              ],
+            ),
+            if (aHeight > 186)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0, left: 8),
+                child: Container(
+                  color: Colors.transparent,
+                  height: 16,
+                  child: Text(
+                    widget.hostModel!.description,
+                    overflow: TextOverflow.ellipsis,
+                    style: CretaFont.bodyESmall.copyWith(color: Colors.white),
+                  ),
+                ),
+              ),
+          ],
         ),
+        //),
       );
     }
     return Container();
@@ -428,7 +431,13 @@ class HostGridItemState extends State<HostGridItem> {
     return Container(
       //width: aWidth,
       height: LayoutConst.bookDescriptionHeight,
-      color: (mouseOver) ? Colors.grey[100] : Colors.white,
+      color: (mouseOver)
+          ? widget.hostModel!.isConnected
+              ? Colors.yellowAccent
+              : Colors.grey[100]
+          : widget.hostModel!.isConnected
+              ? Colors.yellow
+              : Colors.white,
       padding: const EdgeInsets.all(8),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -441,7 +450,13 @@ class HostGridItemState extends State<HostGridItem> {
               Expanded(
                 flex: 7,
                 child: Container(
-                    color: (mouseOver) ? Colors.grey[100] : Colors.white,
+                    color: (mouseOver)
+                        ? widget.hostModel!.isConnected
+                            ? Colors.yellowAccent
+                            : Colors.grey[100]
+                        : widget.hostModel!.isConnected
+                            ? Colors.yellow
+                            : Colors.white,
                     child: Snippet.TooltipWrapper(
                       tooltip: widget.hostModel!.hostName,
                       fgColor: Colors.black,
@@ -458,7 +473,13 @@ class HostGridItemState extends State<HostGridItem> {
                   ? Expanded(
                       flex: 3,
                       child: Container(
-                        color: (mouseOver) ? Colors.grey[100] : Colors.white,
+                        color: (mouseOver)
+                            ? widget.hostModel!.isConnected
+                                ? Colors.yellowAccent
+                                : Colors.grey[100]
+                            : widget.hostModel!.isConnected
+                                ? Colors.yellow
+                                : Colors.white,
                         child: Text(
                           widget.hostModel!.hostId,
                           overflow: TextOverflow.ellipsis,
@@ -471,7 +492,13 @@ class HostGridItemState extends State<HostGridItem> {
             ],
           ),
           Container(
-            color: (mouseOver) ? Colors.grey[100] : Colors.white,
+            color: (mouseOver)
+                ? widget.hostModel!.isConnected
+                    ? Colors.yellowAccent
+                    : Colors.grey[100]
+                : widget.hostModel!.isConnected
+                    ? Colors.yellow
+                    : Colors.white,
             child: Text(
               CretaCommonUtils.dateToDurationString(widget.hostModel!.updateTime),
               overflow: TextOverflow.ellipsis,
