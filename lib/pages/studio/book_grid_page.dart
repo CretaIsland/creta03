@@ -505,11 +505,11 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         caption: CretaLang.basicBookFilter[4], // 디지털 바리케이드
         onPressed: () {
           bookManagerHolder?.toFiltered(
-              'bookType', BookType.digitalBarricade.index, AccountManager.currentLoginUser.email,
+              'bookType', BookType.barricade.index, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
-        selected: CretaVars.serviceType == ServiceType.digitalBarricade,
-        disabled: CretaVars.serviceType != ServiceType.digitalBarricade,
+        selected: CretaVars.serviceType == ServiceType.barricade,
+        disabled: CretaVars.serviceType != ServiceType.barricade,
       ),
       CretaMenuItem(
         caption: CretaLang.basicBookFilter[5],

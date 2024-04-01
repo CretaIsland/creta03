@@ -206,6 +206,7 @@ flutter:
   assets:
     - assets/hycop_config.json
     - assets/creta_logo_blue.png
+    - assets/creta_logo_only_white.png
     - assets/creta_default.png
     - assets/logo_en.png
     - assets/grid.png

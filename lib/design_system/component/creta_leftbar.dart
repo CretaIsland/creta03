@@ -14,13 +14,14 @@ import '../menu/creta_popup_menu.dart';
 //import '../../pages/login_page.dart';
 import '../../pages/login/creta_account_manager.dart';
 import '../../routes.dart';
+//import 'snippet.dart';
 
 class CretaLeftBar extends StatefulWidget {
   final List<CretaMenuItem> menuItem;
   final double height;
   final double width;
-  final String gotoButtonTitle;
-  final Function gotoButtonPressed;
+  final String? gotoButtonTitle;
+  final Function? gotoButtonPressed;
   final String? gotoButtonTitle2;
   final Function? gotoButtonPressed2;
   final bool isIconText;
@@ -30,8 +31,8 @@ class CretaLeftBar extends StatefulWidget {
     required this.menuItem,
     required this.width,
     required this.height,
-    required this.gotoButtonTitle,
-    required this.gotoButtonPressed,
+    this.gotoButtonTitle,
+    this.gotoButtonPressed,
     this.gotoButtonTitle2,
     this.gotoButtonPressed2,
     this.isIconText = false,
@@ -44,6 +45,7 @@ class CretaLeftBar extends StatefulWidget {
 class _CretaLeftBarState extends State<CretaLeftBar> {
   Widget _getCretaTapBarButton(CretaMenuItem item) {
     return CretaTapBarButton(
+        width: 214,
         iconData: item.iconData,
         selected: item.selected,
         caption: item.caption,
@@ -63,6 +65,10 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
 
   @override
   Widget build(BuildContext context) {
+    // String logoUrl = (CretaAccountManager.currentLoginUser.isLoginedUser)
+    //     ? AppRoutes.communityHome
+    //     : AppRoutes.intro;
+
     bool hasTwoButton = (widget.gotoButtonTitle2 != null && widget.gotoButtonPressed2 != null);
 
     double userMenuHeight = widget.height -
@@ -82,6 +88,20 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
         crossAxisAlignment: CrossAxisAlignment.start,
         //mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          //const SizedBox(height: 20),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     Snippet.titleLogoBar(logoUrl),
+          //     BTN.fill_gray_i_m(onPressed: () {}, icon: Icons.keyboard_double_arrow_left_outlined)
+          //   ],
+          // ),
+          Align(
+              alignment: Alignment.centerRight,
+              child: BTN.fill_gray_i_m(
+                  onPressed: () {}, icon: Icons.keyboard_double_arrow_left_outlined)),
+          const SizedBox(height: 36),
+
           Expanded(
             child: ListView.builder(
                 padding: CretaComponentLocation.ListInTabBar.padding,
@@ -144,11 +164,12 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
                       const SizedBox(
                         height: 20,
                       ),
-                      BTN.fill_blue_ti_el(
-                        icon: Icons.arrow_forward_outlined,
-                        text: widget.gotoButtonTitle,
-                        onPressed: widget.gotoButtonPressed,
-                      ),
+                      if (widget.gotoButtonTitle != null && widget.gotoButtonPressed != null)
+                        BTN.fill_blue_ti_el(
+                          icon: Icons.arrow_forward_outlined,
+                          text: widget.gotoButtonTitle!,
+                          onPressed: widget.gotoButtonPressed!,
+                        ),
                       if (hasTwoButton)
                         const SizedBox(
                           height: 20,

@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:creta03/lang/creta_studio_lang.dart';
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
@@ -58,6 +59,10 @@ class HostGridItemState extends State<HostGridItem> {
   double aWidth = 0;
   double aHeight = 0;
   final double borderWidth = 6.0;
+
+  void notify(int index) {
+    setState(() {});
+  }
 
   @override
   void initState() {
@@ -188,6 +193,27 @@ class HostGridItemState extends State<HostGridItem> {
               children: [
                 _thumnailArea(),
                 _controllArea(),
+                if (selectNotifierHolder.isSelected(widget.index))
+                  Positioned(
+                    top: 4,
+                    left: 4,
+                    child: Container(
+                      //padding: EdgeInsets.all(2), // Adjust padding as needed
+                      decoration: BoxDecoration(
+                        // border: Border.all(
+                        //   color: Colors.white, // Change border color as needed
+                        //   width: 2, // Change border width as needed
+                        // ),
+                        shape: BoxShape.circle,
+                        color: Colors.white.withOpacity(0.5),
+                      ),
+                      child: Icon(
+                        Icons.check_outlined,
+                        size: 42,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),

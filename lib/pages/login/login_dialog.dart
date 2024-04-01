@@ -851,7 +851,7 @@ class _ExtraInfoDialogState extends State<ExtraInfoDialog> {
         caption: CretaLang.basicBookFilter[4], //'디지털 바리케이드',
         //iconData: Icons.home_outlined,
         onPressed: () {
-          _usingPurpose = BookType.digitalBarricade;
+          _usingPurpose = BookType.barricade;
         },
         //linkUrl: AppRoutes.communityHome,
         //isIconText: true,

@@ -30,42 +30,47 @@ enum DownloadResult {
 
 // ignore: must_be_immutable
 class HostModel extends CretaModel {
-  HostType hostType = HostType.signage;    // read only
-  String hostId = '';  // read only
+  HostType hostType = HostType.signage; // read only
+  String hostId = ''; // read only
   String hostName = '';
   String ip = '';
-  String interfaceName = '';  // read only
-  String creator = '';  // read only
+  String interfaceName = ''; // read only
+  String creator = ''; // read only
   String location = '';
   String description = '';
-  String os = '';  
+  String os = '';
 
-  bool isConnected = false;  // read only
-  bool isInitialized = false;  // read only
+  bool isConnected = false; // read only
+  bool isInitialized = false; // read only
   bool isValidLicense = false; // read only
   bool isUsed = true;
   bool isOperational = true; // read only
 
-  String licenseTime = '';  // read only
-  String initializeTime = '';  // read only
+  String licenseTime = ''; // read only
+  String initializeTime = ''; // read only
 
-  String thumbnailUrl = '';  // read only
+  String thumbnailUrl = ''; // read only
 
-  String powerOnTime = '';   // read only
-  String powerOffTime = '';// read only
+  String powerOnTime = ''; // read only
+  String powerOffTime = ''; // read only
   String requestedBook1 = ''; // read only
-  String requestedBook2 = '';// read only
-  String requestedBook1Time = '';  // read only
-  String requestedBook2Time = '';// read only
+  String requestedBook2 = ''; // read only
+  String requestedBook1Time = ''; // read only
+  String requestedBook2Time = ''; // read only
   String playingBook1 = ''; // read only
   String playingBook2 = ''; // read only
   String playingBook1Time = ''; // read only
   String playingBook2Time = ''; // read only
 
-  String request = '';  // read only
+  String notice1 = ''; // read only
+  String notice2 = ''; // read only
+  String notice1Time = ''; // read only
+  String notice2Time = ''; // read only
+
+  String request = ''; // read only
   String response = ''; // read only
 
-  DownloadResult downloadResult = DownloadResult.none;  // read only
+  DownloadResult downloadResult = DownloadResult.none; // read only
   String downloadMsg = ''; // read only
 
   String hddInfo = ''; // read only
@@ -74,7 +79,9 @@ class HostModel extends CretaModel {
 
   String stateMsg = ''; // read only
   String bootTime = ''; // read only
-  String shutdownTime = '';  // read only
+  String shutdownTime = ''; // read only
+
+  double monthlyUseTime = 0.0; // read only
 
   HostModel(String pmid) : super(pmid: pmid, type: ExModelType.host, parent: '');
 
@@ -114,6 +121,10 @@ class HostModel extends CretaModel {
         playingBook2,
         playingBook1Time,
         playingBook2Time,
+        notice1,
+        notice2,
+        notice1Time,
+        notice2Time,
         request,
         response,
         downloadResult,
@@ -124,6 +135,7 @@ class HostModel extends CretaModel {
         stateMsg,
         bootTime,
         shutdownTime,
+        monthlyUseTime,
         hostType,
         os,
         isInitialized,
@@ -159,6 +171,12 @@ class HostModel extends CretaModel {
     playingBook2 = srcHost.playingBook2;
     playingBook1Time = srcHost.playingBook1Time;
     playingBook2Time = srcHost.playingBook2Time;
+
+    notice1 = srcHost.notice1;
+    notice2 = srcHost.notice2;
+    notice1Time = srcHost.notice1Time;
+    notice2Time = srcHost.notice2Time;
+
     request = srcHost.request;
     response = srcHost.response;
     downloadResult = srcHost.downloadResult;
@@ -169,6 +187,7 @@ class HostModel extends CretaModel {
     stateMsg = srcHost.stateMsg;
     bootTime = srcHost.bootTime;
     shutdownTime = srcHost.shutdownTime;
+    monthlyUseTime = srcHost.monthlyUseTime;
 
     hostType = srcHost.hostType;
     os = srcHost.os;
@@ -204,6 +223,12 @@ class HostModel extends CretaModel {
     playingBook2 = srcHost.playingBook2;
     playingBook1Time = srcHost.playingBook1Time;
     playingBook2Time = srcHost.playingBook2Time;
+
+    notice1 = srcHost.notice1;
+    notice2 = srcHost.notice2;
+    notice1Time = srcHost.notice1Time;
+    notice2Time = srcHost.notice2Time;
+
     request = srcHost.request;
     response = srcHost.response;
     downloadResult = srcHost.downloadResult;
@@ -214,6 +239,7 @@ class HostModel extends CretaModel {
     stateMsg = srcHost.stateMsg;
     bootTime = srcHost.bootTime;
     shutdownTime = srcHost.shutdownTime;
+    monthlyUseTime = srcHost.monthlyUseTime;
 
     hostType = srcHost.hostType;
     os = srcHost.os;
@@ -244,10 +270,17 @@ class HostModel extends CretaModel {
     requestedBook2 = map["requestedBook2"] ?? '';
     requestedBook1Time = map["requestedBook1Time"] ?? '';
     requestedBook2Time = map["requestedBook2Time"] ?? '';
+
     playingBook1 = map["playingBook1"] ?? '';
     playingBook2 = map["playingBook2"] ?? '';
     playingBook1Time = map["playingBook1Time"] ?? '';
     playingBook2Time = map["playingBook2Time"] ?? '';
+
+    notice1 = map["notice1"] ?? '';
+    notice2 = map["notice2"] ?? '';
+    notice1Time = map["notice1Time"] ?? '';
+    notice2Time = map["notice2Time"] ?? '';
+
     request = map["request"] ?? '';
     response = map["response"] ?? '';
     downloadResult = DownloadResult.fromInt(map["downloadResult"] ?? DownloadResult.none.index);
@@ -258,6 +291,7 @@ class HostModel extends CretaModel {
     stateMsg = map["stateMsg"] ?? '';
     bootTime = map["bootTime"] ?? '';
     shutdownTime = map["shutdownTime"] ?? '';
+    monthlyUseTime = map["monthlyUseTime"] ?? 0.0;
 
     hostType = HostType.fromInt(map["hostType"] ?? HostType.signage.index);
     os = map["os"] ?? '';
@@ -292,6 +326,10 @@ class HostModel extends CretaModel {
         "playingBook2": playingBook2,
         "playingBook1Time": playingBook1Time,
         "playingBook2Time": playingBook2Time,
+        "notice1": notice1,
+        "notice2": notice2,
+        "notice1Time": notice1Time,
+        "notice2Time": notice2Time,
         "request": request,
         "response": response,
         "downloadResult": downloadResult.index,
@@ -302,6 +340,7 @@ class HostModel extends CretaModel {
         "stateMsg": stateMsg,
         "bootTime": bootTime,
         "shutdownTime": shutdownTime,
+        "monthlyUseTime": monthlyUseTime,
         "hostType": hostType.index,
         "os": os,
         "isInitialized": isInitialized,

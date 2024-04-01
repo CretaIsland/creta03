@@ -406,7 +406,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
     if (bookType == BookType.presentaion) {
       return CretaStudioLang.pageSizeMapPresentation.keys.toList();
     }
-    if (bookType == BookType.digitalBarricade) {
+    if (bookType == BookType.barricade) {
       return CretaStudioLang.pageSizeListBarricade;
     }
     return CretaStudioLang.pageSizeListSignage;
@@ -420,7 +420,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
       }
       return StudioConst.presentationResolution[idx];
     }
-    if (bookType == BookType.digitalBarricade) {
+    if (bookType == BookType.barricade) {
       int len = StudioConst.barricadeResolution.length;
       if (0 > idx || len <= idx) {
         return StudioConst.barricadeResolution[0];

@@ -243,12 +243,12 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         iconData: Icons.favorite_outline,
         onPressed: () {
           setState(() {
-            _filterBookType = BookType.digitalBarricade;
+            _filterBookType = BookType.barricade;
             setScrollOffset(0);
           });
         },
-        selected: CretaVars.serviceType == ServiceType.digitalBarricade,
-        disabled: CretaVars.serviceType != ServiceType.digitalBarricade,
+        selected: CretaVars.serviceType == ServiceType.barricade,
+        disabled: CretaVars.serviceType != ServiceType.barricade,
       ),
       CretaMenuItem(
         caption: CretaLang.basicBookFilter[5], // 기타
@@ -2114,7 +2114,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             gotoButtonPressed2: () {
               Routemaster.of(context).push(AppRoutes.deviceMainPage);
             },
-            gotoButtonTitle2: (CretaVars.serviceType == ServiceType.digitalBarricade)
+            gotoButtonTitle2: (CretaVars.serviceType == ServiceType.barricade)
                 ? CretaCommuLang.myDeviceMenu
                 : null,
 

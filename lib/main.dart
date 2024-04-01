@@ -44,7 +44,7 @@ void main() async {
       CretaVars.serviceType = ServiceType.presentaion;
       break;
     case 'barricade':
-      CretaVars.serviceType = ServiceType.digitalBarricade;
+      CretaVars.serviceType = ServiceType.barricade;
       break;
     case 'signage':
       CretaVars.serviceType = ServiceType.signage;
@@ -56,7 +56,7 @@ void main() async {
       CretaVars.serviceType = ServiceType.board;
       break;
     default:
-      CretaVars.serviceType = ServiceType.digitalBarricade;
+      CretaVars.serviceType = ServiceType.barricade;
       break;
   }
 

@@ -78,7 +78,9 @@ mixin CretaBasicLayoutMixin {
   }) {
     Size size = CretaUtils.getDisplaySize(context);
     // 전체 화면크기 (최상단 앱바 제외)
-    displaySize = Size(size.width, size.height - CretaComponentLocation.BarTop.height);
+    //displaySize = Size(size.width, size.height - CretaComponentLocation.BarTop.height);
+    displaySize =
+        Size(size.width, size.height); // no Appbar anymore - CretaComponentLocation.BarTop.height);
     leftPaneRect = CretaLayoutRect.fromPadding(
       CretaComponentLocation.TabBar.width,
       displaySize.height,
@@ -88,7 +90,7 @@ mixin CretaBasicLayoutMixin {
       CretaComponentLocation.TabBar.padding.bottom,
     );
     rightPaneRect = CretaLayoutRect.fromPadding(
-      displaySize.width - leftPaneRect.width,
+      displaySize.width - leftPaneRect.width - CretaConst.verticalAppbarWidth,
       displaySize.height,
       40, //CretaComponentLocation.TabBar.padding.left,
       _usingBannerScrollbar ? _bannerPaneMaxHeight : 0,
@@ -201,10 +203,10 @@ mixin CretaBasicLayoutMixin {
           width: leftPaneRect.width,
           height: leftPaneRect.height,
           menuItem: leftMenuItemList,
-          gotoButtonPressed: gotoButtonPressed,
-          gotoButtonTitle: gotoButtonTitle,
-          gotoButtonPressed2: gotoButtonPressed2,
-          gotoButtonTitle2: gotoButtonTitle2,
+          // gotoButtonPressed: gotoButtonPressed,
+          // gotoButtonTitle: gotoButtonTitle,
+          // gotoButtonPressed2: gotoButtonPressed2,
+          // gotoButtonTitle2: gotoButtonTitle2,
         ),
         Container(
           width: rightPaneRect.width,

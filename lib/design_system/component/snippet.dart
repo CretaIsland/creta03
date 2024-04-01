@@ -16,6 +16,7 @@ import 'package:routemaster/routemaster.dart';
 import 'package:hycop/hycop.dart';
 import 'package:creta_common/common/creta_const.dart';
 import 'package:creta_common/common/creta_Vars.dart';
+import 'package:url_launcher/link.dart';
 //import '../../common/creta_utils.dart';
 import '../../data_io/frame_manager.dart';
 import 'package:creta_common/lang/creta_lang.dart';
@@ -26,6 +27,7 @@ import '../../pages/studio/studio_variables.dart';
 import '../../routes.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_font.dart';
+import '../../vertical_app_bar.dart';
 import '../buttons/creta_button_wrapper.dart';
 import '../menu/creta_popup_menu.dart';
 import '../../pages/login/login_dialog.dart';
@@ -158,14 +160,15 @@ class Snippet {
     required Function getBuildContext,
   }) {
     return Scaffold(
-      appBar: Snippet.CretaAppBarOfCommunity(
-        context: context,
-        title: title,
-        // doAfterLogin: doAfterLogin,
-        // doAfterSignup: doAfterSignup,
-        // onErrorReport: onErrorReport,
-        getBuildContext: getBuildContext,
-      ),
+      // no appbar anymore
+      // appBar: Snippet.CretaAppBarOfCommunity(
+      //   context: context,
+      //   title: title,
+      //   // doAfterLogin: doAfterLogin,
+      //   // doAfterSignup: doAfterSignup,
+      //   // onErrorReport: onErrorReport,
+      //   getBuildContext: getBuildContext,
+      // ),
       floatingActionButton: CretaVars.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
       body:
           // GestureDetector(
@@ -175,8 +178,14 @@ class Snippet {
           //     LastClicked.clickedOutSide(details.globalPosition);
           //   }),
           //   child:
+          Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          VerticalAppBar(),
           Container(
-        child: child,
+            child: child,
+          ),
+        ],
       ),
       //),
     );
@@ -999,4 +1008,41 @@ class Snippet {
       ]),
     );
   }
+
+  static Widget titleLogoBar(String logoUrl) {
+    return Row(
+      children: [
+        // const SizedBox(
+        //   width: 16,
+        // ),
+        Theme(
+          data: ThemeData(
+            hoverColor: Colors.transparent,
+          ),
+          child: Link(
+            uri: Uri.parse(logoUrl),
+            builder: (context, function) {
+              return InkWell(
+                onTap: () => Routemaster.of(context).push(logoUrl),
+                child: const Image(
+                  image: AssetImage('assets/creta_logo_blue.png'),
+                  //width: 120,
+                  height: 20,
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(
+          width: 4,
+        ),
+        Text(
+          CretaVars.serviceTypeString(),
+          style: CretaFont.logoStyle.copyWith(color: CretaColor.secondary),
+        ),
+      ],
+    );
+  }
+
+  
 }

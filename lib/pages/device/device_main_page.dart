@@ -2,7 +2,6 @@
 
 import 'dart:math';
 
-import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_vars.dart';
 import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'package:creta_common/common/creta_const.dart';
@@ -30,6 +29,56 @@ import '../studio/studio_constant.dart';
 import 'device_detail_page.dart';
 import 'host_grid_item.dart';
 //import '../login_page.dart';
+
+SelectNotifier selectNotifierHolder = SelectNotifier();
+
+class SelectNotifier extends ChangeNotifier {
+  List<bool> _selectedItems = [];
+  Map<int, GlobalKey<HostGridItemState>> _selectedKey = {};
+
+  GlobalKey<HostGridItemState> getKey(int index) {
+    if (_selectedKey[index] == null) {
+      _selectedKey[index] = GlobalKey<HostGridItemState>();
+    }
+    return _selectedKey[index]!;
+  }
+
+  void selected(int index, bool value) {
+    _selectedItems[index] = value;
+    notify(index);
+  }
+
+  void toggleSelect(int index) {
+    _selectedItems[index] = !_selectedItems[index];
+    notify(index);
+  }
+
+  bool isSelected(int index) {
+    if (index < _selectedItems.length && index >= 0) {
+      return _selectedItems[index];
+    }
+    return false;
+  }
+
+  bool hasSelected() {
+    return _selectedItems.contains(true);
+  }
+
+  void notify(int index) {
+    if (index < _selectedKey.length && index >= 0) {
+      notifyListeners();
+      _selectedKey[index]!.currentState!.notify(index);
+    }
+  }
+
+  void clear() {
+    _selectedItems.clear();
+  }
+
+  void init(int length) {
+    _selectedItems = List.generate(length, (index) => false);
+  }
+}
 
 enum DeviceSelectedPage {
   none,
@@ -73,8 +122,6 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
   GlobalKey dropDownButtonKey = GlobalKey();
 
   late ScrollController _controller;
-
-  List<bool> selectedItems = [];
 
   @override
   void initState() {
@@ -199,6 +246,9 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         ChangeNotifierProvider<HostManager>.value(
           value: hostManagerHolder!,
         ),
+        ChangeNotifierProvider<SelectNotifier>.value(
+          value: selectNotifierHolder,
+        ),
       ],
       child: Snippet.CretaScaffold(
           title: Snippet.logo(CretaVars.serviceTypeString()),
@@ -273,7 +323,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       consumerFunc: consumerFunc,
       completeFunc: () {
         _onceDBGetComplete = true;
-        selectedItems = List.generate(hostManagerHolder!.getLength() + 2, (index) => false);
+        selectNotifierHolder.init(hostManagerHolder!.getLength());
       },
     );
 
@@ -436,9 +486,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
     //if (isValidIndex(index)) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          selectedItems[index] = !selectedItems[index];
-        });
+        selectNotifierHolder.toggleSelect(index - 1);
       },
       child:
 
@@ -469,7 +517,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
           HostGridItem(
             hostManager: hostManager,
             index: index - 1,
-            itemKey: GlobalKey<HostGridItemState>(),
+            itemKey: selectNotifierHolder.getKey(index - 1),
             // key: isValidIndex(index)
             //     ? (bookManager.findByIndex(index - 1) as CretaModel).key
             //     : GlobalKey(),
@@ -486,39 +534,35 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
               });
             },
           ),
-          if (_isSelected(index))
-            Positioned(
-              top: 4,
-              left: 4,
-              child: Container(
-                //padding: EdgeInsets.all(2), // Adjust padding as needed
-                decoration: BoxDecoration(
-                  // border: Border.all(
-                  //   color: Colors.white, // Change border color as needed
-                  //   width: 2, // Change border width as needed
-                  // ),
-                  shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.5),
-                ),
-                child: Icon(
-                  Icons.check_circle_outline,
-                  size: 42,
-                  color: CretaColor.primary,
-                ),
-              ),
-            ),
+          // if (_isSelected(index))
+          //   Positioned(
+          //     top: 4,
+          //     left: 4,
+          //     child: Container(
+          //       //padding: EdgeInsets.all(2), // Adjust padding as needed
+          //       decoration: BoxDecoration(
+          //         // border: Border.all(
+          //         //   color: Colors.white, // Change border color as needed
+          //         //   width: 2, // Change border width as needed
+          //         // ),
+          //         shape: BoxShape.circle,
+          //         color: Colors.white.withOpacity(0.5),
+          //       ),
+          //       child: Icon(
+          //         Icons.check_circle_outline,
+          //         size: 42,
+          //         color: CretaColor.primary,
+          //       ),
+          //     ),
+          //   ),
         ],
       ),
     );
   }
 
-  bool _isSelected(int index) {
-    return index < selectedItems.length ? selectedItems[index] : false;
-  }
-
-  bool hasSelected() {
-    return selectedItems.contains(true);
-  }
+  // bool _isSelected(int index) {
+  //   return index < selectedItems.length ? selectedItems[index] : false;
+  // }
 
   void saveItem(HostManager hostManager, int index) async {
     HostModel savedItem = hostManager.findByIndex(index) as HostModel;
@@ -571,8 +615,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
               'hostType', HostType.barricade.index, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
-        selected: CretaVars.serviceType == ServiceType.digitalBarricade,
-        disabled: CretaVars.serviceType != ServiceType.digitalBarricade,
+        selected: CretaVars.serviceType == ServiceType.barricade,
+        disabled: CretaVars.serviceType != ServiceType.barricade,
       ),
       CretaMenuItem(
         caption: CretaDeviceLang.basicHostFilter[3], //
@@ -618,8 +662,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
   }
 
   Widget _toolbar() {
-    Widget buttons = Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+    Widget buttons = Wrap(
+      //mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         BTN.fill_gray_it_l(
           text: CretaDeviceLang.editHost,
@@ -657,21 +701,34 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
             // Handle menu button press
           },
         ),
+        BTN.fill_gray_it_l(
+          text: CretaDeviceLang.notice,
+          icon: Icons.notifications_outlined,
+          onPressed: () {
+            // Handle menu button press
+          },
+        ),
       ],
     );
-    return SizedBox(
-      //padding: EdgeInsets.symmetric(horizontal: 10.0),
-      height: LayoutConst.deviceToolbarHeight,
-      //color: Colors.amberAccent,
-      child: hasSelected() == false
-          ? Stack(fit: StackFit.expand, children: [
-              buttons,
-              Positioned.fill(
-                  child: Container(
-                      //padding: EdgeInsets.symmetric(horizontal: 10.0),
-                      color: Colors.white.withOpacity(0.5))),
-            ])
-          : buttons,
-    );
+    return Consumer<SelectNotifier>(builder: (context, selectedNotifier, child) {
+      return Container(
+        padding: EdgeInsets.symmetric(vertical: 20.0),
+        //height: LayoutConst.deviceToolbarHeight,
+        //color: Colors.amberAccent,
+        child: selectNotifierHolder.hasSelected() == false
+            ? Stack(
+                //fit: StackFit.expand,
+                alignment: Alignment.topCenter,
+                children: [
+                  buttons,
+                  Positioned.fill(
+                      child: Container(
+                          //padding: EdgeInsets.symmetric(horizontal: 10.0),
+                          color: Colors.white.withOpacity(0.5))),
+                ],
+              )
+            : buttons,
+      );
+    });
   }
 }

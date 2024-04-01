@@ -30,4 +30,6 @@ class CretaDeviceLang {
     "CDU",
     "기타",
   ];
+
+  static const String notice = "긴급공지";
 }

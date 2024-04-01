@@ -96,7 +96,7 @@ class _TemplateListClassState extends State<TemplateList> {
     const double spacing = 8.0;
     const double borderWidth = 4.0;
 
-    int itemCount = CretaVars.serviceType == ServiceType.digitalBarricade ? 1 : 2;
+    int itemCount = CretaVars.serviceType == ServiceType.barricade ? 1 : 2;
     return FutureBuilder<List<TemplateModel>>(
       initialData: const [],
       future: _templateList,
@@ -122,9 +122,9 @@ class _TemplateListClassState extends State<TemplateList> {
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   mainAxisSpacing: spacing,
                   crossAxisSpacing:
-                      CretaVars.serviceType == ServiceType.digitalBarricade ? spacing * 2 : spacing,
+                      CretaVars.serviceType == ServiceType.barricade ? spacing * 2 : spacing,
                   crossAxisCount: itemCount,
-                  childAspectRatio: CretaVars.serviceType == ServiceType.digitalBarricade
+                  childAspectRatio: CretaVars.serviceType == ServiceType.barricade
                       ? (360 + borderWidth * 2) / (28 + 24 + borderWidth * 2)
                       : 160 / (95 + 24),
                 ),
