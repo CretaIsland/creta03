@@ -19,7 +19,11 @@ class _MenuDemoPageState extends State<MenuDemoPage> {
   @override
   Widget build(BuildContext context) {
     return Snippet.CretaScaffold(
-      title: Snippet.logo('Menu Demo'),
+      //title: Snippet.logo('Menu Demo'),
+              onFoldButtonPressed: () {
+          setState(() {});
+        },
+
       context: context,
       child: Center(
         child: SingleChildScrollView(

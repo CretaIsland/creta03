@@ -181,6 +181,7 @@ mixin CretaBasicLayoutMixin {
     double rightMarginOnRightPane = 0,
     double bottomMarginOnRightPane = 0,
     List<CretaMenuItem>? tabMenuList,
+    Function? onFoldButtonPressed,
   }) {
     // cacluate pane-size
     resize(
@@ -203,6 +204,7 @@ mixin CretaBasicLayoutMixin {
           width: leftPaneRect.width,
           height: leftPaneRect.height,
           menuItem: leftMenuItemList,
+          onFoldButtonPressed: onFoldButtonPressed,
           // gotoButtonPressed: gotoButtonPressed,
           // gotoButtonTitle: gotoButtonTitle,
           // gotoButtonPressed2: gotoButtonPressed2,

@@ -214,7 +214,11 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         ),
       ],
       child: Snippet.CretaScaffold(
-          title: Snippet.logo(CretaVars.serviceTypeString()),
+          //title: Snippet.logo(CretaVars.serviceTypeString()),
+                  onFoldButtonPressed: () {
+          setState(() {});
+        },
+
           additionals: SizedBox(
             height: 36,
             width: windowWidth > 535 ? 130 : 60,
@@ -243,6 +247,9 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
               bookManagerHolder!.onSearch(value, () => setState(() {}));
             },
             mainWidget: _bookGrid, //_bookGrid(context),
+            onFoldButtonPressed: () {
+              setState(() {});
+            },
           )),
     );
   }

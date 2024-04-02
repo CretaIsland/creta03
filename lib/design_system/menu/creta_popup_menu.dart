@@ -218,7 +218,6 @@ class CretaPopupMenu {
           x = position!.dx;
           y = position.dy;
         }
-        //logger.severe('=========================$x,$y===============');
 
         return _createPopupMenu(
           context,

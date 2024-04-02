@@ -1,12 +1,16 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'package:creta_common/common/creta_const.dart';
+import 'package:creta_common/lang/creta_lang.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:url_launcher/link.dart';
 //import 'package:creta_common/lang/creta_lang.dart';
+import '../../pages/studio/studio_getx_controller.dart';
+import '../../vertical_app_bar.dart';
 import '../buttons/creta_button_wrapper.dart';
 import '../buttons/creta_tapbar_button.dart';
 import 'package:creta_common/common/creta_color.dart';
@@ -25,6 +29,7 @@ class CretaLeftBar extends StatefulWidget {
   final String? gotoButtonTitle2;
   final Function? gotoButtonPressed2;
   final bool isIconText;
+  final Function? onFoldButtonPressed;
 
   const CretaLeftBar({
     super.key,
@@ -36,6 +41,7 @@ class CretaLeftBar extends StatefulWidget {
     this.gotoButtonTitle2,
     this.gotoButtonPressed2,
     this.isIconText = false,
+    this.onFoldButtonPressed,
   });
 
   @override
@@ -63,11 +69,39 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
         });
   }
 
+  BoolEventController? _foldReceiveEvent;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final BoolEventController foldReceiveEvent = Get.find(tag: 'link-widget-to-property');
+    _foldReceiveEvent = foldReceiveEvent;
+  }
+
   @override
   Widget build(BuildContext context) {
     // String logoUrl = (CretaAccountManager.currentLoginUser.isLoginedUser)
     //     ? AppRoutes.communityHome
     //     : AppRoutes.intro;
+    return StreamBuilder<bool>(
+        stream: _foldReceiveEvent!.eventStream.stream,
+        builder: (context, snapshot) {
+          if (snapshot.data != null && snapshot.data is Offset) {
+            VerticalAppBar.fold = snapshot.data!;
+          }
+          if (VerticalAppBar.fold == false) {
+            //print('==========================================');
+            CretaComponentLocation.TabBar.width = 310.0 - CretaConst.verticalAppbarWidth;
+          }
+          return _leftBar();
+        });
+  }
+
+  Widget _leftBar() {
+    if (VerticalAppBar.fold == true) {
+      return const SizedBox.shrink();
+    }
 
     bool hasTwoButton = (widget.gotoButtonTitle2 != null && widget.gotoButtonPressed2 != null);
 
@@ -99,7 +133,16 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
           Align(
               alignment: Alignment.centerRight,
               child: BTN.fill_gray_i_m(
-                  onPressed: () {}, icon: Icons.keyboard_double_arrow_left_outlined)),
+                tooltip: CretaLang.fold,
+                onPressed: () {
+                  setState(() {
+                    VerticalAppBar.fold = true;
+                    CretaComponentLocation.TabBar.width = 0;
+                  });
+                  widget.onFoldButtonPressed?.call();
+                },
+                icon: Icons.keyboard_double_arrow_left_outlined,
+              )),
           const SizedBox(height: 36),
 
           Expanded(

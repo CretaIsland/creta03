@@ -85,79 +85,88 @@ class Snippet {
   }
 
   static Widget CretaScaffold({
-    required Widget title,
+    //required Widget title,
     required BuildContext context,
     required Widget child,
     Widget? floatingActionButton,
     Widget? additionals,
     void Function()? invalidate,
+    required Function onFoldButtonPressed,
   }) {
     double maxWidth = MediaQuery.of(context).size.width;
     //double maxHeight = MediaQuery.of(context).size.width;
 
     return Scaffold(
-        appBar: Snippet.CretaAppBarOfStudio(context, title, additionals, invalidate: invalidate),
+        // no appBar any more
+        //appBar: Snippet.CretaAppBarOfStudio(context, title, additionals, invalidate: invalidate),
         floatingActionButton:
             CretaVars.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         //body: child,
-        body: StudioVariables.isHandToolMode == false
-            ? GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onLongPressDown: ((details) {
-                  // 텍스트 필드가 한번 mouse click focus 를 가져가고 나면, 이후에는
-                  //  RawKeyboardListener 로 이벤트가 오지 않는 것을 막기 위해
-                  //FocusScope.of(context).unfocus();
-                  //CretaTextField.unfocus();
-                  //FocusScope.of(context).unfocus();
-                  //
-                  if (details.localPosition.dy < LayoutConst.topMenuBarHeight) return;
+        body: Row(
+          children: [
+            VerticalAppBar(onFoldButtonPressed: onFoldButtonPressed),
+            StudioVariables.isHandToolMode == false
+                ? GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onLongPressDown: ((details) {
+                      // 텍스트 필드가 한번 mouse click focus 를 가져가고 나면, 이후에는
+                      //  RawKeyboardListener 로 이벤트가 오지 않는 것을 막기 위해
+                      //FocusScope.of(context).unfocus();
+                      //CretaTextField.unfocus();
+                      //FocusScope.of(context).unfocus();
+                      //
+                      if (details.localPosition.dy < LayoutConst.topMenuBarHeight) return;
 
-                  Size leftMenuSize = CretaCommonUtils.getSizeByKey(BookMainPage.leftMenuKey);
+                      Size leftMenuSize = CretaCommonUtils.getSizeByKey(BookMainPage.leftMenuKey);
 
-                  if (details.localPosition.dx < leftMenuSize.width + LayoutConst.menuStickWidth) {
-                    return;
-                  }
-                  Size rightMenuSize = CretaCommonUtils.getSizeByKey(BookMainPage.rightMenuKey);
-                  if (details.localPosition.dx > maxWidth - rightMenuSize.width) return;
-
-                  //LastClicked.clickedOutSide(details.globalPosition);
-                  // 양쪽 메뉴 Area 의 click 을 무시해주어야 한다.
-
-                  if (BookMainPage.outSideClick == false) {
-                    //print('......................');
-                    BookMainPage.outSideClick = true;
-                    return;
-                  }
-
-                  if (BookMainPage.pageManagerHolder != null) {
-                    FrameManager? frameManager =
-                        BookMainPage.pageManagerHolder!.getSelectedFrameManager();
-                    if (frameManager != null) {
-                      if (frameManager.clickedInsideSelectedFrame(details.globalPosition)) {
-                        //print('click inside the selected frame, return');
+                      if (details.localPosition.dx <
+                          leftMenuSize.width + LayoutConst.menuStickWidth) {
                         return;
                       }
-                    }
-                  }
-                  // print(
-                  //     'space clicked ${details.globalPosition}-------------------------------------------');
-                  CretaManager.frameSelectNotifier?.set("", doNotify: true);
-                  BookMainPage.miniMenuNotifier?.set(false, doNoti: true);
-                }),
-                child: child,
-              )
-            : child);
+                      Size rightMenuSize = CretaCommonUtils.getSizeByKey(BookMainPage.rightMenuKey);
+                      if (details.localPosition.dx > maxWidth - rightMenuSize.width) return;
+
+                      //LastClicked.clickedOutSide(details.globalPosition);
+                      // 양쪽 메뉴 Area 의 click 을 무시해주어야 한다.
+
+                      if (BookMainPage.outSideClick == false) {
+                        //print('......................');
+                        BookMainPage.outSideClick = true;
+                        return;
+                      }
+
+                      if (BookMainPage.pageManagerHolder != null) {
+                        FrameManager? frameManager =
+                            BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+                        if (frameManager != null) {
+                          if (frameManager.clickedInsideSelectedFrame(details.globalPosition)) {
+                            //print('click inside the selected frame, return');
+                            return;
+                          }
+                        }
+                      }
+                      // print(
+                      //     'space clicked ${details.globalPosition}-------------------------------------------');
+                      CretaManager.frameSelectNotifier?.set("", doNotify: true);
+                      BookMainPage.miniMenuNotifier?.set(false, doNoti: true);
+                    }),
+                    child: child,
+                  )
+                : child,
+          ],
+        ));
   }
 
   static Widget CretaScaffoldOfCommunity({
-    required Widget title,
+    //required Widget title,
     required BuildContext context,
     required Widget child,
     // Function? doAfterLogin,
     // Function? doAfterSignup,
     // Function(String)? onErrorReport,
     required Function getBuildContext,
+    required Function onFoldButtonPressed,
   }) {
     return Scaffold(
       // no appbar anymore
@@ -181,13 +190,46 @@ class Snippet {
           Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          VerticalAppBar(),
+          VerticalAppBar(onFoldButtonPressed: onFoldButtonPressed),
           Container(
             child: child,
           ),
         ],
       ),
       //),
+    );
+  }
+
+  static Widget signUpButton({
+    required BuildContext context,
+    required Function getBuildContext,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 40),
+      child: Center(
+        child: SizedBox(
+          width: 112,
+          height: 36,
+          child: BTN.fill_blue_ti_l(
+            //key: GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'),
+            //buttonColor: CretaButtonColor.white,
+            //fgColor: CretaColor.text[700]!,
+            width: 112,
+            text: CretaLang.signUp,
+            icon: Icons.arrow_forward,
+            //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
+            onPressed: () {
+              LoginDialog.popupDialog(
+                context: context,
+                // doAfterLogin: doAfterLogin,
+                // onErrorReport: onErrorReport,
+                getBuildContext: getBuildContext,
+                loginPageState: LoginPageState.singup,
+              );
+            },
+          ),
+        ),
+      ),
     );
   }
 
@@ -228,6 +270,88 @@ class Snippet {
     );
   }
 
+  static Widget newBook({
+    required BuildContext context,
+  }) {
+    return Center(
+      child: SizedBox(
+        height: 36,
+        width: 130,
+        child: BTN.fill_gray_it_l(
+          text: CretaStudioLang.newBook,
+          buttonColor: CretaButtonColor.blueAndWhiteTitle,
+          textColor: Colors.white,
+          onPressed: () {
+            Routemaster.of(context).push(AppRoutes.studioBookMainPage);
+          },
+          icon: Icons.add_outlined,
+        ),
+      ),
+    );
+  }
+
+  static Widget notiBell({
+    required BuildContext context,
+  }) {
+    return Center(
+      child: SizedBox(
+        height: 36,
+        child: BTN.fill_blue_i_l(
+          //tooltip: CretaStudioLang.tooltipNoti,
+          icon: Icons.notifications_outlined,
+          // buttonColor: CretaButtonColor.white,
+          // iconColor: CretaColor.text[700],
+          onPressed: () {},
+        ),
+      ),
+    );
+  }
+
+  static Widget userInfo({
+    required BuildContext context,
+  }) {
+    return Center(
+      child: SizedBox(
+        height: 40,
+        child: BTN.fill_gray_iti_l(
+          key: GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'),
+          buttonColor: CretaButtonColor.white,
+          fgColor: CretaColor.text[700]!,
+          text: AccountManager.currentLoginUser.name,
+          icon: Icons.arrow_drop_down_outlined,
+          image: NetworkImage(CretaAccountManager.getUserProperty!.profileImgUrl),
+          //image:
+          //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
+          onPressed: () {
+            _popupAccountMenu(
+                GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'), context);
+          },
+        ),
+      ),
+    );
+  }
+
+  static Widget smallUserInfo({
+    required BuildContext context,
+  }) {
+    return Center(
+      child: SizedBox(
+        height: 40,
+        child: BTN.fill_gray_image_l(
+          key: GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_image_l'),
+          buttonColor: CretaButtonColor.white,
+          fgColor: CretaColor.text[700]!,
+          image: NetworkImage(CretaAccountManager.getUserProperty!.profileImgUrl),
+          onPressed: () {
+            _popupAccountMenu(
+                GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_image_l'), context,
+                xOffset: 30);
+          },
+        ),
+      ),
+    );
+  }
+
   static PreferredSizeWidget CretaAppBarOfCommunity({
     required BuildContext context,
     required Widget title,
@@ -244,86 +368,14 @@ class Snippet {
       actions: (!AccountManager.currentLoginUser.isLoginedUser)
           ? [
               loginButton(context: context, getBuildContext: getBuildContext),
-              Padding(
-                padding: const EdgeInsets.only(right: 40),
-                child: Center(
-                  child: SizedBox(
-                    width: 112,
-                    height: 36,
-                    child: BTN.fill_blue_ti_l(
-                      //key: GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'),
-                      //buttonColor: CretaButtonColor.white,
-                      //fgColor: CretaColor.text[700]!,
-                      width: 112,
-                      text: CretaLang.signUp,
-                      icon: Icons.arrow_forward,
-                      //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
-                      onPressed: () {
-                        LoginDialog.popupDialog(
-                          context: context,
-                          // doAfterLogin: doAfterLogin,
-                          // onErrorReport: onErrorReport,
-                          getBuildContext: getBuildContext,
-                          loginPageState: LoginPageState.singup,
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
+              signUpButton(context: context, getBuildContext: getBuildContext),
             ]
           : [
-              // new book
-              Center(
-                child: SizedBox(
-                  height: 36,
-                  width: 130,
-                  child: BTN.fill_gray_it_l(
-                    text: CretaStudioLang.newBook,
-                    buttonColor: CretaButtonColor.blueAndWhiteTitle,
-                    textColor: Colors.white,
-                    onPressed: () {
-                      Routemaster.of(context).push(AppRoutes.studioBookMainPage);
-                    },
-                    icon: Icons.add_outlined,
-                  ),
-                ),
-              ),
+              newBook(context: context),
               SizedBox(width: 8),
-              // noti
-              Center(
-                child: SizedBox(
-                  height: 36,
-                  child: BTN.fill_blue_i_l(
-                    //tooltip: CretaStudioLang.tooltipNoti,
-                    icon: Icons.notifications_outlined,
-                    buttonColor: CretaButtonColor.white,
-                    iconColor: CretaColor.text[700],
-                    onPressed: () {},
-                  ),
-                ),
-              ),
+              notiBell(context: context),
               SizedBox(width: 5),
-              // user info
-              Center(
-                child: SizedBox(
-                  height: 40,
-                  child: BTN.fill_gray_iti_l(
-                    key: GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'),
-                    buttonColor: CretaButtonColor.white,
-                    fgColor: CretaColor.text[700]!,
-                    text: AccountManager.currentLoginUser.name,
-                    icon: Icons.arrow_drop_down_outlined,
-                    image: NetworkImage(CretaAccountManager.getUserProperty!.profileImgUrl),
-                    //image:
-                    //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
-                    onPressed: () {
-                      _popupAccountMenu(
-                          GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'), context);
-                    },
-                  ),
-                ),
-              ),
+              userInfo(context: context),
               SizedBox(width: 20),
             ],
     );
@@ -418,11 +470,12 @@ class Snippet {
   }
 
   static void _popupAccountMenu(GlobalKey key, BuildContext context,
-      {void Function()? invalidate}) {
+      {void Function()? invalidate, double xOffset = -60}) {
+
     CretaPopupMenu.showMenu(
       context: context,
       globalKey: key,
-      xOffset: -60,
+      xOffset: xOffset,
       popupMenu: [
         CretaMenuItem(
           caption: CretaLang.accountMenu[0], // 마이페이지
@@ -1043,6 +1096,4 @@ class Snippet {
       ],
     );
   }
-
-  
 }

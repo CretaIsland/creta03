@@ -2,13 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
-import 'package:routemaster/routemaster.dart';
-import 'package:url_launcher/link.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 import 'package:creta_common/common/creta_snippet.dart';
 
-import '../pages/login/creta_account_manager.dart';
-import '../../routes.dart';
 import '../design_system/component/snippet.dart';
 import '../../design_system/text_field/creta_text_field.dart';
 import 'package:creta_common/common/creta_font.dart';
@@ -121,35 +117,39 @@ class _ResetPasswordConfirmPageState extends State<ResetPasswordConfirmPage> {
 
   @override
   Widget build(BuildContext context) {
-    String logoUrl = (CretaAccountManager.currentLoginUser.isLoginedUser)
-        ? AppRoutes.communityHome
-        : AppRoutes.intro;
+    // String logoUrl = (CretaAccountManager.currentLoginUser.isLoginedUser)
+    //     ? AppRoutes.communityHome
+    //     : AppRoutes.intro;
     return Snippet.CretaScaffoldOfCommunity(
-      title: Row(
-        children: [
-          SizedBox(
-            width: 24,
-          ),
-          Theme(
-            data: ThemeData(
-              hoverColor: Colors.transparent,
-            ),
-            child: Link(
-              uri: Uri.parse(logoUrl),
-              builder: (context, function) {
-                return InkWell(
-                  onTap: () => Routemaster.of(context).push(logoUrl),
-                  child: Image(
-                    image: AssetImage('assets/creta_logo_blue.png'),
-                    //width: 120,
-                    height: 20,
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
+      onFoldButtonPressed: () {
+        setState(() {});
+      },
+
+      // title: Row(
+      //   children: [
+      //     SizedBox(
+      //       width: 24,
+      //     ),
+      //     Theme(
+      //       data: ThemeData(
+      //         hoverColor: Colors.transparent,
+      //       ),
+      //       child: Link(
+      //         uri: Uri.parse(logoUrl),
+      //         builder: (context, function) {
+      //           return InkWell(
+      //             onTap: () => Routemaster.of(context).push(logoUrl),
+      //             child: Image(
+      //               image: AssetImage('assets/creta_logo_blue.png'),
+      //               //width: 120,
+      //               height: 20,
+      //             ),
+      //           );
+      //         },
+      //       ),
+      //     ),
+      //   ],
+      // ),
       context: context,
       getBuildContext: getBuildContext,
       child: Center(

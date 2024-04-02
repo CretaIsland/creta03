@@ -112,11 +112,15 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
   bool _openDetail = false;
   HostModel? selectedHost;
 
+  bool _isGridView = true;
+
   // ignore: unused_field
 
   late List<CretaMenuItem> _leftMenuItemList;
   late List<CretaMenuItem> _dropDownMenuItemList1;
   late List<CretaMenuItem> _dropDownMenuItemList2;
+  late List<CretaMenuItem> _dropDownMenuItemList3;
+  late List<CretaMenuItem> _dropDownMenuItemList4;
 
   bool dropDownButtonOpened = false;
   GlobalKey dropDownButtonKey = GlobalKey();
@@ -168,7 +172,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         isIconText: true,
       ),
       CretaMenuItem(
-        caption: CretaStudioLang.sharedCretaBook,
+        caption: CretaDeviceLang.sharedCretaDevice,
         onPressed: () {
           Routemaster.of(context).pop();
           Routemaster.of(context).push(AppRoutes.studioBookSharedPage);
@@ -180,7 +184,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         isIconText: true,
       ),
       CretaMenuItem(
-        caption: CretaStudioLang.teamCretaBook,
+        caption: CretaDeviceLang.teamCretaDevice,
         onPressed: () {
           Routemaster.of(context).push(AppRoutes.studioBookTeamPage);
           DeviceMainPage.lastGridMenu = AppRoutes.studioBookSharedPage;
@@ -205,6 +209,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
 
     _dropDownMenuItemList1 = getFilterMenu((() => setState(() {})));
     _dropDownMenuItemList2 = getSortMenu((() => setState(() {})));
+    _dropDownMenuItemList3 = getConnectedFilterMenu((() => setState(() {})));
+    _dropDownMenuItemList4 = getUsageFilterMenu((() => setState(() {})));
 
     logger.fine('initState end');
   }
@@ -251,7 +257,11 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         ),
       ],
       child: Snippet.CretaScaffold(
-          title: Snippet.logo(CretaVars.serviceTypeString()),
+          //title: Snippet.logo(CretaVars.serviceTypeString()),
+          onFoldButtonPressed: () {
+            setState(() {});
+          },
+
           // additionals: SizedBox(
           //   height: 36,
           //   width: windowWidth > 535 ? 130 : 60,
@@ -274,12 +284,20 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
             leftMenuItemList: _leftMenuItemList,
             bannerTitle: getDeviceTitle(),
             bannerDescription: getDeviceDesc(),
-            listOfListFilter: [_dropDownMenuItemList1, _dropDownMenuItemList2],
+            listOfListFilter: [
+              _dropDownMenuItemList1,
+              _dropDownMenuItemList2,
+              _dropDownMenuItemList3,
+              _dropDownMenuItemList4
+            ],
             //mainWidget: sizeListener.isResizing() ? Container() : _bookGrid(context))),
             onSearch: (value) {
               hostManagerHolder!.onSearch(value, () => setState(() {}));
             },
             mainWidget: _bookGrid, //_bookGrid(context),
+            onFoldButtonPressed: () {
+              setState(() {});
+            },
           )),
     );
   }
@@ -378,6 +396,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       child: Padding(
         padding: LayoutConst.cretaPadding,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _toolbar(),
             Expanded(
@@ -661,6 +680,58 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
     ];
   }
 
+  List<CretaMenuItem> getUsageFilterMenu(Function? onModelFiltered) {
+    return [
+      CretaMenuItem(
+        caption: CretaDeviceLang.usageHostFilter[0],
+        onPressed: () {
+          hostManagerHolder?.toFiltered(null, null, AccountManager.currentLoginUser.email,
+              onModelFiltered: onModelFiltered);
+        },
+      ),
+      CretaMenuItem(
+        caption: CretaDeviceLang.usageHostFilter[1],
+        onPressed: () {
+          hostManagerHolder?.toFiltered('isUsed', true, AccountManager.currentLoginUser.email,
+              onModelFiltered: onModelFiltered);
+        },
+      ),
+      CretaMenuItem(
+        caption: CretaDeviceLang.usageHostFilter[2], //
+        onPressed: () {
+          hostManagerHolder?.toFiltered('isUsed', false, AccountManager.currentLoginUser.email,
+              onModelFiltered: onModelFiltered);
+        },
+      ),
+    ];
+  }
+
+  List<CretaMenuItem> getConnectedFilterMenu(Function? onModelFiltered) {
+    return [
+      CretaMenuItem(
+        caption: CretaDeviceLang.connectedHostFilter[0],
+        onPressed: () {
+          hostManagerHolder?.toFiltered(null, null, AccountManager.currentLoginUser.email,
+              onModelFiltered: onModelFiltered);
+        },
+      ),
+      CretaMenuItem(
+        caption: CretaDeviceLang.connectedHostFilter[1],
+        onPressed: () {
+          hostManagerHolder?.toFiltered('isConnected', true, AccountManager.currentLoginUser.email,
+              onModelFiltered: onModelFiltered);
+        },
+      ),
+      CretaMenuItem(
+        caption: CretaDeviceLang.connectedHostFilter[2], //
+        onPressed: () {
+          hostManagerHolder?.toFiltered('isConnected', false, AccountManager.currentLoginUser.email,
+              onModelFiltered: onModelFiltered);
+        },
+      ),
+    ];
+  }
+
   Widget _toolbar() {
     Widget buttons = Wrap(
       //mainAxisAlignment: MainAxisAlignment.start,
@@ -715,19 +786,41 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         padding: EdgeInsets.symmetric(vertical: 20.0),
         //height: LayoutConst.deviceToolbarHeight,
         //color: Colors.amberAccent,
-        child: selectNotifierHolder.hasSelected() == false
-            ? Stack(
-                //fit: StackFit.expand,
-                alignment: Alignment.topCenter,
-                children: [
-                  buttons,
-                  Positioned.fill(
-                      child: Container(
-                          //padding: EdgeInsets.symmetric(horizontal: 10.0),
-                          color: Colors.white.withOpacity(0.5))),
-                ],
-              )
-            : buttons,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            selectNotifierHolder.hasSelected() == false
+                ? Stack(
+                    //fit: StackFit.expand,
+                    alignment: Alignment.topLeft,
+                    children: [
+                      buttons,
+                      Positioned.fill(
+                          child: Container(
+                              //padding: EdgeInsets.symmetric(horizontal: 10.0),
+                              color: Colors.white.withOpacity(0.5))),
+                    ],
+                  )
+                : buttons,
+            _isGridView
+                ? BTN.fill_gray_i_l(
+                    icon: Icons.list,
+                    onPressed: () {
+                      setState(() {
+                        _isGridView = false;
+                      });
+                    },
+                  )
+                : BTN.fill_gray_i_l(
+                    icon: Icons.grid_view_outlined,
+                    onPressed: () {
+                      setState(() {
+                        _isGridView = true;
+                      });
+                    },
+                  ),
+          ],
+        ),
       );
     });
   }

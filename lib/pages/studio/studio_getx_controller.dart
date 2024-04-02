@@ -104,6 +104,7 @@ class StudioGetXController extends GetxController {
     Get.put(OffsetEventController(), tag: 'on-link-to-link-widget');
 
     Get.put(BoolEventController(), tag: 'link-widget-to-property');
+    Get.put(BoolEventController(), tag: 'vertical-app-bar-to-creta-left-bar');
 
     Get.put(FrameEachEventController(), tag: 'to-FrameEach');
 

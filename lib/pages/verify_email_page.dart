@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 //import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hycop/hycop.dart';
 import 'package:routemaster/routemaster.dart';
-import 'package:url_launcher/link.dart';
 import 'package:creta_common/common/creta_snippet.dart';
 
 import '../../routes.dart';
@@ -163,35 +162,39 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
 
   @override
   Widget build(BuildContext context) {
-    String logoUrl = (CretaAccountManager.currentLoginUser.isLoginedUser)
-        ? AppRoutes.communityHome
-        : AppRoutes.intro;
+    // String logoUrl = (CretaAccountManager.currentLoginUser.isLoginedUser)
+    //     ? AppRoutes.communityHome
+    //     : AppRoutes.intro;
     return Snippet.CretaScaffoldOfCommunity(
-      title: Row(
-        children: [
-          SizedBox(
-            width: 24,
-          ),
-          Theme(
-            data: ThemeData(
-              hoverColor: Colors.transparent,
-            ),
-            child: Link(
-              uri: Uri.parse(logoUrl),
-              builder: (context, function) {
-                return InkWell(
-                  onTap: () => Routemaster.of(context).push(logoUrl),
-                  child: Image(
-                    image: AssetImage('assets/creta_logo_blue.png'),
-                    //width: 120,
-                    height: 20,
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
+      onFoldButtonPressed: () {
+        setState(() {});
+      },
+
+      // title: Row(
+      //   children: [
+      //     SizedBox(
+      //       width: 24,
+      //     ),
+      //     Theme(
+      //       data: ThemeData(
+      //         hoverColor: Colors.transparent,
+      //       ),
+      //       child: Link(
+      //         uri: Uri.parse(logoUrl),
+      //         builder: (context, function) {
+      //           return InkWell(
+      //             onTap: () => Routemaster.of(context).push(logoUrl),
+      //             child: Image(
+      //               image: AssetImage('assets/creta_logo_blue.png'),
+      //               //width: 120,
+      //               height: 20,
+      //             ),
+      //           );
+      //         },
+      //       ),
+      //     ),
+      //   ],
+      // ),
       context: context,
       getBuildContext: getBuildContext,
       child: _getBody(),

@@ -20,7 +20,11 @@ class _TextFieldDemoPageState extends State<TextFieldDemoPage> {
   @override
   Widget build(BuildContext context) {
     return Snippet.CretaScaffold(
-      title: Snippet.logo('TextField Demo'),
+      //title: Snippet.logo('TextField Demo'),
+      onFoldButtonPressed: () {
+        setState(() {});
+      },
+
       context: context,
       child: Center(
         child: SingleChildScrollView(

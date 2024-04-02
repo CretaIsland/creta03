@@ -2056,41 +2056,43 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     }
     //resize(context);
     CommunityRightChannelPane.lastDropdownMenuCount = _getLeftDropdownMenuOnBanner().length;
-    String logoUrl = (CretaAccountManager.currentLoginUser.isLoginedUser)
-        ? AppRoutes.communityHome
-        : AppRoutes.intro;
+    // String logoUrl = (CretaAccountManager.currentLoginUser.isLoginedUser)
+    //     ? AppRoutes.communityHome
+    //     : AppRoutes.intro;
     return Snippet.CretaScaffoldOfCommunity(
-      //title: Text('Community page'),
-      title: Row(
-        children: [
-          SizedBox(
-            width: 24,
-          ),
-          Theme(
-            data: ThemeData(
-              hoverColor: Colors.transparent,
-            ),
-            child: Link(
-              uri: Uri.parse(logoUrl),
-              builder: (context, function) {
-                return InkWell(
-                  onTap: () => Routemaster.of(context).push(logoUrl),
-                  child: Image(
-                    image: AssetImage('assets/creta_logo_blue.png'),
-                    //width: 120,
-                    height: 20,
-                  ),
-                );
-              },
-            ),
-          ),
-          SizedBox(
-            width: 5,
-          ),
-          Text(CretaVars.serviceTypeString(),
-              style: CretaFont.logoStyle.copyWith(color: CretaColor.primary)),
-        ],
-      ),
+      onFoldButtonPressed : () {
+        setState(() {});
+      },
+      // title: Row(
+      //   children: [
+      //     SizedBox(
+      //       width: 24,
+      //     ),
+      //     Theme(
+      //       data: ThemeData(
+      //         hoverColor: Colors.transparent,
+      //       ),
+      //       child: Link(
+      //         uri: Uri.parse(logoUrl),
+      //         builder: (context, function) {
+      //           return InkWell(
+      //             onTap: () => Routemaster.of(context).push(logoUrl),
+      //             child: Image(
+      //               image: AssetImage('assets/creta_logo_blue.png'),
+      //               //width: 120,
+      //               height: 20,
+      //             ),
+      //           );
+      //         },
+      //       ),
+      //     ),
+      //     SizedBox(
+      //       width: 5,
+      //     ),
+      //     Text(CretaVars.serviceTypeString(),
+      //         style: CretaFont.logoStyle.copyWith(color: CretaColor.primary)),
+      //   ],
+      // ),
       context: context,
       getBuildContext: getBuildContext,
       child: Stack(
@@ -2136,6 +2138,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             rightMarginOnRightPane: 1,
             bottomMarginOnRightPane: 3,
             tabMenuList: _rightTabMenuList,
+            onFoldButtonPressed: () {
+              setState(() {});
+            },
           ),
           _getRightOverlayPane(),
         ],

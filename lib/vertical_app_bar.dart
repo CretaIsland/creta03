@@ -1,12 +1,16 @@
+import 'package:get/get.dart';
 import 'package:creta03/routes.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_const.dart';
 import 'package:creta_common/common/creta_font.dart';
 import 'package:creta_common/common/creta_vars.dart';
 import 'package:flutter/material.dart';
+import 'package:hycop/hycop.dart';
 import 'package:routemaster/routemaster.dart';
 
 import 'design_system/buttons/creta_button_wrapper.dart';
+import 'design_system/component/snippet.dart';
+import 'pages/studio/studio_getx_controller.dart';
 
 class MyCustomPainter extends CustomPainter {
   @override
@@ -18,7 +22,7 @@ class MyCustomPainter extends CustomPainter {
     double yStart = 0;
     double yEnd = size.height;
 
-    double yFirstButton = 98;
+    double yFirstButton = _buttonStartPoint();
     double yFirstButtonWingStart = yFirstButton + 15;
     double yFirstArcEnd = yFirstButtonWingStart + 2;
     double yFirstButtonWingEnd = yFirstArcEnd + 15;
@@ -41,20 +45,43 @@ class MyCustomPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => false;
+
+  double _buttonStartPoint() {
+    switch (VerticalAppBar.appBarSelected) {
+      case VerticalAppBarType.community:
+        return 100;
+      case VerticalAppBarType.studio:
+        return 100 + 14 + 50;
+      case VerticalAppBarType.device:
+        return 100 + 14 + 50 + 14 + 50;
+    }
+  }
 }
 
 enum VerticalAppBarType { community, studio, device }
 
 class VerticalAppBar extends StatefulWidget {
   static VerticalAppBarType appBarSelected = VerticalAppBarType.community;
+  static bool fold = false;
 
-  const VerticalAppBar({super.key});
+  final Function onFoldButtonPressed;
+
+  const VerticalAppBar({super.key, required this.onFoldButtonPressed});
 
   @override
   State<VerticalAppBar> createState() => _VerticalAppBarState();
 }
 
 class _VerticalAppBarState extends State<VerticalAppBar> {
+  BoolEventController? _foldSendEvent;
+
+  @override
+  void initState() {
+    super.initState();
+    final BoolEventController foldSendEvent = Get.find(tag: 'vertical-app-bar-to-creta-left-bar');
+    _foldSendEvent = foldSendEvent;
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size displaySize = MediaQuery.of(context).size;
@@ -63,40 +90,50 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
         width: CretaConst.verticalAppbarWidth,
         color: CretaColor.text[100],
         child: Stack(
+          alignment: Alignment.topCenter,
           children: [
             CustomPaint(
                 size: Size(CretaConst.verticalAppbarWidth, displaySize.height),
                 painter: MyCustomPainter()),
             Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const SizedBox(height: 20),
-                titleLogoVertical(),
-                const SizedBox(height: 32),
-                communityLogo(context),
-                const SizedBox(height: 12),
-                studioLogo(context),
-                const SizedBox(height: 12),
-                deviceLogo(context),
+                //const SizedBox(height: 20),
+                Column(
+                  children: [
+                    titleLogoVertical(),
+                    //const SizedBox(height: 32),
+                    communityLogo(context),
+                    const SizedBox(height: 12),
+                    studioLogo(context),
+                    const SizedBox(height: 12),
+                    deviceLogo(context),
+                  ],
+                ),
+                if (displaySize.height > 400) _userInfoList(displaySize),
               ],
             ),
           ],
         ));
   }
 
-  static Widget titleLogoVertical() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Image(
-          image: AssetImage('assets/creta_logo_only_white.png'),
-          //width: 120,
-          height: 20,
-        ),
-        Text(
-          CretaVars.serviceTypeString(),
-          style: CretaFont.logoStyle.copyWith(color: Colors.white),
-        ),
-      ],
+  Widget titleLogoVertical() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 25),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Image(
+            image: AssetImage('assets/creta_logo_only_white.png'),
+            //width: 120,
+            height: 20,
+          ),
+          Text(
+            CretaVars.serviceTypeString(),
+            style: CretaFont.logoStyle.copyWith(color: CretaColor.secondary),
+          ),
+        ],
+      ),
     );
   }
 
@@ -105,17 +142,23 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
       alignment: Alignment.center,
       children: [
         BTN.fill_blue_i_l(
+          size: const Size(40, 40),
+          iconSize: 24,
           icon: Icons.language,
           onPressed: () {
             Routemaster.of(context).push(AppRoutes.communityHome);
             VerticalAppBar.appBarSelected = VerticalAppBarType.community;
+            VerticalAppBar.fold = false;
+            CretaComponentLocation.TabBar.width = 310.0 - CretaConst.verticalAppbarWidth;
+            _foldSendEvent?.sendEvent(false);
+            widget.onFoldButtonPressed();
           },
         ),
         Padding(
           padding: const EdgeInsets.only(top: 34),
           child: Text(
             "Community",
-            style: CretaFont.logoStyle.copyWith(fontSize: 12, color: Colors.white),
+            style: CretaFont.logoStyle.copyWith(color: Colors.white),
           ),
         ),
       ],
@@ -128,16 +171,22 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
       children: [
         BTN.fill_blue_i_l(
           icon: Icons.edit_note_outlined,
+          size: const Size(40, 40),
+          iconSize: 24,
           onPressed: () {
             Routemaster.of(context).push(AppRoutes.studioBookGridPage);
             VerticalAppBar.appBarSelected = VerticalAppBarType.studio;
+            VerticalAppBar.fold = false;
+            CretaComponentLocation.TabBar.width = 310.0 - CretaConst.verticalAppbarWidth;
+            _foldSendEvent?.sendEvent(false);
+            widget.onFoldButtonPressed();
           },
         ),
         Padding(
           padding: const EdgeInsets.only(top: 34),
           child: Text(
             "Studio",
-            style: CretaFont.logoStyle.copyWith(fontSize: 12, color: Colors.white),
+            style: CretaFont.logoStyle.copyWith(color: Colors.white),
           ),
         ),
       ],
@@ -150,19 +199,43 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
       children: [
         BTN.fill_blue_i_l(
           icon: Icons.tv_outlined,
+          size: const Size(40, 40),
+          iconSize: 24,
           onPressed: () {
             Routemaster.of(context).push(AppRoutes.deviceMainPage);
             VerticalAppBar.appBarSelected = VerticalAppBarType.device;
+            VerticalAppBar.fold = false;
+            _foldSendEvent?.sendEvent(false);
+            CretaComponentLocation.TabBar.width = 310.0 - CretaConst.verticalAppbarWidth;
+            widget.onFoldButtonPressed();
           },
         ),
         Padding(
           padding: const EdgeInsets.only(top: 34),
           child: Text(
             "Device",
-            style: CretaFont.logoStyle.copyWith(fontSize: 12, color: Colors.white),
+            style: CretaFont.logoStyle.copyWith(color: Colors.white),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _userInfoList(Size displaySize) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: displaySize.height > 600 ? 152 : 50),
+      child: Column(
+        children: (!AccountManager.currentLoginUser.isLoginedUser)
+            ? [
+                Snippet.loginButton(context: context, getBuildContext: () {}),
+                Snippet.signUpButton(context: context, getBuildContext: () {}),
+              ]
+            : [
+                Snippet.notiBell(context: context),
+                const SizedBox(height: 10),
+                Snippet.smallUserInfo(context: context),
+              ],
+      ),
     );
   }
 }

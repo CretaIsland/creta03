@@ -25,9 +25,9 @@ flutter run -d chrome --web-renderer html
 
 ## login_page.dart 에서 version 번호를 바꾸는 것을 잊지말자.  ver 0.01
 
-# flutter build web --web-renderer html --release --base-href="/creta03_v6/" --no-tree-shake-icons
+# flutter build web --web-renderer html --release --base-href="/creta03_v6/" --no-tree-shake-icons  --build-dir=../release/creta03_v6  
 # or
-flutter build web --web-renderer canvaskit --release --base-href="/creta03_v6/"
+flutter build web --web-renderer canvaskit --release --base-href="/creta03_v6/"  --build-dir=../release/creta03_v6  
 
 # 이후  relase 폴더의 index html 에서 creta03_v6 를 넣어주자.
 

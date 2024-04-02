@@ -14,6 +14,7 @@ import 'package:creta_common/common/creta_font.dart';
 class IntroPage extends StatefulWidget {
   const IntroPage({super.key});
   static final List<String> cretaVersionList = [
+    "0.6.10",
     "0.6.09",
     "0.6.08",
     "0.6.07",
@@ -32,7 +33,7 @@ class IntroPage extends StatefulWidget {
     "0.5.14",
   ];
   static const String hycopVersion = "0.4.23";
-  static final String buildNumber = "20240401-21(${HycopFactory.toServerTypeString()})";
+  static final String buildNumber = "20240402-20(${HycopFactory.toServerTypeString()})";
 
   @override
   State<IntroPage> createState() => _IntroPageState();
@@ -89,18 +90,23 @@ class _IntroPageState extends State<IntroPage> {
     }
 
     return Snippet.CretaScaffoldOfCommunity(
-      title: Row(
-        children: const [
-          SizedBox(
-            width: 24,
-          ),
-          Image(
-            image: AssetImage('assets/creta_logo_blue.png'),
-            //width: 120,
-            height: 20,
-          ),
-        ],
-      ),
+      //title: Text('Community page'),
+      onFoldButtonPressed: () {
+        setState(() {});
+      },
+
+      // title: Row(
+      //   children: const [
+      //     SizedBox(
+      //       width: 24,
+      //     ),
+      //     Image(
+      //       image: AssetImage('assets/creta_logo_blue.png'),
+      //       //width: 120,
+      //       height: 20,
+      //     ),
+      //   ],
+      // ),
       context: context,
       // doAfterLogin: doAfterLogin,
       // doAfterSignup: doAfterSignup,

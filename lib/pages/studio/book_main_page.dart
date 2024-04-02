@@ -5,7 +5,7 @@
 import 'dart:async';
 
 import 'package:creta03/no_authority.dart';
-import 'package:creta_common/common/creta_vars.dart';
+//import 'package:creta_common/common/creta_vars.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -711,9 +711,13 @@ class _BookMainPageState extends State<BookMainPage> {
             ),
           )
         : Snippet.CretaScaffold(
-            title: Snippet.logo(CretaVars.serviceTypeString(), route: () {
-              Routemaster.of(context).push(AppRoutes.studioBookGridPage);
-            }),
+            // title: Snippet.logo(CretaVars.serviceTypeString(), route: () {
+            //   Routemaster.of(context).push(AppRoutes.studioBookGridPage);
+            // }),
+        onFoldButtonPressed: () {
+          setState(() {});
+        },
+
             invalidate: () {
               setState(() {});
             },

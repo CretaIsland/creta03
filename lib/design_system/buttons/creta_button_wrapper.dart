@@ -763,6 +763,30 @@ class BTN {
     );
   }
 
+  static CretaButton fill_gray_image_l({
+    Key? key,
+    required ImageProvider image,
+    CretaButtonColor buttonColor = CretaButtonColor.white,
+    Color fgColor = Colors.white,
+    required Function onPressed,
+    double width = 40,
+    CretaButtonSidePadding? sidePadding,
+  }) {
+    return CretaButton(
+      key: key,
+      width: width,
+      height: 40,
+      buttonType: CretaButtonType.child,
+      buttonColor: buttonColor,
+      onPressed: onPressed,
+      sidePadding: sidePadding,
+      child: CircleAvatar(
+        radius: 16,
+        backgroundImage: image,
+      ),
+    );
+  }
+
   static CretaButton fill_gray_wti_l({
     required String text,
     required IconData icon,
@@ -843,6 +867,7 @@ class BTN {
     Size size = const Size(36, 36),
     CretaButtonColor buttonColor = CretaButtonColor.blue,
     Color? iconColor,
+    double iconSize = 20,
   }) {
     return CretaButton(
       tooltip: tooltip,
@@ -852,7 +877,7 @@ class BTN {
       buttonColor: buttonColor,
       icon: Icon(
         icon,
-        size: 20,
+        size: iconSize,
         color: iconColor ?? CretaColor.text[100],
       ),
       onPressed: onPressed,
