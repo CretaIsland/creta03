@@ -129,7 +129,9 @@ class HostGridItemState extends State<HostGridItem> {
             borderRadius: BorderRadius.circular(20.0),
             border: widget.hostModel != null
                 ? Border.all(
-                    color: widget.hostModel!.isConnected ? Colors.yellow : Colors.grey,
+                    color: widget.hostModel!.isConnected
+                        ? Colors.yellow
+                        : Colors.grey.withOpacity(0.1),
                     width: borderWidth,
                   )
                 : null,

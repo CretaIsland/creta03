@@ -441,16 +441,19 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
     );
 
     Widget detailView = selectedHost != null
-        ? Center(
-            child: DeviceDetailPage(
-            hostModel: selectedHost!,
-            onExit: () {
-              setState(() {
-                _openDetail = false;
-                selectedHost = null;
-              });
-            },
-          ))
+        ? Padding(
+            padding: LayoutConst.cretaPadding,
+            child: Center(
+                child: DeviceDetailPage(
+              hostModel: selectedHost!,
+              onExit: () {
+                setState(() {
+                  _openDetail = false;
+                  selectedHost = null;
+                });
+              },
+            )),
+          )
         : SizedBox.shrink();
 
     if (selectedHost != null && _openDetail) {
@@ -504,6 +507,17 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
     //print('----------------------');
     //if (isValidIndex(index)) {
     return GestureDetector(
+      onDoubleTap: () {
+        if (isValidIndex(index, hostManager)) {
+          HostModel? model = hostManager.findByIndex(index - 1) as HostModel?;
+          if (model != null) {
+            setState(() {
+              _openDetail = true;
+              selectedHost = model;
+            });
+          }
+        }
+      },
       onTap: () {
         selectNotifierHolder.toggleSelect(index - 1);
       },
@@ -621,7 +635,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         caption: CretaDeviceLang.basicHostFilter[1], //
         onPressed: () {
           hostManagerHolder?.toFiltered(
-              'hostType', HostType.signage.index, AccountManager.currentLoginUser.email,
+              'hostType', ServiceType.signage.index, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
         selected: CretaVars.serviceType == ServiceType.signage,
@@ -631,7 +645,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         caption: CretaDeviceLang.basicHostFilter[2], //
         onPressed: () {
           hostManagerHolder?.toFiltered(
-              'hostType', HostType.barricade.index, AccountManager.currentLoginUser.email,
+              'hostType', ServiceType.barricade.index, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
         selected: CretaVars.serviceType == ServiceType.barricade,
@@ -641,7 +655,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         caption: CretaDeviceLang.basicHostFilter[3], //
         onPressed: () {
           hostManagerHolder?.toFiltered(
-              'hostType', HostType.escalator.index, AccountManager.currentLoginUser.email,
+              'hostType', ServiceType.escalator.index, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
         selected: CretaVars.serviceType == ServiceType.escalator,
@@ -651,7 +665,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         caption: CretaDeviceLang.basicHostFilter[4], //
         onPressed: () {
           hostManagerHolder?.toFiltered(
-              'hostType', HostType.board.index, AccountManager.currentLoginUser.email,
+              'hostType', ServiceType.board.index, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
         selected: CretaVars.serviceType == ServiceType.board,
@@ -661,7 +675,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         caption: CretaDeviceLang.basicHostFilter[5],
         onPressed: () {
           hostManagerHolder?.toFiltered(
-              'hostType', HostType.cdu.index, AccountManager.currentLoginUser.email,
+              'hostType', ServiceType.cdu.index, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
         selected: CretaVars.serviceType == ServiceType.cdu,
@@ -671,7 +685,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         caption: CretaDeviceLang.basicHostFilter[6],
         onPressed: () {
           hostManagerHolder?.toFiltered(
-              'hostType', HostType.etc.index, AccountManager.currentLoginUser.email,
+              'hostType', ServiceType.etc.index, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
         selected: CretaVars.serviceType == ServiceType.etc,

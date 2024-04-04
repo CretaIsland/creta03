@@ -56,18 +56,31 @@ class _CretaRadioButton2State extends State<CretaToggleButton> {
         duration: Duration(milliseconds: aniTime),
         height: widget.height,
         width: widget.width,
+        padding: EdgeInsets.only(right: 2.0),
         decoration: BoxDecoration(
-            //border: Border.all(color: CretaColor.primary, width: 1.0),
+            border: Border.all(
+                color: widget.isActive
+                    ? (toggleValue ? CretaColor.primary[500]! : CretaColor.text[400]!)
+                    : Colors.white,
+                width: 1.0),
             borderRadius: BorderRadius.circular(18.0),
+            // boxShadow: widget.isActive
+            //     ? [
+            //         BoxShadow(
+            //           color: Colors.grey.withOpacity(0.5),
+            //           spreadRadius: 2,
+            //           //blurRadius: 7,
+            //           offset: Offset(2, 2), // changes position of shadow
+            //         ),
+            //       ]
+            //     : null,
             color: widget.isActive
                 ? toggleValue
-                    ? hover
-                        ? CretaColor.primary[500]!
-                        : CretaColor.primary
-                    : hover
-                        ? CretaColor.primary[300]!
-                        : CretaColor.primary[200]!
-                : CretaColor.text[200]!),
+                    ? CretaColor.primary
+                    : CretaColor.text[300]!
+                : toggleValue
+                    ? CretaColor.primary.withOpacity(0.4)
+                    : CretaColor.text[300]!.withOpacity(0.4)),
         child: InkWell(
           onHover: (value) {
             setState(() {

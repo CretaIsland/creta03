@@ -1,19 +1,20 @@
+import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_common/model/creta_model.dart';
 import 'package:hycop/hycop.dart';
 
-enum HostType {
-  none,
-  signage,
-  barricade,
-  escalator,
-  board,
-  cdu,
-  etc,
-  end;
+// enum ServiceType {
+//   none,
+//   signage,
+//   barricade,
+//   escalator,
+//   board,
+//   cdu,
+//   etc,
+//   end;
 
-  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
-  static HostType fromInt(int? val) => HostType.values[validCheck(val ?? none.index)];
-}
+//   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+//   static ServiceType fromInt(int? val) => ServiceType.values[validCheck(val ?? none.index)];
+// }
 
 enum DownloadResult {
   none,
@@ -30,7 +31,7 @@ enum DownloadResult {
 
 // ignore: must_be_immutable
 class HostModel extends CretaModel {
-  HostType hostType = HostType.signage; // read only
+  ServiceType hostType = ServiceType.signage; // read only
   String hostId = ''; // read only
   String hostName = '';
   String ip = '';
@@ -293,7 +294,7 @@ class HostModel extends CretaModel {
     shutdownTime = map["shutdownTime"] ?? '';
     monthlyUseTime = map["monthlyUseTime"] ?? 0.0;
 
-    hostType = HostType.fromInt(map["hostType"] ?? HostType.signage.index);
+    hostType = ServiceType.fromInt(map["hostType"] ?? ServiceType.signage.index);
     os = map["os"] ?? '';
     isInitialized = map["isInitialized"] ?? false;
     isValidLicense = map["isValidLicense"] ?? false;

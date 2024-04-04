@@ -21,6 +21,7 @@ import 'design_system/demo_page/text_field_demo_page.dart';
 import 'developer/gen_collections_page.dart';
 // import 'pages/intro_page.dart';
 import 'package:creta_studio_model/model/book_model.dart';
+import 'pages/admin/admin_main_page.dart';
 import 'pages/device/device_main_page.dart';
 import 'pages/login/creta_account_manager.dart';
 import 'pages/studio/book_grid_page.dart';
@@ -98,6 +99,7 @@ abstract class AppRoutes {
   static const String textFieldDemoPage = '/textFieldDemoPage';
   static const String studioBookMainPage = '/studio/bookMainPage';
   static const String deviceMainPage = '/device/deviceMainPage';
+  static const String adminMainPage = '/device/adminMainPage';
   //static const String deviceDetailPage = '/device/deviceDetailPage';
   static const String studioBookPreviewPage = '/studio/studioBookMainPreviewPage';
   static const String studioBookGridPage = '/studio/bookGridPage';
@@ -172,6 +174,8 @@ final routesLoggedOut = RouteMap(
     AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
     AppRoutes.deviceMainPage: (_) =>
         TransitionPage(child: DeviceMainPage(selectedPage: DeviceSelectedPage.myPage)),
+    AppRoutes.adminMainPage: (_) => TransitionPage(child: AdminMainPage(selectedPage: AdminSelectedPage.license)),
+
     //AppRoutes.deviceDetailPage: (_) => TransitionPage(child: DeviceDetailPage()),
     AppRoutes.studioBookMainPage: (routeData) {
       if (AccountManager.currentLoginUser.isLoginedUser) {

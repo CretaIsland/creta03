@@ -99,6 +99,8 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
   }
 
   Widget _leftBar() {
+    final Size displaySize = MediaQuery.of(context).size;
+
     if (VerticalAppBar.fold == true) {
       return const SizedBox.shrink();
     }
@@ -170,63 +172,65 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
           ),
 
           //하단 사용자 메뉴
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              // crop
-              borderRadius: BorderRadius.circular(19.2),
-            ),
-            clipBehavior: Clip.antiAlias, // crop method
-            width: CretaComponentLocation.UserMenuInTabBar.width,
-            height: hasTwoButton
-                ? userMenuHeight + 76
-                : userMenuHeight, //CretaComponentLocation.UserMenuInTabBar.height,
-            padding: CretaComponentLocation.UserMenuInTabBar.padding,
-            child: ListView.builder(
-                //padding: EdgeInsets.fromLTRB(leftMenuViewLeftPane, leftMenuViewTopPane, 0, 0),
-                itemCount: 1,
-                itemBuilder: (context, index) {
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Link(
-                          uri: Uri.parse(channelLinkUrl),
-                          builder: (context, function) {
-                            return BTN.fill_gray_l_profile(
-                              text: AccountManager.currentLoginUser.name,
-                              subText:
-                                  '구독자 ${CretaAccountManager.getChannel?.followerCount ?? 0}명', //CretaLang.billInfo,
-                              image: const AssetImage('assets/creta_default.png'),
-                              onPressed: () {
-                                if (channelId.isNotEmpty) {
-                                  Routemaster.of(context).push(channelLinkUrl);
-                                }
-                              },
-                            );
-                          }),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      if (widget.gotoButtonTitle != null && widget.gotoButtonPressed != null)
-                        BTN.fill_blue_ti_el(
-                          icon: Icons.arrow_forward_outlined,
-                          text: widget.gotoButtonTitle!,
-                          onPressed: widget.gotoButtonPressed!,
-                        ),
-                      if (hasTwoButton)
+
+          if (displaySize.height > 400)
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                // crop
+                borderRadius: BorderRadius.circular(19.2),
+              ),
+              clipBehavior: Clip.antiAlias, // crop method
+              width: CretaComponentLocation.UserMenuInTabBar.width,
+              height: hasTwoButton
+                  ? userMenuHeight + 76
+                  : userMenuHeight, //CretaComponentLocation.UserMenuInTabBar.height,
+              padding: CretaComponentLocation.UserMenuInTabBar.padding,
+              child: ListView.builder(
+                  //padding: EdgeInsets.fromLTRB(leftMenuViewLeftPane, leftMenuViewTopPane, 0, 0),
+                  itemCount: 1,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Link(
+                            uri: Uri.parse(channelLinkUrl),
+                            builder: (context, function) {
+                              return BTN.fill_gray_l_profile(
+                                text: AccountManager.currentLoginUser.name,
+                                subText:
+                                    '구독자 ${CretaAccountManager.getChannel?.followerCount ?? 0}명', //CretaLang.billInfo,
+                                image: const AssetImage('assets/creta_default.png'),
+                                onPressed: () {
+                                  if (channelId.isNotEmpty) {
+                                    Routemaster.of(context).push(channelLinkUrl);
+                                  }
+                                },
+                              );
+                            }),
                         const SizedBox(
                           height: 20,
                         ),
-                      if (hasTwoButton)
-                        BTN.fill_blue_ti_el(
-                          icon: Icons.arrow_forward_outlined,
-                          text: widget.gotoButtonTitle2!,
-                          onPressed: widget.gotoButtonPressed2!,
-                        ),
-                    ],
-                  );
-                }),
-          ),
+                        if (widget.gotoButtonTitle != null && widget.gotoButtonPressed != null)
+                          BTN.fill_blue_ti_el(
+                            icon: Icons.arrow_forward_outlined,
+                            text: widget.gotoButtonTitle!,
+                            onPressed: widget.gotoButtonPressed!,
+                          ),
+                        if (hasTwoButton)
+                          const SizedBox(
+                            height: 20,
+                          ),
+                        if (hasTwoButton)
+                          BTN.fill_blue_ti_el(
+                            icon: Icons.arrow_forward_outlined,
+                            text: widget.gotoButtonTitle2!,
+                            onPressed: widget.gotoButtonPressed2!,
+                          ),
+                      ],
+                    );
+                  }),
+            ),
         ],
       ),
     );

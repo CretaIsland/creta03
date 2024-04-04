@@ -54,11 +54,13 @@ class MyCustomPainter extends CustomPainter {
         return 100 + 14 + 50;
       case VerticalAppBarType.device:
         return 100 + 14 + 50 + 14 + 50;
+      case VerticalAppBarType.admin:
+        return 100 + 14 + 50 + 14 + 50 + 14 + 50;
     }
   }
 }
 
-enum VerticalAppBarType { community, studio, device }
+enum VerticalAppBarType { community, studio, device, admin }
 
 class VerticalAppBar extends StatefulWidget {
   static VerticalAppBarType appBarSelected = VerticalAppBarType.community;
@@ -88,29 +90,32 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
     return Container(
         //padding: const EdgeInsets.only(top: 20),
         width: CretaConst.verticalAppbarWidth,
-        color: CretaColor.text[100],
+        color: displaySize.height > 200 ? CretaColor.text[100] : CretaColor.primary,
         child: Stack(
           alignment: Alignment.topCenter,
           children: [
-            CustomPaint(
-                size: Size(CretaConst.verticalAppbarWidth, displaySize.height),
-                painter: MyCustomPainter()),
+            if (displaySize.height > 200)
+              CustomPaint(
+                  size: Size(CretaConst.verticalAppbarWidth, displaySize.height),
+                  painter: MyCustomPainter()),
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 //const SizedBox(height: 20),
                 Column(
                   children: [
-                    titleLogoVertical(),
+                    if (displaySize.height > 100) titleLogoVertical(),
                     //const SizedBox(height: 32),
-                    communityLogo(context),
-                    const SizedBox(height: 12),
-                    studioLogo(context),
-                    const SizedBox(height: 12),
-                    deviceLogo(context),
+                    if (displaySize.height > 200) communityLogo(context),
+                    if (displaySize.height > 250) const SizedBox(height: 12),
+                    if (displaySize.height > 250) studioLogo(context),
+                    if (displaySize.height > 300) const SizedBox(height: 12),
+                    if (displaySize.height > 300) deviceLogo(context),
+                    if (displaySize.height > 350) const SizedBox(height: 12),
+                    if (displaySize.height > 350) adminLogo(context),
                   ],
                 ),
-                if (displaySize.height > 400) _userInfoList(displaySize),
+                if (displaySize.height > 450) _userInfoList(displaySize),
               ],
             ),
           ],
@@ -130,7 +135,7 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
           ),
           Text(
             CretaVars.serviceTypeString(),
-            style: CretaFont.logoStyle.copyWith(color: CretaColor.secondary),
+            style: CretaFont.logoStyle.copyWith(color: Colors.white),
           ),
         ],
       ),
@@ -157,7 +162,7 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
         Padding(
           padding: const EdgeInsets.only(top: 34),
           child: Text(
-            "Community",
+            "Community", //CretaDeviceLang.community,
             style: CretaFont.logoStyle.copyWith(color: Colors.white),
           ),
         ),
@@ -185,7 +190,7 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
         Padding(
           padding: const EdgeInsets.only(top: 34),
           child: Text(
-            "Studio",
+            "Studio", //CretaDeviceLang.studio,
             style: CretaFont.logoStyle.copyWith(color: Colors.white),
           ),
         ),
@@ -213,7 +218,35 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
         Padding(
           padding: const EdgeInsets.only(top: 34),
           child: Text(
-            "Device",
+            "Device", //CretaDeviceLang.device,
+            style: CretaFont.logoStyle.copyWith(color: Colors.white),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget adminLogo(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        BTN.fill_blue_i_l(
+          icon: Icons.admin_panel_settings_outlined,
+          size: const Size(40, 40),
+          iconSize: 24,
+          onPressed: () {
+            Routemaster.of(context).push(AppRoutes.adminMainPage);
+            VerticalAppBar.appBarSelected = VerticalAppBarType.admin;
+            VerticalAppBar.fold = false;
+            _foldSendEvent?.sendEvent(false);
+            CretaComponentLocation.TabBar.width = 310.0 - CretaConst.verticalAppbarWidth;
+            widget.onFoldButtonPressed();
+          },
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 34),
+          child: Text(
+            "Admin", //CretaDeviceLang.admin,
             style: CretaFont.logoStyle.copyWith(color: Colors.white),
           ),
         ),

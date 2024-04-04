@@ -15,6 +15,8 @@ class CretaDeviceLang {
   static const String teamCretaDevice = "팀 디바이스";
   static const String sharedCretaDevice = "공유 디바이스";
   static const String myCretaDeviceDesc = "님의 크레타 디바이스를 관리합니다.";
+  static const String myCretaAdminDesc = "님의 크레타 디바이스의 라이센스를 관리합니다.";
+  static const String enterpriseDesc = "님의 크레타 고객 정보를 관리합니다.";
 
   static const String inputHostInfo = "생성할 디바이스 정보를 입력하세요";
   static const String deviceId = "디바이스 ID";
@@ -22,6 +24,16 @@ class CretaDeviceLang {
 
   static const String shouldInputDeviceId = "디바이스 ID를 입력하세요.";
   static const String shouldInputDeviceName = "디바이스 이름을 입력하세요.";
+
+  static const String device = "디바이스";
+  static const String studio = "스튜디오";
+  static const String community = "커뮤니티";
+  static const String admin = "인증센터";
+  
+  static const String license = "라이센스 설정";
+  static const String enterprise = "엔터프라이즈 설정";
+
+
 
   static const List<String> basicHostFilter = [
     "용도별(전체)",
