@@ -47,26 +47,28 @@ class HostModel extends CretaModel {
   bool isUsed = true;
   bool isOperational = true; // read only
 
-  String licenseTime = ''; // read only
-  String initializeTime = ''; // read only
+  DateTime licenseTime = DateTime(1970, 1, 1); // read only
+  DateTime initializeTime = DateTime(1970, 1, 1); // read only
 
   String thumbnailUrl = ''; // read only
 
-  String powerOnTime = ''; // read only
-  String powerOffTime = ''; // read only
-  String requestedBook1 = ''; // read only
-  String requestedBook2 = ''; // read only
-  String requestedBook1Time = ''; // read only
-  String requestedBook2Time = ''; // read only
+  String weekend = '';
+  String holiday = '';
+  String powerOnTime = '';
+  String powerOffTime = '';
+  String requestedBook1 = '';
+  String requestedBook2 = '';
+  DateTime requestedBook1Time = DateTime(1970, 1, 1); // read only
+  DateTime requestedBook2Time = DateTime(1970, 1, 1); // read only
   String playingBook1 = ''; // read only
   String playingBook2 = ''; // read only
-  String playingBook1Time = ''; // read only
-  String playingBook2Time = ''; // read only
+  DateTime playingBook1Time = DateTime(1970, 1, 1); // read only
+  DateTime playingBook2Time = DateTime(1970, 1, 1); // read only
 
   String notice1 = ''; // read only
   String notice2 = ''; // read only
-  String notice1Time = ''; // read only
-  String notice2Time = ''; // read only
+  DateTime notice1Time = DateTime(1970, 1, 1); // read only
+  DateTime notice2Time = DateTime(1970, 1, 1); // read only
 
   String request = ''; // read only
   String response = ''; // read only
@@ -79,8 +81,8 @@ class HostModel extends CretaModel {
   String memInfo = ''; // read only
 
   String stateMsg = ''; // read only
-  String bootTime = ''; // read only
-  String shutdownTime = ''; // read only
+  DateTime bootTime = DateTime(1970, 1, 1); // read only
+  DateTime shutdownTime = DateTime(1970, 1, 1); // read only
 
   double monthlyUseTime = 0.0; // read only
 
@@ -112,6 +114,8 @@ class HostModel extends CretaModel {
         location,
         description,
         thumbnailUrl,
+        weekend,
+        holiday,
         powerOnTime,
         powerOffTime,
         requestedBook1,
@@ -162,6 +166,8 @@ class HostModel extends CretaModel {
     description = srcHost.description;
     thumbnailUrl = srcHost.thumbnailUrl;
 
+    weekend = srcHost.weekend;
+    holiday = srcHost.holiday;
     powerOnTime = srcHost.powerOnTime;
     powerOffTime = srcHost.powerOffTime;
     requestedBook1 = srcHost.requestedBook1;
@@ -214,6 +220,8 @@ class HostModel extends CretaModel {
     description = srcHost.description;
     thumbnailUrl = srcHost.thumbnailUrl;
 
+    weekend = srcHost.weekend;
+    holiday = srcHost.holiday;
     powerOnTime = srcHost.powerOnTime;
     powerOffTime = srcHost.powerOffTime;
     requestedBook1 = srcHost.requestedBook1;
@@ -252,6 +260,14 @@ class HostModel extends CretaModel {
     initializeTime = srcHost.initializeTime;
   }
 
+  DateTime _stringToDate(String? val) {
+    try {
+      return DateTime.parse(val ?? '1970-01-01 09:00:00.000');
+    } catch (e) {
+      return DateTime(1970, 1, 1);
+    }
+  }
+
   @override
   void fromMap(Map<String, dynamic> map) {
     //super.fromMap(map);
@@ -265,22 +281,24 @@ class HostModel extends CretaModel {
     description = map["description"] ?? '';
     thumbnailUrl = map["thumbnailUrl"] ?? '';
 
+    weekend = map["weekend"] ?? '';
+    holiday = map["holiday"] ?? '';
     powerOnTime = map["powerOnTime"] ?? '';
     powerOffTime = map["powerOffTime"] ?? '';
     requestedBook1 = map["requestedBook1"] ?? '';
     requestedBook2 = map["requestedBook2"] ?? '';
-    requestedBook1Time = map["requestedBook1Time"] ?? '';
-    requestedBook2Time = map["requestedBook2Time"] ?? '';
+    requestedBook1Time = _stringToDate(map["requestedBook1Time"]);
+    requestedBook2Time = _stringToDate(map["requestedBook2Time"]);
 
     playingBook1 = map["playingBook1"] ?? '';
     playingBook2 = map["playingBook2"] ?? '';
-    playingBook1Time = map["playingBook1Time"] ?? '';
-    playingBook2Time = map["playingBook2Time"] ?? '';
+    playingBook1Time = _stringToDate(map["playingBook1Time"]);
+    playingBook2Time = _stringToDate(map["playingBook2Time"]);
 
     notice1 = map["notice1"] ?? '';
     notice2 = map["notice2"] ?? '';
-    notice1Time = map["notice1Time"] ?? '';
-    notice2Time = map["notice2Time"] ?? '';
+    notice1Time = _stringToDate(map["notice1Time"]);
+    notice2Time = _stringToDate(map["notice2Time"]);
 
     request = map["request"] ?? '';
     response = map["response"] ?? '';
@@ -290,8 +308,8 @@ class HostModel extends CretaModel {
     cpuInfo = map["cpuInfo"] ?? '';
     memInfo = map["memInfo"] ?? '';
     stateMsg = map["stateMsg"] ?? '';
-    bootTime = map["bootTime"] ?? '';
-    shutdownTime = map["shutdownTime"] ?? '';
+    bootTime = _stringToDate(map["bootTime"]);
+    shutdownTime = _stringToDate(map["shutdownTime"]);
     monthlyUseTime = map["monthlyUseTime"] ?? 0.0;
 
     hostType = ServiceType.fromInt(map["hostType"] ?? ServiceType.signage.index);
@@ -300,8 +318,8 @@ class HostModel extends CretaModel {
     isValidLicense = map["isValidLicense"] ?? false;
     isUsed = map["isUsed"] ?? false;
     isOperational = map["isOperational"] ?? true;
-    licenseTime = map["licenseTime"] ?? false;
-    initializeTime = map["initializeTime"] ?? false;
+    licenseTime = _stringToDate(map["licenseTime"]);
+    initializeTime = _stringToDate(map["initializeTime"]);
   }
 
   @override
@@ -317,20 +335,22 @@ class HostModel extends CretaModel {
         "location": location,
         "description": description,
         "thumbnailUrl": thumbnailUrl,
+        "weekend": weekend,
+        "holiday": holiday,
         "powerOnTime": powerOnTime,
         "powerOffTime": powerOffTime,
         "requestedBook1": requestedBook1,
         "requestedBook2": requestedBook2,
-        "requestedBook1Time": requestedBook1Time,
-        "requestedBook2Time": requestedBook2Time,
+        "requestedBook1Time": HycopUtils.dateTimeToDB(requestedBook1Time),
+        "requestedBook2Time": HycopUtils.dateTimeToDB(requestedBook2Time),
         "playingBook1": playingBook1,
         "playingBook2": playingBook2,
-        "playingBook1Time": playingBook1Time,
-        "playingBook2Time": playingBook2Time,
+        "playingBook1Time": HycopUtils.dateTimeToDB(playingBook1Time),
+        "playingBook2Time": HycopUtils.dateTimeToDB(playingBook2Time),
         "notice1": notice1,
         "notice2": notice2,
-        "notice1Time": notice1Time,
-        "notice2Time": notice2Time,
+        "notice1Time": HycopUtils.dateTimeToDB(notice1Time),
+        "notice2Time": HycopUtils.dateTimeToDB(notice2Time),
         "request": request,
         "response": response,
         "downloadResult": downloadResult.index,
@@ -339,8 +359,8 @@ class HostModel extends CretaModel {
         "cpuInfo": cpuInfo,
         "memInfo": memInfo,
         "stateMsg": stateMsg,
-        "bootTime": bootTime,
-        "shutdownTime": shutdownTime,
+        "bootTime": HycopUtils.dateTimeToDB(bootTime),
+        "shutdownTime": HycopUtils.dateTimeToDB(shutdownTime),
         "monthlyUseTime": monthlyUseTime,
         "hostType": hostType.index,
         "os": os,
@@ -348,8 +368,8 @@ class HostModel extends CretaModel {
         "isValidLicense": isValidLicense,
         "isUsed": isUsed,
         "isOperational": isOperational,
-        "licenseTime": licenseTime,
-        "initializeTime": initializeTime,
+        "licenseTime": HycopUtils.dateTimeToDB(licenseTime),
+        "initializeTime": HycopUtils.dateTimeToDB(initializeTime),
       }.entries);
   }
 }

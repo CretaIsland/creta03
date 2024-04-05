@@ -109,7 +109,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
   HostManager? hostManagerHolder;
   bool _onceDBGetComplete = false;
 
-  bool _openDetail = false;
+  //bool _openDetail = false;
   HostModel? selectedHost;
 
   bool _isGridView = true;
@@ -440,25 +440,25 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       ),
     );
 
-    Widget detailView = selectedHost != null
-        ? Padding(
-            padding: LayoutConst.cretaPadding,
-            child: Center(
-                child: DeviceDetailPage(
-              hostModel: selectedHost!,
-              onExit: () {
-                setState(() {
-                  _openDetail = false;
-                  selectedHost = null;
-                });
-              },
-            )),
-          )
-        : SizedBox.shrink();
+    // Widget detailView = selectedHost != null
+    //     ? Padding(
+    //         padding: LayoutConst.cretaPadding,
+    //         child: Center(
+    //             child: DeviceDetailPage(
+    //           hostModel: selectedHost!,
+    //           onExit: () {
+    //             setState(() {
+    //               _openDetail = false;
+    //               selectedHost = null;
+    //             });
+    //           },
+    //         )),
+    //       )
+    //     : SizedBox.shrink();
 
-    if (selectedHost != null && _openDetail) {
-      return detailView;
-    }
+    // if (selectedHost != null && _openDetail) {
+    //   return detailView;
+    // }
 
     return listView;
   }
@@ -507,14 +507,15 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
     //print('----------------------');
     //if (isValidIndex(index)) {
     return GestureDetector(
-      onDoubleTap: () {
+      onDoubleTap: () async {
         if (isValidIndex(index, hostManager)) {
           HostModel? model = hostManager.findByIndex(index - 1) as HostModel?;
           if (model != null) {
             setState(() {
-              _openDetail = true;
+              //_openDetail = true;
               selectedHost = model;
             });
+            await _showDetailView();
           }
         }
       },
@@ -560,11 +561,12 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
             width: itemWidth,
             height: itemHeight,
             selectedPage: widget.selectedPage,
-            onEdit: (hostModel) {
-              setState(() {
-                _openDetail = true;
-                selectedHost = hostModel;
-              });
+            onEdit: (hostModel) async {
+              //setState(() {
+              //_openDetail = true;
+              selectedHost = hostModel;
+              //});
+              await _showDetailView();
             },
           ),
           // if (_isSelected(index))
@@ -837,5 +839,57 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         ),
       );
     });
+  }
+
+  Future<void> _showDetailView() async {
+    var screenSize = MediaQuery.of(context).size;
+
+    double width = screenSize.width * 0.5;
+    double height = screenSize.height * 0.7;
+    final formKey = GlobalKey<FormState>();
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('${CretaDeviceLang.deviceDetail} ${selectedHost!.hostName}'),
+          content: Container(
+            width: width,
+            height: height,
+            margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+            color: Colors.white,
+            child: DeviceDetailPage(
+              formKey: formKey,
+              hostModel: selectedHost!,
+              onExit: () {
+                //setState(() {
+                //_openDetail = false;
+                selectedHost = null;
+                //});
+              },
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                //setState(() {
+                //_openDetail = false;
+                selectedHost = null;
+                //});
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

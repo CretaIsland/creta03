@@ -25,6 +25,7 @@ class CretaDeviceLang {
   static const String shouldInputDeviceId = "디바이스 ID를 입력하세요.";
   static const String shouldInputDeviceName = "디바이스 이름을 입력하세요.";
 
+  static const String deviceDetail = "디바이스 상세화면";
   static const String device = "디바이스";
   static const String studio = "스튜디오";
   static const String community = "커뮤니티";
