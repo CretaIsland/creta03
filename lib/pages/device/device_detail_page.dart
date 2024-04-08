@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 import 'package:intl/intl.dart';
 import '../../design_system/buttons/creta_toggle_button.dart';
+import '../../lang/creta_device_lang.dart';
 import '../../model/host_model.dart';
+import 'book_select_filter.dart';
 
 class DeviceDetailPage extends StatefulWidget {
   final HostModel hostModel;
@@ -281,7 +283,13 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                           'Requested Book 1',
                           widget.hostModel.requestedBook1,
                           () {
-                            _showBookList(context, books);
+                            _showBookList(context, books, (bookId, name) {
+                              setState(() {
+                                widget.hostModel.requestedBook1 = name;
+                                widget.hostModel.requestedBook1Id = bookId;
+                                widget.hostModel.requestedBook1Time = DateTime.now();
+                              });
+                            });
                           },
                           subInfo: HycopUtils.dateTimeToDB(widget.hostModel.requestedBook1Time),
                         ),
@@ -289,7 +297,13 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                           'Requested Book 2',
                           widget.hostModel.requestedBook2,
                           () {
-                            _showBookList(context, books);
+                            _showBookList(context, books, (bookId, name) {
+                              setState(() {
+                                widget.hostModel.requestedBook2 = name;
+                                widget.hostModel.requestedBook2Id = bookId;
+                                widget.hostModel.requestedBook2Time = DateTime.now();
+                              });
+                            });
                           },
                           subInfo: HycopUtils.dateTimeToDB(widget.hostModel.requestedBook2Time),
                         ),
@@ -384,27 +398,44 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     // );
   }
 
-  void _showBookList(BuildContext context, List<BookModel> books) {
+  void _showBookList(BuildContext context, List<BookModel> books,
+      void Function(String bookId, String name)? onSelected) {
+    var screenSize = MediaQuery.of(context).size;
+    double width = screenSize.width * 0.5;
+    double height = screenSize.height * 0.7;
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Select a Book'),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(CretaDeviceLang.selectBook),
+              IconButton(
+                  icon: const Icon(Icons.close), onPressed: () => Navigator.of(context).pop()),
+            ],
+          ),
           content: SizedBox(
-            width: double.maxFinite,
-            child: ListView.builder(
-              itemCount: books.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(books[index].name.value),
-                  onTap: () {
-                    // Do something with the selected book
-                    // For example, you might want to navigate to a detail page for the selected book
-                    Navigator.of(context).pop();
-                  },
-                );
-              },
-            ),
+            width: width,
+            height: height,
+            child: BookSelectFilter(onSelected: onSelected, width: width, height: height),
+            // ListView.builder(
+            //   itemCount: books.length,
+            //   itemBuilder: (context, index) {
+            //     return ListTile(
+            //       title: Text(books[index].name.value),
+            //       subtitle: Text(books[index].description.value),
+            //       trailing: Image.network(
+            //           books[index].thumbnailUrl.value), //const Icon(Icons.arrow_forward_ios),
+            //       onTap: () {
+            //         // Do something with the selected book
+            //         // For example, you might want to navigate to a detail page for the selected book
+            //         onSelected?.call(books[index].mid, books[index].name.value);
+            //         Navigator.of(context).pop();
+            //       },
+            //     );
+            //   },
+            // ),
           ),
         );
       },

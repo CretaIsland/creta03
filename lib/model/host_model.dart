@@ -57,7 +57,9 @@ class HostModel extends CretaModel {
   String powerOnTime = '';
   String powerOffTime = '';
   String requestedBook1 = '';
+  String requestedBook1Id = '';
   String requestedBook2 = '';
+  String requestedBook2Id = '';
   DateTime requestedBook1Time = DateTime(1970, 1, 1); // read only
   DateTime requestedBook2Time = DateTime(1970, 1, 1); // read only
   String playingBook1 = ''; // read only
@@ -120,6 +122,8 @@ class HostModel extends CretaModel {
         powerOffTime,
         requestedBook1,
         requestedBook2,
+        requestedBook1Id,
+        requestedBook2Id,
         requestedBook1Time,
         requestedBook2Time,
         playingBook1,
@@ -172,6 +176,8 @@ class HostModel extends CretaModel {
     powerOffTime = srcHost.powerOffTime;
     requestedBook1 = srcHost.requestedBook1;
     requestedBook2 = srcHost.requestedBook2;
+    requestedBook1Id = srcHost.requestedBook1Id;
+    requestedBook2Id = srcHost.requestedBook2Id;
     requestedBook1Time = srcHost.requestedBook1Time;
     requestedBook2Time = srcHost.requestedBook2Time;
     playingBook1 = srcHost.playingBook1;
@@ -226,6 +232,8 @@ class HostModel extends CretaModel {
     powerOffTime = srcHost.powerOffTime;
     requestedBook1 = srcHost.requestedBook1;
     requestedBook2 = srcHost.requestedBook2;
+    requestedBook1Id = srcHost.requestedBook1Id;
+    requestedBook2Id = srcHost.requestedBook2Id;
     requestedBook1Time = srcHost.requestedBook1Time;
     requestedBook2Time = srcHost.requestedBook2Time;
     playingBook1 = srcHost.playingBook1;
@@ -287,6 +295,8 @@ class HostModel extends CretaModel {
     powerOffTime = map["powerOffTime"] ?? '';
     requestedBook1 = map["requestedBook1"] ?? '';
     requestedBook2 = map["requestedBook2"] ?? '';
+    requestedBook1Id = map["requestedBook1Id"] ?? '';
+    requestedBook2Id = map["requestedBook2Id"] ?? '';
     requestedBook1Time = _stringToDate(map["requestedBook1Time"]);
     requestedBook2Time = _stringToDate(map["requestedBook2Time"]);
 
@@ -341,6 +351,8 @@ class HostModel extends CretaModel {
         "powerOffTime": powerOffTime,
         "requestedBook1": requestedBook1,
         "requestedBook2": requestedBook2,
+        "requestedBook1Id": requestedBook1Id,
+        "requestedBook2Id": requestedBook2Id,
         "requestedBook1Time": HycopUtils.dateTimeToDB(requestedBook1Time),
         "requestedBook2Time": HycopUtils.dateTimeToDB(requestedBook2Time),
         "playingBook1": playingBook1,

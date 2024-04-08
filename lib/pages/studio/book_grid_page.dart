@@ -36,6 +36,21 @@ enum SelectedPage {
   teamPage,
   trashCanPage,
   end;
+
+  String toDisplayString() {
+    switch (this) {
+      case SelectedPage.myPage:
+        return CretaStudioLang.myCretaBook;
+      case SelectedPage.sharedPage:
+        return CretaStudioLang.sharedCretaBook;
+      case SelectedPage.teamPage:
+        return CretaStudioLang.teamCretaBook;
+      case SelectedPage.trashCanPage:
+        return CretaStudioLang.trashCan;
+      default:
+        return CretaStudioLang.myCretaBook;
+    }
+  }
 }
 
 // ignore: must_be_immutable
@@ -215,10 +230,9 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
       ],
       child: Snippet.CretaScaffold(
           //title: Snippet.logo(CretaVars.serviceTypeString()),
-                  onFoldButtonPressed: () {
-          setState(() {});
-        },
-
+          onFoldButtonPressed: () {
+            setState(() {});
+          },
           additionals: SizedBox(
             height: 36,
             width: windowWidth > 535 ? 130 : 60,
