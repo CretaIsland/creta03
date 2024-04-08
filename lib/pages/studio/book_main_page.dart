@@ -711,6 +711,7 @@ class _BookMainPageState extends State<BookMainPage> {
             ),
           )
         : Snippet.CretaScaffold(
+            noVerticalVar: true,
             // title: Snippet.logo(CretaVars.serviceTypeString(), route: () {
             //   Routemaster.of(context).push(AppRoutes.studioBookGridPage);
             // }),
@@ -1077,7 +1078,7 @@ class _BookMainPageState extends State<BookMainPage> {
               Container(
                 color: LayoutConst.studioBGColor,
                 height: StudioVariables.workHeight,
-                width: StudioVariables.workWidth,
+                //width: StudioVariables.workWidth,
                 child: Row(
                   children: [
                     if (StudioVariables.isPreview == false)

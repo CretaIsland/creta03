@@ -92,9 +92,55 @@ class Snippet {
     Widget? additionals,
     void Function()? invalidate,
     required Function onFoldButtonPressed,
+    bool noVerticalVar = false,
   }) {
     double maxWidth = MediaQuery.of(context).size.width;
     //double maxHeight = MediaQuery.of(context).size.width;
+
+    Widget handToolMode = GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onLongPressDown: ((details) {
+        // 텍스트 필드가 한번 mouse click focus 를 가져가고 나면, 이후에는
+        //  RawKeyboardListener 로 이벤트가 오지 않는 것을 막기 위해
+        //FocusScope.of(context).unfocus();
+        //CretaTextField.unfocus();
+        //FocusScope.of(context).unfocus();
+        //
+        if (details.localPosition.dy < LayoutConst.topMenuBarHeight) return;
+
+        Size leftMenuSize = CretaCommonUtils.getSizeByKey(BookMainPage.leftMenuKey);
+
+        if (details.localPosition.dx < leftMenuSize.width + LayoutConst.menuStickWidth) {
+          return;
+        }
+        Size rightMenuSize = CretaCommonUtils.getSizeByKey(BookMainPage.rightMenuKey);
+        if (details.localPosition.dx > maxWidth - rightMenuSize.width) return;
+
+        //LastClicked.clickedOutSide(details.globalPosition);
+        // 양쪽 메뉴 Area 의 click 을 무시해주어야 한다.
+
+        if (BookMainPage.outSideClick == false) {
+          //print('......................');
+          BookMainPage.outSideClick = true;
+          return;
+        }
+
+        if (BookMainPage.pageManagerHolder != null) {
+          FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+          if (frameManager != null) {
+            if (frameManager.clickedInsideSelectedFrame(details.globalPosition)) {
+              //print('click inside the selected frame, return');
+              return;
+            }
+          }
+        }
+        // print(
+        //     'space clicked ${details.globalPosition}-------------------------------------------');
+        CretaManager.frameSelectNotifier?.set("", doNotify: true);
+        BookMainPage.miniMenuNotifier?.set(false, doNoti: true);
+      }),
+      child: child,
+    );
 
     return Scaffold(
         // no appBar any more
@@ -103,59 +149,16 @@ class Snippet {
             CretaVars.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         //body: child,
-        body: Row(
-          children: [
-            VerticalAppBar(onFoldButtonPressed: onFoldButtonPressed),
-            StudioVariables.isHandToolMode == false
-                ? GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onLongPressDown: ((details) {
-                      // 텍스트 필드가 한번 mouse click focus 를 가져가고 나면, 이후에는
-                      //  RawKeyboardListener 로 이벤트가 오지 않는 것을 막기 위해
-                      //FocusScope.of(context).unfocus();
-                      //CretaTextField.unfocus();
-                      //FocusScope.of(context).unfocus();
-                      //
-                      if (details.localPosition.dy < LayoutConst.topMenuBarHeight) return;
-
-                      Size leftMenuSize = CretaCommonUtils.getSizeByKey(BookMainPage.leftMenuKey);
-
-                      if (details.localPosition.dx <
-                          leftMenuSize.width + LayoutConst.menuStickWidth) {
-                        return;
-                      }
-                      Size rightMenuSize = CretaCommonUtils.getSizeByKey(BookMainPage.rightMenuKey);
-                      if (details.localPosition.dx > maxWidth - rightMenuSize.width) return;
-
-                      //LastClicked.clickedOutSide(details.globalPosition);
-                      // 양쪽 메뉴 Area 의 click 을 무시해주어야 한다.
-
-                      if (BookMainPage.outSideClick == false) {
-                        //print('......................');
-                        BookMainPage.outSideClick = true;
-                        return;
-                      }
-
-                      if (BookMainPage.pageManagerHolder != null) {
-                        FrameManager? frameManager =
-                            BookMainPage.pageManagerHolder!.getSelectedFrameManager();
-                        if (frameManager != null) {
-                          if (frameManager.clickedInsideSelectedFrame(details.globalPosition)) {
-                            //print('click inside the selected frame, return');
-                            return;
-                          }
-                        }
-                      }
-                      // print(
-                      //     'space clicked ${details.globalPosition}-------------------------------------------');
-                      CretaManager.frameSelectNotifier?.set("", doNotify: true);
-                      BookMainPage.miniMenuNotifier?.set(false, doNoti: true);
-                    }),
-                    child: child,
-                  )
-                : child,
-          ],
-        ));
+        body: noVerticalVar
+            ? StudioVariables.isHandToolMode == false
+                ? handToolMode
+                : child
+            : Row(
+                children: [
+                  VerticalAppBar(onFoldButtonPressed: onFoldButtonPressed),
+                  StudioVariables.isHandToolMode == false ? handToolMode : child,
+                ],
+              ));
   }
 
   static Widget CretaScaffoldOfCommunity({
@@ -471,7 +474,6 @@ class Snippet {
 
   static void _popupAccountMenu(GlobalKey key, BuildContext context,
       {void Function()? invalidate, double xOffset = -60}) {
-
     CretaPopupMenu.showMenu(
       context: context,
       globalKey: key,
