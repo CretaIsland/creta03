@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'package:creta_common/lang/creta_lang.dart';
+import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_snippet.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_font.dart';
@@ -55,11 +56,14 @@ class UploadingPopupState extends State<UploadingPopup> {
 
   @override
   Widget build(BuildContext context) {
+    const double width = 180;
+    final Size displaySize = MediaQuery.of(context).size;
+    double left = (displaySize.width - width + LayoutConst.menuStickWidth) / 2;
     return Visibility(
       visible: _isShow,
       child: Positioned(
-        bottom: 20,
-        right: 20,
+        bottom: 40,
+        left: left,
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -67,7 +71,7 @@ class UploadingPopupState extends State<UploadingPopup> {
             borderRadius: BorderRadius.circular(16.4),
           ),
           height: 40,
-          width: 180,
+          width: width,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [

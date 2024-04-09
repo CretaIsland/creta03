@@ -49,13 +49,13 @@ class MyCustomPainter extends CustomPainter {
   double _buttonStartPoint() {
     switch (VerticalAppBar.appBarSelected) {
       case VerticalAppBarType.community:
-        return 100;
+        return 105;
       case VerticalAppBarType.studio:
-        return 100 + 14 + 50;
+        return 105 + 15 + 60;
       case VerticalAppBarType.device:
-        return 100 + 14 + 50 + 14 + 50;
+        return 105 + 15 + 60 + 15 + 60;
       case VerticalAppBarType.admin:
-        return 100 + 14 + 50 + 14 + 50 + 14 + 50;
+        return 105 + 15 + 60 + 15 + 60 + 15 + 60;
     }
   }
 }
@@ -142,6 +142,15 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
     );
   }
 
+  void _communityLogoPressed() {
+    Routemaster.of(context).push(AppRoutes.communityHome);
+    VerticalAppBar.appBarSelected = VerticalAppBarType.community;
+    VerticalAppBar.fold = false;
+    CretaComponentLocation.TabBar.width = 310.0 - CretaConst.verticalAppbarWidth;
+    _foldSendEvent?.sendEvent(false);
+    widget.onFoldButtonPressed();
+  }
+
   Widget communityLogo(BuildContext context) {
     return Stack(
       alignment: Alignment.center,
@@ -150,24 +159,26 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
           size: const Size(40, 40),
           iconSize: 24,
           icon: Icons.language,
-          onPressed: () {
-            Routemaster.of(context).push(AppRoutes.communityHome);
-            VerticalAppBar.appBarSelected = VerticalAppBarType.community;
-            VerticalAppBar.fold = false;
-            CretaComponentLocation.TabBar.width = 310.0 - CretaConst.verticalAppbarWidth;
-            _foldSendEvent?.sendEvent(false);
-            widget.onFoldButtonPressed();
-          },
+          onPressed: _communityLogoPressed,
         ),
         Padding(
           padding: const EdgeInsets.only(top: 34),
-          child: Text(
-            "Community", //CretaDeviceLang.community,
-            style: CretaFont.logoStyle.copyWith(color: Colors.white),
+          child: TextButton(
+            onPressed: _communityLogoPressed,
+            child: Text("Community", style: CretaFont.logoStyle.copyWith(color: Colors.white)),
           ),
         ),
       ],
     );
+  }
+
+  void _studioLogoPressed() {
+    Routemaster.of(context).push(AppRoutes.studioBookGridPage);
+    VerticalAppBar.appBarSelected = VerticalAppBarType.studio;
+    VerticalAppBar.fold = false;
+    CretaComponentLocation.TabBar.width = 310.0 - CretaConst.verticalAppbarWidth;
+    _foldSendEvent?.sendEvent(false);
+    widget.onFoldButtonPressed();
   }
 
   Widget studioLogo(BuildContext context) {
@@ -178,24 +189,29 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
           icon: Icons.edit_note_outlined,
           size: const Size(40, 40),
           iconSize: 24,
-          onPressed: () {
-            Routemaster.of(context).push(AppRoutes.studioBookGridPage);
-            VerticalAppBar.appBarSelected = VerticalAppBarType.studio;
-            VerticalAppBar.fold = false;
-            CretaComponentLocation.TabBar.width = 310.0 - CretaConst.verticalAppbarWidth;
-            _foldSendEvent?.sendEvent(false);
-            widget.onFoldButtonPressed();
-          },
+          onPressed: _studioLogoPressed,
         ),
         Padding(
           padding: const EdgeInsets.only(top: 34),
-          child: Text(
-            "Studio", //CretaDeviceLang.studio,
-            style: CretaFont.logoStyle.copyWith(color: Colors.white),
+          child: TextButton(
+            onPressed: _studioLogoPressed,
+            child: Text(
+              "Studio", //CretaDeviceLang.studio,
+              style: CretaFont.logoStyle.copyWith(color: Colors.white),
+            ),
           ),
         ),
       ],
     );
+  }
+
+  void _deviceLogoPressed() {
+    Routemaster.of(context).push(AppRoutes.deviceMainPage);
+    VerticalAppBar.appBarSelected = VerticalAppBarType.device;
+    VerticalAppBar.fold = false;
+    _foldSendEvent?.sendEvent(false);
+    CretaComponentLocation.TabBar.width = 310.0 - CretaConst.verticalAppbarWidth;
+    widget.onFoldButtonPressed();
   }
 
   Widget deviceLogo(BuildContext context) {
@@ -206,24 +222,29 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
           icon: Icons.tv_outlined,
           size: const Size(40, 40),
           iconSize: 24,
-          onPressed: () {
-            Routemaster.of(context).push(AppRoutes.deviceMainPage);
-            VerticalAppBar.appBarSelected = VerticalAppBarType.device;
-            VerticalAppBar.fold = false;
-            _foldSendEvent?.sendEvent(false);
-            CretaComponentLocation.TabBar.width = 310.0 - CretaConst.verticalAppbarWidth;
-            widget.onFoldButtonPressed();
-          },
+          onPressed: _deviceLogoPressed,
         ),
         Padding(
           padding: const EdgeInsets.only(top: 34),
-          child: Text(
-            "Device", //CretaDeviceLang.device,
-            style: CretaFont.logoStyle.copyWith(color: Colors.white),
+          child: TextButton(
+            onPressed: _deviceLogoPressed,
+            child: Text(
+              "Device", //CretaDeviceLang.device,
+              style: CretaFont.logoStyle.copyWith(color: Colors.white),
+            ),
           ),
         ),
       ],
     );
+  }
+
+  void _adminLogoPressed() {
+    Routemaster.of(context).push(AppRoutes.adminMainPage);
+    VerticalAppBar.appBarSelected = VerticalAppBarType.admin;
+    VerticalAppBar.fold = false;
+    _foldSendEvent?.sendEvent(false);
+    CretaComponentLocation.TabBar.width = 310.0 - CretaConst.verticalAppbarWidth;
+    widget.onFoldButtonPressed();
   }
 
   Widget adminLogo(BuildContext context) {
@@ -234,20 +255,16 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
           icon: Icons.admin_panel_settings_outlined,
           size: const Size(40, 40),
           iconSize: 24,
-          onPressed: () {
-            Routemaster.of(context).push(AppRoutes.adminMainPage);
-            VerticalAppBar.appBarSelected = VerticalAppBarType.admin;
-            VerticalAppBar.fold = false;
-            _foldSendEvent?.sendEvent(false);
-            CretaComponentLocation.TabBar.width = 310.0 - CretaConst.verticalAppbarWidth;
-            widget.onFoldButtonPressed();
-          },
+          onPressed: _adminLogoPressed,
         ),
         Padding(
           padding: const EdgeInsets.only(top: 34),
-          child: Text(
-            "Admin", //CretaDeviceLang.admin,
-            style: CretaFont.logoStyle.copyWith(color: Colors.white),
+          child: TextButton(
+            onPressed: _adminLogoPressed,
+            child: Text(
+              "Admin", //CretaDeviceLang.admin,
+              style: CretaFont.logoStyle.copyWith(color: Colors.white),
+            ),
           ),
         ),
       ],

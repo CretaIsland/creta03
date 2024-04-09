@@ -170,6 +170,7 @@ class StudioSnippet {
     ContentsModel model,
     ContentsManager contentsManager,
     Uint8List blob,
+    //{required void Function(ContentsModel model) onUploaded,}
   ) async {
     // 파일명을 확장자와 파일명으로 분리함.
     int pos = model.file!.name.lastIndexOf('.');
@@ -190,7 +191,7 @@ class StudioSnippet {
     String uniqFileName = '${name}_${model.bytes}$ext';
 
     UploadingPopup.uploadStart(model.name);
-
+    await Future.delayed(const Duration(milliseconds: 200)); //  upload 중 다이얼로그가 화면에 나올 수 있도록
     FileModel? fileModel = await HycopFactory.storage!.uploadFile(uniqFileName, model.mime, blob);
 
     if (fileModel != null) {
@@ -221,6 +222,7 @@ class StudioSnippet {
     }
     logger.info('send event to property');
     logger.info('uploaded thumbnailUrl = ${model.thumbnailUrl}');
+    print('uploaded thumbnailUrl = ${model.thumbnailUrl}');
     UploadingPopup.uploadEnd(model.name);
     contentsManager.sendEvent?.sendEvent(model);
   }

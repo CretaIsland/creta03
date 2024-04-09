@@ -203,7 +203,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                           padding: 4,
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10.0),
+                          padding: const EdgeInsets.only(bottom: 10.0),
                           child: TextFormField(
                             initialValue: widget.hostModel.holiday,
                             decoration: const InputDecoration(

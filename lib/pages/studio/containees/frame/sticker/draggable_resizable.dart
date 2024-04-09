@@ -174,11 +174,12 @@ class DraggableResizableState extends CretaState<DraggableResizable> {
       anglChanged = true;
     }
 
-    if (widget.frameModel != null && oldWidget.frameModel != null) {
-      if (widget.frameModel!.isFixedRatio.value != oldWidget.frameModel!.isFixedRatio.value) {
-        _isFixedRatio = widget.frameModel!.isFixedRatio.value;
-      }
-    }
+    // if (widget.frameModel != null && oldWidget.frameModel != null) {
+    //   if (widget.frameModel!.isFixedRatio.value != oldWidget.frameModel!.isFixedRatio.value) {
+    //     _isFixedRatio = widget.frameModel!.isFixedRatio.value;
+    //     print('DraggableResizable.didUpdateWidget ===================$_isFixedRatio');
+    //   }
+    // }
 
     if (sizeChanged || posiChanged || anglChanged) {
       //setState(() {
@@ -198,7 +199,6 @@ class DraggableResizableState extends CretaState<DraggableResizable> {
 
   @override
   void initState() {
-    //print('DraggableResizableState.initState()');
     super.initState();
     _size = widget.sticker.frameSize;
     //constraints = const BoxConstraints.expand(width: 1, height: 1);
@@ -213,13 +213,14 @@ class DraggableResizableState extends CretaState<DraggableResizable> {
     //     });
     //   }
     // });
-    _isFixedRatio = (widget.frameModel != null && widget.frameModel!.isFixedRatio.value);
+
     //bool isAutoFit = (widget.frameModel != null && widget.frameModel!.isAutoFit.value);
     _whRatio = (_size.height / _size.width);
   }
 
   @override
   Widget build(BuildContext context) {
+    _isFixedRatio = (widget.frameModel != null && widget.frameModel!.isFixedRatio.value);
     // _isFixedRatio = (widget.frameModel != null && widget.frameModel!.isFixedRatio.value);
     // _whRatio = (_size.height / _size.width);
 

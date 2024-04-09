@@ -30,12 +30,11 @@ class CretaDeviceLang {
   static const String studio = "스튜디오";
   static const String community = "커뮤니티";
   static const String admin = "인증센터";
-  
+
   static const String license = "라이센스 설정";
-  static const String enterprise = "엔터프라이즈 설정";
+  static const String enterprise = "커스터머 설정";
 
   static const String selectBook = "방송할 크레타 북을 선택하세요.";
-
 
   static const List<String> basicHostFilter = [
     "용도별(전체)",

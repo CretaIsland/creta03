@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:hycop/hycop.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
@@ -58,6 +59,7 @@ class ContentsOrderedList extends StatefulWidget {
 class _ContentsOrderedListState extends State<ContentsOrderedList> with PropertyMixin {
   //final ScrollController scrollController = ScrollController();
   FrameEventController? _sendEvent;
+  ContentsEventController? _receiveEvent;
   bool _isPlayListOpen = true;
   final double spacing = 6.0;
   final double lineHeight = LayoutConst.contentsListHeight;
@@ -75,7 +77,9 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     super.initState();
     initMixin();
     final FrameEventController sendEvent = Get.find(tag: 'frame-property-to-main');
+    final ContentsEventController receiveEvent = Get.find(tag: 'contents-property-to-main');
     _sendEvent = sendEvent;
+    _receiveEvent = receiveEvent;
     _frameModel = widget.contentsManager.frameModel;
   }
 
@@ -170,95 +174,109 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     if (model != null && model.isText()) {
       return _textEditor(model);
     }
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        // Scrollbar(
-        //   controller: scrollController,
-        //   thumbVisibility: false,
-        //   trackVisibility: false,
-        //   child:
-        SizedBox(
-          width: LayoutConst.rightMenuWidth,
-          height: boxHeight,
-          child: DropZoneWidget(
-            bookMid: _frameModel.realTimeKey,
-            parentId: '',
-            onDroppedFile: (modelList) {
-              String frameId = _frameModel.mid;
-              logger.fine(' dropzone contents added to $frameId');
-              ContentsManager.createContents(
-                widget.frameManager,
-                modelList,
-                _frameModel,
-                widget.contentsManager.pageModel,
-                isResizeFrame: false,
-                onUploadComplete: (currentModel) {
-                  if (currentModel.isMusic()) {
-                    debugPrint('--------------add song named ${currentModel.name} to playlist');
-                    GlobalObjectKey<MusicPlayerFrameState>? musicKey =
-                        BookMainPage.musicKeyMap[frameId];
-                    if (musicKey != null) {
-                      musicKey.currentState?.addMusic(currentModel);
-                    } else {
-                      logger.severe('musicKey  is null');
-                    }
-                  }
-                },
-              );
-            },
-            child: ReorderableListView.builder(
-              //scrollController: scrollController,
-              itemCount: itemCount,
-              buildDefaultDragHandles: false,
-              onReorder: (int oldIndex, int newIndex) {
-                setState(() {
-                  if (newIndex > oldIndex) {
-                    newIndex -= 1;
-                  }
+    return StreamBuilder<AbsExModel>(
+        stream: _receiveEvent!.eventStream.stream,
+        builder: (context, snapshot) {
+          //print('snapshot.data=${snapshot.data}');
+          //print('snapshot.data is ContentsModel=${snapshot.data is ContentsModel}');
+          if (snapshot.data != null && snapshot.data is ContentsModel) {
+            ContentsModel model = snapshot.data! as ContentsModel;
+            widget.contentsManager.updateModel(model);
+            logger.fine('model updated ${model.name}, ${model.url}');
+          }
+          print('ContentsOrderedList StreamBuilder =====================');
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              // Scrollbar(
+              //   controller: scrollController,
+              //   thumbVisibility: false,
+              //   trackVisibility: false,
+              //   child:
+              SizedBox(
+                width: LayoutConst.rightMenuWidth,
+                height: boxHeight,
+                child: DropZoneWidget(
+                  bookMid: _frameModel.realTimeKey,
+                  parentId: '',
+                  onDroppedFile: (modelList) {
+                    String frameId = _frameModel.mid;
+                    logger.fine(' dropzone contents added to $frameId');
+                    ContentsManager.createContents(
+                      widget.frameManager,
+                      modelList,
+                      _frameModel,
+                      widget.contentsManager.pageModel,
+                      isResizeFrame: false,
+                      onUploadComplete: (currentModel) {
+                        if (currentModel.isMusic()) {
+                          debugPrint(
+                              '--------------add song named ${currentModel.name} to playlist');
+                          GlobalObjectKey<MusicPlayerFrameState>? musicKey =
+                              BookMainPage.musicKeyMap[frameId];
+                          if (musicKey != null) {
+                            musicKey.currentState?.addMusic(currentModel);
+                          } else {
+                            logger.severe('musicKey  is null');
+                          }
+                        }
+                      },
+                    );
+                  },
+                  child: ReorderableListView.builder(
+                    //scrollController: scrollController,
+                    itemCount: itemCount,
+                    buildDefaultDragHandles: false,
+                    onReorder: (int oldIndex, int newIndex) {
+                      setState(() {
+                        if (newIndex > oldIndex) {
+                          newIndex -= 1;
+                        }
 
-                  final ContentsModel pushedOne = items[newIndex] as ContentsModel;
-                  ContentsModel movedOne = items[oldIndex] as ContentsModel;
+                        final ContentsModel pushedOne = items[newIndex] as ContentsModel;
+                        ContentsModel movedOne = items[oldIndex] as ContentsModel;
 
-                  logger.fine(
-                      '${pushedOne.name}, ${pushedOne.order.value} ,<=> ${movedOne.name}, ${movedOne.order.value} ');
-                  widget.contentsManager.pushReverseOrder(movedOne.mid, pushedOne.mid, "playList",
-                      onComplete: () {
-                    widget.contentsManager.reOrdering();
-                    if (model != null && model.isMusic()) {
-                      String frameId = _frameModel.mid;
-                      GlobalObjectKey<MusicPlayerFrameState>? musicKey =
-                          BookMainPage.musicKeyMap[frameId];
-                      if (musicKey != null) {
-                        musicKey.currentState?.reorderPlaylist(model, oldIndex, newIndex);
-                      } else {
-                        logger.severe('musicKey is null');
-                      }
-                    }
-                    LeftMenuPage.treeInvalidate();
-                    LeftMenuPage.initTreeNodes();
-                  });
+                        logger.fine(
+                            '${pushedOne.name}, ${pushedOne.order.value} ,<=> ${movedOne.name}, ${movedOne.order.value} ');
+                        widget.contentsManager.pushReverseOrder(
+                            movedOne.mid, pushedOne.mid, "playList", onComplete: () {
+                          widget.contentsManager.reOrdering();
+                          if (model != null && model.isMusic()) {
+                            String frameId = _frameModel.mid;
+                            GlobalObjectKey<MusicPlayerFrameState>? musicKey =
+                                BookMainPage.musicKeyMap[frameId];
+                            if (musicKey != null) {
+                              musicKey.currentState?.reorderPlaylist(model, oldIndex, newIndex);
+                            } else {
+                              logger.severe('musicKey is null');
+                            }
+                          }
+                          LeftMenuPage.treeInvalidate();
+                          LeftMenuPage.initTreeNodes();
+                        });
 
-                  // widget.contentsManager.reOrdering().then((value) {
-                  //   return null;
-                  // });
-                });
-              },
-              itemBuilder: (BuildContext context, int index) {
-                return _itemWidget(index, items);
-                // return ListTile(
-                //   key: Key('$index'),
-                //   title: Text(model.name, style: CretaFont.bodySmall),
-                //   leading: const Icon(Icons.drag_handle),
-                // );
-              },
-            ),
-          ),
-        ),
-        //),
-        if (_selectedIndex >= 0 && itemCount > 0 && _selectedIndex < itemCount) ..._info(items),
-      ],
-    );
+                        // widget.contentsManager.reOrdering().then((value) {
+                        //   return null;
+                        // });
+                      });
+                    },
+                    itemBuilder: (BuildContext context, int index) {
+                      return _itemWidget(index, items);
+                      // return ListTile(
+                      //   key: Key('$index'),
+                      //   title: Text(model.name, style: CretaFont.bodySmall),
+                      //   leading: const Icon(Icons.drag_handle),
+                      // );
+                    },
+                  ),
+                ),
+              ),
+              //),
+              if (_selectedIndex >= 0 && itemCount > 0 && _selectedIndex < itemCount)
+                ..._info(items),
+            ],
+          );
+        });
   }
 
   Widget _itemWidget(int index, List<CretaModel> items) {

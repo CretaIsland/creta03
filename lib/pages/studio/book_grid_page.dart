@@ -86,10 +86,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
 
   @override
   void initState() {
-    logger.fine('initState start');
-
     super.initState();
-
     //_controller = ScrollController();
     //_controller.addListener(_scrollListener);
     _controller = getBannerScrollController;

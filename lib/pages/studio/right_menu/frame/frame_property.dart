@@ -502,6 +502,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                             setState(() {
                               widget.model.isFixedRatio.set(!widget.model.isFixedRatio.value);
                             });
+                            _sendEvent!.sendEvent(widget.model);
                           }),
                       SizedBox(
                         width: 97,
