@@ -222,7 +222,6 @@ class StudioSnippet {
     }
     logger.info('send event to property');
     logger.info('uploaded thumbnailUrl = ${model.thumbnailUrl}');
-    print('uploaded thumbnailUrl = ${model.thumbnailUrl}');
     UploadingPopup.uploadEnd(model.name);
     contentsManager.sendEvent?.sendEvent(model);
   }

@@ -3,10 +3,7 @@ import 'package:creta_common/common/creta_const.dart';
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hycop/common/undo/undo.dart';
-import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop.dart';
-import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 
@@ -184,7 +181,6 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
             widget.contentsManager.updateModel(model);
             logger.fine('model updated ${model.name}, ${model.url}');
           }
-          print('ContentsOrderedList StreamBuilder =====================');
           return Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
