@@ -1,8 +1,10 @@
 // ignore_for_file: non_constant_identifier_names, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'package:creta03/design_system/buttons/creta_button.dart';
 import 'package:creta03/pages/popup/creta_version_popup.dart';
+import 'package:creta_user_io/data_io/user_property_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,6 +22,7 @@ import 'package:url_launcher/link.dart';
 //import '../../common/creta_utils.dart';
 import '../../data_io/frame_manager.dart';
 import 'package:creta_common/lang/creta_lang.dart';
+//import '../../lang/creta_mypage_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../pages/studio/book_main_page.dart';
 import '../../pages/studio/studio_constant.dart';
@@ -32,6 +35,7 @@ import '../buttons/creta_button_wrapper.dart';
 import '../menu/creta_popup_menu.dart';
 import '../../pages/login/login_dialog.dart';
 import '../../pages/login/creta_account_manager.dart';
+//import '../menu/creta_widget_drop_down.dart';
 
 // get widgets Global Size and Position
 extension GlobalKeyExtension on GlobalKey {
@@ -348,7 +352,7 @@ class Snippet {
           onPressed: () {
             _popupAccountMenu(
                 GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_image_l'), context,
-                xOffset: 30);
+                xOffset: 72, yOffset: -190);
           },
         ),
       ),
@@ -385,16 +389,25 @@ class Snippet {
   }
 
   // MyPage Scaffold
-  static Widget CretaScaffoldOfMyPage(
-      {required Widget title, required BuildContext context, required Widget child}) {
+  static Widget CretaScaffoldOfMyPage({
+    required Widget title,
+    required BuildContext context,
+    required Function onFoldButtonPressed,
+    required Widget child,
+  }) {
     return Scaffold(
-      appBar: Snippet.CretaAppBarOfMyPage(context, title),
-      floatingActionButton: CretaVars.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
-      body: Container(
-        color: Colors.white,
-        child: child,
-      ),
-    );
+        //appBar: Snippet.CretaAppBarOfMyPage(context, title),
+        floatingActionButton:
+            CretaVars.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
+        body: Row(
+          children: [
+            VerticalAppBar(onFoldButtonPressed: onFoldButtonPressed),
+            Container(
+              color: Colors.white,
+              child: child,
+            ),
+          ],
+        ));
   }
 
   // Creta MyPage AppBar
@@ -473,11 +486,12 @@ class Snippet {
   }
 
   static void _popupAccountMenu(GlobalKey key, BuildContext context,
-      {void Function()? invalidate, double xOffset = -60}) {
+      {void Function()? invalidate, double xOffset = -60, double yOffset = 0}) {
     CretaPopupMenu.showMenu(
       context: context,
       globalKey: key,
       xOffset: xOffset,
+      yOffset: yOffset,
       popupMenu: [
         CretaMenuItem(
           caption: CretaLang.accountMenu[0], // 마이페이지
@@ -1097,5 +1111,15 @@ class Snippet {
         ),
       ],
     );
+  }
+
+  static void onLangSelected({
+    required int value,
+    required UserPropertyManager userPropertyManager,
+    required Function() invalidate,
+  }) {
+    userPropertyManager.userPropertyModel!.language = LanguageType.fromInt(value);
+    AbsCretaLang.changeLang(userPropertyManager.userPropertyModel!.language);
+    invalidate();
   }
 }

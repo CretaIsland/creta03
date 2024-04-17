@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+//import 'package:creta_common/lang/creta_lang.dart';
 import 'package:creta_user_io/data_io/user_property_manager.dart';
 import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
 import 'package:creta_common/common/creta_font.dart';
@@ -15,6 +16,8 @@ import 'package:image_picker/image_picker.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
+
+import '../../../design_system/component/snippet.dart';
 
 class MyPageInfo extends StatefulWidget {
   final double width;
@@ -60,6 +63,10 @@ class _MyPageInfoState extends State<MyPageInfo> {
     return Consumer<UserPropertyManager>(
       builder: (context, userPropertyManager, child) {
         _nicknameController.text = userPropertyManager.userPropertyModel!.nickname;
+        int countryIndex = userPropertyManager.userPropertyModel!.country.index;
+        int langIndex = userPropertyManager.userPropertyModel!.language.index;
+        int jobIndex = userPropertyManager.userPropertyModel!.job.index;
+
         return Container(
           width: widget.width,
           height: widget.height,
@@ -71,7 +78,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("개인 정보",
+                        Text(CretaMyPageLang.info,
                             style: CretaFont.displaySmall.copyWith(fontWeight: FontWeight.w600)),
                         MyPageCommonWidget.divideLine(
                             width: widget.width * .6,
@@ -80,7 +87,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(width: 12.0),
-                            Text("사진", style: CretaFont.titleMedium),
+                            Text(CretaMyPageLang.profileImage, style: CretaFont.titleMedium),
                             const SizedBox(width: 94),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,7 +135,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                                     )),
                                 const SizedBox(height: 24),
                                 BTN.line_blue_t_m(
-                                    text: "기본 이미지로 변경",
+                                    text: CretaMyPageLang.basicProfileImgBTN,
                                     onPressed: () {
                                       userPropertyManager.userPropertyModel!.profileImgUrl = '';
                                       userPropertyManager.notify();
@@ -147,13 +154,13 @@ class _MyPageInfoState extends State<MyPageInfo> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("닉네임", style: CretaFont.titleMedium),
+                                Text(CretaMyPageLang.nickname, style: CretaFont.titleMedium),
                                 const SizedBox(height: 30),
-                                Text("이메일", style: CretaFont.titleMedium),
+                                Text(CretaMyPageLang.email, style: CretaFont.titleMedium),
                                 const SizedBox(height: 30),
-                                Text("연락처", style: CretaFont.titleMedium),
+                                Text(CretaMyPageLang.phoneNumber, style: CretaFont.titleMedium),
                                 const SizedBox(height: 30),
-                                Text("비밀번호", style: CretaFont.titleMedium),
+                                Text(CretaMyPageLang.password, style: CretaFont.titleMedium),
                               ],
                             ),
                             const SizedBox(width: 67),
@@ -166,8 +173,8 @@ class _MyPageInfoState extends State<MyPageInfo> {
                                     child: TextField(
                                       controller: _nicknameController,
                                       style: CretaFont.bodyMedium,
-                                      decoration: const InputDecoration(
-                                        hintText: '닉네임을 입력해주세요',
+                                      decoration: InputDecoration(
+                                        hintText: CretaMyPageLang.nicknameInput,
                                         border: InputBorder.none,
                                       ),
                                       onEditingComplete: () => userPropertyManager
@@ -184,7 +191,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                                 const SizedBox(height: 26),
                                 BTN.line_blue_t_m(
                                     height: 32,
-                                    text: "비밀번호 변경",
+                                    text: CretaMyPageLang.passwordChangeBTN,
                                     onPressed: () => showDialog(
                                         context: context,
                                         builder: (context) =>
@@ -204,11 +211,11 @@ class _MyPageInfoState extends State<MyPageInfo> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const SizedBox(height: 8),
-                                Text("국가", style: CretaFont.titleMedium),
+                                Text(CretaMyPageLang.country, style: CretaFont.titleMedium),
                                 const SizedBox(height: 30),
-                                Text("언어", style: CretaFont.titleMedium),
+                                Text(CretaMyPageLang.language, style: CretaFont.titleMedium),
                                 const SizedBox(height: 30),
-                                Text("직업", style: CretaFont.titleMedium),
+                                Text(CretaMyPageLang.job, style: CretaFont.titleMedium),
                               ],
                             ),
                             const SizedBox(width: 110),
@@ -218,30 +225,40 @@ class _MyPageInfoState extends State<MyPageInfo> {
                                 CretaWidgetDropDown(
                                     width: 116,
                                     items: countryItemList,
-                                    defaultValue:
-                                        userPropertyManager.userPropertyModel!.country.index,
+                                    defaultValue: countryIndex > 0 ? countryIndex - 1 : 0,
                                     onSelected: (value) {
                                       userPropertyManager.userPropertyModel!.country =
-                                          CountryType.fromInt(value);
+                                          CountryType.fromInt(value + 1);
                                     }),
                                 const SizedBox(height: 20.0),
                                 CretaWidgetDropDown(
                                     width: 102,
                                     items: languageItemList,
-                                    defaultValue:
-                                        userPropertyManager.userPropertyModel!.language.index,
+                                    defaultValue: langIndex > 0 ? langIndex - 1 : 0,
                                     onSelected: (value) {
-                                      userPropertyManager.userPropertyModel!.language =
-                                          LanguageType.fromInt(value);
+                                      Snippet.onLangSelected(
+                                        value: value + 1,
+                                        userPropertyManager: userPropertyManager,
+                                        invalidate: () {
+                                          setState(() {});
+                                          
+                                        },
+                                      );
+                                      // userPropertyManager.userPropertyModel!.language =
+                                      //     LanguageType.fromInt(value + 1);
+                                      // setState(() {
+                                      //   AbsCretaLang.changeLang(
+                                      //       userPropertyManager.userPropertyModel!.language);
+                                      // });
                                     }),
                                 const SizedBox(height: 20.0),
                                 CretaWidgetDropDown(
                                     width: 102,
                                     items: jobItemList,
-                                    defaultValue: userPropertyManager.userPropertyModel!.job.index,
+                                    defaultValue: jobIndex > 0 ? jobIndex - 1 : 0,
                                     onSelected: (value) {
                                       userPropertyManager.userPropertyModel!.job =
-                                          JobType.fromInt(value);
+                                          JobType.fromInt(value + 1);
                                     }),
                               ],
                             )
@@ -249,7 +266,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                         ),
                         const SizedBox(height: 46),
                         BTN.fill_blue_t_el(
-                            text: '변경사항 저장',
+                            text: CretaMyPageLang.save,
                             onPressed: () async {
                               userPropertyManager.setToDB(userPropertyManager.userPropertyModel!);
                             }),

@@ -117,7 +117,7 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
       ),
       CretaMenuItem(
         // 출력한다.
-        caption: CretaLang.print,
+        caption: CretaLang.printCommand,
         onPressed: () {},
         disabled: true,
       ),

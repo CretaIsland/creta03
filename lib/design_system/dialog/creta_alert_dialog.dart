@@ -1,5 +1,7 @@
 //import 'dart:ui';
 
+// ignore_for_file: must_be_immutable
+
 import 'package:creta_common/lang/creta_lang.dart';
 import 'package:flutter/material.dart';
 import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
@@ -12,8 +14,8 @@ class CretaAlertDialog extends StatelessWidget {
   final EdgeInsets padding;
   final Icon? icon;
   final Widget content;
-  final String cancelButtonText;
-  final String okButtonText;
+  String? cancelButtonText;
+  String? okButtonText;
   final double okButtonWidth;
   final Function onPressedOK;
   final Function? onPressedCancel;
@@ -21,21 +23,24 @@ class CretaAlertDialog extends StatelessWidget {
   final String? title;
   final Widget? titleTrail;
 
-  const CretaAlertDialog(
+  CretaAlertDialog(
       {super.key,
       this.width = 387.0,
       this.height = 308.0,
       this.padding = const EdgeInsets.only(left: 32.0, right: 32.0),
       this.icon,
       required this.content,
-      this.cancelButtonText = CretaLang.cancel,
-      this.okButtonText = CretaLang.confirm,
+      this.cancelButtonText, // = CretaLang.cancel,
+      this.okButtonText, // = CretaLang.confirm,
       this.okButtonWidth = 55,
       this.backgroundColor,
       this.title,
       this.titleTrail,
       required this.onPressedOK,
-      this.onPressedCancel});
+      this.onPressedCancel}) {
+    cancelButtonText ??= CretaLang.cancel;
+    okButtonText ??= CretaLang.confirm;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +138,7 @@ class CretaAlertDialog extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           BTN.line_red_t_m(
-                              text: cancelButtonText,
+                              text: cancelButtonText!,
                               onPressed: () {
                                 if (onPressedCancel != null) {
                                   onPressedCancel!.call();
@@ -143,7 +148,7 @@ class CretaAlertDialog extends StatelessWidget {
                               }),
                           const SizedBox(width: 8.0),
                           BTN.fill_red_t_m(
-                              text: okButtonText, width: okButtonWidth, onPressed: onPressedOK)
+                              text: okButtonText!, width: okButtonWidth, onPressed: onPressedOK)
                         ],
                       )),
                 ],

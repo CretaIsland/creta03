@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:creta_common/lang/creta_lang.dart';
 import 'package:flutter/material.dart';
 import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
@@ -10,8 +12,8 @@ class EditorDialog extends StatefulWidget {
   final double width;
   final double height;
   final EdgeInsets padding;
-  final String cancelButtonText;
-  final String okButtonText;
+  String? cancelButtonText;
+  String? okButtonText;
   final double okButtonWidth;
   final Function(String) onPressedOK;
   final Function? onPressedCancel;
@@ -23,13 +25,13 @@ class EditorDialog extends StatefulWidget {
   //final void Function() onComplete;
   final String initialText;
 
-  const EditorDialog(
+  EditorDialog(
       {super.key,
       this.width = 387.0,
       this.height = 308.0,
       this.padding = const EdgeInsets.only(left: 32.0, right: 32.0),
-      this.cancelButtonText = CretaLang.cancel,
-      this.okButtonText = CretaLang.confirm,
+      this.cancelButtonText, // = CretaLang.cancel,
+      this.okButtonText, // = CretaLang.confirm,
       this.okButtonWidth = 55,
       this.backgroundColor,
       required this.dialogOffset,
@@ -39,7 +41,10 @@ class EditorDialog extends StatefulWidget {
       required this.frameSize,
       required this.initialText,
       //required this.onComplete,
-      this.onPressedCancel});
+      this.onPressedCancel}) {
+    cancelButtonText ??= CretaLang.cancel;
+    okButtonText ??= CretaLang.confirm;
+  }
 
   @override
   State<EditorDialog> createState() => _EditorDialogState();
@@ -151,7 +156,7 @@ class _EditorDialogState extends State<EditorDialog> {
               //_translationButtonArea(),
               Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                 BTN.line_red_t_m(
-                    text: widget.cancelButtonText,
+                    text: widget.cancelButtonText!,
                     onPressed: () {
                       if (widget.onPressedCancel != null) {
                         widget.onPressedCancel!.call();
@@ -161,7 +166,7 @@ class _EditorDialogState extends State<EditorDialog> {
                     }),
                 const SizedBox(width: 8.0),
                 BTN.fill_red_t_m(
-                    text: widget.okButtonText,
+                    text: widget.okButtonText!,
                     width: widget.okButtonWidth,
                     onPressed: () {
                       widget.onPressedOK(_retval);

@@ -8,12 +8,12 @@ import 'dart:math';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 import 'package:routemaster/routemaster.dart';
-import 'package:url_launcher/link.dart';
+//import 'package:url_launcher/link.dart';
 
 import 'package:creta03/design_system/buttons/creta_tapbar_button.dart';
 import 'package:creta03/design_system/component/creta_basic_layout_mixin.dart';
 import 'package:creta03/design_system/component/snippet.dart';
-import 'package:creta_common/common/creta_color.dart';
+//import 'package:creta_common/common/creta_color.dart';
 import 'package:creta03/design_system/menu/creta_popup_menu.dart';
 import 'package:creta03/lang/creta_mypage_lang.dart';
 import 'package:creta_user_io/data_io/creta_manager.dart';
@@ -24,6 +24,7 @@ import 'package:creta03/pages/mypage/sub_page/my_page_info.dart';
 import 'package:creta03/pages/mypage/sub_page/my_page_settings.dart';
 import 'package:creta03/pages/mypage/sub_page/my_page_team_manage.dart';
 import 'package:creta03/routes.dart';
+import '../../design_system/component/creta_leftbar.dart';
 import '../login/creta_account_manager.dart';
 
 class MyPage extends StatefulWidget {
@@ -105,6 +106,7 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
     }
   }
 
+  // ignore: unused_element
   Widget _getCretaTapBarButton(CretaMenuItem item) {
     return CretaTapBarButton(
       iconData: item.iconData,
@@ -125,33 +127,45 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
   }
 
   Widget leftMenu() {
-    return Container(
-      width: CretaComponentLocation.TabBar.width,
+    return CretaLeftBar(
+      width: leftPaneRect.width,
       height: leftPaneRect.height,
-      color: CretaColor.text[100],
-      padding: CretaComponentLocation.TabBar.padding,
-      child: ListView.builder(
-          padding: CretaComponentLocation.ListInTabBar.padding,
-          itemCount: 1,
-          itemBuilder: (context, index) {
-            return Wrap(
-                direction: Axis.vertical,
-                spacing: 8, // <-- Spacing between children
-                children: _leftMenuItem
-                    .map((item) => (item.linkUrl == null)
-                        ? _getCretaTapBarButton(item)
-                        : Link(
-                            uri: Uri.parse(item.linkUrl!),
-                            builder: (context, function) {
-                              return InkWell(
-                                onTap: () => {},
-                                child: _getCretaTapBarButton(item),
-                              );
-                            },
-                          ))
-                    .toList());
-          }),
+      menuItem: _leftMenuItem,
+      onFoldButtonPressed: () {
+        setState(() {});
+      },
+      // gotoButtonPressed: gotoButtonPressed,
+      // gotoButtonTitle: gotoButtonTitle,
+      // gotoButtonPressed2: gotoButtonPressed2,
+      // gotoButtonTitle2: gotoButtonTitle2,
     );
+    //   return Container(
+    //     width: CretaComponentLocation.TabBar.width,
+    //     height: leftPaneRect.height,
+    //     color: CretaColor.text[100],
+    //     padding: CretaComponentLocation.TabBar.padding,
+    //     child: ListView.builder(
+    //         padding: CretaComponentLocation.ListInTabBar.padding,
+    //         itemCount: 1,
+    //         itemBuilder: (context, index) {
+    //           return Wrap(
+    //               direction: Axis.vertical,
+    //               spacing: 8, // <-- Spacing between children
+    //               children: _leftMenuItem
+    //                   .map((item) => (item.linkUrl == null)
+    //                       ? _getCretaTapBarButton(item)
+    //                       : Link(
+    //                           uri: Uri.parse(item.linkUrl!),
+    //                           builder: (context, function) {
+    //                             return InkWell(
+    //                               onTap: () => {},
+    //                               child: _getCretaTapBarButton(item),
+    //                             );
+    //                           },
+    //                         ))
+    //                   .toList());
+    //         }),
+    //   );
   }
 
   Widget rightArea() {
@@ -206,6 +220,9 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
             value: CretaAccountManager.channelManagerHolder),
       ],
       child: Snippet.CretaScaffoldOfMyPage(
+          onFoldButtonPressed: () {
+            setState(() {});
+          },
           title: Container(
             padding: const EdgeInsets.only(left: 24),
             child: InkWell(

@@ -1,3 +1,5 @@
+import 'package:creta_common/lang/creta_lang.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
 import 'package:get/get.dart';
 import 'package:creta03/routes.dart';
 import 'package:creta_common/common/creta_color.dart';
@@ -10,6 +12,10 @@ import 'package:routemaster/routemaster.dart';
 
 import 'design_system/buttons/creta_button_wrapper.dart';
 import 'design_system/component/snippet.dart';
+//import 'design_system/menu/creta_popup_menu.dart';
+import 'design_system/menu/creta_popup_menu.dart';
+import 'lang/creta_mypage_lang.dart';
+import 'pages/login/creta_account_manager.dart';
 import 'pages/studio/studio_getx_controller.dart';
 
 class MyCustomPainter extends CustomPainter {
@@ -54,13 +60,15 @@ class MyCustomPainter extends CustomPainter {
         return 105 + 15 + 60;
       case VerticalAppBarType.device:
         return 105 + 15 + 60 + 15 + 60;
-      case VerticalAppBarType.admin:
+      case VerticalAppBarType.mypage:
         return 105 + 15 + 60 + 15 + 60 + 15 + 60;
+      case VerticalAppBarType.admin:
+        return 105 + 15 + 60 + 15 + 60 + 15 + 60 + 15 + 60;
     }
   }
 }
 
-enum VerticalAppBarType { community, studio, device, admin }
+enum VerticalAppBarType { community, studio, device, mypage, admin }
 
 class VerticalAppBar extends StatefulWidget {
   static VerticalAppBarType appBarSelected = VerticalAppBarType.community;
@@ -76,12 +84,26 @@ class VerticalAppBar extends StatefulWidget {
 
 class _VerticalAppBarState extends State<VerticalAppBar> {
   BoolEventController? _foldSendEvent;
+  List<Text> languageItemList = [];
+
+  void initLang() {
+    for (var element in CretaMyPageLang.languageList) {
+      languageItemList.add(Text(element, style: CretaFont.bodyESmall));
+    }
+
+    UserPropertyModel? userModel = CretaAccountManager.userPropertyManagerHolder.userPropertyModel;
+    if (userModel != null) {
+      //print('============================== ${userModel.email} : ${userModel.language}');
+      AbsCretaLang.changeLang(userModel.language);
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     final BoolEventController foldSendEvent = Get.find(tag: 'vertical-app-bar-to-creta-left-bar');
     _foldSendEvent = foldSendEvent;
+    initLang();
   }
 
   @override
@@ -112,7 +134,9 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
                     if (displaySize.height > 300) const SizedBox(height: 12),
                     if (displaySize.height > 300) deviceLogo(context),
                     if (displaySize.height > 350) const SizedBox(height: 12),
-                    if (displaySize.height > 350) adminLogo(context),
+                    if (displaySize.height > 350) myPageLogo(context),
+                    if (displaySize.height > 400) const SizedBox(height: 12),
+                    if (displaySize.height > 400) adminLogo(context),
                   ],
                 ),
                 if (displaySize.height > 450) _userInfoList(displaySize),
@@ -238,6 +262,39 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
     );
   }
 
+  void _myPageLogoPressed() {
+    Routemaster.of(context).push(AppRoutes.myPageDashBoard);
+    VerticalAppBar.appBarSelected = VerticalAppBarType.mypage;
+    VerticalAppBar.fold = false;
+    _foldSendEvent?.sendEvent(false);
+    CretaComponentLocation.TabBar.width = 310.0 - CretaConst.verticalAppbarWidth;
+    widget.onFoldButtonPressed();
+  }
+
+  Widget myPageLogo(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        BTN.fill_blue_i_l(
+          icon: Icons.person_outline,
+          size: const Size(40, 40),
+          iconSize: 24,
+          onPressed: _myPageLogoPressed,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 34),
+          child: TextButton(
+            onPressed: _myPageLogoPressed,
+            child: Text(
+              "My Page", //CretaDeviceLang.admin,
+              style: CretaFont.logoStyle.copyWith(color: Colors.white),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   void _adminLogoPressed() {
     Routemaster.of(context).push(AppRoutes.adminMainPage);
     VerticalAppBar.appBarSelected = VerticalAppBarType.admin;
@@ -274,6 +331,7 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
   Widget _userInfoList(Size displaySize) {
     return Padding(
       padding: EdgeInsets.only(bottom: displaySize.height > 600 ? 152 : 50),
+      //padding: const EdgeInsets.only(top: 34),
       child: Column(
         children: (!AccountManager.currentLoginUser.isLoginedUser)
             ? [
@@ -284,8 +342,93 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
                 Snippet.notiBell(context: context),
                 const SizedBox(height: 10),
                 Snippet.smallUserInfo(context: context),
+                _langSetting(displaySize),
               ],
       ),
     );
+  }
+
+  Widget _langSetting(Size displaySize) {
+    UserPropertyModel? userModel = CretaAccountManager.userPropertyManagerHolder.userPropertyModel;
+    if (userModel != null) {
+      String langStr = CretaMyPageLang
+          .languageList[userModel.language.index > 0 ? userModel.language.index - 1 : 0];
+
+      if (langStr.length > 3) {
+        langStr = langStr.substring(0, 3);
+      }
+      //print('$langStr--------------------------------------------');
+
+      const GlobalObjectKey langSettingKey = GlobalObjectKey('_langSettingKey');
+
+      return Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: TextButton(
+          key: langSettingKey,
+          style: ButtonStyle(
+            overlayColor: MaterialStateProperty.resolveWith<Color?>(
+              (Set<MaterialState> states) {
+                if (states.contains(MaterialState.hovered)) {
+                  return Colors.white.withOpacity(0.3);
+                }
+                if (states.contains(MaterialState.focused) ||
+                    states.contains(MaterialState.pressed)) {
+                  return Colors.white.withOpacity(0.5);
+                }
+                return null; // Defer to the widget's default.
+              },
+            ),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+            ),
+          ),
+          child: Text(
+            langStr,
+            style: CretaFont.buttonLarge.copyWith(color: Colors.white),
+          ),
+          onPressed: () {
+            _popupLanguageMenu(langSettingKey, context, xOffset: 72, yOffset: -190);
+          },
+        ),
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  void _popupLanguageMenu(GlobalKey key, BuildContext context,
+      {double xOffset = 0, double yOffset = 0}) {
+    CretaPopupMenu.showMenu(
+      context: context,
+      globalKey: key,
+      xOffset: xOffset,
+      yOffset: yOffset,
+      popupMenu: CretaMyPageLang.languageList
+          .asMap()
+          .map((index, lang) {
+            return MapEntry(
+                index,
+                CretaMenuItem(
+                  caption: lang,
+                  onPressed: () {
+                    Snippet.onLangSelected(
+                      value: index + 1,
+                      userPropertyManager: CretaAccountManager.userPropertyManagerHolder,
+                      invalidate: () {
+                        setState(() {});
+                        CretaAccountManager.userPropertyManagerHolder.notify();
+                      },
+                    );
+                    Routemaster.of(context).pop();
+                  },
+                ));
+          })
+          .values
+          .toList(),
+      initFunc: () {},
+    ).then((value) {
+      logger.finest('팝업메뉴 닫기');
+    });
   }
 }

@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, must_be_immutable
 
 import 'dart:math';
 
@@ -43,19 +43,22 @@ class BookPublishDialog extends StatefulWidget {
   final String title;
   final Function? onNext;
   final Function? onPrev;
-  final String nextBtTitle;
-  final String prevBtTitle;
+  String? nextBtTitle;
+  String? prevBtTitle;
 
-  const BookPublishDialog({
+  BookPublishDialog({
     super.key,
     required this.model,
     this.currentStep = 1,
     this.title = CretaStudioLang.publishSettings,
     this.onNext,
     this.onPrev,
-    this.nextBtTitle = CretaLang.next,
-    this.prevBtTitle = CretaLang.prev,
-  });
+    this.nextBtTitle, // = CretaLang.next,
+    this.prevBtTitle, // = CretaLang.prev,
+  }) {
+    nextBtTitle ??= CretaLang.next;
+    prevBtTitle ??= CretaLang.prev;
+  }
 
   @override
   State<BookPublishDialog> createState() => _BookPublishDialogState();
@@ -341,7 +344,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                             if (currentStep > 1 && currentStep < 4)
                               BTN.line_red_t_m(
                                 //width: 24,
-                                text: widget.prevBtTitle,
+                                text: widget.prevBtTitle!,
                                 onPressed: widget.onPrev ??
                                     () {
                                       setState(() {
@@ -353,7 +356,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                             if (currentStep < 4)
                               BTN.line_red_t_m(
                                 //width: 55,
-                                text: widget.nextBtTitle,
+                                text: widget.nextBtTitle!,
                                 onPressed: widget.onNext ??
                                     () {
                                       setState(() {

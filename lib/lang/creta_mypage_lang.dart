@@ -26,12 +26,15 @@ class CretaMyPageLang {
   // 개인 정보
   static String profileImage = '사진';
   static String nickname = '닉네임';
+  static String nicknameInput = '닉네임을 입력해주세요.';
   static String email = '이메일';
   static String phoneNumber = '연락처';
   static String password = '비밀번호';
   static String country = '국가';
   static String language = '언어';
   static String job = '직업';
+
+  static String save = "변경사항 저장";
 
   static List<String> countryList = ['대한민국', '미국', '일본', '중국', '베트남', '프랑스', '독일'];
 
@@ -42,7 +45,7 @@ class CretaMyPageLang {
     '中文',
     'Tiếng Việt',
     'français',
-    'Deutsche'
+    'Deutsche',
   ];
 
   static List<String> jobList = ['일반', '학생', '선생님', '디자이너', '개발자'];
