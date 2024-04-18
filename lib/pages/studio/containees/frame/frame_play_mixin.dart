@@ -458,9 +458,12 @@ mixin FramePlayMixin {
     String frameMid,
     String bookMid, {
     FontSizeType fontSizeType = FontSizeType.userDefine,
-    String remoteUrl = CretaStudioLang.defaultText,
-    String name = CretaStudioLang.defaultText,
+    String? remoteUrl,
+    String? name,
   }) async {
+    remoteUrl ??= CretaStudioLang.defaultText;
+    name ??= CretaStudioLang.defaultText;
+
     ContentsModel retval = ContentsModel.withFrame(parent: frameMid, bookMid: bookMid);
     retval.contentsType = ContentsType.text;
     retval.name = name;

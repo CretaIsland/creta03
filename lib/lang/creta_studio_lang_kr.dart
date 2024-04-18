@@ -1,0 +1,734 @@
+import 'package:flutter/material.dart';
+
+import 'creta_studio_lang.dart';
+
+class CretaStudioLangKR extends AbsCretaStudioLang {
+  CretaStudioLangKR() {
+    pageSizeMapPresentation = {
+      '사용자지정': '',
+      '표준 4 : 3': '960x720',
+      '와이드스크린 16:9': '960x540',
+      '와이드스크린 16:10': '960x600',
+      '프레젠테이션': '1920x1080',
+      '상세페이지': '860x1100',
+      '카드뉴스': '1080x1080',
+      '유튜브 썸네일': '1280x720',
+      '유튜브 채널아트': '2560x1440',
+      'SNS': '1200x1200',
+      '16:9 PC': '2560x1440',
+      '9:19 아이폰': '1080x2280',
+      '3:4 아이패드': '2048x2732',
+      '10:16 갤럭시 탭': '1600x2560',
+      '9:16 안드로이드': '1440x2560',
+      '레터': '2550x3300',
+      'a4': '2480x3508',
+      'a3': '3508x4961',
+      'a5': '1748x2480',
+      'a6': '105x148',
+      'b3': '4169x5906',
+      'b4': '2953x4169',
+      'b5': '2079x2953',
+      'c4': '2705x3827',
+      'c5': '1913x2705',
+      'c6': '1346x1913',
+    };
+
+    pageSizeListSignage = [
+      "사용자지정",
+      "4:3 스크린",
+      "16:10 스크린",
+      "16:9 스크린",
+      "21:9 스크린",
+      "32:9 스크린",
+    ];
+
+    pageSizeListBarricade = [
+      "사용자지정",
+      "3장",
+      "1장",
+      "2장",
+      "4장",
+      "5장",
+    ];
+
+    copyWrightList = [
+      "None",
+      "자유로운 사용 가능",
+      "비상업적인 목적으로만 사용 가능",
+      "출처를 공개한 경우에 한해 사용 가능",
+      "허가 없이 사용 불가",
+      "End",
+    ];
+
+    // bookTypeList = [
+    //   "None",
+    //   "프리젠테이션용",
+    //   "디지털사이니지용",
+    //   "디지털바리케이트용"
+    //       "전자칠판용",
+    //   "기타",
+    //   "End",
+    // ];
+
+    bookInfoTabBar = {
+      '크레타북 정보': 'book_info',
+      '크레타북 설정': 'book_settings',
+      '편집자 권한': 'authority',
+      '발행 이력': 'history',
+    };
+
+    frameTabBar = {
+      '프레임 설정': 'frameTab',
+      '콘텐츠 설정': 'contentsTab',
+      '링크 설정': 'linkTab',
+    };
+
+    textMenuTabBar = {
+      '텍스트 추가': 'add_text',
+      '워드 패드': 'word_pad',
+      '특수 문자': 'special_char',
+    };
+
+    imageMenuTabBar = {
+      '이미지': 'image',
+      '가져오기': 'upload_image',
+      'AI 생성': 'AI_generated_image',
+      'GIPHY의 GIF': 'GIPHY_image',
+    };
+
+    storageTypes = {
+      '전체': 'all',
+      '이미지': 'image',
+      '영상': 'video',
+      // 'CretaTest': 'test',
+    };
+
+    widgetTypes = {
+      '전체': 'all',
+      '뮤직': 'music',
+      '날씨': 'weather',
+      '날짜': 'date',
+      '시계': 'clock',
+      '스티커': 'sticker',
+      '타임라인': 'timeline',
+      '효과': 'effect',
+      '카메라': 'camera',
+      '구글맵': 'map',
+      '뉴스': 'news',
+      '환율계산': 'currency exchange',
+      '오늘 영어 ': 'daily quote',
+    };
+
+    newsCategories = {
+      '일반': 'general',
+      '사업': 'business',
+      '연예': 'entertainment',
+      '헬스': 'health',
+      '과학': 'science',
+      '스포츠': 'sports',
+      '기술': 'technology',
+    };
+
+    menuStick = [
+      "템플릿",
+      "페이지",
+      "프레임",
+      "보관함",
+      "이미지",
+      "동영상",
+      "텍스트",
+      "도형",
+      "위젯",
+      "화상회의",
+      "코멘트",
+    ];
+
+    firstCurrency = [
+      "USD",
+      "GBP",
+      "JPY",
+      "EUR",
+      "CNY",
+      "VND",
+    ];
+
+    secondCurrency = [
+      "KRW",
+      "KRW",
+      "KRW",
+      "KRW",
+      "KRW",
+      "KRW",
+    ];
+
+    menuIconList = [
+      Icons.library_books_outlined, //Icons.dynamic_feed_outlined, //MaterialIcons.dynamic_feed,
+      Icons.insert_drive_file_outlined, //MaterialIcons.insert_drive_file,
+      Icons.space_dashboard_outlined,
+      Icons.inventory_2_outlined,
+      Icons.image_outlined,
+      Icons.slideshow_outlined,
+      Icons.title_outlined,
+      Icons.pentagon_outlined,
+      Icons.interests_outlined,
+      Icons.photo_camera_outlined,
+      Icons.chat_outlined,
+    ];
+
+    frameKind = [
+      //"전체",
+      "16:9 가로형",
+      "16:9 세로형",
+      "4:3 가로형",
+      "4:3 세로형",
+      "16:10 가로형",
+      "16:10 세로형",
+      "사용자정의",
+    ];
+
+    colorTypes = [
+      //"전체",
+      "단색",
+      "그라데이션",
+    ];
+
+    imageStyleList = [
+      "사진",
+      "일러스트",
+      "디지털 아트",
+      "팝아트",
+      "수채화",
+      "유화",
+      "판화",
+      "드로잉",
+      "동양화",
+      "소묘",
+      "크레피스",
+      "스케치",
+    ];
+
+    tipMessage = ["아래에 예제와 같이 생성하고자 하는 문구를 자세하게 입력합니다.", "원하는 예술가의 스타일을 입력하여 이미지를 생성할 수 있습니다."];
+
+    detailTipMessage1 = [
+      "파란색 배경, 디지털 아트로 어항에 있는 귀여운 열대어의 3D 렌더링",
+      "성운의 폭발로 묘사된 농구 선수의 덩크를 유화로 표현",
+      "타임스퀘어에서 스케이트보드를 타는 테디베어의 사진",
+      "우주선 안의 뾰루퉁한 고양이를 오일 파스텔로 그린 작품",
+    ];
+
+    detailTipMessage2 = [
+      "크레타 섬의 풍경을 모네 스타일의 드로잉으로 그린 그림",
+      "요하네스 베르메르의 진주 귀걸이를 한소녀 작품을 해달로 표현",
+      "헤드폰 디제잉을 하고 있는 미켈란젤로의 다비드 조각상 사진",
+      "앤디 워홀 스타일의 선글라스를 쓴 프렌치 불독 그림",
+    ];
+
+    dailyQuote = "오늘의\n 명언";
+    dailyWord = "오늘의\n 단어";
+
+    myCretaBook = "내 크레타북";
+    sharedCretaBook = "공유 크레타북";
+    teamCretaBook = "팀북";
+    trashCan = "휴지통";
+
+    myCretaBookDesc = " 님의 크레타북 입니다";
+    sharedCretaBookDesc = " 님이 공유받은 크레타북입니다";
+    teamCretaBookDesc = " 팀의 크레타북 입니다";
+
+    latelyUsedFrame = "최근 사용한 프레임";
+
+    autoScale = "자동맞춤";
+
+    publish = "발행하기";
+    channelList = "채널 목록";
+    tooltipNoti = '알림이 있습니다';
+    tooltipNoNoti = '알림이 없습니다';
+    tooltipVolume = '작업하는 동안 소리를 끄거나 켭니다';
+    tooltipEdit = '화면 편집모드로 이동';
+    tooltipText = '텍스트 편집';
+    tooltipFrame = '프레임 생성';
+    tooltipNoneEdit = '화면 보기모드로 이동';
+    tooltipPause = '작업하는 동안 동영상을 정지하거나 플레이합니다';
+    tooltipUndo = '취소';
+    tooltipRedo = '복원';
+    // tooltipDownload = '다운로드';
+    tooltipInvite = '초대하기';
+    tooltipPlay = '미리보기';
+    tooltipScale = '항상 화면 크기에 알맞게 맞춥니다.';
+    tooltipDelete = '삭제하기';
+    tooltipApply = '사용하기';
+    tooltipMenu = '메뉴';
+    tooltipLink = '연결하기';
+
+    gotoCommunity = '커뮤니티로 이동';
+
+    newBook = '새 크레타북';
+    newPage = '새 페이지 추가';
+    newTemplate = '현재 페이지를 템플릿으로 저장';
+    newFrame = '새 프레임 추가';
+    treePage = '자세히 보기';
+    newText = '기본 텍스트';
+
+    templateCreating = '템플릿을 생성중입니다...';
+    templateCreated = '새로운 템플릿이 저장되었습니다.';
+    templateUpdated = '템플릿이 업데이트 되었습니다.';
+    inputTemplateName = '템플릿의 이름을 넣어주세요';
+    templateName = '템플릿 이름';
+
+    textEditorToolbar = '텍스트 편집기 열기';
+    paragraphTemplate = '문단';
+    tableTemplate = '표';
+    listText = '';
+    defaultText = '샘플 텍스트 입니다.';
+
+    wide = "전체 페이지 보기";
+    usual = "원본 보기";
+    close = "닫기";
+    collapsed = "접기";
+    open = "열기";
+    hidden = "압정";
+
+    copy = "복사하기";
+    paste = "붙여넣기";
+    crop = "잘라내기";
+    copyStyle = "서식복사";
+    pasteStyle = "서식붙여넣기";
+    showUnshow = "보이기/안보이기";
+    show = "보이기";
+    unshow = "안보이기";
+
+    description = "설명";
+    hashTab = "해시태그";
+    infomation = "정보";
+    pageSize = "페이지 크기";
+    frameSize = "프레임 기본 속성";
+    linkProp = "링크 기본 속성";
+    clickEvent = "클릭 이벤트";
+    bookBgColor = "전체 배경색";
+    pageBgColor = "페이지 배경색";
+    frameBgColor = "프레임 배경색";
+    onLine = "온라인";
+    offLine = "오프라인";
+    bookHistory = "발행이력";
+
+    updateDate = "마지막 수정 날짜";
+    createDate = "만든 날짜";
+    creator = "만든 사람";
+    copyRight = "저작권";
+    bookType = "크레타북 용도";
+    width = "너비";
+    height = "높이";
+    color = "색";
+    linkColor = "아이콘 색";
+    linkIconSize = "아이콘 크기";
+    opacity = "투명도";
+    angle = "각도";
+    radius = "모서리";
+    all = "전체";
+
+    basicColor = '기본색';
+    accentColor = '강조색';
+    customColor = '커스텀';
+    bwColor = '흑백';
+    bgColorCodeInput = '색상 코드로 입력';
+
+    glass = '유리질';
+    outlineWidth = '두께';
+    option = '옵션';
+    filter = '필터';
+    nofilter = '적용된 필터 없음             ';
+    excludeTag = '제외할 키워드 태그';
+    includeTag = '포함할 키워드 태그';
+    newfilter = '새 필터 만들기';
+    filterName = '필터 이름';
+    filterDelete = '필터 삭제';
+    filterHasNoName = '필터에 이름이 없습니다. 이름을 입력하십시오';
+    autoPlay = '자동 페이지 넘김';
+    allowReply = '좋아요/댓글 허용';
+    widthHeight = '(가로x세로)';
+    gradation = '그라데이션';
+
+    gradationTooltip = '투톤 칼러를 선택합니다';
+    colorTooltip = '기본색을 선택합니다';
+    textureTooltip = '질감을 선택합니다';
+    angleTooltip = '45도 회전합니다';
+    cornerTooltip = '각각의 코너 값을 다르게 설정합니다';
+    fullscreenTooltip = '페이지에 꽉차게 합니다';
+
+    transitionPage = "페이지 전환 효과";
+    // transitionFrame = "애니메이션";
+    effect = "배경효과";
+    contentFlipEffect = "콘텐츠 넘김 효과";
+
+    iconOption = "아이콘 선택";
+    googleMapSavedList = "저장돤 목록";
+
+    whenOpenPage = "나타날 때";
+    whenClosePage = "사라질 때";
+
+    // 사라질때,
+    nextContentTypes = [
+      "없음",
+      "일반 캐로셀",
+      "기울어진 캐로셀",
+    ];
+
+    lastestFrame = "최근에 사용한 프레임";
+    poligonFrame = "도형 프레임";
+    animationFrame = "애니메이션 프레임";
+
+    lastestFrameError = "최근에 사용한 프레임이 없습니다.";
+    poligonFrameError = "준비된 도형 프레임이 없습니다.";
+    animationFrameError = "준비된 애니메이션 프레임이 없습니다.";
+
+    queryHintText = '플레이스 홀더';
+
+    recentUsedImage = '최근 사용한 이미지';
+    recommendedImage = '추천 이미지';
+    myImage = '내 이미지';
+
+    myUploadedImage = '내 파일 가져오기';
+    recentUploadedImage = '최근 가져온 이미지';
+
+    aiImageGeneration = '생성할 이미지';
+    aiGeneratedImage = '생성된 이미지';
+    imageStyle = '이미지 스타일';
+    genAIImage = '이미지 생성하기';
+    genImageAgain = '다시 생성하기';
+    genFromBeginning = '처음부터 시작';
+
+    genAIimageTooltip = '팁';
+    tipSearchExample = '크레타선+드로잉+모내스타일';
+
+    music = '뮤직 플레이어';
+    timer = '시계';
+    sticker = '스티커';
+    effects = '효과';
+    viewMore = '더보기';
+
+    genAIerrorMsg = '서버가 혼잡하여 현재 이용할 수 없습니다. \n잠시 후에 다시 시도해주세요. \n불편을 드려 죄송합니다.';
+
+    fixedRatio = "가로세로비를 고정합니다";
+    editFilter = "필터를 편집합니다";
+
+    secondColor = "혼합색";
+
+    texture = '질감';
+
+    textureTypeList = [
+      "솔리드",
+      "유리",
+      "대리석",
+      "나무",
+      "캔버스",
+      "종이",
+      "한지",
+      "가죽",
+      "돌",
+      "잔디",
+      "모래",
+      "물방울",
+    ];
+
+    posX = 'X좌표';
+    posY = 'Y좌표';
+
+    autoFitContents = '콘텐츠 크기에 자동 맞춤';
+    overlayFrame = '모든 페이지에서 고정';
+    noOverlayFrame = '모든 페이지에서 고정 해제';
+    overlayExclude = '이 페이지에서만 고정 해제';
+    noOverlayExclude = '이 페이지에서만 고정 해제 취소';
+    backgroundMusic = '백그라운드 뮤직으로 고정';
+    foregroundMusic = '백그라운 뮤직으로 고정 해제';
+
+    ani = '애니메이션';
+    flip = '좌우 반전';
+    speed = '속도';
+    transitionSpeed = '진행 시간(초)';
+    delay = '딜레이';
+    border = '테두리';
+    shadow = '그림자';
+    borderWidth = '두께';
+    glowingBorder = '글로우 효과';
+    offset = '방향거리';
+    direction = '방향각도';
+    spread = '크기';
+    blur = '흐림';
+    style = '스타일';
+    borderPosition = '외곽선 위치';
+    borderCap = '선 마감';
+    // shadowIn = '종류';
+    nothing = '없음';
+    noBorder = '테두리 없음';
+    fitting = '피팅';
+    custom = '사용자 정의';
+    playersize = '사이즈';
+
+    //  borderPositionList = {
+    //   '경계 외부': 'outSide',
+    //   '경계 내부': 'inSide',
+    //   '경계 중앙': 'center',
+    // };
+
+    borderCapList = {
+      '둥근': 'round',
+      '각진': 'bevel',
+      '뾰족한': 'miter',
+    };
+    fitList = {
+      '맞추기': 'cover',
+      '채우기': 'fill',
+      '자유롭게': 'free',
+    };
+
+    playerSize = {
+      '큰': 'Big',
+      '중간': 'Medium',
+      '작은': 'Small',
+      '미니': 'Tiny',
+    };
+
+    newsSize = {
+      '큰': 'Big',
+      '중간': 'Medium',
+      '작은': 'Small',
+    };
+
+    shape = "모양";
+
+    eventSend = "발신 이벤트";
+    eventReceived = "수신 이벤트";
+    showWhenEventReceived = "이벤트를 받았을 때만 나타남";
+    durationType = "닫힘 조건";
+    durationSpecifiedTime = "다음 시간 후 닫힘";
+    repeatOrOnce = "무한반복";
+    repeatCount = "반복횟수";
+    reverseMove = "반대로움직이기";
+
+    durationTypeList = {
+      '닫지 않음': 'forever',
+      '콘텐츠가 끝날때': 'untilContentsEnd',
+      '지정된 시간이 경과하면': 'specified',
+    };
+
+    copyFrameTooltip = '프레임 복사';
+    deleteFrameTooltip = '프레임 삭제';
+    frontFrameTooltip = '앞으로 당기기';
+    backFrameTooltip = '뒤로 보내기';
+    rotateFrameTooltip = '15도씩 회전합니다';
+    linkFrameTooltip = '다른 프레임 콘텐츠에 연결합니다';
+    mainFrameTooltip = '메인 프레임으로 지정합니다';
+
+    flipConTooltip = '콘텐츠 플립';
+    rotateConTooltip = '콘텐츠 회전';
+    cropConTooltip = '콘텐츠 재단';
+    fullscreenConTooltip = '콘텐츠를 프레임사이즈에 맞춤';
+    deleteConTooltip = '콘텐츠 삭제';
+    editConTooltip = '콘텐츠 편집';
+
+    imageInfo = '이미지 정보';
+    fileName = '파일명';
+    contentyType = '콘텐츠타입';
+    fileSize = '파일 크기';
+    imageFilter = '이미지 필터';
+    imageControl = '이미지 조정';
+    linkControl = '링크 편집';
+    linkControlOn = '링크 이동 모드';
+    linkControlOff = '링크 이동 모드 해제';
+    linkClass = '링크 내용';
+    musicMutedControl = '음소거';
+    musicPlayerSize = '뮤직 사미즈 기능';
+
+    imageFilterTypeList = [
+      "화사한",
+      "따듯한",
+      "밝은",
+      "어두운",
+      "차가운",
+      "빈티지한",
+      "로맨틱한",
+      "차분한",
+      "부드러운",
+      "깨긋한",
+      "우아한",
+      "세피아",
+    ];
+
+    timelineShowcase = [
+      "The simplest tile",
+      "A centered tile with children",
+      "Manual aligning the indicator",
+      "Is it the first or the last?",
+      "Start to make a timeline!",
+      "Customize the indicator as you wish.",
+      "Give an Icon to the indicator.",
+      "Or provide your own custom indicator.",
+      "Customize the tile's line.",
+      "Connect tiles with TimelineDivider.",
+    ];
+
+    toFrameMenu = '프레임 메뉴로 전환';
+    toContentsMenu = '콘텐츠 메뉴로 전환';
+
+    playList = '플레이 리스트';
+    showPlayList = '플레이 리스트 보기';
+
+    //  shadowInList = {
+    //   '외부 그림자': 'outSide',
+    //   '내부 그림자': 'inSide',
+    // };
+
+    hugeText = '아주 큰 텍스트';
+    bigText = '큰 텍스트';
+    middleText = '중간 텍스트';
+    smallText = '작은 텍스트';
+    userDefineText = '사용자 정의';
+
+    textSizeMap = {
+      hugeText: 64,
+      bigText: 48,
+      middleText: 36,
+      smallText: 24,
+      userDefineText: 40,
+    };
+
+    noAutoSize = '자동 크기 조절 사용 안함 ';
+    tts = '음성으로 방송';
+    translate = '번역';
+
+    noUnshowPage = '볼 수 있는 페이지가 없습니다. 안보이기를 해제하세요';
+    inSideRotate = '상자 안에서 돌리기';
+
+    publishSettings = '발행 설정';
+    publishSteps = [
+      '정보 수정',
+      '공개 범위',
+      '채널 선택',
+      '발행 완료',
+    ];
+
+    publishTo = '공개할 사람';
+    publishingChannelList = '발행할 채널 목록';
+
+    wrongEmail = '올바른 이메일 포맷이 아니며, 해당하는 팀명이 없습니다.  이메일 주소 또는 팀명을 입력하세요';
+    noExitEmail = '등록된 사용자가 아닙니다. 자동 초대 기능은 아직 구현되지 않았습니다';
+
+    publishComplete = '발행이 완료되었습니다';
+    publishFailed = '발행이 실패하였습니다';
+    update = '수정';
+    newely = '신규';
+
+    showGrid = '그리드 보기';
+    showRuler = '눈금자 보기';
+    linkIntro = '연결할 페이지나 프레임을 선택하세요.';
+
+    filterAlreadyExist = '같은 이름의 필터가 이미 존재합니다.';
+    editFilterDialog = '필터 편집';
+
+    invitedPeople = '초대된 사람들';
+    invitedTeam = '초대된 팀들';
+
+    tickerSide = '옆으로 흐르는 문자열';
+    tickerUpDown = '상하로 흐르는 문자열';
+    rotateText = 'Rotate Text';
+    waveText = 'Wave Text';
+    fidget = 'Fidget Text';
+    shimmer = 'Shimmer Text';
+    typewriter = 'Typewriter Text';
+    wavy = 'Wavy Text';
+    neon = 'Neon Text';
+    fade = 'Fade Text';
+    bounce = 'Bounce Text';
+    transition = [
+      '랜덤 전환',
+      '서서히 전환',
+      '미끄러지듯 전환',
+      '작아졌다 커지기 전환',
+      '회전 전환',
+      '안에서 밖으로 전환',
+    ];
+
+    weather = '날씨 위젯';
+    clockandWatch = '시계와 스톱워치';
+    camera = '카메라';
+    map = '맵';
+    date = '날짜';
+    timeline = '타임라인';
+    news = '뉴스';
+    currencyXchange = '환율계산';
+    dailyEnglish = '오늘 영어';
+
+    onlineWeather = '날씨 온라인 연결';
+    offLineWeather = "날씨 수동으로 선택";
+
+    cityName = "현위치";
+    temperature = "온도";
+    humidity = "습도";
+    wind = "풍향/풍속";
+    pressure = "기압";
+    uv = "자외선지수";
+    visibility = "가시거리";
+    microDust = "미세먼지";
+    superMicroDust = "초미세먼지";
+    realSize = "원래 사이즈로";
+    maxSize = "최대 사이즈로";
+
+    useThisThumbnail = "이 콘텐츠를 썸네일로 사용";
+
+    putInDepot = "보관함에 넣기";
+    putInDepotContents = "현재 콘텐츠만 보관함에 넣기";
+    putInDepotFrame = "현재 프레임의 모든 콘텐츠 보관함에 넣기";
+
+    putInMyDepot = "내 보관함에 넣기";
+    putInTeamDepot = "팀 보관함에 넣기";
+
+    letterSpacing = "자간";
+    lineHeight = "행간";
+    fontName = "폰트";
+    fontSize = "폰트크기";
+    iconSize = "아이콘크기";
+    musicAudioControl = "소리 조정";
+    musicVol = "소리 크기";
+
+    depotComplete = "보관함으로 이동이 완료되었습니다";
+
+    downloadConfirm = '''이 작업은 시간이 오래 걸릴 수 있습니다. 정말로 다운로드 하시겠습니까?''';
+    noBtDnTextDeloper = "json파일만 받기";
+    noBtDnText = "아니오";
+    yesBtDnText = "네";
+    export = "크레타 북 내보내기(Export)";
+    inviteEmailFailed = "초대 이메일 발송이 실패했습니다";
+    inviteEmailSucceed = "초대 이메일이 발송되었습니다";
+    zipRequestFailed = "파일 다운로드 요청이 실패했습니다";
+    zipCompleteFailed = "파일 압축 요청이 실패했습니다";
+    zipStarting = "요청하신 파일의 압축작업을 진행하고 있습니다";
+    fileDownloading = "요청하신 파일의 다운로드가 시작되었습니다";
+    cretaInviteYou = "님이 당신을 크레타에 초대하였습니다";
+    pressLinkToJoinCreta1 = "님이 당신을 크레타에 초대하였습니다. 아래의 링크를 눌러 크레타에 참여해 보세요. ";
+    isSendEmail = "아직 가입되지 않은 이메일입니다. 초대 이메일을 보내시겠습니까?";
+    // carouselWarning = '캐러셀 디스플레이를 적용하려면 최소 3개의 이미지가 있어야 합니다.';
+    mainFrameExTooltip = '메인 프레임 입니다. 이 프레임의 콘텐츠가 끝나면 자동으로 다음페이지로 넘어갑니다.';
+    deleteLink = '링크 삭제';
+
+    textOverflow1 = '텍스트 길이 제한에 걸렸습니다';
+    textOverflow2 = '글자 이내로 입력하세요요.';
+    hashTagHint = '추가할 해쉬 태그를 입력하고 엔터키를 누르세요.';
+
+    notImpl = '아직 구현되지 않았습니다.';
+    isOverlayFrame = '이 프레임은 전체 페이지에 고정된 프레임입니다. 삭제하면 모든 페이지에서 이 프레임이 없어집니다';
+    deleteConfirm = '정말로 삭제하시겠습니까?';
+
+    gobackToStudio = 'Studio로 돌아가기';
+
+    myTemplate = '나의 템플릿';
+    sharedTemplate = '공용 템플릿';
+    saveAsSharedTemplate = '공용 템플릿으로 저장';
+
+    startDate = '시작 일자';
+    startTime = '시작 시간';
+    endDate = '종료 일자';
+    endTime = '종료 시간';
+    timeBasePage = '시간 지정';
+    useTimeBasePage = '시간 지정 사용';
+  }
+}

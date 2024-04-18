@@ -2,9 +2,13 @@
 
 //import 'dart:async';
 import 'package:creta_common/common/creta_vars.dart';
+import 'package:creta_user_io/data_io/user_property_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+// ignore: depend_on_referenced_packages
+import 'package:provider/provider.dart';
+
 //import 'package:flutter/gestures.dart';
 import 'package:hycop/hycop.dart';
 //import 'package:hycop/common/util/logger.dart';
@@ -2059,92 +2063,107 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     // String logoUrl = (CretaAccountManager.currentLoginUser.isLoginedUser)
     //     ? AppRoutes.communityHome
     //     : AppRoutes.intro;
-    return Snippet.CretaScaffoldOfCommunity(
-      onFoldButtonPressed : () {
-        setState(() {});
-      },
-      // title: Row(
-      //   children: [
-      //     SizedBox(
-      //       width: 24,
-      //     ),
-      //     Theme(
-      //       data: ThemeData(
-      //         hoverColor: Colors.transparent,
-      //       ),
-      //       child: Link(
-      //         uri: Uri.parse(logoUrl),
-      //         builder: (context, function) {
-      //           return InkWell(
-      //             onTap: () => Routemaster.of(context).push(logoUrl),
-      //             child: Image(
-      //               image: AssetImage('assets/creta_logo_blue.png'),
-      //               //width: 120,
-      //               height: 20,
-      //             ),
-      //           );
-      //         },
-      //       ),
-      //     ),
-      //     SizedBox(
-      //       width: 5,
-      //     ),
-      //     Text(CretaVars.serviceTypeString(),
-      //         style: CretaFont.logoStyle.copyWith(color: CretaColor.primary)),
-      //   ],
-      // ),
-      context: context,
-      getBuildContext: getBuildContext,
-      child: Stack(
-        children: [
-          mainPage(
-            bannerKey: GlobalObjectKey(
-                '${_communityChannelType.name}|${_currentChannelModel?.bannerImgUrl ?? ' '}'),
-            context,
-            gotoButtonPressed: () {
-              if (CretaAccountManager.experienceWithoutLogin) {
-                CretaAccountManager.experienceWithoutLogin = true;
-                Routemaster.of(context).push(AppRoutes.studioBookMainPage);
-              } else {
-                Routemaster.of(context).push(AppRoutes.studioBookGridPage);
-              }
-            },
-            gotoButtonTitle: CretaAccountManager.experienceWithoutLogin
-                ? CretaCommuLang.tourStudio
-                : CretaCommuLang.myCretaBookMenu,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<UserPropertyManager>.value(
+            value: CretaAccountManager.userPropertyManagerHolder),
+      ],
+      child: Consumer<UserPropertyManager>(builder: (context, userPropertyManager, childWidget) {
+        // print(
+        //     'Consumer<UserPropertyManager>---------${userPropertyManager.userPropertyModel!.language}---------');
+        if (oldLanguage != userPropertyManager.userPropertyModel!.language) {
+          _initLeftMenu();
+          _initDropdownMenu();
+          oldLanguage = userPropertyManager.userPropertyModel!.language;
+        }
+        return Snippet.CretaScaffoldOfCommunity(
+          onFoldButtonPressed: () {
+            setState(() {});
+          },
+          // title: Row(
+          //   children: [
+          //     SizedBox(
+          //       width: 24,
+          //     ),
+          //     Theme(
+          //       data: ThemeData(
+          //         hoverColor: Colors.transparent,
+          //       ),
+          //       child: Link(
+          //         uri: Uri.parse(logoUrl),
+          //         builder: (context, function) {
+          //           return InkWell(
+          //             onTap: () => Routemaster.of(context).push(logoUrl),
+          //             child: Image(
+          //               image: AssetImage('assets/creta_logo_blue.png'),
+          //               //width: 120,
+          //               height: 20,
+          //             ),
+          //           );
+          //         },
+          //       ),
+          //     ),
+          //     SizedBox(
+          //       width: 5,
+          //     ),
+          //     Text(CretaVars.serviceTypeString(),
+          //         style: CretaFont.logoStyle.copyWith(color: CretaColor.primary)),
+          //   ],
+          // ),
+          context: context,
+          getBuildContext: getBuildContext,
+          child: Stack(
+            children: [
+              mainPage(
+                bannerKey: GlobalObjectKey(
+                    '${_communityChannelType.name}|${_currentChannelModel?.bannerImgUrl ?? ' '}'),
+                context,
+                gotoButtonPressed: () {
+                  if (CretaAccountManager.experienceWithoutLogin) {
+                    CretaAccountManager.experienceWithoutLogin = true;
+                    Routemaster.of(context).push(AppRoutes.studioBookMainPage);
+                  } else {
+                    Routemaster.of(context).push(AppRoutes.studioBookGridPage);
+                  }
+                },
+                gotoButtonTitle: CretaAccountManager.experienceWithoutLogin
+                    ? CretaCommuLang.tourStudio
+                    : CretaCommuLang.myCretaBookMenu,
 
-            gotoButtonPressed2: () {
-              Routemaster.of(context).push(AppRoutes.deviceMainPage);
-            },
-            gotoButtonTitle2: (CretaVars.serviceType == ServiceType.barricade)
-                ? CretaCommuLang.myDeviceMenu
-                : null,
+                gotoButtonPressed2: () {
+                  Routemaster.of(context).push(AppRoutes.deviceMainPage);
+                },
+                gotoButtonTitle2: (CretaVars.serviceType == ServiceType.barricade)
+                    ? CretaCommuLang.myDeviceMenu
+                    : null,
 
-            leftMenuItemList: _leftMenuItemList,
-            bannerTitle: 'title',
-            bannerDescription: 'description',
-            listOfListFilter: _getLeftDropdownMenuOnBanner(),
-            onSearch: _getSearchFunction,
-            mainWidget: _getRightPane, //(gridArea),
-            listOfListFilterOnRight: _getRightDropdownMenuOnBanner(),
-            titlePane: _titlePane,
-            bannerPane: (widget.subPageUrl == AppRoutes.communityBook ||
-                    widget.subPageUrl == AppRoutes.playlistDetail)
-                ? _titlePane
-                : null,
-            leftPaddingOnFilter: (widget.subPageUrl == AppRoutes.subscriptionList) ? 306 : null,
-            leftMarginOnRightPane: 0,
-            topMarginOnRightPane: 3,
-            rightMarginOnRightPane: 1,
-            bottomMarginOnRightPane: 3,
-            tabMenuList: _rightTabMenuList,
-            onFoldButtonPressed: () {
-              setState(() {});
-            },
+                leftMenuItemList: _leftMenuItemList,
+                bannerTitle: 'title',
+                bannerDescription: 'description',
+                listOfListFilter: _getLeftDropdownMenuOnBanner(),
+                onSearch: _getSearchFunction,
+                mainWidget: _getRightPane, //(gridArea),
+                listOfListFilterOnRight: _getRightDropdownMenuOnBanner(),
+                titlePane: _titlePane,
+                bannerPane: (widget.subPageUrl == AppRoutes.communityBook ||
+                        widget.subPageUrl == AppRoutes.playlistDetail)
+                    ? _titlePane
+                    : null,
+                leftPaddingOnFilter: (widget.subPageUrl == AppRoutes.subscriptionList) ? 306 : null,
+                leftMarginOnRightPane: 0,
+                topMarginOnRightPane: 3,
+                rightMarginOnRightPane: 1,
+                bottomMarginOnRightPane: 3,
+                tabMenuList: _rightTabMenuList,
+                onFoldButtonPressed: () {
+                  setState(() {});
+                },
+              ),
+              _getRightOverlayPane(),
+            ],
           ),
-          _getRightOverlayPane(),
-        ],
-      ),
+        );
+      }),
     );
   }
 }

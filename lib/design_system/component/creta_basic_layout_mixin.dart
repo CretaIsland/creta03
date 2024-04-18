@@ -1,5 +1,6 @@
 import 'package:creta03/design_system/menu/creta_popup_menu.dart';
 import 'package:creta_common/common/creta_const.dart';
+import 'package:creta_common/model/app_enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 
@@ -19,6 +20,8 @@ mixin CretaBasicLayoutMixin {
   double _scrollOffset = 0;
   bool _usingBannerScrollbar = false;
   void Function(bool)? _scrollChangedCallback;
+
+  LanguageType oldLanguage = LanguageType.korean;
 
   double get getBannerHeight => _bannerHeight;
   set setBannerHeight(val) => _bannerHeight = val;
@@ -183,6 +186,8 @@ mixin CretaBasicLayoutMixin {
     List<CretaMenuItem>? tabMenuList,
     Function? onFoldButtonPressed,
   }) {
+    //print('mainPage() called++++++++++++++++++++++++++++++++++');
+
     // cacluate pane-size
     resize(
       context,
@@ -195,6 +200,7 @@ mixin CretaBasicLayoutMixin {
       bottomMarginOnRightPane: bottomMarginOnRightPane,
     );
     //
+
     return Row(
       key: key,
       mainAxisAlignment: MainAxisAlignment.start,

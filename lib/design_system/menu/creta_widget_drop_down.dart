@@ -41,6 +41,15 @@ class _CretaWidgetDropDownState extends State<CretaWidgetDropDown> {
   }
 
   @override
+  void didUpdateWidget(covariant CretaWidgetDropDown oldWidget) {
+    if (widget.defaultValue != oldWidget.defaultValue) {
+      //print('selected item changed');
+      selectedItem = widget.defaultValue;
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MouseRegion(
       onExit: (val) {

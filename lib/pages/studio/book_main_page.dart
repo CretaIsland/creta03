@@ -5,6 +5,7 @@
 import 'dart:async';
 
 import 'package:creta03/no_authority.dart';
+import 'package:creta_user_io/data_io/user_property_manager.dart';
 //import 'package:creta_common/common/creta_vars.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -700,53 +701,61 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget _bookMain(DateTime lastEventTime) {
-    return StudioVariables.isPreview
-        ? Scaffold(
-            body: MouseHider(
-              fromPriviewToMain: _fromPriviewToMain,
-              child: _waitBook(),
-              onMouseHideChanged: () {
-                BookMainPage.pageManagerHolder?.notify();
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<UserPropertyManager>.value(
+            value: CretaAccountManager.userPropertyManagerHolder),
+      ],
+      child: StudioVariables.isPreview
+          ? Scaffold(
+              body: MouseHider(
+                fromPriviewToMain: _fromPriviewToMain,
+                child: _waitBook(),
+                onMouseHideChanged: () {
+                  BookMainPage.pageManagerHolder?.notify();
+                },
+              ),
+            )
+          : Snippet.CretaScaffold(
+              noVerticalVar: true,
+              // title: Snippet.logo(CretaVars.serviceTypeString(), route: () {
+              //   Routemaster.of(context).push(AppRoutes.studioBookGridPage);
+              // }),
+              onFoldButtonPressed: () {
+                setState(() {});
               },
-            ),
-          )
-        : Snippet.CretaScaffold(
-            noVerticalVar: true,
-            // title: Snippet.logo(CretaVars.serviceTypeString(), route: () {
-            //   Routemaster.of(context).push(AppRoutes.studioBookGridPage);
-            // }),
-            onFoldButtonPressed: () {
-              setState(() {});
-            },
 
-            invalidate: () {
-              setState(() {});
-            },
-            context: context,
-            child: Stack(
-              children: [
-                MouseRegion(
-                  onHover: (pointerEvent) {
-                    //if (StudioVariables.allowMutilUser == true) {
-                    if (mouseTracerHolder!.mouseCursorList.isEmpty) return;
-                    if (_useSocket()) {
-                      if (lastEventTime.add(Duration(milliseconds: 100)).isBefore(DateTime.now())) {
-                        client.changeCursorPosition(
-                            pointerEvent.position.dx / screenWidthPercentage,
-                            (pointerEvent.position.dy - 50) / screenHeightPrecentage);
+              invalidate: () {
+                setState(() {});
+              },
+              context: context,
+              child: Stack(
+                children: [
+                  MouseRegion(
+                    onHover: (pointerEvent) {
+                      //if (StudioVariables.allowMutilUser == true) {
+                      if (mouseTracerHolder!.mouseCursorList.isEmpty) return;
+                      if (_useSocket()) {
+                        if (lastEventTime
+                            .add(Duration(milliseconds: 100))
+                            .isBefore(DateTime.now())) {
+                          client.changeCursorPosition(
+                              pointerEvent.position.dx / screenWidthPercentage,
+                              (pointerEvent.position.dy - 50) / screenHeightPrecentage);
 
-                        lastEventTime = DateTime.now();
+                          lastEventTime = DateTime.now();
+                        }
                       }
-                    }
-                    //}
-                  },
-                  child: _waitBook(),
-                ),
-                //if (StudioVariables.allowMutilUser == true) mouseArea(),
-                mouseArea(), // 프레임이나 텍스트를 원하는 위치에 그릴 수 있도록 추적하는 기능
-              ],
+                      //}
+                    },
+                    child: _waitBook(),
+                  ),
+                  //if (StudioVariables.allowMutilUser == true) mouseArea(),
+                  mouseArea(), // 프레임이나 텍스트를 원하는 위치에 그릴 수 있도록 추적하는 기능
+                ],
+              ),
             ),
-          );
+    );
   }
 
   void _focusNodeEventHandler(FocusNode node, KeyEvent event) {

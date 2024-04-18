@@ -420,7 +420,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
           ),
         );
       case AIState.fail:
-        return const SizedBox(
+        return SizedBox(
             height: 350.0,
             child: Center(
               child: Text(CretaStudioLang.genAIerrorMsg, textAlign: TextAlign.center),

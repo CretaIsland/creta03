@@ -50,6 +50,7 @@ class CretaLeftBar extends StatefulWidget {
 
 class _CretaLeftBarState extends State<CretaLeftBar> {
   Widget _getCretaTapBarButton(CretaMenuItem item) {
+    //print('_getCretaTapBarButton==============${item.caption}');
     return CretaTapBarButton(
         width: 195,
         height: 50,
@@ -116,6 +117,9 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
     }
     String channelId = CretaAccountManager.getUserProperty?.channelId ?? '';
     String channelLinkUrl = '${AppRoutes.channel}?$channelId';
+
+    //print('_leftBar: ============================');
+
     return Container(
       width: CretaComponentLocation.TabBar.width,
       height: widget.height,

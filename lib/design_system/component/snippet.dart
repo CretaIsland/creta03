@@ -13,6 +13,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 
+// ignore: depend_on_referenced_packages
+//import 'package:provider/provider.dart';
+
 //import 'package:hycop/common/util/logger.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:hycop/hycop.dart';
@@ -23,6 +26,9 @@ import 'package:url_launcher/link.dart';
 import '../../data_io/frame_manager.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 //import '../../lang/creta_mypage_lang.dart';
+import '../../lang/creta_commu_lang.dart';
+import '../../lang/creta_device_lang.dart';
+import '../../lang/creta_mypage_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../pages/studio/book_main_page.dart';
 import '../../pages/studio/studio_constant.dart';
@@ -1119,7 +1125,15 @@ class Snippet {
     required Function() invalidate,
   }) {
     userPropertyManager.userPropertyModel!.language = LanguageType.fromInt(value);
-    AbsCretaLang.changeLang(userPropertyManager.userPropertyModel!.language);
+    setLang(userPropertyManager.userPropertyModel!.language);
     invalidate();
+  }
+
+  static void setLang(LanguageType language) {
+    AbsCretaLang.changeLang(language);
+    AbsCretaStudioLang.changeLang(language);
+    AbsCretaDeviceLang.changeLang(language);
+    AbsCretaCommuLang.changeLang(language);
+    AbsCretaMyPageLang.changeLang(language);
   }
 }

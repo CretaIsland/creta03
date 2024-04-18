@@ -8,6 +8,7 @@ import 'package:creta_user_io/data_io/team_manager.dart';
 import 'package:creta_common/common/creta_const.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
+import 'package:creta_user_io/data_io/user_property_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routemaster/routemaster.dart';
@@ -26,6 +27,7 @@ import '../../lang/creta_studio_lang.dart';
 import 'package:creta_studio_model/model/book_model.dart';
 import '../../routes.dart';
 //import '../login_page.dart';
+import '../login/creta_account_manager.dart';
 import 'book_grid_item.dart';
 import 'studio_constant.dart';
 
@@ -132,7 +134,11 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         });
       }
     }
+    _initMenu();
+    logger.fine('initState end');
+  }
 
+  void _initMenu() {
     _leftMenuItemList = [
       CretaMenuItem(
         caption: CretaStudioLang.myCretaBook,
@@ -183,8 +189,6 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
 
     _dropDownMenuItemList1 = getFilterMenu((() => setState(() {})));
     _dropDownMenuItemList2 = getSortMenu((() => setState(() {})));
-
-    logger.fine('initState end');
   }
 
   void _scrollListener(bool bannerSizeChanged) {
@@ -224,44 +228,55 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         ChangeNotifierProvider<BookManager>.value(
           value: bookManagerHolder!,
         ),
+        ChangeNotifierProvider<UserPropertyManager>.value(
+            value: CretaAccountManager.userPropertyManagerHolder),
       ],
-      child: Snippet.CretaScaffold(
-          //title: Snippet.logo(CretaVars.serviceTypeString()),
-          onFoldButtonPressed: () {
-            setState(() {});
-          },
-          additionals: SizedBox(
-            height: 36,
-            width: windowWidth > 535 ? 130 : 60,
-            child: BTN.fill_gray_it_l(
-              width: windowWidth > 535 ? 106 : 36,
-              text: windowWidth > 535 ? CretaStudioLang.newBook : '',
-              onPressed: () {
-                Routemaster.of(context).push(AppRoutes.studioBookMainPage);
-              },
-              icon: Icons.add_outlined,
-            ),
-          ),
-          context: context,
-          child: mainPage(
-            context,
-            gotoButtonPressed: () {
-              Routemaster.of(context).push(AppRoutes.communityHome);
-            },
-            gotoButtonTitle: CretaStudioLang.gotoCommunity,
-            leftMenuItemList: _leftMenuItemList,
-            bannerTitle: getBookTitle(),
-            bannerDescription: getBookDesc(),
-            listOfListFilter: [_dropDownMenuItemList1, _dropDownMenuItemList2],
-            //mainWidget: sizeListener.isResizing() ? Container() : _bookGrid(context))),
-            onSearch: (value) {
-              bookManagerHolder!.onSearch(value, () => setState(() {}));
-            },
-            mainWidget: _bookGrid, //_bookGrid(context),
+      child: Consumer<UserPropertyManager>(builder: (context, userPropertyManager, childWidget) {
+        // print(
+        //     'Consumer<UserPropertyManager>---------${userPropertyManager.userPropertyModel!.language}---------');
+        if (oldLanguage != userPropertyManager.userPropertyModel!.language) {
+          _initMenu();
+          oldLanguage = userPropertyManager.userPropertyModel!.language;
+        }
+
+        return Snippet.CretaScaffold(
+            //title: Snippet.logo(CretaVars.serviceTypeString()),
             onFoldButtonPressed: () {
               setState(() {});
             },
-          )),
+            additionals: SizedBox(
+              height: 36,
+              width: windowWidth > 535 ? 130 : 60,
+              child: BTN.fill_gray_it_l(
+                width: windowWidth > 535 ? 106 : 36,
+                text: windowWidth > 535 ? CretaStudioLang.newBook : '',
+                onPressed: () {
+                  Routemaster.of(context).push(AppRoutes.studioBookMainPage);
+                },
+                icon: Icons.add_outlined,
+              ),
+            ),
+            context: context,
+            child: mainPage(
+              context,
+              gotoButtonPressed: () {
+                Routemaster.of(context).push(AppRoutes.communityHome);
+              },
+              gotoButtonTitle: CretaStudioLang.gotoCommunity,
+              leftMenuItemList: _leftMenuItemList,
+              bannerTitle: getBookTitle(),
+              bannerDescription: getBookDesc(),
+              listOfListFilter: [_dropDownMenuItemList1, _dropDownMenuItemList2],
+              //mainWidget: sizeListener.isResizing() ? Container() : _bookGrid(context))),
+              onSearch: (value) {
+                bookManagerHolder!.onSearch(value, () => setState(() {}));
+              },
+              mainWidget: _bookGrid, //_bookGrid(context),
+              onFoldButtonPressed: () {
+                setState(() {});
+              },
+            ));
+      }),
     );
   }
 

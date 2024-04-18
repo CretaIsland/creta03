@@ -66,7 +66,8 @@ class _MyPageInfoState extends State<MyPageInfo> {
         int countryIndex = userPropertyManager.userPropertyModel!.country.index;
         int langIndex = userPropertyManager.userPropertyModel!.language.index;
         int jobIndex = userPropertyManager.userPropertyModel!.job.index;
-
+        // print(
+        //     "Consumer<UserPropertyManager>-----$langIndex------${userPropertyManager.userPropertyModel!.language}----------------------------------------");
         return Container(
           width: widget.width,
           height: widget.height,
@@ -240,8 +241,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                                         value: value + 1,
                                         userPropertyManager: userPropertyManager,
                                         invalidate: () {
-                                          setState(() {});
-                                          
+                                          userPropertyManager.notify();
                                         },
                                       );
                                       // userPropertyManager.userPropertyModel!.language =

@@ -40,7 +40,7 @@ import 'studio_snippet.dart';
 class BookPublishDialog extends StatefulWidget {
   final BookModel? model;
   final int currentStep;
-  final String title;
+  String? title;
   final Function? onNext;
   final Function? onPrev;
   String? nextBtTitle;
@@ -50,7 +50,7 @@ class BookPublishDialog extends StatefulWidget {
     super.key,
     required this.model,
     this.currentStep = 1,
-    this.title = CretaStudioLang.publishSettings,
+    this.title,
     this.onNext,
     this.onPrev,
     this.nextBtTitle, // = CretaLang.next,
@@ -58,6 +58,7 @@ class BookPublishDialog extends StatefulWidget {
   }) {
     nextBtTitle ??= CretaLang.next;
     prevBtTitle ??= CretaLang.prev;
+    title ??= CretaStudioLang.publishSettings;
   }
 
   @override
@@ -295,7 +296,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              widget.title,
+                              widget.title!,
                               style: CretaFont.titleMedium,
                             ),
                             BTN.fill_gray_i_m(

@@ -1,4 +1,6 @@
-import 'package:creta_common/lang/creta_lang.dart';
+import 'package:creta_user_io/data_io/user_property_manager.dart';
+// ignore: depend_on_referenced_packages
+import 'package:provider/provider.dart';
 import 'package:creta_user_model/model/user_property_model.dart';
 import 'package:get/get.dart';
 import 'package:creta03/routes.dart';
@@ -94,7 +96,7 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
     UserPropertyModel? userModel = CretaAccountManager.userPropertyManagerHolder.userPropertyModel;
     if (userModel != null) {
       //print('============================== ${userModel.email} : ${userModel.language}');
-      AbsCretaLang.changeLang(userModel.language);
+      Snippet.setLang(userModel.language);
     }
   }
 
@@ -109,41 +111,43 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
   @override
   Widget build(BuildContext context) {
     final Size displaySize = MediaQuery.of(context).size;
-    return Container(
-        //padding: const EdgeInsets.only(top: 20),
-        width: CretaConst.verticalAppbarWidth,
-        color: displaySize.height > 200 ? CretaColor.text[100] : CretaColor.primary,
-        child: Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            if (displaySize.height > 200)
-              CustomPaint(
-                  size: Size(CretaConst.verticalAppbarWidth, displaySize.height),
-                  painter: MyCustomPainter()),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                //const SizedBox(height: 20),
-                Column(
-                  children: [
-                    if (displaySize.height > 100) titleLogoVertical(),
-                    //const SizedBox(height: 32),
-                    if (displaySize.height > 200) communityLogo(context),
-                    if (displaySize.height > 250) const SizedBox(height: 12),
-                    if (displaySize.height > 250) studioLogo(context),
-                    if (displaySize.height > 300) const SizedBox(height: 12),
-                    if (displaySize.height > 300) deviceLogo(context),
-                    if (displaySize.height > 350) const SizedBox(height: 12),
-                    if (displaySize.height > 350) myPageLogo(context),
-                    if (displaySize.height > 400) const SizedBox(height: 12),
-                    if (displaySize.height > 400) adminLogo(context),
-                  ],
-                ),
-                if (displaySize.height > 450) _userInfoList(displaySize),
-              ],
-            ),
-          ],
-        ));
+    return Consumer<UserPropertyManager>(builder: (context, userPropertyManager, child) {
+      return Container(
+          //padding: const EdgeInsets.only(top: 20),
+          width: CretaConst.verticalAppbarWidth,
+          color: displaySize.height > 200 ? CretaColor.text[100] : CretaColor.primary,
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              if (displaySize.height > 200)
+                CustomPaint(
+                    size: Size(CretaConst.verticalAppbarWidth, displaySize.height),
+                    painter: MyCustomPainter()),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  //const SizedBox(height: 20),
+                  Column(
+                    children: [
+                      if (displaySize.height > 100) titleLogoVertical(),
+                      //const SizedBox(height: 32),
+                      if (displaySize.height > 200) communityLogo(context),
+                      if (displaySize.height > 250) const SizedBox(height: 12),
+                      if (displaySize.height > 250) studioLogo(context),
+                      if (displaySize.height > 300) const SizedBox(height: 12),
+                      if (displaySize.height > 300) deviceLogo(context),
+                      if (displaySize.height > 350) const SizedBox(height: 12),
+                      if (displaySize.height > 350) myPageLogo(context),
+                      if (displaySize.height > 400) const SizedBox(height: 12),
+                      if (displaySize.height > 400) adminLogo(context),
+                    ],
+                  ),
+                  if (displaySize.height > 450) _userInfoList(displaySize),
+                ],
+              ),
+            ],
+          ));
+    });
   }
 
   Widget titleLogoVertical() {
@@ -416,7 +420,9 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
                       value: index + 1,
                       userPropertyManager: CretaAccountManager.userPropertyManagerHolder,
                       invalidate: () {
-                        setState(() {});
+                        //setState(() {});
+                        // print(
+                        //     'language : ${CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.language}, ${CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.language.index}');
                         CretaAccountManager.userPropertyManagerHolder.notify();
                       },
                     );

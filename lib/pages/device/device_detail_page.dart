@@ -410,7 +410,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(CretaDeviceLang.selectBook),
+              Text(CretaDeviceLang.selectBook),
               IconButton(
                   icon: const Icon(Icons.close), onPressed: () => Navigator.of(context).pop()),
             ],

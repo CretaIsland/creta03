@@ -7,6 +7,7 @@ import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'package:creta_common/common/creta_const.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
+import 'package:creta_user_io/data_io/user_property_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routemaster/routemaster.dart';
@@ -25,6 +26,7 @@ import '../../lang/creta_device_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../model/host_model.dart';
 import '../../routes.dart';
+import '../login/creta_account_manager.dart';
 import '../studio/studio_constant.dart';
 import 'device_detail_page.dart';
 import 'host_grid_item.dart';
@@ -159,6 +161,12 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       });
     }
 
+    _initMenu();
+
+    logger.fine('initState end');
+  }
+
+  void _initMenu() {
     _leftMenuItemList = [
       CretaMenuItem(
         caption: CretaDeviceLang.myCretaDevice,
@@ -211,8 +219,6 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
     _dropDownMenuItemList2 = getSortMenu((() => setState(() {})));
     _dropDownMenuItemList3 = getConnectedFilterMenu((() => setState(() {})));
     _dropDownMenuItemList4 = getUsageFilterMenu((() => setState(() {})));
-
-    logger.fine('initState end');
   }
 
   void _scrollListener(bool bannerSizeChanged) {
@@ -249,6 +255,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
     //logger.fine('`````````````````````````window width = $windowWidth');
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider<UserPropertyManager>.value(
+            value: CretaAccountManager.userPropertyManagerHolder),
         ChangeNotifierProvider<HostManager>.value(
           value: hostManagerHolder!,
         ),
@@ -256,49 +264,59 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
           value: selectNotifierHolder,
         ),
       ],
-      child: Snippet.CretaScaffold(
-          //title: Snippet.logo(CretaVars.serviceTypeString()),
-          onFoldButtonPressed: () {
-            setState(() {});
-          },
+      child: Consumer<UserPropertyManager>(builder: (context, userPropertyManager, childWidget) {
+        // print(
+        //     'Consumer<UserPropertyManager>---------${userPropertyManager.userPropertyModel!.language}---------');
 
-          // additionals: SizedBox(
-          //   height: 36,
-          //   width: windowWidth > 535 ? 130 : 60,
-          //   child: BTN.fill_gray_it_l(
-          //     width: windowWidth > 535 ? 106 : 36,
-          //     text: windowWidth > 535 ? CretaStudioLang.newBook : '',
-          //     onPressed: () {
-          //       Routemaster.of(context).push(AppRoutes.communityHome);
-          //     },
-          //     icon: Icons.add_outlined,
-          //   ),
-          // ),
-          context: context,
-          child: mainPage(
-            context,
-            gotoButtonPressed: () {
-              Routemaster.of(context).push(AppRoutes.communityHome);
-            },
-            gotoButtonTitle: CretaStudioLang.gotoCommunity,
-            leftMenuItemList: _leftMenuItemList,
-            bannerTitle: getDeviceTitle(),
-            bannerDescription: getDeviceDesc(),
-            listOfListFilter: [
-              _dropDownMenuItemList1,
-              _dropDownMenuItemList2,
-              _dropDownMenuItemList3,
-              _dropDownMenuItemList4
-            ],
-            //mainWidget: sizeListener.isResizing() ? Container() : _bookGrid(context))),
-            onSearch: (value) {
-              hostManagerHolder!.onSearch(value, () => setState(() {}));
-            },
-            mainWidget: _bookGrid, //_bookGrid(context),
+        if (oldLanguage != userPropertyManager.userPropertyModel!.language) {
+          _initMenu();
+          oldLanguage = userPropertyManager.userPropertyModel!.language;
+        }
+
+        return Snippet.CretaScaffold(
+            //title: Snippet.logo(CretaVars.serviceTypeString()),
             onFoldButtonPressed: () {
               setState(() {});
             },
-          )),
+
+            // additionals: SizedBox(
+            //   height: 36,
+            //   width: windowWidth > 535 ? 130 : 60,
+            //   child: BTN.fill_gray_it_l(
+            //     width: windowWidth > 535 ? 106 : 36,
+            //     text: windowWidth > 535 ? CretaStudioLang.newBook : '',
+            //     onPressed: () {
+            //       Routemaster.of(context).push(AppRoutes.communityHome);
+            //     },
+            //     icon: Icons.add_outlined,
+            //   ),
+            // ),
+            context: context,
+            child: mainPage(
+              context,
+              gotoButtonPressed: () {
+                Routemaster.of(context).push(AppRoutes.communityHome);
+              },
+              gotoButtonTitle: CretaStudioLang.gotoCommunity,
+              leftMenuItemList: _leftMenuItemList,
+              bannerTitle: getDeviceTitle(),
+              bannerDescription: getDeviceDesc(),
+              listOfListFilter: [
+                _dropDownMenuItemList1,
+                _dropDownMenuItemList2,
+                _dropDownMenuItemList3,
+                _dropDownMenuItemList4
+              ],
+              //mainWidget: sizeListener.isResizing() ? Container() : _bookGrid(context))),
+              onSearch: (value) {
+                hostManagerHolder!.onSearch(value, () => setState(() {}));
+              },
+              mainWidget: _bookGrid, //_bookGrid(context),
+              onFoldButtonPressed: () {
+                setState(() {});
+              },
+            ));
+      }),
     );
   }
 
