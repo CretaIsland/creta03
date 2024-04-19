@@ -15,6 +15,10 @@ import 'package:hycop/hycop.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:video_player/video_player.dart';
 
+import '../design_system/component/snippet.dart';
+import '../design_system/menu/creta_widget_drop_down.dart';
+import '../lang/creta_commu_lang.dart';
+import '../lang/creta_mypage_lang.dart';
 import 'studio/studio_variables.dart';
 
 class LandingPage extends StatefulWidget {
@@ -38,7 +42,8 @@ class _LandingPageState extends State<LandingPage> {
   BoxShadow? appBarShadow;
 
   // dropdown menu item
-  late List<DropdownMenuItem> languageItems;
+  List<Text> languageItemList = [];
+  //late List<DropdownMenuItem> languageItems;
   late List<DropdownMenuItem> purposeItems;
   late List<DropdownMenuItem> sortItems;
   // selected value of dropdown menu
@@ -80,28 +85,16 @@ class _LandingPageState extends State<LandingPage> {
     StudioVariables.selectedBookMid = ''; //skpark add
     bookPublishedManagerHolder = BookPublishedManager();
 
-    TextStyle languageMenuStyle = CretaFont.buttonLarge
-        .copyWith(fontWeight: FontWeight.w400, fontSize: 16, color: CretaColor.primary);
-    TextStyle searchFilterStyle = CretaFont.buttonLarge.copyWith(fontSize: 20);
+    // TextStyle languageMenuStyle = CretaFont.buttonLarge
+    //     .copyWith(fontWeight: FontWeight.w400, fontSize: 16, color: CretaColor.primary);
 
-    languageItems = [
-      DropdownMenuItem(value: "ko", child: Text("한국어", style: languageMenuStyle)),
-      // DropdownMenuItem(value: "en", child: Text("EN", style: languageMenuStyle)),
-      // DropdownMenuItem(value: "ja", child: Text("日本語", style: languageMenuStyle))
-    ];
-    purposeItems = [
-      DropdownMenuItem(
-          value: BookType.presentaion, child: Text("프레젠테이션", style: searchFilterStyle)),
-      DropdownMenuItem(value: BookType.signage, child: Text("디지털사이니지", style: searchFilterStyle)),
-    ];
-    sortItems = [
-      DropdownMenuItem(value: BookSort.updateTime, child: Text("최신순", style: searchFilterStyle)),
-      DropdownMenuItem(value: BookSort.likeCount, child: Text("좋아요순", style: searchFilterStyle))
-    ];
+    // languageItems = [
+    //   DropdownMenuItem(value: "ko", child: Text("한국어", style: languageMenuStyle)),
+    //   // DropdownMenuItem(value: "en", child: Text("EN", style: languageMenuStyle)),
+    //   // DropdownMenuItem(value: "ja", child: Text("日本語", style: languageMenuStyle))
+    // ];
 
-    selectedLanguage = languageItems.first.value;
-    selectedPurpose = purposeItems.first.value;
-    selectedSort = sortItems.first.value;
+    _initMenu();
 
     topBannerImgPaths = [
       // "assets/landing_page/image/banner/banner_top1.png",
@@ -141,6 +134,40 @@ class _LandingPageState extends State<LandingPage> {
         VideoPlayerController.asset("assets/landing_page/video/quick_start_animation.mp4");
 
     afterBuild();
+  }
+
+  void _initMenu() {
+    TextStyle searchFilterStyle = CretaFont.buttonLarge.copyWith(fontSize: 20);
+
+    languageItemList.clear();
+    for (var element in CretaMyPageLang.languageList) {
+      languageItemList.add(Text(element, style: CretaFont.bodyMedium));
+    }
+
+    purposeItems = [
+      DropdownMenuItem(
+          value: BookType.presentaion,
+          child: Text(CretaCommuLang.presentation, // "프레젠테이션",
+              style: searchFilterStyle)),
+      DropdownMenuItem(
+          value: BookType.signage,
+          child: Text(CretaCommuLang.signage, //"디지털사이니지"
+              style: searchFilterStyle)),
+    ];
+    sortItems = [
+      DropdownMenuItem(
+          value: BookSort.updateTime,
+          child: Text(CretaCommuLang.dateOrder, // "최신순",
+              style: searchFilterStyle)),
+      DropdownMenuItem(
+          value: BookSort.likeCount,
+          child: Text(CretaCommuLang.likeOrder, //"좋아요순",
+              style: searchFilterStyle))
+    ];
+
+    //selectedLanguage = languageItems.first.value;
+    selectedPurpose = purposeItems.first.value;
+    selectedSort = sortItems.first.value;
   }
 
   Future<void> afterBuild() async {
@@ -333,6 +360,9 @@ class _LandingPageState extends State<LandingPage> {
   Widget appBar() {
     TextStyle appBarBTNStyle = CretaFont.buttonLarge
         .copyWith(fontWeight: FontWeight.w400, fontSize: 16, color: CretaColor.primary);
+
+    int langIndex = CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.language.index;
+
     return Container(
       width: _screenWidth,
       decoration: BoxDecoration(
@@ -382,12 +412,34 @@ class _LandingPageState extends State<LandingPage> {
                           loginPageState: LoginPageState.singup),
                       border: Border.all(color: CretaColor.primary),
                       borderRadius: BorderRadius.circular(6.6)),
-                  dropdownMenu(
-                      width: 64,
-                      height: 19,
-                      items: languageItems,
-                      defaultValue: selectedLanguage,
-                      onSelected: (value) => selectedLanguage = value)
+                  CretaWidgetDropDown(
+                      width: 102,
+                      items: languageItemList,
+                      defaultValue: langIndex > 0 ? langIndex - 1 : 0,
+                      onSelected: (value) {
+                        Snippet.onLangSelected(
+                          value: value + 1,
+                          userPropertyManager: CretaAccountManager.userPropertyManagerHolder,
+                          invalidate: () {
+                            setState(() {
+                              _initMenu();
+                            });
+                            //CretaAccountManager.userPropertyManagerHolder.notify();
+                          },
+                        );
+                        // userPropertyManager.userPropertyModel!.language =
+                        //     LanguageType.fromInt(value + 1);
+                        // setState(() {
+                        //   AbsCretaLang.changeLang(
+                        //       userPropertyManager.userPropertyModel!.language);
+                        // });
+                      }),
+                  // dropdownMenu(
+                  //     width: 64,
+                  //     height: 19,
+                  //     items: languageItems,
+                  //     defaultValue: selectedLanguage,
+                  //     onSelected: (value) => selectedLanguage = value)
                 ],
               ),
             )
@@ -433,7 +485,8 @@ class _LandingPageState extends State<LandingPage> {
             child: Padding(
               padding: const EdgeInsets.only(top: 150),
               child: Text(
-                "크레타는 사용자가 상상하는대로 다양하게 사용할 수 있습니다. \n사이니지, 프레젠테이션, 전자칠판, 화상회의까지 \n각 용도별로 직접 체험해보세요.",
+                CretaCommuLang.intro,
+                //"크레타는 사용자가 상상하는대로 다양하게 사용할 수 있습니다. \n사이니지, 프레젠테이션, 전자칠판, 화상회의까지 \n각 용도별로 직접 체험해보세요.",
                 style: CretaFont.titleLarge.copyWith(color: CretaColor.text.shade400),
                 textAlign: TextAlign.center,
               ),
@@ -498,8 +551,9 @@ class _LandingPageState extends State<LandingPage> {
                       offset: const Offset(0, 2))
                 ]),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                const SizedBox(width: 40),
+                //const SizedBox(width: 40),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -512,11 +566,11 @@ class _LandingPageState extends State<LandingPage> {
                         onSelected: (value) => selectedPurpose = value,
                         iconSize: 20),
                     const SizedBox(height: 20),
-                    Text("크레타북을 어떻게 사용하는지",
+                    Text(CretaCommuLang.useGuide, //"크레타북을 어떻게 사용하는지",
                         style: CretaFont.bodyESmall.copyWith(fontWeight: FontWeight.w300))
                   ],
                 ),
-                const SizedBox(width: 40),
+                //const SizedBox(width: 40),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -529,15 +583,15 @@ class _LandingPageState extends State<LandingPage> {
                         onSelected: (value) => selectedSort = value,
                         iconSize: 20),
                     const SizedBox(height: 20),
-                    Text("크레타북을 발행한 게 언제인지",
+                    Text(CretaCommuLang.inventWhen, //"크레타북을 발행한 게 언제인지",
                         style: CretaFont.bodyESmall.copyWith(fontWeight: FontWeight.w300))
                   ],
                 ),
-                const SizedBox(width: 220),
+                //const SizedBox(width: 220),
                 customButton(
                     width: 186,
                     height: 68,
-                    child: Text("탐색하기",
+                    child: Text(CretaCommuLang.search, //"탐색하기",
                         style: CretaFont.buttonMedium.copyWith(color: Colors.white, fontSize: 24)),
                     backgroundColor: CretaColor.primary,
                     borderRadius: BorderRadius.circular(13.3),
@@ -654,13 +708,23 @@ class _LandingPageState extends State<LandingPage> {
                     width: 623,
                     height: 63),
               ),
+              //Text(CretaCommuLang.exp1, style: titleFontStyle, textAlign: TextAlign.center),
               RichText(
                 textAlign: TextAlign.center,
-                text: TextSpan(text: "커뮤니티에 공개된 \n", style: titleFontStyle, children: [
-                  TextSpan(text: "다양한 용도의 ", style: titleFontStyle),
-                  TextSpan(text: "크레타북", style: titleFontStyle.copyWith(color: Colors.white)),
-                  TextSpan(text: " 을 체험해보세요", style: titleFontStyle)
-                ]),
+                text: TextSpan(
+                    text: CretaCommuLang.exp1, //"커뮤니티에 공개된 \n",
+                    style: titleFontStyle,
+                    children: [
+                      TextSpan(
+                          text: CretaCommuLang.exp2, // "다양한 용도의 ",
+                          style: titleFontStyle),
+                      TextSpan(
+                          text: CretaCommuLang.exp3, // "크레타북",
+                          style: titleFontStyle.copyWith(color: Colors.white)),
+                      TextSpan(
+                          text: CretaCommuLang.exp4, //" 을 체험해보세요",
+                          style: titleFontStyle)
+                    ]),
               )
             ],
           ),
@@ -700,16 +764,28 @@ class _LandingPageState extends State<LandingPage> {
                     ],
                   ),
                 ),
-                experienceQuickBTN("프레젠테이션", "Create and present", const Offset(18, 14), () {
+                experienceQuickBTN(
+                    CretaCommuLang.presentation, //"프레젠테이션",
+                    "Create and present",
+                    const Offset(18, 14), () {
                   CretaAccountManager.experienceWithoutLogin = true;
                   Routemaster.of(context).push(AppRoutes.studioBookMainPage);
                 }),
                 experienceQuickBTN(
-                    width: 220, "커뮤니티", "Share and communicate", const Offset(562, 320), () {
+                    width: 220,
+                    CretaCommuLang.community,
+                    //"커뮤니티",
+                    "Share and communicate",
+                    const Offset(562, 320), () {
                   CretaAccountManager.experienceWithoutLogin = true;
                   Routemaster.of(context).push(AppRoutes.communityHome);
                 }),
-                experienceQuickBTN("디지털사이니지", "Create and broadcast", const Offset(1460, 0), () {})
+                experienceQuickBTN(
+                    CretaCommuLang.signage,
+                    //"디지털사이니지",
+                    "Create and broadcast",
+                    const Offset(1460, 0),
+                    () {})
               ],
             ),
           ),
@@ -851,7 +927,7 @@ class _LandingPageState extends State<LandingPage> {
               promotionComponent(
                   width: 572,
                   height: 413,
-                  promotionText: "디자이너가 아니어도 누구나 \n쉽고 간단하게 디자인 할 수 있어!",
+                  promotionText: CretaCommuLang.prot1, // "디자이너가 아니어도 누구나 \n쉽고 간단하게 디자인 할 수 있어!",
                   promotionImgPath: "assets/landing_page/image/promotion_1.png",
                   promotionImgOffset: const Offset(0, 163),
                   promotionImgSize: const Size(555, 250),
@@ -860,14 +936,14 @@ class _LandingPageState extends State<LandingPage> {
               promotionComponent(
                   width: 500,
                   height: 434,
-                  promotionText: "팀원들과 효율적으로 협업하고 \n작업물은 체계적으로 관리하지!",
+                  promotionText: CretaCommuLang.prot2, // "팀원들과 효율적으로 협업하고 \n작업물은 체계적으로 관리하지!",
                   promotionImgPath: "assets/landing_page/image/promotion_3.png",
                   promotionImgOffset: const Offset(27, 164),
                   promotionImgSize: const Size(376, 270),
                   backgroundColor: Colors.grey.shade100,
                   fontColor: CretaColor.text.shade700),
               const SizedBox(height: 64),
-              Text("크레타에 대해 더 궁금하시다면 \n지금 바로 로그인 없이 체험해보세요!",
+              Text(CretaCommuLang.prot3, //"크레타에 대해 더 궁금하시다면 \n지금 바로 로그인 없이 체험해보세요!",
                   style: CretaFont.titleELarge.copyWith(fontSize: 28, height: 1.5),
                   textAlign: TextAlign.right),
               const SizedBox(height: 28),
@@ -877,7 +953,7 @@ class _LandingPageState extends State<LandingPage> {
                   backgroundColor: CretaColor.primary,
                   borderRadius: BorderRadius.circular(13.3),
                   child: Center(
-                    child: Text("체험하기",
+                    child: Text(CretaCommuLang.experience, //  "체험하기",
                         style: CretaFont.buttonLarge.copyWith(color: Colors.white, fontSize: 24)),
                   ),
                   onTap: () {
@@ -903,7 +979,7 @@ class _LandingPageState extends State<LandingPage> {
                     child: RichText(
                         textAlign: TextAlign.start,
                         text: TextSpan(
-                            text: "놀라울정도로 크리에이티브한 ",
+                            text: CretaCommuLang.creativ1, // "놀라울정도로 크리에이티브한 ",
                             style: CretaFont.titleLarge.copyWith(
                                 fontWeight: FontWeight.w700,
                                 fontSize: 40,
@@ -911,21 +987,21 @@ class _LandingPageState extends State<LandingPage> {
                                 height: 1.6),
                             children: [
                               TextSpan(
-                                  text: "크레타",
+                                  text: CretaCommuLang.creta, // "크레타",
                                   style: CretaFont.titleLarge.copyWith(
                                       fontWeight: FontWeight.w700,
                                       fontSize: 40,
                                       color: Colors.white,
                                       height: 1.6)),
                               TextSpan(
-                                  text: " 로",
+                                  text: CretaCommuLang.creativ2, // " 로",
                                   style: CretaFont.titleLarge.copyWith(
                                       fontWeight: FontWeight.w700,
                                       fontSize: 40,
                                       color: CretaColor.text.shade700,
                                       height: 1.6)),
                               TextSpan(
-                                  text: "\n당신의 상상력을 펼쳐보세요!",
+                                  text: CretaCommuLang.creativ3, //"\n당신의 상상력을 펼쳐보세요!",
                                   style: CretaFont.titleLarge.copyWith(
                                       fontWeight: FontWeight.w700,
                                       fontSize: 40,
@@ -938,7 +1014,7 @@ class _LandingPageState extends State<LandingPage> {
               promotionComponent(
                   width: 593.67,
                   height: 418,
-                  promotionText: "디자인한 콘텐츠는 간편하게 \n공유하고 소통할 수 있지!",
+                  promotionText: CretaCommuLang.commu1, //"디자인한 콘텐츠는 간편하게 \n공유하고 소통할 수 있지!",
                   promotionImgPath: "assets/landing_page/image/promotion_2.png",
                   promotionImgOffset: const Offset(75, 176),
                   promotionImgSize: const Size(518.67, 242),
@@ -947,7 +1023,7 @@ class _LandingPageState extends State<LandingPage> {
               promotionComponent(
                   width: 500,
                   height: 411.06,
-                  promotionText: "다양한 디바이스에 바로 \n디자인한 콘텐츠를 송출시킬 수 있어!",
+                  promotionText: CretaCommuLang.commu2, //"다양한 디바이스에 바로 \n디자인한 콘텐츠를 송출시킬 수 있어!",
                   promotionImgPath: "assets/landing_page/image/promotion_4.png",
                   promotionImgOffset: const Offset(50, 164),
                   promotionImgSize: const Size(409.43, 247.06),
@@ -1017,7 +1093,7 @@ class _LandingPageState extends State<LandingPage> {
               Positioned(
                 top: 32,
                 left: 74,
-                child: Text("크레타를 이렇게 사용해보세요!",
+                child: Text(CretaCommuLang.useCreta, //"크레타를 이렇게 사용해보세요!",
                     style: CretaFont.titleELarge.copyWith(
                         fontWeight: FontWeight.w700,
                         color: CretaColor.text.shade700,
@@ -1031,18 +1107,27 @@ class _LandingPageState extends State<LandingPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                guideComponent("assets/landing_page/image/guide_1.png", "커뮤니티 탐색",
-                    "다양한 크레타북을 시청하고 \n새로운 아이디어를 얻으세요.", 35),
+                guideComponent(
+                    "assets/landing_page/image/guide_1.png",
+                    CretaCommuLang.commuSearch, //"커뮤니티 탐색",
+                    CretaCommuLang.idea, // "다양한 크레타북을 시청하고 \n새로운 아이디어를 얻으세요.",
+                    35),
                 const SizedBox(height: 42),
                 const Image(
                   image: AssetImage("assets/landing_page/image/arrow_1.png"),
                 )
               ]),
-              guideComponent("assets/landing_page/image/guide_2.png", "스튜디오 편집",
-                  "크레타 스튜디오에서 쉽고 간단하게 \n발표자료를 제작해보세요.", 88),
+              guideComponent(
+                  "assets/landing_page/image/guide_2.png",
+                  CretaCommuLang.edit, //"스튜디오 편집",
+                  CretaCommuLang.easy, // "크레타 스튜디오에서 쉽고 간단하게 \n발표자료를 제작해보세요.",
+                  88),
               Column(children: [
-                guideComponent("assets/landing_page/image/guide_3.png", "발표자료 공유",
-                    "제작한 발표자료를 커뮤니티에 \n공유해보세요.", 0),
+                guideComponent(
+                    "assets/landing_page/image/guide_3.png",
+                    CretaCommuLang.share1, //"발표자료 공유",
+                    CretaCommuLang.share2, //"제작한 발표자료를 커뮤니티에 \n공유해보세요.",
+                    0),
                 const SizedBox(
                   width: 367,
                   child: Row(
@@ -1061,8 +1146,11 @@ class _LandingPageState extends State<LandingPage> {
                   ),
                 )
               ]),
-              guideComponent("assets/landing_page/image/guide_4.png", "성공적인 발표",
-                  "판서 기능과 회의 기능을 활용하여 \n발표자료를 발표합니다.", 148),
+              guideComponent(
+                  "assets/landing_page/image/guide_4.png",
+                  CretaCommuLang.presen1, // "성공적인 발표",
+                  CretaCommuLang.presen2, //"판서 기능과 회의 기능을 활용하여 \n발표자료를 발표합니다.",
+                  148),
             ],
           )
         ],
@@ -1095,22 +1183,40 @@ class _LandingPageState extends State<LandingPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          solutionComponent("스튜디오", [
-            {
-              "title": "다양한 위젯",
-              "description": "크레타가 제공하는 날씨, 뮤직, 시계, 카메라 등 \n다양한 위젯으로 다채롭게 꾸며보세요."
-            },
-            {"title": "여러명이 동시에", "description": "여러 명의 사용자가 하나의 크레타북을 \n동시에 편집할 수 있습니다."},
-            {"title": "디바이스 통합 플랫폼", "description": "스튜디오에서 디자인한 콘텐츠를 \n바로 등록한 기기에 전송할 수 있습니다."}
-          ]),
           solutionComponent(
-              "커뮤니티",
+              CretaCommuLang.studio, //"스튜디오",
               [
-                {"title": "커뮤니티 탐색", "description": "다양한 크레타북을 시청하고 \n새로운 아이디어를 얻으세요."},
-                {"title": "채널로 공유", "description": "자신의 채널에 제작한 크레타북을 공유하고 \n전세계 사용자와 소통해보세요."},
                 {
-                  "title": "크리에이터 구독",
-                  "description": "좋아하는 크리에이터를 구독하고 \n마음에 드는 크레타북은 저장하고 볼 수 있습니다."
+                  "title": CretaCommuLang.studio1, //"다양한 위젯",
+                  "description":
+                      CretaCommuLang.studio2, //"크레타가 제공하는 날씨, 뮤직, 시계, 카메라 등 \n다양한 위젯으로 다채롭게 꾸며보세요."
+                },
+                {
+                  "title": CretaCommuLang.studio3, //"여러명이 동시에",
+                  "description": CretaCommuLang.studio4, //"여러 명의 사용자가 하나의 크레타북을 \n동시에 편집할 수 있습니다."
+                },
+                {
+                  "title": CretaCommuLang.studio5, //"디바이스 통합 플랫폼",
+                  "description":
+                      CretaCommuLang.studio6, //"스튜디오에서 디자인한 콘텐츠를 \n바로 등록한 기기에 전송할 수 있습니다."
+                }
+              ]),
+          solutionComponent(
+              CretaCommuLang.community, //"커뮤니티",
+              [
+                {
+                  "title": CretaCommuLang.community1, //"커뮤니티 탐색",
+                  "description": CretaCommuLang.community2, //"다양한 크레타북을 시청하고 \n새로운 아이디어를 얻으세요."
+                },
+                {
+                  "title": CretaCommuLang.community3, //"채널로 공유",
+                  "description":
+                      CretaCommuLang.community4, //"자신의 채널에 제작한 크레타북을 공유하고 \n전세계 사용자와 소통해보세요."
+                },
+                {
+                  "title": CretaCommuLang.community5, // "크리에이터 구독",
+                  "description":
+                      CretaCommuLang.community6, // "좋아하는 크리에이터를 구독하고 \n마음에 드는 크레타북은 저장하고 볼 수 있습니다."
                 }
               ],
               backgroundColor: Colors.grey.shade100,
@@ -1162,14 +1268,14 @@ class _LandingPageState extends State<LandingPage> {
                         .copyWith(fontWeight: FontWeight.w700, fontSize: 40, color: fontColor)),
                 fontColor == Colors.white
                     ? BTN.line_blue_t_el(
-                        text: "체험해보기",
+                        text: CretaCommuLang.exp, //"체험해보기",
                         width: 135,
                         onPressed: () {
                           CretaAccountManager.experienceWithoutLogin = true;
                           Routemaster.of(context).push(AppRoutes.studioBookMainPage);
                         })
                     : BTN.fill_blue_t_el(
-                        text: "탐색해보기",
+                        text: CretaCommuLang.search1, // "탐색해보기",
                         width: 135,
                         onPressed: () {
                           CretaAccountManager.experienceWithoutLogin = true;
@@ -1218,7 +1324,7 @@ class _LandingPageState extends State<LandingPage> {
                 ],
               ),
               const SizedBox(height: 14),
-              Text("크레타에서 당신의 상상력을 펼쳐보세요. \n지금 무료로 시작해보세요!",
+              Text(CretaCommuLang.free1, //"크레타에서 당신의 상상력을 펼쳐보세요. \n지금 무료로 시작해보세요!",
                   style: CretaFont.bodyLarge.copyWith(fontWeight: FontWeight.w300)),
               const SizedBox(height: 40),
               customButton(
@@ -1227,7 +1333,7 @@ class _LandingPageState extends State<LandingPage> {
                   backgroundColor: CretaColor.primary,
                   borderRadius: BorderRadius.circular(13),
                   child: Center(
-                      child: Text("무료로 시작하기",
+                      child: Text(CretaCommuLang.free2, //"무료로 시작하기",
                           style:
                               CretaFont.buttonLarge.copyWith(fontSize: 24, color: Colors.white))),
                   onTap: () {
@@ -1324,7 +1430,7 @@ class _LandingPageState extends State<LandingPage> {
                             customButton(
                                 width: 56,
                                 height: 19,
-                                child: Text("이용약관",
+                                child: Text(CretaCommuLang.termsOfUse, //"이용약관",
                                     style: CretaFont.bodyMedium.copyWith(color: Colors.white)),
                                 backgroundColor: Colors.black,
                                 onTap: () {
@@ -1333,7 +1439,7 @@ class _LandingPageState extends State<LandingPage> {
                             customButton(
                                 width: 115,
                                 height: 19,
-                                child: Text("개인정보처리방침",
+                                child: Text(CretaCommuLang.privacyPolicy, // "개인정보처리방침",
                                     style: CretaFont.bodyMedium.copyWith(color: Colors.white)),
                                 backgroundColor: Colors.black,
                                 onTap: () {
