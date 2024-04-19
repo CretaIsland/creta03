@@ -44,6 +44,28 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
   void initState() {
     super.initState();
 
+    _initMenu();
+
+    switch (widget.selectedPage) {
+      case AppRoutes.myPageInfo:
+        _leftMenuItem[1].selected = true;
+        break;
+      case AppRoutes.myPageAccountManage:
+        _leftMenuItem[2].selected = true;
+        break;
+      case AppRoutes.myPageSettings:
+        _leftMenuItem[3].selected = true;
+        break;
+      case AppRoutes.myPageTeamManage:
+        _leftMenuItem[4].selected = true;
+        break;
+      default:
+        _leftMenuItem[0].selected = true;
+        break;
+    }
+  }
+
+  void _initMenu() {
     _leftMenuItem = [
       CretaMenuItem(
           caption: CretaMyPageLang.dashboard,
@@ -86,24 +108,6 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
             Routemaster.of(context).push(AppRoutes.myPageTeamManage);
           })
     ];
-
-    switch (widget.selectedPage) {
-      case AppRoutes.myPageInfo:
-        _leftMenuItem[1].selected = true;
-        break;
-      case AppRoutes.myPageAccountManage:
-        _leftMenuItem[2].selected = true;
-        break;
-      case AppRoutes.myPageSettings:
-        _leftMenuItem[3].selected = true;
-        break;
-      case AppRoutes.myPageTeamManage:
-        _leftMenuItem[4].selected = true;
-        break;
-      default:
-        _leftMenuItem[0].selected = true;
-        break;
-    }
   }
 
   // ignore: unused_element
@@ -139,6 +143,7 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
       // gotoButtonPressed2: gotoButtonPressed2,
       // gotoButtonTitle2: gotoButtonTitle2,
     );
+
     //   return Container(
     //     width: CretaComponentLocation.TabBar.width,
     //     height: leftPaneRect.height,
@@ -234,7 +239,13 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
             ),
           ),
           context: context,
-          child: myPageMain()),
+          child: Consumer<UserPropertyManager>(builder: (context, userPropertyManager, child) {
+            if (oldLanguage != userPropertyManager.userPropertyModel!.language) {
+              _initMenu();
+              oldLanguage = userPropertyManager.userPropertyModel!.language;
+            }
+            return myPageMain();
+          })),
     );
   }
 }

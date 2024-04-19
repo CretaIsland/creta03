@@ -4,10 +4,10 @@ class CretaMyPageLangEN extends AbsCretaMyPageLang {
   CretaMyPageLangEN() {
     // Left menu
     dashboard = 'Dashboard';
-    info = 'Personal Information';
-    accountManage = 'Manage your account';
-    settings = 'Notifications and settings';
-    teamManage = 'Manage your team';
+    info = 'Personal Info';
+    accountManage = 'Your account';
+    settings = 'Noti & Settings';
+    teamManage = 'Your team';
     // Dashboard
     accountInfo = 'Account information';
     grade = 'Grade';
@@ -103,5 +103,12 @@ class CretaMyPageLangEN extends AbsCretaMyPageLang {
     ratePlanList = ['Individual Free', 'Individual Paid', 'Team Paid', 'Enterprise'];
     // Team tiers
     teamPermissionList = ['Owner', 'Admin', 'Team Member'];
+    teamnameInput = 'Please enter your nickname.';
+    openChannel = 'Public Channel';
+    openChannelForEverybody = 'Your channel is open to everyone.';
+    openTeamMember = 'Member disclosure';
+    openTeamChannel = "Team members'channels will be visible to the team channel.";
+
+    introChannel = 'Channel introduction';
   }
 }

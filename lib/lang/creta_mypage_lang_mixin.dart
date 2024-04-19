@@ -115,4 +115,13 @@ mixin CretaMyPageLangMixin {
 
   // 팀 등급
   List<String> teamPermissionList = ['소유자', '관리자', '팀원'];
+
+  String teamnameInput = '팀 이름을 입력해주세요.';
+  String openChannel = '채널 공개';
+  String  openChannelForEverybody = '모든 사람들에게 채널이 공개됩니다.';
+  String  openTeamChannel = '팀 채널에 팀원의 채널이 공개됩니다.';
+  String  openTeamMember = '팀원 공개';
+
+  String     introChannel = '채널 소개';
+
 }

@@ -70,12 +70,12 @@ class CommunityPage extends StatefulWidget {
 }
 
 class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixin {
-  late final List<CretaMenuItem> _leftMenuItemList;
+  late List<CretaMenuItem> _leftMenuItemList;
 
-  late final List<CretaMenuItem> _rightTabMenuList;
-  late final List<CretaMenuItem> _dropDownMenuItemListPurpose;
-  late final List<CretaMenuItem> _dropDownMenuItemListPermission;
-  late final List<CretaMenuItem> _dropDownMenuItemListSort;
+  late List<CretaMenuItem> _rightTabMenuList;
+  late List<CretaMenuItem> _dropDownMenuItemListPurpose;
+  late List<CretaMenuItem> _dropDownMenuItemListPermission;
+  late List<CretaMenuItem> _dropDownMenuItemListSort;
 
   late final Widget Function(Size)? _titlePane;
 
@@ -129,7 +129,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   void _initLeftMenu() {
     _leftMenuItemList = [
       CretaMenuItem(
-        caption: '커뮤니티 홈',
+        caption: CretaCommuLang.commuHome, // '커뮤니티 홈',
         iconData: Icons.home_outlined,
         onPressed: () {
           Routemaster.of(context).push(AppRoutes.communityHome);
@@ -138,7 +138,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         isIconText: true,
       ),
       CretaMenuItem(
-        caption: '구독목록',
+        caption: CretaCommuLang.subsList, // '구독목록',
         iconData: Icons.local_library_outlined,
         onPressed: () {
           if (AccountManager.currentLoginUser.isLoginedUser) {
@@ -151,7 +151,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         isIconText: true,
       ),
       CretaMenuItem(
-        caption: '시청기록',
+        caption: CretaCommuLang.watchHistory, // '시청기록',
         iconData: Icons.article_outlined,
         onPressed: () {
           if (AccountManager.currentLoginUser.isLoginedUser) {
@@ -164,7 +164,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         isIconText: true,
       ),
       CretaMenuItem(
-        caption: '좋아요',
+        caption: CretaCommuLang.iLikeIt, // '좋아요',
         iconData: Icons.favorite_outline,
         onPressed: () {
           if (AccountManager.currentLoginUser.isLoginedUser) {
@@ -177,7 +177,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         isIconText: true,
       ),
       CretaMenuItem(
-        caption: '재생목록',
+        caption: CretaCommuLang.playList, // '재생목록',
         iconData: Icons.playlist_play,
         onPressed: () {
           if (AccountManager.currentLoginUser.isLoginedUser) {
@@ -411,7 +411,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             //isIconText: true,
           ),
           CretaMenuItem(
-            caption: '재생목록',
+            caption: CretaCommuLang.playList,
             //iconData: null,
             index: CommunityChannelType.playlists.index,
             onPressed: () {
@@ -624,7 +624,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       if (size.width > 175) {
         titleList.add(
           Text(
-            '커뮤니티 홈',
+            CretaCommuLang.commuHome,
             style: CretaFont.displaySmall.copyWith(
               color: Colors.white,
               fontWeight: CretaFont.semiBold,
@@ -719,7 +719,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       if (size.width > 175) {
         titleList.add(
           Text(
-            '커뮤니티 홈',
+            CretaCommuLang.commuHome,
             overflow: TextOverflow.ellipsis,
             style: CretaFont.displaySmall.copyWith(
               color: Colors.white,
@@ -814,7 +814,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         SizedBox(width: 12),
         //text
         Text(
-          '커뮤니티 홈',
+          CretaCommuLang.commuHome,
           style: CretaFont.titleELarge.copyWith(fontWeight: CretaFont.semiBold),
         ),
       ]);
@@ -1122,7 +1122,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       //                     crossAxisAlignment: CrossAxisAlignment.start,
       //                     children: [
       //                       Text(
-      //                         '커뮤니티 홈',
+      //                         CretaCommuLang.commuHome,
       //                         style: CretaFont.displaySmall.copyWith(
       //                           color: Colors.white,
       //                           fontWeight: CretaFont.semiBold,
@@ -1595,28 +1595,28 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         return _getSmallTitlePane(
           size: size,
           headIcon: Icons.local_library_outlined,
-          titleText: '구독목록',
+          titleText: CretaCommuLang.subsList,
           descriptionText: '${AccountManager.currentLoginUser.name}님만을 위한 콘텐츠를 빠르게 만나보세요!',
         );
       case AppRoutes.watchHistory:
         return _getSmallTitlePane(
           size: size,
           headIcon: Icons.article_outlined,
-          titleText: '시청기록',
+          titleText: CretaCommuLang.watchHistory,
           descriptionText: '${AccountManager.currentLoginUser.name}님의 최근에 시청한 크레타북입니다.',
         );
       case AppRoutes.favorites:
         return _getSmallTitlePane(
           size: size,
           headIcon: Icons.favorite_outline,
-          titleText: '좋아요',
+          titleText: CretaCommuLang.iLikeIt,
           descriptionText: '${AccountManager.currentLoginUser.name}님이 좋아요를 누른 크레타북입니다.',
         );
       case AppRoutes.playlist:
         return _getSmallTitlePane(
           size: size,
           headIcon: Icons.playlist_play,
-          titleText: '재생목록',
+          titleText: CretaCommuLang.playList,
           descriptionText: '${AccountManager.currentLoginUser.name}님이 만든 재생목록입니다.',
         );
       case AppRoutes.playlistDetail:

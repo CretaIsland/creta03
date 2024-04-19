@@ -118,5 +118,12 @@ class CretaMyPageLangKR extends AbsCretaMyPageLang {
 
     // 팀 등급
     teamPermissionList = ['소유자', '관리자', '팀원'];
+
+    teamnameInput = '닉네임을 입력해주세요.';
+    openChannel = '채널 공개';
+    openChannelForEverybody = '모든 사람들에게 채널이 공개됩니다.';
+    openTeamMember = '팀원 공개';
+    openTeamChannel = '팀 채널에 팀원의 채널이 공개됩니다.';
+    introChannel = '채널 소개';
   }
 }

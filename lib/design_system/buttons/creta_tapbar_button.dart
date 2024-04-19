@@ -154,6 +154,7 @@ class _CretaTapBarButtonState extends State<CretaTapBarButton> {
         //     ),
         //   ],
         // );
+        //print('widget.caption: ${widget.caption}');
         return Container(
           padding: EdgeInsets.only(left: widget.width / 8),
           alignment: AlignmentDirectional.centerStart,
@@ -162,10 +163,15 @@ class _CretaTapBarButtonState extends State<CretaTapBarButton> {
             children: [
               Icon(widget.iconData!, color: _getfgColor(), size: 20),
               SizedBox(width: 12),
-              Text(
-                widget.caption,
-                style: CretaFont.titleLarge
-                    .copyWith(color: _getfgColor(), fontWeight: CretaFont.medium),
+              Expanded(
+                child: Text(
+                  widget.caption,
+                  style: CretaFont.titleLarge
+                      .copyWith(color: _getfgColor(), fontWeight: CretaFont.medium),
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
               ),
             ],
           ),
@@ -188,6 +194,9 @@ class _CretaTapBarButtonState extends State<CretaTapBarButton> {
       child: Text(
         widget.caption,
         style: CretaFont.titleLarge.copyWith(color: _getfgColor()),
+        softWrap: true,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 2,
       ),
     );
   }

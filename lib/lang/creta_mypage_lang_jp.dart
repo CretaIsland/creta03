@@ -96,5 +96,13 @@ class CretaMyPageLangJP extends AbsCretaMyPageLang {
     ratePlanList = ['個人無料', '個人有料', 'チーム有料', 'エンタープライズ'];
     // チームランク
     teamPermissionList = ['オーナー', '管理者', 'チームメンバー'];
+    teamnameInput = 'ニックネームを入力してください';
+
+    openChannel = 'チャンネル公開';
+    openChannelForEverybody = '全員にチャンネルが公開されます';
+    openTeamMember = 'チームメンバー公開';
+    openTeamChannel = 'チームチャンネルにチームメンバーのチャンネルが公開されます。';
+
+    introChannel = 'チャンネル紹介';
   }
 }

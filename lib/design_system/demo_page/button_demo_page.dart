@@ -4,6 +4,7 @@ import 'package:creta03/design_system/buttons/creta_checkbox.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 //import '../buttons/creta_button.dart';
+import '../../lang/creta_commu_lang.dart';
 import '../buttons/creta_button_wrapper.dart';
 import '../buttons/creta_ex_slider.dart';
 import '../buttons/creta_radio_button.dart';
@@ -832,7 +833,7 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
                     const Text('fill_color_ic_el'),
                     const SizedBox(height: 20),
                     BTN.fill_color_ic_el(
-                      text: '시청기록',
+                      text: CretaCommuLang.watchHistory, // '시청기록',
                       onPressed: () {},
                       iconData: Icons.menu_outlined,
                     ),

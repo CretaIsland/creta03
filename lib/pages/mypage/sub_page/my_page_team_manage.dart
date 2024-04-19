@@ -22,6 +22,8 @@ import 'package:image_picker/image_picker.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 
+import '../../../lang/creta_mypage_lang.dart';
+
 class MyPageTeamManage extends StatefulWidget {
   final double width;
   final double height;
@@ -57,6 +59,8 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
     return Consumer3<UserPropertyManager, TeamManager, ChannelManager>(
       builder: (context, userPropertyManager, teamManager, channelManager, child) {
         _teamNameController.text = TeamManager.getCurrentTeam!.name;
+        // print(
+        //     'Consumer3<UserPropertyManager, TeamManager, ChannelManager> received in my_page_team_manage.dart');
         return Container(
           width: widget.width,
           height: widget.height,
@@ -71,7 +75,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text("팀 관리",
+                            Text(CretaMyPageLang.teamManage,
                                 style:
                                     CretaFont.displaySmall.copyWith(fontWeight: FontWeight.w600)),
                             const SizedBox(width: 32),
@@ -99,7 +103,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("팀 정보", style: CretaFont.titleELarge),
+                              Text(CretaMyPageLang.teamInfo, style: CretaFont.titleELarge),
                               const SizedBox(height: 32),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -108,11 +112,12 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text("사진", style: CretaFont.titleMedium),
+                                      Text(CretaMyPageLang.profileImage,
+                                          style: CretaFont.titleMedium),
                                       const SizedBox(height: 220),
-                                      Text("팀 이름", style: CretaFont.titleMedium),
+                                      Text(CretaMyPageLang.teamName, style: CretaFont.titleMedium),
                                       const SizedBox(height: 32),
-                                      Text("요금제", style: CretaFont.titleMedium)
+                                      Text(CretaMyPageLang.ratePlan, style: CretaFont.titleMedium)
                                     ],
                                   ),
                                   const SizedBox(width: 76.0),
@@ -170,8 +175,8 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                           child: TextField(
                                             controller: _teamNameController,
                                             style: CretaFont.bodyMedium,
-                                            decoration: const InputDecoration(
-                                              hintText: '팀 이름을 입력해주세요',
+                                            decoration: InputDecoration(
+                                              hintText: CretaMyPageLang.teamnameInput,
                                               border: InputBorder.none,
                                             ),
                                             onEditingComplete: () {},
@@ -179,11 +184,11 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                       const SizedBox(height: 26),
                                       Row(
                                         children: [
-                                          Text("팀 for 4", style: CretaFont.titleMedium),
+                                          Text("Team for 4", style: CretaFont.titleMedium),
                                           const SizedBox(width: 60),
                                           BTN.line_blue_t_m(
                                               height: 32,
-                                              text: "요금제 변경",
+                                              text: CretaMyPageLang.ratePlanChangeBTN,
                                               onPressed: () {
                                                 showDialog(
                                                   context: context,
@@ -208,9 +213,10 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                     Row(
                                       crossAxisAlignment: CrossAxisAlignment.end,
                                       children: [
-                                        Text("팀원 관리", style: CretaFont.titleELarge),
+                                        Text(CretaMyPageLang.teamMemberManage,
+                                            style: CretaFont.titleELarge),
                                         const SizedBox(width: 40.0),
-                                        Text('초대 가능 인원 1 / 4',
+                                        Text('${CretaMyPageLang.inviteablePeopleNumber} 1 / 4',
                                             style: CretaFont.bodySmall
                                                 .copyWith(color: CretaColor.text.shade400))
                                       ],
@@ -222,7 +228,10 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                       memberComponent(member, teamManager)
                                     ],
                                     const SizedBox(height: 32.0),
-                                    BTN.fill_blue_t_m(text: "팀원 추가", width: 81.0, onPressed: () {})
+                                    BTN.fill_blue_t_m(
+                                        text: CretaMyPageLang.addMemberBTN,
+                                        width: 81.0,
+                                        onPressed: () {})
                                   ],
                                 ),
                               ),
@@ -234,11 +243,13 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("팀 채널", style: CretaFont.titleELarge),
+                                    Text(CretaMyPageLang.teamChannel /*"팀 채널"*/,
+                                        style: CretaFont.titleELarge),
                                     const SizedBox(height: 32),
                                     Row(
                                       children: [
-                                        Text("채널 공개", style: CretaFont.titleMedium),
+                                        Text(CretaMyPageLang.openChannel /*"채널 공개"*/,
+                                            style: CretaFont.titleMedium),
                                         const SizedBox(width: 200),
                                         CretaToggleButton(
                                           defaultValue: TeamManager.getCurrentTeam!.isPublicProfile,
@@ -250,13 +261,14 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                       ],
                                     ),
                                     const SizedBox(height: 16),
-                                    Text("모든 사람들에게 채널이 공개됩니다.",
+                                    Text(CretaMyPageLang.openChannelForEverybody,
                                         style: CretaFont.bodySmall
                                             .copyWith(color: CretaColor.text.shade400)),
                                     const SizedBox(height: 20),
                                     Row(
                                       children: [
-                                        Text("팀원 공개", style: CretaFont.titleMedium),
+                                        Text(CretaMyPageLang.openTeamMember /* "팀원 공개" */,
+                                            style: CretaFont.titleMedium),
                                         const SizedBox(width: 200),
                                         CretaToggleButton(
                                           defaultValue: TeamManager.getCurrentTeam!.isPublicProfile,
@@ -268,14 +280,16 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                       ],
                                     ),
                                     const SizedBox(height: 16),
-                                    Text("팀 채널에 팀원의 채널이 공개됩니다.",
+                                    Text(CretaMyPageLang.openTeamChannel,
+                                        /* "팀 채널에 팀원의 채널이 공개됩니다.", */
                                         style: CretaFont.bodySmall
                                             .copyWith(color: CretaColor.text.shade400)),
                                     const SizedBox(height: 30.0),
                                     Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("배경 이미지", style: CretaFont.titleMedium),
+                                        Text(CretaMyPageLang.backgroundImg /*"배경 이미지" */,
+                                            style: CretaFont.titleMedium),
                                         const SizedBox(width: 50),
                                         MyPageCommonWidget.channelBannerImgComponent(
                                             width: widget.width * .6,
@@ -312,7 +326,8 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                     Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("채널 소개", style: CretaFont.titleMedium),
+                                        Text(CretaMyPageLang.introChannel,
+                                            /*"채널 소개",*/ style: CretaFont.titleMedium),
                                         const SizedBox(width: 64),
                                         MyPageCommonWidget.channelDescriptionComponent(
                                             width: widget.width * .6)

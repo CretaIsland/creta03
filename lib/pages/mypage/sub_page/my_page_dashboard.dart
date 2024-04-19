@@ -38,7 +38,9 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 34, left: 28),
-            child: Text("계정 정보", style: CretaFont.titleELarge),
+            child: Text(CretaMyPageLang.accountInfo,
+                /*"계정 정보",*/
+                style: CretaFont.titleELarge),
           ),
           MyPageCommonWidget.divideLine(
               width: 400, padding: const EdgeInsets.only(top: 30, bottom: 48)),
@@ -98,7 +100,8 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 34, left: 28),
-            child: Text("계정 정보", style: CretaFont.titleELarge),
+            child: Text(CretaMyPageLang.accountInfo, //"계정 정보",
+                style: CretaFont.titleELarge),
           ),
           MyPageCommonWidget.divideLine(
               width: 400, padding: const EdgeInsets.only(top: 30, bottom: 48)),
