@@ -38,7 +38,7 @@ class _BookHistoryPropertyState extends State<BookHistoryProperty> with Property
       children: [
         Padding(
           padding: const EdgeInsets.only(bottom: 12),
-          child: Text(CretaStudioLang.bookHistory, style: CretaFont.titleSmall),
+          child: Text(CretaStudioLang['bookHistory']!, style: CretaFont.titleSmall),
         ),
       ],
     );

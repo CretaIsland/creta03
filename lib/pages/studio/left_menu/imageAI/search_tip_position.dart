@@ -38,7 +38,7 @@ class _SearchTipPositionState extends State<SearchTipPosition> {
 
   int _activePage = 0;
   void _changePage(int page) {
-    if (page >= 0 && page < CretaStudioLang.tipMessage.length) {
+    if (page >= 0 && page < CretaStudioLang['tipMessage']!.length) {
       _pageController.animateToPage(
         page,
         duration: const Duration(milliseconds: 300),
@@ -73,7 +73,7 @@ class _SearchTipPositionState extends State<SearchTipPosition> {
                   _activePage = page;
                 });
               },
-              itemCount: CretaStudioLang.tipMessage.length,
+              itemCount: CretaStudioLang['tipMessage']!.length,
               itemBuilder: (BuildContext context, pageIndex) {
                 return Stack(clipBehavior: Clip.none, children: [
                   tipContent(pageIndex),
@@ -111,8 +111,8 @@ class _SearchTipPositionState extends State<SearchTipPosition> {
           borderRadius: BorderRadius.circular(12.0),
           color: CretaColor.text[100],
         ),
-        child:
-            Center(child: Text(CretaStudioLang.tipMessage[pageIndex], style: CretaFont.bodyESmall)),
+        child: Center(
+            child: Text(CretaStudioLang['tipMessage']![pageIndex], style: CretaFont.bodyESmall)),
       ),
       // image and text examples
       SizedBox(
@@ -129,10 +129,10 @@ class _SearchTipPositionState extends State<SearchTipPosition> {
             return InkWell(
               onTap: () {
                 logger.fine(
-                    "-----Example search text '${CretaStudioLang.detailTipMessage1[tipIndex]}' -------");
+                    "-----Example search text '${CretaStudioLang['detailTipMessage1']![tipIndex]}' -------");
                 LeftMenuImage.textController.text = _activePage == 0
-                    ? CretaStudioLang.detailTipMessage1[tipIndex]
-                    : CretaStudioLang.detailTipMessage2[tipIndex];
+                    ? CretaStudioLang['detailTipMessage1']![tipIndex]
+                    : CretaStudioLang['detailTipMessage2']![tipIndex];
               },
               child: tipExample(tipIndex),
             );
@@ -187,8 +187,8 @@ class _SearchTipPositionState extends State<SearchTipPosition> {
                 padding: const EdgeInsets.only(left: 12.0),
                 child: Text(
                   _activePage == 0
-                      ? CretaStudioLang.detailTipMessage1[tipIndex]
-                      : CretaStudioLang.detailTipMessage2[tipIndex],
+                      ? CretaStudioLang['detailTipMessage1']![tipIndex]
+                      : CretaStudioLang['detailTipMessage2']![tipIndex],
                   style: const TextStyle(
                     fontSize: 8.0,
                     fontWeight: CretaFont.semiBold,

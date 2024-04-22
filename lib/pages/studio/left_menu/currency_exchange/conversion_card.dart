@@ -33,8 +33,8 @@ class _ConversionCardState extends State<ConversionCard> with FramePlayMixin {
   String dropDownValue2 = "KRW";
   String conversion = '';
 
-  List<String> defaultBasedCurrency = CretaStudioLang.firstCurrency;
-  List<String> defaultFinalCurrency = CretaStudioLang.secondCurrency;
+  List<String> defaultBasedCurrency = CretaStudioLang['firstCurrency']!;
+  List<String> defaultFinalCurrency = CretaStudioLang['secondCurrency']!;
 
   Map<String, String> conversionResults = {};
   bool isLoading = false;

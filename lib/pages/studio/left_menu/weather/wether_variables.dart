@@ -49,23 +49,23 @@ class WeatherVariables {
   static String getTitleText(WeatherInfoType infoType) {
     switch (infoType) {
       case WeatherInfoType.cityname:
-        return CretaStudioLang.cityName;
+        return CretaStudioLang['cityName']!;
       case WeatherInfoType.temperature:
-        return CretaStudioLang.temperature;
+        return CretaStudioLang['temperature']!;
       case WeatherInfoType.humidity:
-        return CretaStudioLang.humidity;
+        return CretaStudioLang['humidity']!;
       case WeatherInfoType.wind:
-        return CretaStudioLang.wind;
+        return CretaStudioLang['wind']!;
       case WeatherInfoType.pressure:
-        return CretaStudioLang.pressure;
+        return CretaStudioLang['pressure']!;
       case WeatherInfoType.uv:
-        return CretaStudioLang.uv;
+        return CretaStudioLang['uv']!;
       case WeatherInfoType.visibility:
-        return CretaStudioLang.visibility;
+        return CretaStudioLang['visibility']!;
       case WeatherInfoType.microDust:
-        return CretaStudioLang.microDust;
+        return CretaStudioLang['microDust']!;
       case WeatherInfoType.superMicroDust:
-        return CretaStudioLang.superMicroDust;
+        return CretaStudioLang['superMicroDust']!;
     }
   }
 

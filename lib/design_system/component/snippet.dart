@@ -63,6 +63,8 @@ extension GlobalKeyExtension on GlobalKey {
 class Snippet {
   static List<LogicalKeyboardKey> keys = [];
 
+  //static LanguageType oldLanguage = LanguageType.none;
+
   static Widget errMsgWidget(AsyncSnapshot<Object> snapshot) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -228,7 +230,7 @@ class Snippet {
             //buttonColor: CretaButtonColor.white,
             //fgColor: CretaColor.text[700]!,
             width: 112,
-            text: CretaLang.signUp,
+            text: CretaLang['signUp']!,
             icon: Icons.arrow_forward,
             //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
             onPressed: () {
@@ -261,7 +263,7 @@ class Snippet {
             buttonColor: CretaButtonColor.white,
             //fgColor: CretaColor.text[700]!,
             height: 36,
-            text: CretaLang.login,
+            text: CretaLang['login']!,
             //image:
             //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
             textStyle: CretaFont.buttonLarge.copyWith(color: CretaColor.text[700]),
@@ -291,7 +293,7 @@ class Snippet {
         height: 36,
         width: 130,
         child: BTN.fill_gray_it_l(
-          text: CretaStudioLang.newBook,
+          text: CretaStudioLang['newBook']!,
           buttonColor: CretaButtonColor.blueAndWhiteTitle,
           textColor: Colors.white,
           onPressed: () {
@@ -310,7 +312,7 @@ class Snippet {
       child: SizedBox(
         height: 36,
         child: BTN.fill_blue_i_l(
-          //tooltip: CretaStudioLang.tooltipNoti,
+          //tooltip: CretaStudioLang['tooltipNoti']!,
           icon: Icons.notifications_outlined,
           // buttonColor: CretaButtonColor.white,
           // iconColor: CretaColor.text[700],
@@ -500,7 +502,7 @@ class Snippet {
       yOffset: yOffset,
       popupMenu: [
         CretaMenuItem(
-          caption: CretaLang.accountMenu[0], // 마이페이지
+          caption: CretaLang['accountMenu']![0], // 마이페이지
           onPressed: () {
             if (AccountManager.currentLoginUser.isLoginedUser == false) {
               BookMainPage.warningNeedToLogin(context);
@@ -510,7 +512,7 @@ class Snippet {
           },
         ),
         CretaMenuItem(
-          caption: CretaLang.accountMenu[1], // 팀전환
+          caption: CretaLang['accountMenu']![1], // 팀전환
           onPressed: () {
             if (AccountManager.currentLoginUser.isLoginedUser == false) {
               BookMainPage.warningNeedToLogin(context);
@@ -519,7 +521,7 @@ class Snippet {
           },
         ),
         CretaMenuItem(
-          caption: CretaLang.accountMenu[2], // 로그아웃
+          caption: CretaLang['accountMenu']![2], // 로그아웃
           onPressed: () {
             StudioVariables.selectedBookMid = '';
             CretaAccountManager.logout()
@@ -527,7 +529,7 @@ class Snippet {
           },
         ),
         CretaMenuItem(
-          caption: CretaLang.accountMenu[4], // 버전 정보
+          caption: CretaLang['accountMenu']![4], // 버전 정보
           onPressed: () {
             showDialog(
                 context: context,
@@ -538,8 +540,9 @@ class Snippet {
         ),
         if (!kReleaseMode)
           CretaMenuItem(
-            caption:
-                CretaVars.isDeveloper ? CretaLang.accountMenu[6] : CretaLang.accountMenu[5], //개발자모드
+            caption: CretaVars.isDeveloper
+                ? CretaLang['accountMenu']![6]
+                : CretaLang['accountMenu']![5], //개발자모드
             onPressed: () {
               CretaVars.isDeveloper = !CretaVars.isDeveloper;
               invalidate?.call();
@@ -569,7 +572,7 @@ class Snippet {
                 child: SizedBox(
                   height: 36,
                   child: BTN.fill_blue_i_l(
-                    tooltip: CretaStudioLang.tooltipNoti,
+                    tooltip: CretaStudioLang['tooltipNoti']!,
                     onPressed: () {},
                     icon: Icons.notifications_outlined,
                   ),
@@ -637,7 +640,7 @@ class Snippet {
                 height: 36,
                 width: 200,
                 child: BTN.fill_gray_it_l(
-                  text: CretaStudioLang.newBook,
+                  text: CretaStudioLang['newBook']!,
                   onPressed: () {
                     Routemaster.of(context).push(AppRoutes.studioBookMainPage);
                   },
@@ -649,7 +652,7 @@ class Snippet {
               child: SizedBox(
                 height: 36,
                 child: BTN.fill_blue_i_l(
-                  tooltip: CretaStudioLang.tooltipNoti,
+                  tooltip: CretaStudioLang['tooltipNoti']!,
                   onPressed: () {},
                   icon: Icons.notifications_outlined,
                 ),
@@ -1119,21 +1122,45 @@ class Snippet {
     );
   }
 
-  static void onLangSelected({
+  static Future<void> onLangSelected({
     required int value,
     required UserPropertyManager userPropertyManager,
     required Function() invalidate,
-  }) {
+  }) async {
     userPropertyManager.userPropertyModel!.language = LanguageType.fromInt(value);
-    setLang(userPropertyManager.userPropertyModel!.language);
+    await setLang(userPropertyManager.userPropertyModel!.language);
     invalidate();
   }
 
-  static void setLang(LanguageType language) {
-    AbsCretaLang.changeLang(language);
-    AbsCretaStudioLang.changeLang(language);
-    AbsCretaDeviceLang.changeLang(language);
-    AbsCretaCommuLang.changeLang(language);
-    AbsCretaMyPageLang.changeLang(language);
+  // static void clearLang() {
+  //   oldLanguage = LanguageType.none;
+  // }
+
+  static Future<bool> setLang(LanguageType language) async {
+    if (language == LanguageType.none) {
+      language = LanguageType.korean;
+    }
+    try {
+      await AbsCretaLang.changeLang(language);
+      await AbsCretaStudioLang.changeLang(language);
+      await AbsCretaDeviceLang.changeLang(language);
+      await AbsCretaCommuLang.changeLang(language);
+      await AbsCretaMyPageLang.changeLang(language);
+    } catch (e) {
+      //print("setLang chagned failed($e)=========================");
+      logger.severe('read lang json filed failed !!!!!!=========================');
+      return false;
+    }
+    return true;
+    //}
+    //return false;
   }
+
+  // static bool langChanged(LanguageType language) {
+  //   if (oldLanguage != language) {
+  //     oldLanguage = language;
+  //     return true;
+  //   }
+  //   return false;
+  // }
 }

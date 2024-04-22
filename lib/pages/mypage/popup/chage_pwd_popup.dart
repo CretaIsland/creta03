@@ -51,7 +51,7 @@ class ChangePwdPopUp {
           ),
           const SizedBox(height: 24.0),
           BTN.fill_blue_t_m(
-              text: CretaMyPageLang.passwordChangeBTN,
+              text: CretaMyPageLang['passwordChangeBTN']!,
               width: 294.0,
               height: 32.0,
               onPressed: () {

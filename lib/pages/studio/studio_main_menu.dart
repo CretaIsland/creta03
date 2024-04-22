@@ -26,12 +26,13 @@ class StudioMainMenu extends StatefulWidget {
   static void downloadDialog(BuildContext context) {
     CretaPopup.yesNoDialog(
       context: context,
-      title: "${CretaStudioLang.export}      ",
+      title: "${CretaStudioLang['export']!}      ",
       icon: Icons.file_download_outlined,
-      question: CretaStudioLang.downloadConfirm,
-      noBtText:
-          CretaVars.isDeveloper ? CretaStudioLang.noBtDnTextDeloper : CretaStudioLang.noBtDnText,
-      yesBtText: CretaStudioLang.yesBtDnText,
+      question: CretaStudioLang['downloadConfirm']!,
+      noBtText: CretaVars.isDeveloper
+          ? CretaStudioLang['noBtDnTextDeloper']!
+          : CretaStudioLang['noBtDnText']!,
+      yesBtText: CretaStudioLang['yesBtDnText']!,
       yesIsDefault: true,
       onNo: () {
         if (CretaVars.isDeveloper) {
@@ -61,7 +62,7 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
     _popupMenuList = [
       CretaMenuItem(
           // 새로운 북을 만든다.
-          caption: CretaStudioLang.newBook,
+          caption: CretaStudioLang['newBook']!,
           onPressed: () {
             BookModel newBook = BookMainPage.bookManagerHolder!.createSample();
             BookMainPage.bookManagerHolder!.saveSample(newBook).then((value) {
@@ -71,7 +72,7 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
           }),
       CretaMenuItem(
         // 사본을 만든다.
-        caption: CretaLang.makeCopy,
+        caption: CretaLang['makeCopy']!,
         onPressed: () {
           BookModel? model = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
           if (model == null) {
@@ -96,7 +97,7 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
       ),
       CretaMenuItem(
         // 목록화면을 오픈다.new
-        caption: CretaLang.open,
+        caption: CretaLang['open']!,
         onPressed: () {
           StudioVariables.selectedBookMid = '';
           //Routemaster.of(context).pop();
@@ -109,7 +110,7 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
       ),
       CretaMenuItem(
         // 다운로드 한다.
-        caption: CretaLang.download,
+        caption: CretaLang['download']!,
         onPressed: () {
           logger.fine('download CretaBook !!! in list');
           StudioMainMenu.downloadDialog(context);
@@ -117,25 +118,25 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
       ),
       CretaMenuItem(
         // 출력한다.
-        caption: CretaLang.printCommand,
+        caption: CretaLang['printCommand']!,
         onPressed: () {},
         disabled: true,
       ),
       CretaMenuItem(
         // 그리드 보기.
-        caption: CretaStudioLang.showGrid,
+        caption: CretaStudioLang['showGrid']!,
         onPressed: () {},
         disabled: true,
       ),
       CretaMenuItem(
         // 눈금자 보기.
-        caption: CretaStudioLang.showRuler,
+        caption: CretaStudioLang['showRuler']!,
         onPressed: () {},
         disabled: true,
       ),
       CretaMenuItem(
         // 상세정보를 보여준다
-        caption: CretaLang.details,
+        caption: CretaLang['details']!,
         onPressed: () {
           BookMainPage.containeeNotifier!.set(ContaineeEnum.Book);
           LeftMenuPage.treeInvalidate();
@@ -143,17 +144,17 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
       ),
       CretaMenuItem(
         // 삭제한다.
-        caption: CretaLang.delete,
+        caption: CretaLang['delete']!,
         onPressed: () {
           BookModel? thisOne = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
           if (thisOne == null) return;
           CretaPopup.yesNoDialog(
             context: context,
-            title: CretaLang.deleteConfirmTitle,
+            title: CretaLang['deleteConfirmTitle']!,
             icon: Icons.file_download_outlined,
-            question: CretaLang.deleteConfirm,
-            noBtText: CretaStudioLang.noBtDnText,
-            yesBtText: CretaStudioLang.yesBtDnText,
+            question: CretaLang['deleteConfirm']!,
+            noBtText: CretaStudioLang['noBtDnText']!,
+            yesBtText: CretaStudioLang['yesBtDnText']!,
             yesIsDefault: true,
             onNo: () {},
             onYes: () async {
@@ -162,7 +163,7 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
               await BookMainPage.bookManagerHolder!
                   .removeBook(thisOne, BookMainPage.pageManagerHolder!);
               // ignore: use_build_context_synchronously
-              showSnackBar(context, '$name${CretaLang.bookDeleted}');
+              showSnackBar(context, '$name${CretaLang['bookDeleted']!}');
               // ignore: use_build_context_synchronously
               Routemaster.of(context).push(AppRoutes.studioBookGridPage);
               // ignore: use_build_context_synchronously
@@ -176,9 +177,9 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
           //       if (thisOne == null) return const SizedBox.square();
           //       return CretaAlertDialog(
           //         height: 200,
-          //         title: CretaLang.deleteConfirmTitle,
+          //         title: CretaLang['deleteConfirmTitle']!,
           //         content: Text(
-          //           CretaLang.deleteConfirm,
+          //           CretaLang['deleteConfirm']!,
           //           style: CretaFont.titleMedium,
           //         ),
           //         onPressedOK: () async {
@@ -187,7 +188,7 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
           //           await BookMainPage.bookManagerHolder!
           //               .removeBook(thisOne, BookMainPage.pageManagerHolder!);
           //           // ignore: use_build_context_synchronously
-          //           showSnackBar(context, '$name${CretaLang.bookDeleted}');
+          //           showSnackBar(context, '$name${CretaLang['bookDeleted']!}');
           //           // ignore: use_build_context_synchronously
           //           Routemaster.of(context).push(AppRoutes.studioBookGridPage);
           //           // ignore: use_build_context_synchronously

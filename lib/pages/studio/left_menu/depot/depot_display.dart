@@ -140,7 +140,7 @@ class _DepotDisplayClassState extends State<DepotDisplay> {
                   padding: EdgeInsets.symmetric(vertical: verticalPadding),
                   height: 352.0,
                   alignment: Alignment.center,
-                  child: Text(CretaLang.nodatafounded),
+                  child: Text(CretaLang['nodatafounded']!),
                 );
               }
               _localManager.sort();

@@ -33,25 +33,25 @@ class BookPublishedManager extends CretaManager {
   // List<CretaMenuItem> getSortMenu(Function? onModelSorted) {
   //   return [
   //     CretaMenuItem(
-  //         caption: CretaLang.basicBookSortFilter[0],
+  //         caption: CretaLang['basicBookSortFilter']![0],
   //         onPressed: () {
   //           toSorted('updateTime', descending: true, onModelSorted: onModelSorted);
   //         },
   //         selected: true),
   //     CretaMenuItem(
-  //         caption: CretaLang.basicBookSortFilter[1],
+  //         caption: CretaLang['basicBookSortFilter']![1],
   //         onPressed: () {
   //           toSorted('name', onModelSorted: onModelSorted);
   //         },
   //         selected: false),
   //     CretaMenuItem(
-  //         caption: CretaLang.basicBookSortFilter[2],
+  //         caption: CretaLang['basicBookSortFilter']![2],
   //         onPressed: () {
   //           toSorted('likeCount', descending: true, onModelSorted: onModelSorted);
   //         },
   //         selected: false),
   //     CretaMenuItem(
-  //         caption: CretaLang.basicBookSortFilter[3],
+  //         caption: CretaLang['basicBookSortFilter']![3],
   //         onPressed: () {
   //           toSorted('viewCount', descending: true, onModelSorted: onModelSorted);
   //         },
@@ -63,14 +63,14 @@ class BookPublishedManager extends CretaManager {
   // List<CretaMenuItem> getFilterMenu(Function? onModelFiltered) {
   //   return [
   //     CretaMenuItem(
-  //         caption: CretaLang.basicBookFilter[0],
+  //         caption: CretaLang['basicBookFilter']![0],
   //         onPressed: () {
   //           toFiltered(null, null, AccountManager.currentLoginUser.email,
   //               onModelFiltered: onModelFiltered);
   //         },
   //         selected: true),
   //     CretaMenuItem(
-  //         caption: CretaLang.basicBookFilter[1],
+  //         caption: CretaLang['basicBookFilter']![1],
   //         onPressed: () {
   //           toFiltered(
   //               'bookType', BookType.presentaion.index, AccountManager.currentLoginUser.email,
@@ -78,21 +78,21 @@ class BookPublishedManager extends CretaManager {
   //         },
   //         selected: false),
   //     CretaMenuItem(
-  //         caption: CretaLang.basicBookFilter[2],
+  //         caption: CretaLang['basicBookFilter']![2],
   //         onPressed: () {
   //           toFiltered('bookType', BookType.board.index, AccountManager.currentLoginUser.email,
   //               onModelFiltered: onModelFiltered);
   //         },
   //         selected: false),
   //     CretaMenuItem(
-  //         caption: CretaLang.basicBookFilter[3],
+  //         caption: CretaLang['basicBookFilter']![3],
   //         onPressed: () {
   //           toFiltered('bookType', BookType.signage.index, AccountManager.currentLoginUser.email,
   //               onModelFiltered: onModelFiltered);
   //         },
   //         selected: false),
   //     CretaMenuItem(
-  //         caption: CretaLang.basicBookFilter[4],
+  //         caption: CretaLang['basicBookFilter']![4],
   //         onPressed: () {
   //           toFiltered('bookType', BookType.etc.index, AccountManager.currentLoginUser.email,
   //               onModelFiltered: onModelFiltered);
@@ -117,7 +117,7 @@ class BookPublishedManager extends CretaManager {
     int randomNumber = random.nextInt(100);
     String url = 'https://picsum.photos/200/?random=$randomNumber';
 
-    String name = '${CretaLang.sampleBookName} ';
+    String name = '${CretaLang['sampleBookName']!} ';
     name += CretaCommonUtils.getNowString(deli1: '', deli2: ' ', deli3: '', deli4: ' ');
 
     BookModel sampleBook = BookModel.withName(name,

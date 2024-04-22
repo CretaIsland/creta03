@@ -106,7 +106,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
                 //       children: [
                 //         // BTN.line_blue_t_m(
                 //         //   width: 24,
-                //         //   text: CretaLang.cancel,
+                //         //   text: CretaLang['cancel']!,
                 //         //   onPressed: () {
                 //         //     Navigator.of(context).pop();
                 //         //   },
@@ -114,7 +114,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
                 //         // const SizedBox(width: 8),
                 //         BTN.fill_blue_t_m(
                 //           width: 55,
-                //           text: CretaLang.confirm,
+                //           text: CretaLang['confirm']!,
                 //           onPressed: () {
                 //             Navigator.of(context).pop();
                 //           },
@@ -138,7 +138,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
       //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       //       children: [
       //         Text(
-      //           CretaLang.invite,
+      //           CretaLang['invite']!,
       //           style: CretaFont.titleMedium,
       //         ),
       //         if (widget.isDialog)
@@ -158,7 +158,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
       if (widget.isDialog == false)
         Padding(
           padding: EdgeInsets.only(bottom: 12, top: widget.isDialog ? 12 : 0),
-          child: Text(CretaLang.invite, style: CretaFont.titleSmall),
+          child: Text(CretaLang['invite']!, style: CretaFont.titleSmall),
         ),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -179,7 +179,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
                 // });
               }),
           BTN.line_blue_t_m(
-              text: CretaLang.invite,
+              text: CretaLang['invite']!,
               onPressed: () {
                 _addUser(scopeController.text).then((value) {
                   if (value) {
@@ -299,7 +299,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
       });
       // 여기서, 초대를 해야 한다.
       // ignore: use_build_context_synchronously
-      //showSnackBar(context, CretaStudioLang.noExitEmail, duration: const Duration(seconds: 3));
+      //showSnackBar(context, CretaStudioLang['noExitEmail']!, duration: const Duration(seconds: 3));
       return true;
     }
     // 팀명인지 확인한다. 현재 enterpriseId 가 없으므로 creta 으로 검색한다
@@ -315,7 +315,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
     }
     // 해당하는 Team 명이 없다. 이메일등을 넣도록 경고한다.
     // ignore: use_build_context_synchronously
-    showSnackBar(context, CretaStudioLang.wrongEmail, duration: const Duration(seconds: 3));
+    showSnackBar(context, CretaStudioLang['wrongEmail']!, duration: const Duration(seconds: 3));
     return false;
   }
 
@@ -369,7 +369,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
           leftWidget: CretaAccountManager.userPropertyManagerHolder
               .imageCircle(e.profileImgUrl, e.name, radius: 24),
           icon: Icons.add_outlined,
-          text: '${e.name} ${CretaLang.team}',
+          text: '${e.name} ${CretaLang['team']!}',
           width: 180,
           textWidth: 90,
           onPressed: () {
@@ -393,14 +393,14 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
     if (isNotCreator) {
       return name;
     }
-    return '$name(${isChannel ? CretaLang.myChannel : CretaLang.creator})';
+    return '$name(${isChannel ? CretaLang['myChannel']! : CretaLang['creator']!})';
   }
 
   List<Widget> _invitedPeople({bool isTeam = false}) {
     return [
       Padding(
         padding: const EdgeInsets.only(top: 12, bottom: 12),
-        child: Text(isTeam ? CretaStudioLang.invitedTeam : CretaStudioLang.invitedPeople,
+        child: Text(isTeam ? CretaStudioLang['invitedTeam']! : CretaStudioLang['invitedPeople']!,
             style: CretaFont.titleSmall),
       ),
       Container(

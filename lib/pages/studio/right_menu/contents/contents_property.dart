@@ -181,7 +181,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             _isMusicAudioControl = !_isMusicAudioControl;
           });
         },
-        titleWidget: Text(CretaStudioLang.musicAudioControl, style: CretaFont.titleSmall),
+        titleWidget: Text(CretaStudioLang['musicAudioControl']!, style: CretaFont.titleSmall),
         trailWidget: Text(trails, style: CretaFont.bodySmall),
         hasRemoveButton: false,
         onDelete: () {},
@@ -203,7 +203,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),
       child: propertyLine(
-        name: CretaStudioLang.musicMutedControl,
+        name: CretaStudioLang['musicMutedControl']!,
         widget: _musicMutedToggle(),
       ),
     );
@@ -247,7 +247,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       musicVol = maxVol;
     }
     return propertyLine(
-      name: CretaStudioLang.musicVol,
+      name: CretaStudioLang['musicVol']!,
       widget: CretaExSlider(
         valueType: SliderValueType.normal,
         value: musicVol,
@@ -283,7 +283,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
     return Padding(
       padding: EdgeInsets.only(left: horizontalPadding, right: horizontalPadding, top: 5),
       child: colorPropertyCard(
-        title: CretaLang.fontColor,
+        title: CretaLang['fontColor']!,
         color1: widget.model.fontColor.value,
         color2: widget.model.fontColor.value,
         opacity: widget.model.opacity.value,
@@ -351,7 +351,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       //         _isTextFontColorOpen = !_isTextFontColorOpen;
       //       });
       //     },
-      //     titleWidget: Text(CretaLang.fontColor, style: CretaFont.titleSmall),
+      //     titleWidget: Text(CretaLang['fontColor']!, style: CretaFont.titleSmall),
       //     //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
       //     trailWidget: Text(
       //       '${CretaCommonUtils.extractColorString(widget.model.fontColor.value.toString())},${(1 - widget.model.opacity.value) * 100}%',
@@ -376,7 +376,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   //     children: [
   //       propertyLine(
   //         // fontColor
-  //         name: CretaStudioLang.color,
+  //         name: CretaStudioLang['color']!,
   //         widget: colorIndicator(
   //           widget.model.fontColor.value,
   //           widget.model.opacity.value,
@@ -392,7 +392,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   //       ),
   //       propertyLine(
   //         // Opacity
-  //         name: CretaStudioLang.opacity,
+  //         name: CretaStudioLang['opacity']!,
   //         widget: CretaExSlider(
   //           valueType: SliderValueType.reverse,
   //           value: widget.model.opacity.value,
@@ -426,7 +426,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             _textAIOpen = !_textAIOpen;
           });
         },
-        titleWidget: Text(CretaLang.fontAI, style: CretaFont.titleSmall),
+        titleWidget: Text(CretaLang['fontAI']!, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
         trailWidget: Text(StudioConst.code2LangMap[widget.model.lang.value]!,
             textAlign: TextAlign.right,
@@ -464,7 +464,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         //_fontDecoBar(),
         // propertyLine(
         //   // letterSpacing  자간
-        //   name: CretaStudioLang.letterSpacing,
+        //   name: CretaStudioLang['letterSpacing']!,
         //   widget: CretaExSlider(
         //     valueType: SliderValueType.normal,
         //     value: widget.model.letterSpacing.value,
@@ -487,7 +487,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         // ),
         // propertyLine(
         //   // lineHeight  행간
-        //   name: CretaStudioLang.lineHeight,
+        //   name: CretaStudioLang['lineHeight']!,
         //   widget: CretaExSlider(
         //     valueType: SliderValueType.normal,
         //     textType: CretaTextFieldType.number,
@@ -510,7 +510,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         // ),
         // propertyLine(
         //   // scaleFactor  장평
-        //   name: CretaStudioLang.scaleFactor,
+        //   name: CretaStudioLang['scaleFactor']!,
         //   widget: CretaExSlider(
         //     postfix: '%',
         //     valueType: SliderValueType.normal,
@@ -536,7 +536,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         propertyLine(
           // TTS
           topPadding: 10,
-          name: CretaStudioLang.tts,
+          name: CretaStudioLang['tts']!,
           widget: CretaToggleButton(
             width: 54 * 0.75,
             height: 28 * 0.75,
@@ -577,7 +577,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         // ),
         // propertyLine(
         //   // 프레임 크기에 자동 맞춤
-        //   name: CretaStudioLang.autoSizeFont,
+        //   name: CretaStudioLang['autoSizeFont']!,
         //   widget: CretaToggleButton(
         //     width: 54 * 0.75,
         //     height: 28 * 0.75,
@@ -625,7 +625,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   Widget _translateRow(ContentsModel model) {
     return propertyLine(
       topPadding: 10,
-      name: CretaStudioLang.translate,
+      name: CretaStudioLang['translate']!,
       widget: CretaDropDownButton(
         align: MainAxisAlignment.start,
         selectedColor: CretaColor.text[700]!,
@@ -658,7 +658,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(CretaLang.playDuration, style: titleStyle),
+          Text(CretaLang['playDuration']!, style: titleStyle),
           if (model.playTime.value >= 0)
             TimeInputWidget(
               textWidth: 30,
@@ -674,7 +674,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             children: [
               Padding(
                 padding: const EdgeInsets.only(bottom: 2.0),
-                child: Text(CretaLang.onlyOnce, style: titleStyle),
+                child: Text(CretaLang['onlyOnce']!, style: titleStyle),
               ),
               CretaToggleButton(
                   width: 54 * 0.75,
@@ -755,9 +755,9 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
 
   // List<CretaMenuItem> _getFontSizeItem(
   //     {required FontSizeType defaultValue, required void Function(FontSizeType) onChanged}) {
-  //   return CretaStudioLang.textSizeMap.keys.map(
+  //   return CretaStudioLang['textSizeMap']!.keys.map(
   //     (sizeStr) {
-  //       double sizeVal = CretaStudioLang.textSizeMap[sizeStr]!;
+  //       double sizeVal = CretaStudioLang['textSizeMap']![sizeStr]!;
   //       double currentVal = FontSizeType.enumToVal[defaultValue]!;
   //       return CretaMenuItem(
   //           caption: sizeStr,
@@ -779,7 +779,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             _isPlayControlOpen = !_isPlayControlOpen;
           });
         },
-        titleWidget: Text(CretaStudioLang.imageControl, style: CretaFont.titleSmall),
+        titleWidget: Text(CretaStudioLang['imageControl']!, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
         trailWidget: Text(
           _trailString(),
@@ -796,7 +796,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   String _trailString() {
     int idx = widget.model.fit.value.index;
     if (idx > ContentsFitType.none.index && idx < ContentsFitType.end.index) {
-      return CretaStudioLang.fitList.keys.toList()[idx - 1];
+      return CretaStudioLang['fitList']!.keys.toList()[idx - 1];
     }
     return '';
   }
@@ -810,7 +810,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
           CretaPropertySlider(
             // 투명도
             key: GlobalKey(),
-            name: CretaStudioLang.opacity,
+            name: CretaStudioLang['opacity']!,
             min: 0,
             max: 100,
             value: CretaCommonUtils.validCheckDouble(widget.model.opacity.value, 0, 1),
@@ -840,13 +840,13 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(CretaStudioLang.fitting, style: titleStyle),
+                Text(CretaStudioLang['fitting']!, style: titleStyle),
                 Consumer<ContentsManager>(builder: (context, contentsManager, child) {
                   return CretaTabButton(
                     key: ValueKey('fit${widget.model.mid}/${widget.model.fit.value}'),
                     onEditComplete: (value) {
                       int idx = 1;
-                      for (String val in CretaStudioLang.fitList.values) {
+                      for (String val in CretaStudioLang['fitList']!.values) {
                         if (value == val) {
                           widget.model.fit.set(ContentsFitType.values[idx]);
                           break;
@@ -865,8 +865,8 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                     unSelectedColor: CretaColor.text[100]!,
                     selectedBorderColor: CretaColor.primary,
                     defaultString: _getFit(),
-                    buttonLables: CretaStudioLang.fitList.keys.toList(),
-                    buttonValues: CretaStudioLang.fitList.values.toList(),
+                    buttonLables: CretaStudioLang['fitList']!.keys.toList(),
+                    buttonValues: CretaStudioLang['fitList']!.values.toList(),
                   );
                 }),
               ],
@@ -874,7 +874,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
           ),
           propertyLine(
             // 좌우반전
-            name: CretaStudioLang.flip,
+            name: CretaStudioLang['flip']!,
             widget: Consumer<ContentsManager>(builder: (context, contentsManager, child) {
               return CretaToggleButton(
                 key: ValueKey('isFlip${widget.model.mid}/${widget.model.isFlip.value}'),
@@ -893,7 +893,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
           ),
           propertyLine(
             // 회전 각도
-            name: CretaStudioLang.rotateConTooltip,
+            name: CretaStudioLang['rotateConTooltip']!,
             widget: Consumer<ContentsManager>(builder: (context, contentsManager, child) {
               return RepaintBoundary(
                 child: CretaExSlider(
@@ -923,7 +923,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
           if (widget.model.isImage())
             propertyLine(
               // 이미지 AniType
-              name: CretaStudioLang.ani,
+              name: CretaStudioLang['ani']!,
               widget: CretaToggleButton(
                 width: 54 * 0.75,
                 height: 28 * 0.75,
@@ -993,7 +993,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             _isTextBorderOpen = !_isTextBorderOpen;
           });
         },
-        titleWidget: Text(CretaStudioLang.border, style: CretaFont.titleSmall),
+        titleWidget: Text(CretaStudioLang['border']!, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
         trailWidget: Text(
           'A',
@@ -1025,7 +1025,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       children: [
         propertyLine(
           // 테두리 색
-          name: CretaStudioLang.color,
+          name: CretaStudioLang['color']!,
           widget: colorIndicator(
             widget.model.outLineColor.value,
             widget.model.opacity.value,
@@ -1040,7 +1040,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         ),
         propertyLine(
           // 테두리 두께
-          name: CretaStudioLang.outlineWidth,
+          name: CretaStudioLang['outlineWidth']!,
           widget: CretaExSlider(
             valueType: SliderValueType.normal,
             value: widget.model.outLineWidth.value,
@@ -1087,7 +1087,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   //                 _isLinkControlOpen = !_isLinkControlOpen;
   //               });
   //             },
-  //             titleWidget: Text(CretaStudioLang.linkControl, style: CretaFont.titleSmall),
+  //             titleWidget: Text(CretaStudioLang['linkControl']!, style: CretaFont.titleSmall),
   //             //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
   //             trailWidget: _linkToggle(isLinkEditMode),
   //             hasRemoveButton: false,
@@ -1103,7 +1103,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   //     padding: const EdgeInsets.only(top: 16.0),
   //     child: propertyLine(
   //       // 링크 편집 모드
-  //       name: CretaStudioLang.linkControl,
+  //       name: CretaStudioLang['linkControl']!,
   //       widget: _linkToggle(isLinkEditMode),
   //     ),
   //   );
@@ -1137,7 +1137,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             PropertyMixin.isHashTagOpen = !PropertyMixin.isHashTagOpen;
           });
         },
-        titleWidget: Text(CretaStudioLang.hashTab, style: CretaFont.titleSmall),
+        titleWidget: Text(CretaStudioLang['hashTab']!, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
         trailWidget: widget.model.hashTag.value.length < 3
             ? SizedBox.shrink()
@@ -1209,7 +1209,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             _isTextAni = !_isTextAni;
           });
         },
-        titleWidget: Text(CretaStudioLang.ani, style: CretaFont.titleSmall),
+        titleWidget: Text(CretaStudioLang['ani']!, style: CretaFont.titleSmall),
         trailWidget: Text(
           widget.model.aniType.value.name,
           textAlign: TextAlign.right,
@@ -1241,7 +1241,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             Padding(
               padding: const EdgeInsets.only(bottom: 12.0),
               child: propertyLine(
-                name: CretaStudioLang.speed,
+                name: CretaStudioLang['speed']!,
                 widget: CretaExSlider(
                   valueType: SliderValueType.normal,
                   value: model.anyDuration.value,
@@ -1265,7 +1265,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                 child: transitionText(
                   model,
                   TextAniType.randomTransition,
-                  CretaStudioLang.transition[0],
+                  CretaStudioLang['transition']![0],
                 )),
             StudioSnippet.smallDivider(height: 10),
             SizedBox(
@@ -1274,7 +1274,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                 child: transitionText(
                   model,
                   TextAniType.fadeTransition,
-                  CretaStudioLang.transition[1],
+                  CretaStudioLang['transition']![1],
                 )),
             StudioSnippet.smallDivider(height: 10),
             SizedBox(
@@ -1283,7 +1283,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                 child: transitionText(
                   model,
                   TextAniType.slideTransition,
-                  CretaStudioLang.transition[2],
+                  CretaStudioLang['transition']![2],
                 )),
             StudioSnippet.smallDivider(height: 10),
             SizedBox(
@@ -1292,7 +1292,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                 child: transitionText(
                   model,
                   TextAniType.scaleTransition,
-                  CretaStudioLang.transition[3],
+                  CretaStudioLang['transition']![3],
                 )),
             StudioSnippet.smallDivider(height: 10),
             SizedBox(
@@ -1301,7 +1301,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                 child: transitionText(
                   model,
                   TextAniType.rotateTransition,
-                  CretaStudioLang.transition[4],
+                  CretaStudioLang['transition']![4],
                 )),
             StudioSnippet.smallDivider(height: 10),
             // SizedBox(
@@ -1310,7 +1310,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             //     child: transitionText(
             //       model,
             //       TextAniType.sizeTransition,
-            //       CretaStudioLang.transition[5],
+            //       CretaStudioLang['transition']![5],
             //     )),
             // StudioSnippet.smallDivider(height: 10),
             // 옆으로 흐르는 문자열
@@ -1338,7 +1338,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   }
 
   Widget tickerSide(ContentsModel model) {
-    String text = "${CretaStudioLang.tickerSide} ";
+    String text = "${CretaStudioLang['tickerSide']!} ";
     int textSize = CretaCommonUtils.getStringSize(text);
     // duration 이 50 이면 실제로는 5-7초 정도에  문자열을 다 흘려보내다.
     // 따라서 문자열의 길이에  anyDuration / 10  정도의 값을 곱해본다.
@@ -1372,7 +1372,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   }
 
   Widget tickerUpDown(ContentsModel model) {
-    String text = "${CretaStudioLang.tickerSide} ";
+    String text = "${CretaStudioLang['tickerSide']!} ";
     int textSize = CretaCommonUtils.getStringSize(text);
     // duration 이 50 이면 실제로는 5-7초 정도에  문자열을 다 흘려보내다.
     // 따라서 문자열의 길이에  anyDuration / 10  정도의 값을 곱해본다.
@@ -1391,7 +1391,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             key: ValueKey(Uuid().v4()),
             // ignore: sort_child_properties_last
             child: Text(
-              CretaStudioLang.tickerUpDown,
+              CretaStudioLang['tickerUpDown']!,
               textAlign: TextAlign.left,
               style: dataStyle,
             ), //required
@@ -1417,7 +1417,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         _sendEvent!.sendEvent(widget.model);
       },
       child: TextAnimator(
-        CretaStudioLang.rotateText,
+        CretaStudioLang['rotateText']!,
         style: dataStyle,
         atRestEffect: WidgetRestingEffects.rotate(),
         incomingEffect: WidgetTransitionEffects(
@@ -1440,7 +1440,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         _sendEvent!.sendEvent(widget.model);
       },
       child: TextAnimator(
-        CretaStudioLang.bounce,
+        CretaStudioLang['bounce']!,
         style: dataStyle,
         incomingEffect: WidgetTransitionEffects.incomingScaleDown(),
         atRestEffect: WidgetRestingEffects.bounce(),
@@ -1461,7 +1461,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         _sendEvent!.sendEvent(widget.model);
       },
       child: TextAnimator(
-        CretaStudioLang.fidget,
+        CretaStudioLang['fidget']!,
         style: dataStyle,
         incomingEffect: WidgetTransitionEffects.incomingSlideInFromLeft(),
         atRestEffect: WidgetRestingEffects.fidget(),
@@ -1482,7 +1482,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         _sendEvent!.sendEvent(widget.model);
       },
       child: TextAnimator(
-        CretaStudioLang.fade,
+        CretaStudioLang['fade']!,
         style: dataStyle,
         incomingEffect: WidgetTransitionEffects.incomingSlideInFromLeft(),
         atRestEffect: WidgetRestingEffects.pulse(), // fade
@@ -1507,7 +1507,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
           highlightColor: model.outLineColor.value == Colors.transparent
               ? Colors.red
               : model.outLineColor.value,
-          child: Text(CretaStudioLang.shimmer)),
+          child: Text(CretaStudioLang['shimmer']!)),
     );
   }
 
@@ -1534,7 +1534,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         },
         repeatForever: true,
         animatedTexts: [
-          TypewriterAnimatedText(CretaStudioLang.typewriter,
+          TypewriterAnimatedText(CretaStudioLang['typewriter']!,
               textAlign: TextAlign.center,
               textStyle: dataStyle,
               speed: Duration(milliseconds: 505 - model.anyDuration.value.round() * 5)),
@@ -1566,7 +1566,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         },
         repeatForever: true,
         animatedTexts: [
-          WavyAnimatedText(CretaStudioLang.wavy,
+          WavyAnimatedText(CretaStudioLang['wavy']!,
               textAlign: TextAlign.center,
               textStyle: dataStyle,
               speed: Duration(milliseconds: 505 - model.anyDuration.value.round() * 5)),
@@ -1588,7 +1588,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       },
       child: Neonpen(
         text: Text(
-          CretaStudioLang.neon,
+          CretaStudioLang['neon']!,
           style: dataStyle,
         ),
         color:

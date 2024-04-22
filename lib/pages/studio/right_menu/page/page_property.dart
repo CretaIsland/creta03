@@ -167,7 +167,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: colorPropertyCard(
-        title: CretaStudioLang.pageBgColor,
+        title: CretaStudioLang['pageBgColor']!,
         color1: _model!.bgColor1.value,
         color2: _model!.bgColor2.value,
         opacity: _model!.opacity.value,
@@ -304,7 +304,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
             _isTransitionOpen = !_isTransitionOpen;
           });
         },
-        titleWidget: Text(CretaStudioLang.transitionPage, style: CretaFont.titleSmall),
+        titleWidget: Text(CretaStudioLang['transitionPage']!, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
         trailWidget: Text(
           PageTransitionType.getTitleFromInt(_model!.transitionEffect.value),
@@ -337,7 +337,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
               });
               BookMainPage.pageManagerHolder!.notify();
             },
-            valueMap: CretaLang.pageTransitionType,
+            valueMap: CretaLang['pageTransitionType']!,
             defaultTitle: PageTransitionType.getTitleFromInt(_model!.transitionEffect.value),
             //spacebetween: 10,
             padding: EdgeInsets.zero,
@@ -351,7 +351,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           //         crossAxisAlignment: CrossAxisAlignment.start,
           //         children: [
           //           Text(
-          //             CretaStudioLang.whenOpenPage,
+          //             CretaStudioLang['whenOpenPage']!,
           //             style: CretaFont.titleSmall,
           //           ),
           //           Divider(endIndent: 15),
@@ -362,7 +362,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           //               });
           //               BookMainPage.pageManagerHolder!.notify();
           //             },
-          //             valueMap: CretaStudioLang.pageTransitionType,
+          //             valueMap: CretaStudioLang['pageTransitionType']!,
           //             defaultTitle:
           //                 PageTransitionType.getTitleFromInt(_model!.transitionEffect.value),
           //             //spacebetween: 10,
@@ -377,7 +377,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           //         crossAxisAlignment: CrossAxisAlignment.start,
           //         children: [
           //           Text(
-          //             CretaStudioLang.whenClosePage,
+          //             CretaStudioLang['whenClosePage']!,
           //             style: CretaFont.titleSmall,
           //           ),
           //           Divider(endIndent: 15),
@@ -388,7 +388,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           //               });
           //               BookMainPage.pageManagerHolder!.notify();
           //             },
-          //             valueMap: CretaStudioLang.pageTransitionType2,
+          //             valueMap: CretaStudioLang['pageTransitionType2']!,
           //             defaultTitle:
           //                 PageTransitionType.getTitleFromInt2(_model!.transitionEffect2.value),
           //             //spacebetween: 10,
@@ -402,7 +402,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           CretaPropertySlider(
             // page transition duration
             key: GlobalKey(),
-            name: CretaStudioLang.transitionSpeed,
+            name: CretaStudioLang['transitionSpeed']!,
             min: 1,
             max: 5,
             value: CretaCommonUtils.validCheckDouble(_model!.duration.value.toDouble(), 1, 5),
@@ -450,7 +450,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
             PropertyMixin.isHashTagOpen = !PropertyMixin.isHashTagOpen;
           });
         },
-        titleWidget: Text(CretaStudioLang.hashTab, style: CretaFont.titleSmall),
+        titleWidget: Text(CretaStudioLang['hashTab']!, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
         trailWidget: _model!.hashTag.value.length < 3
             ? SizedBox.shrink()
@@ -509,7 +509,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
             _isTimeBaseOpen = !_isTimeBaseOpen;
           });
         },
-        titleWidget: Text(CretaStudioLang.timeBasePage, style: CretaFont.titleSmall),
+        titleWidget: Text(CretaStudioLang['timeBasePage']!, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
         trailWidget: _model!.startTime.value.isNotEmpty && _model!.endTime.value.isNotEmpty
             ? Column(
@@ -556,7 +556,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(child: Text(CretaStudioLang.useTimeBasePage, style: titleStyle)),
+              Expanded(child: Text(CretaStudioLang['useTimeBasePage']!, style: titleStyle)),
               Expanded(
                 child: CretaToggleButton(
                   width: 54 * 0.75,
@@ -590,7 +590,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
               children: [
                 Expanded(
                   child: ListTile(
-                    title: Text(CretaStudioLang.startDate, style: titleStyle),
+                    title: Text(CretaStudioLang['startDate']!, style: titleStyle),
                     subtitle: Text(DateFormat('yyyy-MM-dd').format(_startDate), style: dataStyle),
                     onTap: () async {
                       final date = await showDatePicker(
@@ -611,7 +611,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
                 ),
                 Expanded(
                   child: ListTile(
-                    title: Text(CretaStudioLang.startTime, style: titleStyle),
+                    title: Text(CretaStudioLang['startTime']!, style: titleStyle),
                     subtitle: Text(_startTime.format(context), style: dataStyle),
                     onTap: () async {
                       final time = await showTimePicker(
@@ -642,7 +642,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
               children: [
                 Expanded(
                   child: ListTile(
-                    title: Text(CretaStudioLang.endDate, style: titleStyle),
+                    title: Text(CretaStudioLang['endDate']!, style: titleStyle),
                     subtitle: Text(DateFormat('yyyy-MM-dd').format(_endDate), style: dataStyle),
                     onTap: () async {
                       final date = await showDatePicker(
@@ -663,7 +663,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
                 ),
                 Expanded(
                   child: ListTile(
-                    title: Text(CretaStudioLang.endTime, style: titleStyle),
+                    title: Text(CretaStudioLang['endTime']!, style: titleStyle),
                     subtitle: Text(_endTime.format(context), style: dataStyle),
                     onTap: () async {
                       final time = await showTimePicker(
@@ -701,10 +701,10 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
   //     child: Row(
   //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
   //       children: [
-  //         Text(CretaStudioLang.durationType, style: titleStyle),
+  //         Text(CretaStudioLang['durationType']!, style: titleStyle),
   //         CretaWidgetDropDown(
   //           items: [
-  //             ...CretaStudioLang.durationTypeList.keys.map((e) {
+  //             ...CretaStudioLang['durationTypeList']!.keys.map((e) {
   //               return choiceStringElement(e, 156, 30);
   //             }).toList(),
   //           ],
@@ -728,7 +728,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
   //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
   //       crossAxisAlignment: CrossAxisAlignment.start,
   //       children: [
-  //         Text(CretaStudioLang.durationSpecifiedTime, style: titleStyle),
+  //         Text(CretaStudioLang['durationSpecifiedTime']!, style: titleStyle),
   //         TimeInputWidget(
   //           textStyle: titleStyle,
   //           initValue: _model!.duration.value,

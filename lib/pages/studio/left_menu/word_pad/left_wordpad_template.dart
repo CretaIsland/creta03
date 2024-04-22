@@ -27,8 +27,8 @@ class LeftWordPadTemplate extends StatefulWidget {
 class _LeftWordPadTemplate extends State<LeftWordPadTemplate>
     with LeftTemplateMixin, FramePlayMixin {
   final styleTitle = [
-    CretaStudioLang.paragraphTemplate,
-    CretaStudioLang.tableTemplate,
+    CretaStudioLang['paragraphTemplate']!,
+    CretaStudioLang['tableTemplate']!,
   ];
   ContentsEventController? _sendEvent;
 
@@ -53,7 +53,7 @@ class _LeftWordPadTemplate extends State<LeftWordPadTemplate>
       alignment: Alignment.center,
       padding: const EdgeInsets.only(bottom: 12),
       child: BTN.line_blue_t_m(
-        text: CretaStudioLang.textEditorToolbar,
+        text: CretaStudioLang['textEditorToolbar']!,
         onPressed: () {
           _createHTMLEditor(context);
           // BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.None);

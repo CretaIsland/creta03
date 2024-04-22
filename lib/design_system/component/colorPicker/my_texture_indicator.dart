@@ -50,7 +50,7 @@ class _MyTextureIndicatorState extends State<MyTextureIndicator> {
           Padding(
             padding: const EdgeInsets.only(top: 4.0),
             child: Text(
-              CretaStudioLang.textureTypeList[widget.textureType.index],
+              CretaStudioLang['textureTypeList']![widget.textureType.index],
               style: CretaFont.buttonSmall,
             ),
           ),

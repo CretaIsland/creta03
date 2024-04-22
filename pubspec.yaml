@@ -205,6 +205,20 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/hycop_config.json
+
+    - assets/lang/creta_lang_studio_kr.json
+    - assets/lang/creta_lang_studio_en.json
+    - assets/lang/creta_lang_studio_jp.json
+    - assets/lang/creta_lang_commu_kr.json
+    - assets/lang/creta_lang_commu_en.json
+    - assets/lang/creta_lang_commu_jp.json
+    - assets/lang/creta_lang_mypage_kr.json
+    - assets/lang/creta_lang_mypage_en.json
+    - assets/lang/creta_lang_mypage_jp.json
+    - assets/lang/creta_lang_device_kr.json
+    - assets/lang/creta_lang_device_en.json
+    - assets/lang/creta_lang_device_jp.json
+
     - assets/creta_logo_blue.png
     - assets/creta_logo_only_white.png
     - assets/creta_default.png

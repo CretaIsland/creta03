@@ -230,25 +230,25 @@ class StudioSnippet {
       {required CopyRightType defaultValue, required void Function(CopyRightType) onChanged}) {
     return [
       CretaMenuItem(
-          caption: CretaStudioLang.copyWrightList[1],
+          caption: CretaStudioLang['copyWrightList']![1],
           onPressed: () {
             onChanged(CopyRightType.free);
           },
           selected: defaultValue == CopyRightType.free),
       CretaMenuItem(
-          caption: CretaStudioLang.copyWrightList[2],
+          caption: CretaStudioLang['copyWrightList']![2],
           onPressed: () {
             onChanged(CopyRightType.nonComertialsUseOnly);
           },
           selected: defaultValue == CopyRightType.nonComertialsUseOnly),
       CretaMenuItem(
-          caption: CretaStudioLang.copyWrightList[3],
+          caption: CretaStudioLang['copyWrightList']![3],
           onPressed: () {
             onChanged(CopyRightType.openSource);
           },
           selected: defaultValue == CopyRightType.openSource),
       CretaMenuItem(
-          caption: CretaStudioLang.copyWrightList[4],
+          caption: CretaStudioLang['copyWrightList']![4],
           onPressed: () {
             onChanged(CopyRightType.needPermition);
           },
@@ -260,19 +260,19 @@ class StudioSnippet {
       {required PermissionType defaultValue, required void Function(PermissionType) onChanged}) {
     return [
       CretaMenuItem(
-          caption: CretaLang.basicBookPermissionFilter[1],
+          caption: CretaLang['basicBookPermissionFilter']![1],
           onPressed: () {
             onChanged(PermissionType.owner);
           },
           selected: defaultValue == PermissionType.owner),
       CretaMenuItem(
-          caption: CretaLang.basicBookPermissionFilter[2],
+          caption: CretaLang['basicBookPermissionFilter']![2],
           onPressed: () {
             onChanged(PermissionType.writer);
           },
           selected: defaultValue == PermissionType.writer),
       CretaMenuItem(
-          caption: CretaLang.basicBookPermissionFilter[3],
+          caption: CretaLang['basicBookPermissionFilter']![3],
           onPressed: () {
             onChanged(PermissionType.reader);
           },
@@ -284,13 +284,13 @@ class StudioSnippet {
       {required PermissionType defaultValue, required void Function(PermissionType) onChanged}) {
     return [
       CretaMenuItem(
-          caption: CretaLang.publishBookPermissionFilter[0],
+          caption: CretaLang['publishBookPermissionFilter']![0],
           onPressed: () {
             onChanged(PermissionType.reader);
           },
           selected: defaultValue == PermissionType.reader),
       CretaMenuItem(
-          caption: CretaLang.publishBookPermissionFilter[1],
+          caption: CretaLang['publishBookPermissionFilter']![1],
           onPressed: () {
             onChanged(PermissionType.writer);
           },
@@ -300,7 +300,7 @@ class StudioSnippet {
 
   static List<CretaMenuItem> getFontListItem(
       {required String defaultValue, required void Function(String) onChanged}) {
-    return CretaLang.fontStringList.map(
+    return CretaLang['fontStringList']!.map(
       (fontStr) {
         String font = CretaCommonUtils.getFontFamily(fontStr);
         logger.fine('font=$font');

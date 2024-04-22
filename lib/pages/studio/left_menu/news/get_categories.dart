@@ -17,9 +17,9 @@ List<CategoryModel> getCategories() {
     "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80",
   ];
 
-  for (var i = 0; i < CretaStudioLang.newsCategories.length; i++) {
+  for (var i = 0; i < CretaStudioLang['newsCategories']!.length; i++) {
     CategoryModel categoryModel = CategoryModel();
-    categoryModel.categoryName = CretaStudioLang.newsCategories.keys.toList()[i];
+    categoryModel.categoryName = CretaStudioLang['newsCategories']!.keys.toList()[i];
     categoryModel.imageAssetUrl = imageUrls[i];
     myCategories.add(categoryModel);
   }

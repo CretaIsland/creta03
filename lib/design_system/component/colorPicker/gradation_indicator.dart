@@ -71,7 +71,7 @@ class _GradationIndicatorState extends State<GradationIndicator> {
                     ),
               // child: widget.gradationType == GradationType.none
               //     ? Center(
-              //         child: Text(CretaStudioLang.nothing,
+              //         child: Text(CretaStudioLang['nothing']!,
               //             textAlign: TextAlign.center, style: CretaFont.titleSmall),
               //       )
               //     : null,

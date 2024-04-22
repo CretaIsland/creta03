@@ -508,7 +508,8 @@ class ContentsManager extends BaseContentsManager {
     iamBusy = true;
     ContentsModel? model = getSelected() as ContentsModel?;
     if (model == null) {
-      showSnackBar(context, CretaLang.contentsNotSeleted, duration: StudioConst.snackBarDuration);
+      showSnackBar(context, CretaLang['contentsNotSeleted']!,
+          duration: StudioConst.snackBarDuration);
       await Future.delayed(StudioConst.snackBarDuration);
       iamBusy = false;
       return false;
@@ -519,7 +520,7 @@ class ContentsManager extends BaseContentsManager {
       iamBusy = false;
       return true;
     }
-    showSnackBar(context, CretaLang.contentsNotDeleted, duration: StudioConst.snackBarDuration);
+    showSnackBar(context, CretaLang['contentsNotDeleted']!, duration: StudioConst.snackBarDuration);
     await Future.delayed(StudioConst.snackBarDuration);
     iamBusy = false;
     return false;

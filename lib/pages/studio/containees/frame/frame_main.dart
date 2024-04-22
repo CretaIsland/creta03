@@ -188,13 +188,14 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
             // ignore: use_build_context_synchronously
             CretaPopup.yesNoDialog(
               context: context,
-              title: "${CretaStudioLang.deleteFrameTooltip}      ",
+              title: "${CretaStudioLang['deleteFrameTooltip']!}      ",
               icon: Icons.file_download_outlined,
-              question: '${CretaStudioLang.isOverlayFrame} ${CretaStudioLang.deleteConfirm}',
+              question:
+                  '${CretaStudioLang['isOverlayFrame']!} ${CretaStudioLang['deleteConfirm']!}',
               noBtText: CretaVars.isDeveloper
-                  ? CretaStudioLang.noBtDnTextDeloper
-                  : CretaStudioLang.noBtDnText,
-              yesBtText: CretaStudioLang.yesBtDnText,
+                  ? CretaStudioLang['noBtDnTextDeloper']!
+                  : CretaStudioLang['noBtDnText']!,
+              yesBtText: CretaStudioLang['yesBtDnText']!,
               yesIsDefault: true,
               onNo: () {},
               onYes: () async {

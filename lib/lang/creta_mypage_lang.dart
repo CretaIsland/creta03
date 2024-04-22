@@ -1,36 +1,39 @@
-//class CretaMyPageLang {
-
+import 'package:creta_common/common/creta_common_utils.dart';
 import 'package:creta_common/model/app_enums.dart';
 
-import 'creta_mypage_lang_en.dart';
-import 'creta_mypage_lang_jp.dart';
-import 'creta_mypage_lang_kr.dart';
-import 'creta_mypage_lang_mixin.dart';
+// import 'creta_device_lang_en.dart';
+// import 'creta_device_lang_jp.dart';
+// import 'creta_device_lang_kr.dart';
+// import 'creta_device_lang_mixin.dart';
 
 // ignore: non_constant_identifier_names
-AbsCretaMyPageLang CretaMyPageLang = CretaMyPageLangKR();
+Map<String, dynamic> CretaMyPageLang = {};
 
-abstract class AbsCretaMyPageLang with CretaMyPageLangMixin {
+abstract class AbsCretaMyPageLang /*with CretaMyPageLangMixin*/ {
   //LanguageType language = LanguageType.korean;
 
   AbsCretaMyPageLang();
 
-  static AbsCretaMyPageLang cretaLangFactory(LanguageType language) {
+  static Future<Map<String, dynamic>> cretaLangFactory(LanguageType language) async {
+    late String lang;
     switch (language) {
       case LanguageType.korean:
-        return CretaMyPageLangKR();
+        lang = 'lang/creta_lang_mypage_kr.json';
+        break;
       case LanguageType.english:
-        return CretaMyPageLangEN();
-      // case LanguageType.chinese:
-      //   return CretaLangChn();
+        lang = 'lang/creta_lang_mypage_en.json';
+        break;
       case LanguageType.japanese:
-        return CretaMyPageLangJP();
+        lang = 'lang/creta_lang_mypage_jp.json';
+        break;
       default:
-        return CretaMyPageLangKR();
+        lang = 'lang/creta_lang_mypage_kr.json';
+        break;
     }
+    return await CretaCommonUtils.readJsonFromAssets(lang);
   }
 
-  static void changeLang(LanguageType language) {
-    CretaMyPageLang = cretaLangFactory(language);
+  static Future<void> changeLang(LanguageType language) async {
+    CretaMyPageLang = await cretaLangFactory(language);
   }
 }

@@ -127,7 +127,7 @@ class _GoogleMapContentsState extends State<GoogleMapContents> {
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: CretaSearchBar(
         width: double.infinity,
-        hintText: CretaStudioLang.queryHintText,
+        hintText: CretaStudioLang['queryHintText']!,
         onSearch: (value) async {
           _updateSearchResults(value);
         },

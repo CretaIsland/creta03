@@ -1,42 +1,38 @@
+import 'package:creta_common/common/creta_common_utils.dart';
 import 'package:creta_common/model/app_enums.dart';
 
-import 'creta_studio_lang_en.dart';
-import 'creta_studio_lang_kr.dart';
-import 'creta_studio_lang_mixin.dart';
-import 'creta_studo_lang_jp.dart';
+//import 'creta_studio_lang_en.dart';
+//import 'creta_studio_lang_kr.dart';
+//import 'creta_studio_lang_mixin.dart';
+//import 'creta_studo_lang_jp.dart';
 
 // ignore: non_constant_identifier_names
-AbsCretaStudioLang CretaStudioLang = CretaStudioLangKR();
+Map<String, dynamic> CretaStudioLang = {};
+//AbsCretaStudioLang CretaStudioLang = CretaStudioLangKR();
 
-abstract class AbsCretaStudioLang with CretaStudioLangMixin {
-  //LanguageType language = LanguageType.korean;
+abstract class AbsCretaStudioLang /*with CretaStudioLangMixin */ {
+  AbsCretaStudioLang();
 
-  AbsCretaStudioLang() {
-    textSizeMap = {
-      hugeText: 64,
-      bigText: 48,
-      middleText: 36,
-      smallText: 24,
-      userDefineText: 40,
-    };
-  }
-
-  static AbsCretaStudioLang cretaLangFactory(LanguageType language) {
+  static Future<Map<String, dynamic>> cretaLangFactory(LanguageType language) async {
+    late String lang;
     switch (language) {
       case LanguageType.korean:
-        return CretaStudioLangKR();
+        lang = 'lang/creta_lang_studio_kr.json';
+        break;
       case LanguageType.english:
-        return CretaStudioLangEN();
-      // case LanguageType.chinese:
-      //   return CretaLangChn();
+        lang = 'lang/creta_lang_studio_en.json';
+        break;
       case LanguageType.japanese:
-        return CretaStudioLangJP();
+        lang = 'lang/creta_lang_studio_jp.json';
+        break;
       default:
-        return CretaStudioLangKR();
+        lang = 'lang/creta_lang_studio_kr.json';
+        break;
     }
+    return await CretaCommonUtils.readJsonFromAssets(lang);
   }
 
-  static void changeLang(LanguageType language) {
-    CretaStudioLang = cretaLangFactory(language);
+  static Future<void> changeLang(LanguageType language) async {
+    CretaStudioLang = await cretaLangFactory(language);
   }
 }

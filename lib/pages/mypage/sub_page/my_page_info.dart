@@ -45,15 +45,15 @@ class _MyPageInfoState extends State<MyPageInfo> {
   initState() {
     super.initState();
     // set country dropdown menu item
-    for (var element in CretaMyPageLang.countryList) {
+    for (var element in CretaMyPageLang['countryList']!) {
       countryItemList.add(Text(element, style: CretaFont.bodyMedium));
     }
     // set language dropdown menu item
-    for (var element in CretaMyPageLang.languageList) {
+    for (var element in CretaMyPageLang['languageList']!) {
       languageItemList.add(Text(element, style: CretaFont.bodyMedium));
     }
     // set job dropdown menu item
-    for (var element in CretaMyPageLang.jobList) {
+    for (var element in CretaMyPageLang['jobList']!) {
       jobItemList.add(Text(element, style: CretaFont.bodyMedium));
     }
   }
@@ -79,7 +79,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(CretaMyPageLang.info,
+                        Text(CretaMyPageLang['info']!,
                             style: CretaFont.displaySmall.copyWith(fontWeight: FontWeight.w600)),
                         MyPageCommonWidget.divideLine(
                             width: widget.width * .6,
@@ -88,7 +88,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(width: 12.0),
-                            Text(CretaMyPageLang.profileImage, style: CretaFont.titleMedium),
+                            Text(CretaMyPageLang['profileImage']!, style: CretaFont.titleMedium),
                             const SizedBox(width: 94),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,7 +136,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                                     )),
                                 const SizedBox(height: 24),
                                 BTN.line_blue_t_m(
-                                    text: CretaMyPageLang.basicProfileImgBTN,
+                                    text: CretaMyPageLang['basicProfileImgBTN']!,
                                     onPressed: () {
                                       userPropertyManager.userPropertyModel!.profileImgUrl = '';
                                       userPropertyManager.notify();
@@ -155,13 +155,13 @@ class _MyPageInfoState extends State<MyPageInfo> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(CretaMyPageLang.nickname, style: CretaFont.titleMedium),
+                                Text(CretaMyPageLang['nickname']!, style: CretaFont.titleMedium),
                                 const SizedBox(height: 30),
-                                Text(CretaMyPageLang.email, style: CretaFont.titleMedium),
+                                Text(CretaMyPageLang['email']!, style: CretaFont.titleMedium),
                                 const SizedBox(height: 30),
-                                Text(CretaMyPageLang.phoneNumber, style: CretaFont.titleMedium),
+                                Text(CretaMyPageLang['phoneNumber']!, style: CretaFont.titleMedium),
                                 const SizedBox(height: 30),
-                                Text(CretaMyPageLang.password, style: CretaFont.titleMedium),
+                                Text(CretaMyPageLang['password']!, style: CretaFont.titleMedium),
                               ],
                             ),
                             const SizedBox(width: 67),
@@ -175,7 +175,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                                       controller: _nicknameController,
                                       style: CretaFont.bodyMedium,
                                       decoration: InputDecoration(
-                                        hintText: CretaMyPageLang.nicknameInput,
+                                        hintText: CretaMyPageLang['nicknameInput']!,
                                         border: InputBorder.none,
                                       ),
                                       onEditingComplete: () => userPropertyManager
@@ -192,7 +192,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                                 const SizedBox(height: 26),
                                 BTN.line_blue_t_m(
                                     height: 32,
-                                    text: CretaMyPageLang.passwordChangeBTN,
+                                    text: CretaMyPageLang['passwordChangeBTN']!,
                                     onPressed: () => showDialog(
                                         context: context,
                                         builder: (context) =>
@@ -212,11 +212,11 @@ class _MyPageInfoState extends State<MyPageInfo> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const SizedBox(height: 8),
-                                Text(CretaMyPageLang.country, style: CretaFont.titleMedium),
+                                Text(CretaMyPageLang['country']!, style: CretaFont.titleMedium),
                                 const SizedBox(height: 30),
-                                Text(CretaMyPageLang.language, style: CretaFont.titleMedium),
+                                Text(CretaMyPageLang['language']!, style: CretaFont.titleMedium),
                                 const SizedBox(height: 30),
-                                Text(CretaMyPageLang.job, style: CretaFont.titleMedium),
+                                Text(CretaMyPageLang['job']!, style: CretaFont.titleMedium),
                               ],
                             ),
                             const SizedBox(width: 110),
@@ -247,7 +247,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                                       // userPropertyManager.userPropertyModel!.language =
                                       //     LanguageType.fromInt(value + 1);
                                       // setState(() {
-                                      //   AbsCretaLang.changeLang(
+                                      //   AbsCretaLang['changeLang']!(
                                       //       userPropertyManager.userPropertyModel!.language);
                                       // });
                                     }),
@@ -266,7 +266,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                         ),
                         const SizedBox(height: 46),
                         BTN.fill_blue_t_el(
-                            text: CretaMyPageLang.save,
+                            text: CretaMyPageLang['save']!,
                             onPressed: () async {
                               userPropertyManager.setToDB(userPropertyManager.userPropertyModel!);
                             }),

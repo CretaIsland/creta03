@@ -31,15 +31,15 @@ class _MyPageSettingsState extends State<MyPageSettings> {
     super.initState();
 
     // set theme dropdown menu item
-    for (var element in CretaMyPageLang.themeList) {
+    for (var element in CretaMyPageLang['themeList']!) {
       themeItemList.add(Text(element, style: CretaFont.bodyMedium));
     }
     // set initPage dropdown menu item
-    for (var element in CretaMyPageLang.initPageList) {
+    for (var element in CretaMyPageLang['initPageList']!) {
       initPageItemList.add(Text(element, style: CretaFont.bodyMedium));
     }
     // set cookie dropdown menu item
-    for (var element in CretaMyPageLang.cookieList) {
+    for (var element in CretaMyPageLang['cookieList']!) {
       cookieItemList.add(Text(element, style: CretaFont.bodyMedium));
     }
   }
@@ -59,7 +59,7 @@ class _MyPageSettingsState extends State<MyPageSettings> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(CretaMyPageLang.settings,
+                          Text(CretaMyPageLang['settings']!,
                               style: CretaFont.displaySmall.copyWith(fontWeight: FontWeight.w600)),
                           MyPageCommonWidget.divideLine(
                               width: widget.width * .6,
@@ -141,14 +141,15 @@ class _MyPageSettingsState extends State<MyPageSettings> {
                                   ],
                                 ),
                                 const SizedBox(height: 14.0),
-                                Text(CretaMyPageLang.themeTip,
+                                Text(CretaMyPageLang['themeTip']!,
                                     style: CretaFont.bodySmall
                                         .copyWith(color: CretaColor.text.shade400)),
                                 const SizedBox(height: 24),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Text(CretaMyPageLang.initPage, style: CretaFont.titleMedium),
+                                    Text(CretaMyPageLang['initPage']!,
+                                        style: CretaFont.titleMedium),
                                     const SizedBox(width: 200.0),
                                     CretaWidgetDropDown(
                                         items: initPageItemList,
@@ -165,14 +166,14 @@ class _MyPageSettingsState extends State<MyPageSettings> {
                                   ],
                                 ),
                                 const SizedBox(height: 14.0),
-                                Text(CretaMyPageLang.initPageTip,
+                                Text(CretaMyPageLang['initPageTip']!,
                                     style: CretaFont.bodySmall
                                         .copyWith(color: CretaColor.text.shade400)),
                                 const SizedBox(height: 24),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Text(CretaMyPageLang.cookieSetting,
+                                    Text(CretaMyPageLang['cookieSetting']!,
                                         style: CretaFont.titleMedium),
                                     const SizedBox(width: 213.0),
                                     CretaWidgetDropDown(
@@ -190,7 +191,7 @@ class _MyPageSettingsState extends State<MyPageSettings> {
                                   ],
                                 ),
                                 const SizedBox(height: 14.0),
-                                Text(CretaMyPageLang.cookieSettingTip,
+                                Text(CretaMyPageLang['cookieSettingTip']!,
                                     style: CretaFont.bodySmall
                                         .copyWith(color: CretaColor.text.shade400))
                               ],

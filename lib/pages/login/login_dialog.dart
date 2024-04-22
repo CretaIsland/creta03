@@ -829,7 +829,7 @@ class _ExtraInfoDialogState extends State<ExtraInfoDialog> {
 
     _purposeDropdownMenuList = [
       CretaMenuItem(
-        caption: CretaLang.basicBookFilter[1], //'프리젠테이션',
+        caption: CretaLang['basicBookFilter']![1], //'프리젠테이션',
         //iconData: Icons.home_outlined,
         onPressed: () {
           _usingPurpose = BookType.presentaion;
@@ -839,7 +839,7 @@ class _ExtraInfoDialogState extends State<ExtraInfoDialog> {
         selected: true,
       ),
       CretaMenuItem(
-        caption: CretaLang.basicBookFilter[3], // '디지털 사이니지',
+        caption: CretaLang['basicBookFilter']![3], // '디지털 사이니지',
         //iconData: Icons.home_outlined,
         onPressed: () {
           _usingPurpose = BookType.signage;
@@ -848,7 +848,7 @@ class _ExtraInfoDialogState extends State<ExtraInfoDialog> {
         //isIconText: true,
       ),
       CretaMenuItem(
-        caption: CretaLang.basicBookFilter[4], //'디지털 바리케이드',
+        caption: CretaLang['basicBookFilter']![4], //'디지털 바리케이드',
         //iconData: Icons.home_outlined,
         onPressed: () {
           _usingPurpose = BookType.barricade;
@@ -857,7 +857,7 @@ class _ExtraInfoDialogState extends State<ExtraInfoDialog> {
         //isIconText: true,
       ),
       CretaMenuItem(
-        caption: CretaLang.basicBookFilter[2], //'전자칠판',
+        caption: CretaLang['basicBookFilter']![2], //'전자칠판',
         //iconData: Icons.home_outlined,
         onPressed: () {
           _usingPurpose = BookType.board;

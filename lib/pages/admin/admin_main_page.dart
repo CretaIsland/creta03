@@ -2,6 +2,7 @@
 
 import 'dart:math';
 
+import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_user_io/data_io/user_property_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
@@ -116,6 +117,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   GlobalKey dropDownButtonKey = GlobalKey();
 
   late ScrollController _controller;
+  LanguageType oldLanguage = LanguageType.none;
 
   @override
   void initState() {
@@ -155,7 +157,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   void _initMenu() {
     _leftMenuItemList = [
       CretaMenuItem(
-        caption: CretaDeviceLang.license,
+        caption: CretaDeviceLang['license']!,
         onPressed: () {
           //Routemaster.of(context).push(AppRoutes.studioAdminMainPage);
           //AdminMainPage.lastGridMenu = AppRoutes.studioBookSharedPage;
@@ -166,7 +168,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
         isIconText: true,
       ),
       CretaMenuItem(
-        caption: CretaDeviceLang.enterprise,
+        caption: CretaDeviceLang['enterprise']!,
         onPressed: () {
           //Routemaster.of(context).pop();
           // Routemaster.of(context).push(AppRoutes.studioBookSharedPage);
@@ -225,9 +227,10 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
       child: Consumer<UserPropertyManager>(builder: (context, userPropertyManager, childWidget) {
         // print(
         //     'Consumer<UserPropertyManager>---------${userPropertyManager.userPropertyModel!.language}---------');
+
         if (oldLanguage != userPropertyManager.userPropertyModel!.language) {
-          _initMenu();
           oldLanguage = userPropertyManager.userPropertyModel!.language;
+          _initMenu();
         }
         return Snippet.CretaScaffold(
             //title: Snippet.logo(CretaVars.serviceTypeString()),
@@ -240,7 +243,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
             //   width: windowWidth > 535 ? 130 : 60,
             //   child: BTN.fill_gray_it_l(
             //     width: windowWidth > 535 ? 106 : 36,
-            //     text: windowWidth > 535 ? CretaStudioLang.newBook : '',
+            //     text: windowWidth > 535 ? CretaStudioLang['newBook']! : '',
             //     onPressed: () {
             //       Routemaster.of(context).push(AppRoutes.communityHome);
             //     },
@@ -253,7 +256,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
               gotoButtonPressed: () {
                 Routemaster.of(context).push(AppRoutes.communityHome);
               },
-              gotoButtonTitle: CretaStudioLang.gotoCommunity,
+              gotoButtonTitle: CretaStudioLang['gotoCommunity']!,
               leftMenuItemList: _leftMenuItemList,
               bannerTitle: getAdminTitle(),
               bannerDescription: getAdminDesc(),
@@ -279,22 +282,22 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   String getAdminTitle() {
     switch (widget.selectedPage) {
       case AdminSelectedPage.license:
-        return CretaDeviceLang.license;
+        return CretaDeviceLang['license']!;
       case AdminSelectedPage.enterprise:
-        return CretaDeviceLang.enterprise;
+        return CretaDeviceLang['enterprise']!;
       default:
-        return CretaDeviceLang.license;
+        return CretaDeviceLang['license']!;
     }
   }
 
   String getAdminDesc() {
     switch (widget.selectedPage) {
       case AdminSelectedPage.license:
-        return CretaDeviceLang.myCretaAdminDesc;
+        return CretaDeviceLang['myCretaAdminDesc']!;
       case AdminSelectedPage.enterprise:
-        return CretaDeviceLang.enterpriseDesc;
+        return CretaDeviceLang['enterpriseDesc']!;
       default:
-        return CretaDeviceLang.myCretaAdminDesc;
+        return CretaDeviceLang['myCretaAdminDesc']!;
     }
   }
 
@@ -565,14 +568,14 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   // List<CretaMenuItem> getSortMenu(Function? onModelSorted) {
   //   return [
   //     CretaMenuItem(
-  //         caption: CretaLang.basicBookSortFilter[0],
+  //         caption: CretaLang['basicBookSortFilter']![0],
   //         onPressed: () {
   //           hostManagerHolder?.toSorted('updateTime',
   //               descending: true, onModelSorted: onModelSorted);
   //         },
   //         selected: true),
   //     CretaMenuItem(
-  //         caption: CretaLang.basicBookSortFilter[1],
+  //         caption: CretaLang['basicBookSortFilter']![1],
   //         onPressed: () {
   //           hostManagerHolder?.toSorted('name', onModelSorted: onModelSorted);
   //         },
@@ -583,7 +586,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   // List<CretaMenuItem> getFilterMenu(Function? onModelFiltered) {
   //   return [
   //     CretaMenuItem(
-  //       caption: CretaDeviceLang.basicHostFilter[0],
+  //       caption: CretaDeviceLang['basicHostFilter']![0],
   //       onPressed: () {
   //         hostManagerHolder?.toFiltered(null, null, AccountManager.currentLoginUser.email,
   //             onModelFiltered: onModelFiltered);
@@ -592,7 +595,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   //       disabled: CretaVars.serviceType != ServiceType.none,
   //     ),
   //     CretaMenuItem(
-  //       caption: CretaDeviceLang.basicHostFilter[1], //
+  //       caption: CretaDeviceLang['basicHostFilter']![1], //
   //       onPressed: () {
   //         hostManagerHolder?.toFiltered(
   //             'hostType', HostType.signage.index, AccountManager.currentLoginUser.email,
@@ -602,7 +605,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   //       disabled: CretaVars.serviceType != ServiceType.signage,
   //     ),
   //     CretaMenuItem(
-  //       caption: CretaDeviceLang.basicHostFilter[2], //
+  //       caption: CretaDeviceLang['basicHostFilter']![2], //
   //       onPressed: () {
   //         hostManagerHolder?.toFiltered(
   //             'hostType', HostType.barricade.index, AccountManager.currentLoginUser.email,
@@ -612,7 +615,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   //       disabled: CretaVars.serviceType != ServiceType.barricade,
   //     ),
   //     CretaMenuItem(
-  //       caption: CretaDeviceLang.basicHostFilter[3], //
+  //       caption: CretaDeviceLang['basicHostFilter']![3], //
   //       onPressed: () {
   //         hostManagerHolder?.toFiltered(
   //             'hostType', HostType.escalator.index, AccountManager.currentLoginUser.email,
@@ -622,7 +625,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   //       disabled: CretaVars.serviceType != ServiceType.escalator,
   //     ),
   //     CretaMenuItem(
-  //       caption: CretaDeviceLang.basicHostFilter[4], //
+  //       caption: CretaDeviceLang['basicHostFilter']![4], //
   //       onPressed: () {
   //         hostManagerHolder?.toFiltered(
   //             'hostType', HostType.board.index, AccountManager.currentLoginUser.email,
@@ -632,7 +635,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   //       disabled: CretaVars.serviceType != ServiceType.board,
   //     ),
   //     CretaMenuItem(
-  //       caption: CretaDeviceLang.basicHostFilter[5],
+  //       caption: CretaDeviceLang['basicHostFilter']![5],
   //       onPressed: () {
   //         hostManagerHolder?.toFiltered(
   //             'hostType', HostType.cdu.index, AccountManager.currentLoginUser.email,
@@ -642,7 +645,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   //       disabled: CretaVars.serviceType != ServiceType.cdu,
   //     ),
   //     CretaMenuItem(
-  //       caption: CretaDeviceLang.basicHostFilter[6],
+  //       caption: CretaDeviceLang['basicHostFilter']![6],
   //       onPressed: () {
   //         hostManagerHolder?.toFiltered(
   //             'hostType', HostType.etc.index, AccountManager.currentLoginUser.email,
@@ -657,21 +660,21 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   // List<CretaMenuItem> getUsageFilterMenu(Function? onModelFiltered) {
   //   return [
   //     CretaMenuItem(
-  //       caption: CretaDeviceLang.usageHostFilter[0],
+  //       caption: CretaDeviceLang['usageHostFilter']![0],
   //       onPressed: () {
   //         hostManagerHolder?.toFiltered(null, null, AccountManager.currentLoginUser.email,
   //             onModelFiltered: onModelFiltered);
   //       },
   //     ),
   //     CretaMenuItem(
-  //       caption: CretaDeviceLang.usageHostFilter[1],
+  //       caption: CretaDeviceLang['usageHostFilter']![1],
   //       onPressed: () {
   //         hostManagerHolder?.toFiltered('isUsed', true, AccountManager.currentLoginUser.email,
   //             onModelFiltered: onModelFiltered);
   //       },
   //     ),
   //     CretaMenuItem(
-  //       caption: CretaDeviceLang.usageHostFilter[2], //
+  //       caption: CretaDeviceLang['usageHostFilter']![2], //
   //       onPressed: () {
   //         hostManagerHolder?.toFiltered('isUsed', false, AccountManager.currentLoginUser.email,
   //             onModelFiltered: onModelFiltered);
@@ -683,21 +686,21 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   // List<CretaMenuItem> getConnectedFilterMenu(Function? onModelFiltered) {
   //   return [
   //     CretaMenuItem(
-  //       caption: CretaDeviceLang.connectedHostFilter[0],
+  //       caption: CretaDeviceLang['connectedHostFilter']![0],
   //       onPressed: () {
   //         hostManagerHolder?.toFiltered(null, null, AccountManager.currentLoginUser.email,
   //             onModelFiltered: onModelFiltered);
   //       },
   //     ),
   //     CretaMenuItem(
-  //       caption: CretaDeviceLang.connectedHostFilter[1],
+  //       caption: CretaDeviceLang['connectedHostFilter']![1],
   //       onPressed: () {
   //         hostManagerHolder?.toFiltered('isConnected', true, AccountManager.currentLoginUser.email,
   //             onModelFiltered: onModelFiltered);
   //       },
   //     ),
   //     CretaMenuItem(
-  //       caption: CretaDeviceLang.connectedHostFilter[2], //
+  //       caption: CretaDeviceLang['connectedHostFilter']![2], //
   //       onPressed: () {
   //         hostManagerHolder?.toFiltered('isConnected', false, AccountManager.currentLoginUser.email,
   //             onModelFiltered: onModelFiltered);
@@ -711,28 +714,28 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   //     //mainAxisAlignment: MainAxisAlignment.start,
   //     children: <Widget>[
   //       BTN.fill_gray_it_l(
-  //         text: CretaDeviceLang.editHost,
+  //         text: CretaDeviceLang['editHost']!,
   //         icon: Icons.edit_outlined,
   //         onPressed: () {
   //           // Handle menu button press
   //         },
   //       ),
   //       BTN.fill_gray_it_l(
-  //         text: CretaDeviceLang.setBook,
+  //         text: CretaDeviceLang['setBook']!,
   //         icon: Icons.play_circle_outline,
   //         onPressed: () {
   //           // Handle menu button press
   //         },
   //       ),
   //       BTN.fill_gray_it_l(
-  //         text: CretaDeviceLang.powerOff,
+  //         text: CretaDeviceLang['powerOff']!,
   //         icon: Icons.power_off_outlined,
   //         onPressed: () {
   //           // Handle menu button press
   //         },
   //       ),
   //       BTN.fill_gray_it_l(
-  //         text: CretaDeviceLang.reboot,
+  //         text: CretaDeviceLang['reboot']!,
   //         icon: Icons.power_outlined,
   //         onPressed: () {
   //           // Handle menu button press
@@ -740,14 +743,14 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   //       ),
   //       BTN.fill_gray_it_l(
   //         width: 130,
-  //         text: CretaDeviceLang.setPower,
+  //         text: CretaDeviceLang['setPower']!,
   //         icon: Icons.power_settings_new_outlined,
   //         onPressed: () {
   //           // Handle menu button press
   //         },
   //       ),
   //       BTN.fill_gray_it_l(
-  //         text: CretaDeviceLang.notice,
+  //         text: CretaDeviceLang['notice']!,
   //         icon: Icons.notifications_outlined,
   //         onPressed: () {
   //           // Handle menu button press

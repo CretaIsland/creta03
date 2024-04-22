@@ -38,14 +38,14 @@ class ShowcaseTimeline extends StatelessWidget {
                 const SizedBox(height: 16),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: CretaStudioLang.timelineShowcase.length,
+                    itemCount: CretaStudioLang['timelineShowcase']!.length,
                     itemBuilder: (BuildContext context, int index) {
-                      final example = CretaStudioLang.timelineShowcase[index];
+                      final example = CretaStudioLang['timelineShowcase']![index];
                       return TimelineTile(
                         alignment: TimelineAlign.manual,
                         lineXY: 0.1,
                         isFirst: index == 0,
-                        isLast: index == CretaStudioLang.timelineShowcase.length - 1,
+                        isLast: index == CretaStudioLang['timelineShowcase']!.length - 1,
                         indicatorStyle: IndicatorStyle(
                           width: 40,
                           height: 40,

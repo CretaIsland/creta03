@@ -4,8 +4,10 @@
 import 'dart:html';
 
 import 'package:creta_common/common/creta_color.dart'; //import 'package:creta03/pages/studio/sample_data.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 import 'package:creta_common/common/creta_vars.dart';
 import 'package:creta_common/model/app_enums.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +16,7 @@ import 'package:url_strategy/url_strategy.dart';
 import 'package:logging/logging.dart';
 import 'package:get/get.dart';
 import 'package:creta_common/common/cross_common_job.dart';
+import 'design_system/component/snippet.dart';
 import 'pages/studio/studio_constant.dart';
 import 'pages/studio/studio_getx_controller.dart';
 //import 'pages/login_page.dart';
@@ -61,7 +64,6 @@ void main() async {
   }
 
   runApp(const ProviderScope(child: MainRouteApp()));
-  //runApp(const ProviderScope(child: MainRouteApp()));
   //runApp(MyApp());
 }
 
@@ -73,6 +75,19 @@ class MainRouteApp extends ConsumerStatefulWidget {
 }
 
 class _MainRouteAppState extends ConsumerState<MainRouteApp> {
+  Future<bool>? _langInited;
+
+  Future<bool>? initLang() async {
+    UserPropertyModel? userModel = CretaAccountManager.userPropertyManagerHolder.userPropertyModel;
+    if (userModel != null) {
+      if (userModel.language == LanguageType.none) {
+        userModel.language = LanguageType.korean;
+      }
+      await Snippet.setLang(userModel.language);
+    }
+    return true;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -80,44 +95,72 @@ class _MainRouteAppState extends ConsumerState<MainRouteApp> {
     CretaVars.isCanvaskit = ccj.isInUsingCanvaskit();
 
     saveManagerHolder = SaveManager();
+
+    //Snippet.clearLang();
+    _langInited = initLang();
   }
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp.router(
-      title: 'Creta creates',
-      initialBinding: InitBinding(),
-      debugShowCheckedModeBanner: false,
-      scrollBehavior: MaterialScrollBehavior().copyWith(scrollbars: false),
-      theme: ThemeData.light().copyWith(
-        //useMaterial3: true,
-        //primaryColor: CretaColor.primary,
-        colorScheme: ColorScheme(
-          brightness: Brightness.light,
-          primary: CretaColor.primary,
-          onPrimary: CretaColor.text[100]!,
-          secondary: CretaColor.secondary,
-          onSecondary: CretaColor.text[100]!,
-          error: CretaColor.stateCritical,
-          onError: CretaColor.text,
-          background: Colors.white,
-          onBackground: CretaColor.text,
-          surface: Colors.yellow,
-          onSurface: CretaColor.text,
-        ),
-        // sliderTheme: SliderThemeData(
-        //   activeTickMarkColor: Colors.amber,
-        //   showValueIndicator: ShowValueIndicator.never,
-        // ),
-        scrollbarTheme: ScrollbarThemeData(
-          thumbColor: MaterialStateProperty.all(CretaColor.primary),
-        ),
+    ThemeData theme = ThemeData.light().copyWith(
+      //useMaterial3: true,
+      //primaryColor: CretaColor.primary,
+      colorScheme: ColorScheme(
+        brightness: Brightness.light,
+        primary: CretaColor.primary,
+        onPrimary: CretaColor.text[100]!,
+        secondary: CretaColor.secondary,
+        onSecondary: CretaColor.text[100]!,
+        error: CretaColor.stateCritical,
+        onError: CretaColor.text,
+        background: Colors.white,
+        onBackground: CretaColor.text,
+        surface: Colors.yellow,
+        onSurface: CretaColor.text,
       ),
-      routerDelegate: RoutemasterDelegate(routesBuilder: (context) {
-        return routesLoggedOut;
-      }),
-      routeInformationParser: const RoutemasterParser(),
+      // sliderTheme: SliderThemeData(
+      //   activeTickMarkColor: Colors.amber,
+      //   showValueIndicator: ShowValueIndicator.never,
+      // ),
+      scrollbarTheme: ScrollbarThemeData(
+        thumbColor: MaterialStateProperty.all(CretaColor.primary),
+      ),
     );
+
+    return FutureBuilder<bool>(
+        future: _langInited,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            //error가 발생하게 될 경우 반환하게 되는 부분
+            logger.severe("data fetch error(WaitDatum)");
+            return const Center(child: Text('data fetch error(WaitDatum)'));
+          }
+          if (snapshot.hasData == false) {
+            logger.finest("wait data ...(WaitData)");
+            print("----------------------------saaaaaa");
+            return Directionality(
+              textDirection: TextDirection.ltr, // or TextDirection.rtl, as needed
+              child: Center(
+                child: CretaSnippet.showWaitSign(),
+              ),
+            );
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            logger.finest("founded ${snapshot.data!}");
+            return GetMaterialApp.router(
+              title: 'Creta creates',
+              initialBinding: InitBinding(),
+              debugShowCheckedModeBanner: false,
+              scrollBehavior: MaterialScrollBehavior().copyWith(scrollbars: false),
+              theme: theme,
+              routerDelegate: RoutemasterDelegate(routesBuilder: (context) {
+                return routesLoggedOut;
+              }),
+              routeInformationParser: const RoutemasterParser(),
+            );
+          }
+          return const SizedBox.shrink();
+        });
   }
 }
 

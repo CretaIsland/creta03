@@ -106,7 +106,7 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
     // return [
     //   Padding(
     //     padding: const EdgeInsets.only(top: 24, bottom: 12),
-    //     child: Text(CretaStudioLang.hashTab, style: CretaFont.titleSmall),
+    //     child: Text(CretaStudioLang['hashTab']!, style: CretaFont.titleSmall),
     //   ),
     //   TagEditor(
     //     textFieldHeight: 36,
@@ -177,7 +177,7 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
   //     child: Row(
   //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
   //       children: [
-  //         Text(CretaStudioLang.copyRight, style: CretaFont.titleSmall),
+  //         Text(CretaStudioLang['copyRight']!, style: CretaFont.titleSmall),
   //         widget.model.creator == AccountManager.currentLoginUser.email
   //             ? CretaDropDownButton(
   //                 selectedColor: CretaColor.text[700]!,
@@ -190,7 +190,7 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
   //                     onChanged: (val) {
   //                       widget.model.copyRight.set(val);
   //                     }))
-  //             : Text(CretaStudioLang.copyWrightList[widget.model.copyRight.value.index],
+  //             : Text(CretaStudioLang['copyWrightList']![widget.model.copyRight.value.index],
   //                 style: dataStyle),
   //       ],
   //     ),
@@ -201,7 +201,7 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
     return [
       Padding(
         padding: const EdgeInsets.only(top: 12, bottom: 18),
-        child: Text(CretaStudioLang.infomation, style: CretaFont.titleSmall),
+        child: Text(CretaStudioLang['infomation']!, style: CretaFont.titleSmall),
       ),
       Padding(
         padding: const EdgeInsets.only(top: 6, bottom: 6),
@@ -209,7 +209,7 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              CretaStudioLang.createDate,
+              CretaStudioLang['createDate']!,
               style: titleStyle,
             ),
             Text(widget.model.createTime.toString().substring(0, 19), style: dataStyle),
@@ -222,7 +222,7 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              CretaStudioLang.updateDate,
+              CretaStudioLang['updateDate']!,
               style: titleStyle,
             ),
             Text(widget.model.updateTime.toString().substring(0, 19), style: dataStyle),
@@ -235,7 +235,7 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              CretaStudioLang.creator,
+              CretaStudioLang['creator']!,
               style: titleStyle,
             ),
             Text(widget.model.creator, style: dataStyle),
@@ -247,8 +247,9 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(CretaStudioLang.bookType, style: titleStyle),
-            Text(CretaLang.basicBookFilter[widget.model.bookType.value.index], style: dataStyle),
+            Text(CretaStudioLang['bookType']!, style: titleStyle),
+            Text(CretaLang['basicBookFilter']![widget.model.bookType.value.index],
+                style: dataStyle),
           ],
         ),
       )

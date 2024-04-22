@@ -33,7 +33,7 @@ class _GoogleMapSavedListState extends State<GoogleMapSavedList> with PropertyMi
               _isSavedListOpened = !_isSavedListOpened;
             });
           },
-          titleWidget: Text(CretaStudioLang.googleMapSavedList, style: CretaFont.titleSmall),
+          titleWidget: Text(CretaStudioLang['googleMapSavedList']!, style: CretaFont.titleSmall),
           trailWidget: Text('', style: CretaFont.titleSmall),
           hasRemoveButton: false,
           onDelete: () {},

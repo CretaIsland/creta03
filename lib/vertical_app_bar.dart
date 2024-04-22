@@ -1,3 +1,4 @@
+import 'package:creta_common/common/creta_snippet.dart';
 import 'package:creta_user_io/data_io/user_property_manager.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
@@ -87,17 +88,17 @@ class VerticalAppBar extends StatefulWidget {
 class _VerticalAppBarState extends State<VerticalAppBar> {
   BoolEventController? _foldSendEvent;
   List<Text> languageItemList = [];
+  Future<bool>? isLangInit;
 
-  void initLang() {
-    for (var element in CretaMyPageLang.languageList) {
-      languageItemList.add(Text(element, style: CretaFont.bodyESmall));
-    }
-
+  Future<bool>? initLang() async {
     UserPropertyModel? userModel = CretaAccountManager.userPropertyManagerHolder.userPropertyModel;
     if (userModel != null) {
-      //print('============================== ${userModel.email} : ${userModel.language}');
-      Snippet.setLang(userModel.language);
+      await Snippet.setLang(userModel.language);
     }
+    for (var element in CretaMyPageLang['languageList']!) {
+      languageItemList.add(Text(element, style: CretaFont.bodyESmall));
+    }
+    return true;
   }
 
   @override
@@ -105,49 +106,73 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
     super.initState();
     final BoolEventController foldSendEvent = Get.find(tag: 'vertical-app-bar-to-creta-left-bar');
     _foldSendEvent = foldSendEvent;
-    initLang();
+    //Snippet.clearLang();
+    isLangInit = initLang();
   }
 
   @override
   Widget build(BuildContext context) {
     final Size displaySize = MediaQuery.of(context).size;
-    return Consumer<UserPropertyManager>(builder: (context, userPropertyManager, child) {
-      return Container(
-          //padding: const EdgeInsets.only(top: 20),
-          width: CretaConst.verticalAppbarWidth,
-          color: displaySize.height > 200 ? CretaColor.text[100] : CretaColor.primary,
-          child: Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              if (displaySize.height > 200)
-                CustomPaint(
-                    size: Size(CretaConst.verticalAppbarWidth, displaySize.height),
-                    painter: MyCustomPainter()),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  //const SizedBox(height: 20),
-                  Column(
+    return FutureBuilder<bool>(
+        future: isLangInit,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            //error가 발생하게 될 경우 반환하게 되는 부분
+            logger.severe("data fetch error(WaitDatum)");
+            return const Center(child: Text('data fetch error(WaitDatum)'));
+          }
+          if (snapshot.hasData == false) {
+            logger.finest("wait data ...(WaitData)");
+            return Center(
+              child: CretaSnippet.showWaitSign(),
+            );
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            logger.finest("founded ${snapshot.data!}");
+            // if (snapshot.data!.isEmpty) {
+            //   return const Center(child: Text('no book founded'));
+            // }
+
+            return Consumer<UserPropertyManager>(builder: (context, userPropertyManager, child) {
+              return Container(
+                  //padding: const EdgeInsets.only(top: 20),
+                  width: CretaConst.verticalAppbarWidth,
+                  color: displaySize.height > 200 ? CretaColor.text[100] : CretaColor.primary,
+                  child: Stack(
+                    alignment: Alignment.topCenter,
                     children: [
-                      if (displaySize.height > 100) titleLogoVertical(),
-                      //const SizedBox(height: 32),
-                      if (displaySize.height > 200) communityLogo(context),
-                      if (displaySize.height > 250) const SizedBox(height: 12),
-                      if (displaySize.height > 250) studioLogo(context),
-                      if (displaySize.height > 300) const SizedBox(height: 12),
-                      if (displaySize.height > 300) deviceLogo(context),
-                      if (displaySize.height > 350) const SizedBox(height: 12),
-                      if (displaySize.height > 350) myPageLogo(context),
-                      if (displaySize.height > 400) const SizedBox(height: 12),
-                      if (displaySize.height > 400) adminLogo(context),
+                      if (displaySize.height > 200)
+                        CustomPaint(
+                            size: Size(CretaConst.verticalAppbarWidth, displaySize.height),
+                            painter: MyCustomPainter()),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          //const SizedBox(height: 20),
+                          Column(
+                            children: [
+                              if (displaySize.height > 100) titleLogoVertical(),
+                              //const SizedBox(height: 32),
+                              if (displaySize.height > 200) communityLogo(context),
+                              if (displaySize.height > 250) const SizedBox(height: 12),
+                              if (displaySize.height > 250) studioLogo(context),
+                              if (displaySize.height > 300) const SizedBox(height: 12),
+                              if (displaySize.height > 300) deviceLogo(context),
+                              if (displaySize.height > 350) const SizedBox(height: 12),
+                              if (displaySize.height > 350) myPageLogo(context),
+                              if (displaySize.height > 400) const SizedBox(height: 12),
+                              if (displaySize.height > 400) adminLogo(context),
+                            ],
+                          ),
+                          if (displaySize.height > 450) _userInfoList(displaySize),
+                        ],
+                      ),
                     ],
-                  ),
-                  if (displaySize.height > 450) _userInfoList(displaySize),
-                ],
-              ),
-            ],
-          ));
-    });
+                  ));
+            });
+          }
+          return const SizedBox.shrink();
+        });
   }
 
   Widget titleLogoVertical() {
@@ -224,7 +249,7 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
           child: TextButton(
             onPressed: _studioLogoPressed,
             child: Text(
-              "Studio", //CretaDeviceLang.studio,
+              "Studio", //CretaDeviceLang['studio']!,
               style: CretaFont.logoStyle.copyWith(color: Colors.white),
             ),
           ),
@@ -257,7 +282,7 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
           child: TextButton(
             onPressed: _deviceLogoPressed,
             child: Text(
-              "Device", //CretaDeviceLang.device,
+              "Device", //CretaDeviceLang['device']!,
               style: CretaFont.logoStyle.copyWith(color: Colors.white),
             ),
           ),
@@ -290,7 +315,7 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
           child: TextButton(
             onPressed: _myPageLogoPressed,
             child: Text(
-              "My Page", //CretaDeviceLang.admin,
+              "My Page", //CretaDeviceLang['admin']!,
               style: CretaFont.logoStyle.copyWith(color: Colors.white),
             ),
           ),
@@ -323,7 +348,7 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
           child: TextButton(
             onPressed: _adminLogoPressed,
             child: Text(
-              "Admin", //CretaDeviceLang.admin,
+              "Admin", //CretaDeviceLang['admin']!,
               style: CretaFont.logoStyle.copyWith(color: Colors.white),
             ),
           ),
@@ -355,8 +380,8 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
   Widget _langSetting(Size displaySize) {
     UserPropertyModel? userModel = CretaAccountManager.userPropertyManagerHolder.userPropertyModel;
     if (userModel != null) {
-      String langStr = CretaMyPageLang
-          .languageList[userModel.language.index > 0 ? userModel.language.index - 1 : 0];
+      String langStr = CretaMyPageLang['languageList']![
+          userModel.language.index > 0 ? userModel.language.index - 1 : 0];
 
       if (langStr.length > 3) {
         langStr = langStr.substring(0, 3);
@@ -408,7 +433,7 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
       globalKey: key,
       xOffset: xOffset,
       yOffset: yOffset,
-      popupMenu: CretaMyPageLang.languageList
+      popupMenu: (CretaMyPageLang['languageList']!)
           .asMap()
           .map((index, lang) {
             return MapEntry(
@@ -420,7 +445,7 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
                       value: index + 1,
                       userPropertyManager: CretaAccountManager.userPropertyManagerHolder,
                       invalidate: () {
-                        //setState(() {});
+                        setState(() {});
                         // print(
                         //     'language : ${CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.language}, ${CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.language.index}');
                         CretaAccountManager.userPropertyManagerHolder.notify();
@@ -431,7 +456,8 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
                 ));
           })
           .values
-          .toList(),
+          .toList()
+          .cast<CretaMenuItem>(),
       initFunc: () {},
     ).then((value) {
       logger.finest('팝업메뉴 닫기');

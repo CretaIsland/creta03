@@ -137,7 +137,7 @@ class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
           propertyLine(
             // onlineWeather
             topPadding: 10,
-            name: CretaStudioLang.onlineWeather,
+            name: CretaStudioLang['onlineWeather']!,
             widget: CretaToggleButton(
               width: 54 * 0.75,
               height: 28 * 0.75,
@@ -164,7 +164,7 @@ class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
                 widget.frameModel.frameType == FrameType.weather2)
               Padding(
                 padding: const EdgeInsets.only(top: 12.0),
-                child: Text(CretaStudioLang.offLineWeather, style: titleStyle),
+                child: Text(CretaStudioLang['offLineWeather']!, style: titleStyle),
               ),
           if (widget.frameModel.subType != 99)
             if (widget.frameModel.frameType == FrameType.weather1 ||
@@ -215,7 +215,7 @@ class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
           _isIconOptionOpened = !_isIconOptionOpened;
         });
       },
-      titleWidget: Text(CretaStudioLang.iconOption, style: CretaFont.titleSmall),
+      titleWidget: Text(CretaStudioLang['iconOption']!, style: CretaFont.titleSmall),
       trailWidget: Text(trail, style: CretaFont.titleSmall),
       hasRemoveButton: false,
       onDelete: () {},
@@ -287,7 +287,7 @@ class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
       color1: widget.frameModel.subColor.value,
       color2: widget.frameModel.subColor.value,
       opacity: widget.frameModel.subColor.value.opacity,
-      title: CretaLang.iconColor,
+      title: CretaLang['iconColor']!,
       gradationType: GradationType.none,
       cardOpenPressed: () {
         setState(() {});
@@ -341,7 +341,7 @@ class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
     }
 
     return propertyLine(
-      name: CretaStudioLang.fontSize,
+      name: CretaStudioLang['fontSize']!,
       widget: CretaExSlider(
         valueType: SliderValueType.normal,
         value: iconSize,

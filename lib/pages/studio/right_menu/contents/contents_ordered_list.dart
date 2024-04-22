@@ -129,7 +129,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           });
         },
         titleWidget: Text(
-            (model != null && model.isText()) ? CretaLang.text : CretaStudioLang.playList,
+            (model != null && model.isText()) ? CretaLang['text']! : CretaStudioLang['playList']!,
             style: CretaFont.titleSmall),
         trailWidget: Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -146,7 +146,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                       fontWeight: CretaConst.fontWeight2Type[model.fontWeight.value],
                     ),
                   )
-                : Text('$itemCount ${CretaLang.count}', style: dataStyle),
+                : Text('$itemCount ${CretaLang['count']!}', style: dataStyle),
             if (model != null && !model.isMusic())
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -465,7 +465,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               icon1: Icons.visibility_outlined,
               icon2: Icons.visibility_off_outlined,
               buttonStyle: ToggleButtonStyle.fill_gray_i_m,
-              //tooltip: CretaStudioLang.showUnshow,
+              //tooltip: CretaStudioLang['showUnshow']!,
               onPressed: () {
                 if (index < 0) {
                   return;
@@ -491,7 +491,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
             BTN.fill_gray_image_m(
               buttonSize: lineHeight,
               iconSize: 12,
-              //tooltip: CretaStudioLang.tooltipDelete,
+              //tooltip: CretaStudioLang['tooltipDelete']!,
               //tooltipBg: CretaColor.text[700]!,
               iconImageFile: "assets/delete.svg",
               onPressed: () {
@@ -501,7 +501,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                 widget.contentsManager.removeContents(context, model).then((value) {
                   if (value == true) {
                     widget.contentsManager.removeMusic(model);
-                    showSnackBar(context, model.name + CretaLang.contentsDeleted);
+                    showSnackBar(context, model.name + CretaLang['contentsDeleted']!);
                   }
                 });
                 // if (widget.contentsManager.getShowLength() == 1) {
@@ -519,7 +519,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               icon2: Icons.volume_up,
               buttonStyle: ToggleButtonStyle.fill_gray_i_m,
               iconColor: model.isShow.value == true ? CretaColor.text[700]! : CretaColor.text[300]!,
-              //tooltip: CretaLang.mute,
+              //tooltip: CretaLang['mute']!,
               onPressed: () {
                 if (index < 0) {
                   // 전체를 한번에  mute
@@ -575,7 +575,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
       // Padding(
       //   padding: const EdgeInsets.only(top: 6, bottom: 12),
       //   child: Text(
-      //     CretaStudioLang.infomation,
+      //     CretaStudioLang['infomation']!,
       //     style: CretaFont.titleSmall,
       //     textAlign: TextAlign.left,
       //   ),
@@ -586,10 +586,10 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              CretaStudioLang.contentyType,
+              CretaStudioLang['contentyType']!,
               style: titleStyle,
             ),
-            Text(CretaLang.contentsTypeString[model.contentsType.index], style: dataStyle),
+            Text(CretaLang['contentsTypeString']![model.contentsType.index], style: dataStyle),
           ],
         ),
       ),
@@ -599,7 +599,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              CretaStudioLang.fileSize,
+              CretaStudioLang['fileSize']!,
               style: titleStyle,
             ),
             Text(model.size, style: dataStyle),
@@ -613,7 +613,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(CretaStudioLang.copyRight, style: titleStyle),
+            Text(CretaStudioLang['copyRight']!, style: titleStyle),
             widget.book != null && widget.book!.creator == AccountManager.currentLoginUser.email
                 ? CretaDropDownButton(
                     selectedColor: CretaColor.text[700]!,
@@ -627,7 +627,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                           model!.copyRight.set(val);
                         }),
                   )
-                : Text(CretaStudioLang.copyWrightList[model.copyRight.value.index],
+                : Text(CretaStudioLang['copyWrightList']![model.copyRight.value.index],
                     style: dataStyle),
           ],
         ),
@@ -638,7 +638,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         propertyLine(
           // useThisThumbnail
           topPadding: 10,
-          name: CretaStudioLang.useThisThumbnail,
+          name: CretaStudioLang['useThisThumbnail']!,
           widget: CretaToggleButton(
             width: 54 * 0.75,
             height: 28 * 0.75,
@@ -668,7 +668,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(CretaLang.playTime, style: titleStyle),
+          Text(CretaLang['playTime']!, style: titleStyle),
           if (model.playTime.value >= 0)
             TimeInputWidget(
               textWidth: 30,
@@ -684,7 +684,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
             children: [
               Padding(
                 padding: const EdgeInsets.only(bottom: 2.0),
-                child: Text(CretaLang.forever, style: titleStyle),
+                child: Text(CretaLang['forever']!, style: titleStyle),
               ),
               CretaToggleButton(
                   width: 54 * 0.75,
@@ -714,7 +714,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
   //       crossAxisAlignment: CrossAxisAlignment.start,
   //       children: [
-  //         Text(CretaLang.playDuration, style: titleStyle),
+  //         Text(CretaLang['playDuration']!, style: titleStyle),
   //         if (model.playTime.value >= 0)
   //           TimeInputWidget(
   //             textWidth: 30,
@@ -730,7 +730,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   //           children: [
   //             Padding(
   //               padding: const EdgeInsets.only(bottom: 2.0),
-  //               child: Text(CretaLang.onlyOnce, style: titleStyle),
+  //               child: Text(CretaLang['onlyOnce']!, style: titleStyle),
   //             ),
   //             CretaToggleButton(
   //                 width: 54 * 0.75,
@@ -760,7 +760,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         //crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(CretaLang.playTime, style: titleStyle),
+          Text(CretaLang['playTime']!, style: titleStyle),
           Text(CretaCommonUtils.secToDurationString(model.videoPlayTime.value / 1000),
               style: dataStyle),
         ],
@@ -775,7 +775,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   //     icon1: Icons.keyboard_double_arrow_up_outlined,
   //     icon2: Icons.keyboard_double_arrow_down_outlined,
   //     buttonStyle: ToggleButtonStyle.floating_l,
-  //     tooltip: CretaStudioLang.showUnshow,
+  //     tooltip: CretaStudioLang['showUnshow']!,
   //     onPressed: () {
   //       setState(() {
   //         _isExpanded = !_isExpanded;
@@ -826,7 +826,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         CretaFontSelector(
           // 폰트, 폰트 weight
           topPadding: 10,
-          title: Text(CretaStudioLang.fontName, style: titleStyle),
+          title: Text(CretaStudioLang['fontName']!, style: titleStyle),
           defaultFont: model.font.value,
           defaultFontWeight: model.fontWeight.value,
           onFontChanged: (val) {
@@ -874,9 +874,9 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     Widget autoSizeTypeWidget = CretaCheckbox(
       // 창 크기에 맞춤
       valueMap: {
-        CretaLang.autoFontSize: model.isAutoFontSize(),
-        CretaLang.autoFrameHeight: model.isAutoFrameOrSide(),
-        CretaStudioLang.noAutoSize: model.isNoAutoSize(),
+        CretaLang['autoFontSize']!: model.isAutoFontSize(),
+        CretaLang['autoFrameHeight']!: model.isAutoFrameOrSide(),
+        CretaStudioLang['noAutoSize']!: model.isNoAutoSize(),
       },
       onSelected: (title, value, nvMap) {
         //('onSelected !!!!!!! $title');
@@ -949,7 +949,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     }
     return propertyLine(
       // FontSize  폰트사이즈
-      name: CretaStudioLang.fontSize,
+      name: CretaStudioLang['fontSize']!,
       widget: CretaExSlider(
         valueType: SliderValueType.normal,
         value: fontSize,
@@ -1007,7 +1007,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   Widget _letterSpace(ContentsModel model) {
     return propertyLine(
       // letterSpacing  자간
-      name: CretaStudioLang.letterSpacing,
+      name: CretaStudioLang['letterSpacing']!,
       widget: CretaExSlider(
         valueType: SliderValueType.normal,
         value: model.letterSpacing.value,
@@ -1048,7 +1048,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   Widget _lineHeight(ContentsModel model) {
     return propertyLine(
       // lineHeight  행간
-      name: CretaStudioLang.lineHeight,
+      name: CretaStudioLang['lineHeight']!,
       widget: CretaExSlider(
         valueType: SliderValueType.normal,
         textType: CretaTextFieldType.number,
@@ -1145,9 +1145,9 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
 
   // List<CretaMenuItem> _getFontSizeItem(
   //     {required FontSizeType defaultValue, required void Function(FontSizeType) onChanged}) {
-  //   return CretaStudioLang.textSizeMap.keys.map(
+  //   return CretaStudioLang['textSizeMap']!.keys.map(
   //     (sizeStr) {
-  //       double sizeVal = CretaStudioLang.textSizeMap[sizeStr]!;
+  //       double sizeVal = CretaStudioLang['textSizeMap']![sizeStr]!;
   //       double currentVal = FontSizeType.enumToVal[defaultValue]!;
   //       return CretaMenuItem(
   //           caption: sizeStr,
@@ -1330,7 +1330,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   // Widget _translateRow(ContentsModel model) {
   //   return propertyLine(
   //     topPadding: 10,
-  //     name: CretaStudioLang.translate,
+  //     name: CretaStudioLang['translate']!,
   //     widget: CretaDropDownButton(
   //       align: MainAxisAlignment.start,
   //       selectedColor: CretaColor.text[700]!,

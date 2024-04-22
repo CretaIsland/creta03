@@ -19,7 +19,7 @@ class LeftMenuStorage extends StatefulWidget {
 
   @override
   State<LeftMenuStorage> createState() => _LeftMenuStorageState();
-  static String selectedType = CretaStudioLang.storageTypes.values.first;
+  static String selectedType = CretaStudioLang['storageTypes']!.values.first;
 }
 
 class _LeftMenuStorageState extends State<LeftMenuStorage> {
@@ -30,7 +30,7 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
   late double bodyWidth;
 
   String searchText = '';
-  static String _selectedType = CretaStudioLang.storageTypes.values.first;
+  static String _selectedType = CretaStudioLang['storageTypes']!.values.first;
 
   Map<String, String> depotMenuTabBar = {'내 보관함': 'myDepot'};
   String? _myTeamId;
@@ -41,14 +41,14 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
   String _getCurrentTypes() {
     int index = 0;
     String currentSelectedType = _selectedType;
-    List<String> types = CretaStudioLang.storageTypes.values.toList();
+    List<String> types = CretaStudioLang['storageTypes']!.values.toList();
     for (String ele in types) {
       if (currentSelectedType == ele) {
         return types[index];
       }
       index++;
     }
-    return CretaStudioLang.storageTypes.values.toString()[0];
+    return CretaStudioLang['storageTypes']!.values.toString()[0];
   }
 
   void _initMenuTabName() {
@@ -61,7 +61,7 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
   void initState() {
     logger.fine('_LeftMenuStorageState.initState');
     super.initState();
-    // _selectedTab = CretaStudioLang.storageMenuTabBar.values.first;
+    // _selectedTab = CretaStudioLang['storageMenuTabBar']!.values.first;
     bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
     _selectedType = _getCurrentTypes();
     _initMenuTabName();
@@ -70,7 +70,7 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
 
     _dropDownOptions = [
       CretaMenuItem(
-        caption: CretaLang.basicBookSortFilter[0], // 최신순
+        caption: CretaLang['basicBookSortFilter']![0], // 최신순
         onPressed: () {
           _depotManager.depotOrder = DepotOrderEnum.latest;
           _depotManager.notify();
@@ -78,7 +78,7 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
         selected: true,
       ),
       CretaMenuItem(
-        caption: CretaLang.basicBookSortFilter[1], // 이름순
+        caption: CretaLang['basicBookSortFilter']![1], // 이름순
         onPressed: () {
           _depotManager.depotOrder = DepotOrderEnum.name;
           _depotManager.notify();
@@ -164,7 +164,7 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
   Widget _textQuery() {
     return CretaSearchBar(
       width: bodyWidth,
-      hintText: CretaStudioLang.queryHintText,
+      hintText: CretaStudioLang['queryHintText']!,
       onSearch: (value) {
         searchText = value;
       },
@@ -197,10 +197,10 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
       defaultString: _getCurrentTypes(),
       onEditComplete: (value) {
         int idx = 0;
-        for (String val in CretaStudioLang.storageTypes.values) {
+        for (String val in CretaStudioLang['storageTypes']!.values) {
           if (value == val) {
             setState(() {
-              _selectedType = CretaStudioLang.storageTypes.values.toList()[idx];
+              _selectedType = CretaStudioLang['storageTypes']!.values.toList()[idx];
             });
           }
           idx++;
@@ -213,13 +213,13 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
       selectedColor: CretaColor.primary,
       unSelectedColor: Colors.white,
       unSelectedBorderColor: CretaColor.primary,
-      buttonLables: CretaStudioLang.storageTypes.keys.toList(),
-      buttonValues: CretaStudioLang.storageTypes.values.toList(),
+      buttonLables: CretaStudioLang['storageTypes']!.keys.toList(),
+      buttonValues: CretaStudioLang['storageTypes']!.values.toList(),
     );
   }
 
   Widget _selectedStorage() {
-    List<String> type = CretaStudioLang.storageTypes.values.toList();
+    List<String> type = CretaStudioLang['storageTypes']!.values.toList();
     if (_selectedType == type[0]) {
       return DepotDisplay(
         key: const GlobalObjectKey('DepotDisplayClass_0'),

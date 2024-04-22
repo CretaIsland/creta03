@@ -129,6 +129,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
 
   late ScrollController _controller;
 
+  LanguageType oldLanguage = LanguageType.none;
+
   @override
   void initState() {
     logger.fine('initState start');
@@ -169,7 +171,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
   void _initMenu() {
     _leftMenuItemList = [
       CretaMenuItem(
-        caption: CretaDeviceLang.myCretaDevice,
+        caption: CretaDeviceLang['myCretaDevice']!,
         onPressed: () {
           //Routemaster.of(context).push(AppRoutes.studioDeviceMainPage);
           //DeviceMainPage.lastGridMenu = AppRoutes.studioBookSharedPage;
@@ -180,7 +182,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         isIconText: true,
       ),
       CretaMenuItem(
-        caption: CretaDeviceLang.sharedCretaDevice,
+        caption: CretaDeviceLang['sharedCretaDevice']!,
         onPressed: () {
           Routemaster.of(context).pop();
           Routemaster.of(context).push(AppRoutes.studioBookSharedPage);
@@ -192,7 +194,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         isIconText: true,
       ),
       CretaMenuItem(
-        caption: CretaDeviceLang.teamCretaDevice,
+        caption: CretaDeviceLang['teamCretaDevice']!,
         onPressed: () {
           Routemaster.of(context).push(AppRoutes.studioBookTeamPage);
           DeviceMainPage.lastGridMenu = AppRoutes.studioBookSharedPage;
@@ -203,7 +205,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         iconSize: 20,
       ),
       CretaMenuItem(
-        caption: CretaStudioLang.trashCan,
+        caption: CretaStudioLang['trashCan']!,
         onPressed: () {
           //Routemaster.of(context).push(AppRoutes.studioBookTrashCanPage);
           //DeviceMainPage.lastGridMenu = AppRoutes.studioBookTrashCanPage;
@@ -269,8 +271,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         //     'Consumer<UserPropertyManager>---------${userPropertyManager.userPropertyModel!.language}---------');
 
         if (oldLanguage != userPropertyManager.userPropertyModel!.language) {
-          _initMenu();
           oldLanguage = userPropertyManager.userPropertyModel!.language;
+          _initMenu();
         }
 
         return Snippet.CretaScaffold(
@@ -284,7 +286,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
             //   width: windowWidth > 535 ? 130 : 60,
             //   child: BTN.fill_gray_it_l(
             //     width: windowWidth > 535 ? 106 : 36,
-            //     text: windowWidth > 535 ? CretaStudioLang.newBook : '',
+            //     text: windowWidth > 535 ? CretaStudioLang['newBook']! : '',
             //     onPressed: () {
             //       Routemaster.of(context).push(AppRoutes.communityHome);
             //     },
@@ -297,7 +299,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
               gotoButtonPressed: () {
                 Routemaster.of(context).push(AppRoutes.communityHome);
               },
-              gotoButtonTitle: CretaStudioLang.gotoCommunity,
+              gotoButtonTitle: CretaStudioLang['gotoCommunity']!,
               leftMenuItemList: _leftMenuItemList,
               bannerTitle: getDeviceTitle(),
               bannerDescription: getDeviceDesc(),
@@ -323,26 +325,26 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
   String getDeviceTitle() {
     switch (widget.selectedPage) {
       case DeviceSelectedPage.myPage:
-        return CretaDeviceLang.myCretaDevice;
+        return CretaDeviceLang['myCretaDevice']!;
       case DeviceSelectedPage.sharedPage:
-        return CretaStudioLang.sharedCretaBook;
+        return CretaStudioLang['sharedCretaBook']!;
       case DeviceSelectedPage.teamPage:
-        return CretaStudioLang.teamCretaBook;
+        return CretaStudioLang['teamCretaBook']!;
       default:
-        return CretaDeviceLang.myCretaDevice;
+        return CretaDeviceLang['myCretaDevice']!;
     }
   }
 
   String getDeviceDesc() {
     switch (widget.selectedPage) {
       case DeviceSelectedPage.myPage:
-        return CretaDeviceLang.myCretaDeviceDesc;
+        return CretaDeviceLang['myCretaDeviceDesc']!;
       case DeviceSelectedPage.sharedPage:
-        return CretaStudioLang.sharedCretaBookDesc;
+        return CretaStudioLang['sharedCretaBookDesc']!;
       case DeviceSelectedPage.teamPage:
-        return CretaStudioLang.teamCretaBookDesc;
+        return CretaStudioLang['teamCretaBookDesc']!;
       default:
-        return CretaDeviceLang.myCretaDevice;
+        return CretaDeviceLang['myCretaDevice']!;
     }
   }
 
@@ -625,14 +627,14 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
   List<CretaMenuItem> getSortMenu(Function? onModelSorted) {
     return [
       CretaMenuItem(
-          caption: CretaLang.basicBookSortFilter[0],
+          caption: CretaLang['basicBookSortFilter']![0],
           onPressed: () {
             hostManagerHolder?.toSorted('updateTime',
                 descending: true, onModelSorted: onModelSorted);
           },
           selected: true),
       CretaMenuItem(
-          caption: CretaLang.basicBookSortFilter[1],
+          caption: CretaLang['basicBookSortFilter']![1],
           onPressed: () {
             hostManagerHolder?.toSorted('name', onModelSorted: onModelSorted);
           },
@@ -643,7 +645,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
   List<CretaMenuItem> getFilterMenu(Function? onModelFiltered) {
     return [
       CretaMenuItem(
-        caption: CretaDeviceLang.basicHostFilter[0],
+        caption: CretaDeviceLang['basicHostFilter']![0],
         onPressed: () {
           hostManagerHolder?.toFiltered(null, null, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
@@ -652,7 +654,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         disabled: CretaVars.serviceType != ServiceType.none,
       ),
       CretaMenuItem(
-        caption: CretaDeviceLang.basicHostFilter[1], //
+        caption: CretaDeviceLang['basicHostFilter']![1], //
         onPressed: () {
           hostManagerHolder?.toFiltered(
               'hostType', ServiceType.signage.index, AccountManager.currentLoginUser.email,
@@ -662,7 +664,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         disabled: CretaVars.serviceType != ServiceType.signage,
       ),
       CretaMenuItem(
-        caption: CretaDeviceLang.basicHostFilter[2], //
+        caption: CretaDeviceLang['basicHostFilter']![2], //
         onPressed: () {
           hostManagerHolder?.toFiltered(
               'hostType', ServiceType.barricade.index, AccountManager.currentLoginUser.email,
@@ -672,7 +674,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         disabled: CretaVars.serviceType != ServiceType.barricade,
       ),
       CretaMenuItem(
-        caption: CretaDeviceLang.basicHostFilter[3], //
+        caption: CretaDeviceLang['basicHostFilter']![3], //
         onPressed: () {
           hostManagerHolder?.toFiltered(
               'hostType', ServiceType.escalator.index, AccountManager.currentLoginUser.email,
@@ -682,7 +684,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         disabled: CretaVars.serviceType != ServiceType.escalator,
       ),
       CretaMenuItem(
-        caption: CretaDeviceLang.basicHostFilter[4], //
+        caption: CretaDeviceLang['basicHostFilter']![4], //
         onPressed: () {
           hostManagerHolder?.toFiltered(
               'hostType', ServiceType.board.index, AccountManager.currentLoginUser.email,
@@ -692,7 +694,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         disabled: CretaVars.serviceType != ServiceType.board,
       ),
       CretaMenuItem(
-        caption: CretaDeviceLang.basicHostFilter[5],
+        caption: CretaDeviceLang['basicHostFilter']![5],
         onPressed: () {
           hostManagerHolder?.toFiltered(
               'hostType', ServiceType.cdu.index, AccountManager.currentLoginUser.email,
@@ -702,7 +704,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         disabled: CretaVars.serviceType != ServiceType.cdu,
       ),
       CretaMenuItem(
-        caption: CretaDeviceLang.basicHostFilter[6],
+        caption: CretaDeviceLang['basicHostFilter']![6],
         onPressed: () {
           hostManagerHolder?.toFiltered(
               'hostType', ServiceType.etc.index, AccountManager.currentLoginUser.email,
@@ -717,21 +719,21 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
   List<CretaMenuItem> getUsageFilterMenu(Function? onModelFiltered) {
     return [
       CretaMenuItem(
-        caption: CretaDeviceLang.usageHostFilter[0],
+        caption: CretaDeviceLang['usageHostFilter']![0],
         onPressed: () {
           hostManagerHolder?.toFiltered(null, null, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
       ),
       CretaMenuItem(
-        caption: CretaDeviceLang.usageHostFilter[1],
+        caption: CretaDeviceLang['usageHostFilter']![1],
         onPressed: () {
           hostManagerHolder?.toFiltered('isUsed', true, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
       ),
       CretaMenuItem(
-        caption: CretaDeviceLang.usageHostFilter[2], //
+        caption: CretaDeviceLang['usageHostFilter']![2], //
         onPressed: () {
           hostManagerHolder?.toFiltered('isUsed', false, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
@@ -743,21 +745,21 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
   List<CretaMenuItem> getConnectedFilterMenu(Function? onModelFiltered) {
     return [
       CretaMenuItem(
-        caption: CretaDeviceLang.connectedHostFilter[0],
+        caption: CretaDeviceLang['connectedHostFilter']![0],
         onPressed: () {
           hostManagerHolder?.toFiltered(null, null, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
       ),
       CretaMenuItem(
-        caption: CretaDeviceLang.connectedHostFilter[1],
+        caption: CretaDeviceLang['connectedHostFilter']![1],
         onPressed: () {
           hostManagerHolder?.toFiltered('isConnected', true, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
       ),
       CretaMenuItem(
-        caption: CretaDeviceLang.connectedHostFilter[2], //
+        caption: CretaDeviceLang['connectedHostFilter']![2], //
         onPressed: () {
           hostManagerHolder?.toFiltered('isConnected', false, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
@@ -771,28 +773,28 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       //mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         BTN.fill_gray_it_l(
-          text: CretaDeviceLang.editHost,
+          text: CretaDeviceLang['editHost']!,
           icon: Icons.edit_outlined,
           onPressed: () {
             // Handle menu button press
           },
         ),
         BTN.fill_gray_it_l(
-          text: CretaDeviceLang.setBook,
+          text: CretaDeviceLang['setBook']!,
           icon: Icons.play_circle_outline,
           onPressed: () {
             // Handle menu button press
           },
         ),
         BTN.fill_gray_it_l(
-          text: CretaDeviceLang.powerOff,
+          text: CretaDeviceLang['powerOff']!,
           icon: Icons.power_off_outlined,
           onPressed: () {
             // Handle menu button press
           },
         ),
         BTN.fill_gray_it_l(
-          text: CretaDeviceLang.reboot,
+          text: CretaDeviceLang['reboot']!,
           icon: Icons.power_outlined,
           onPressed: () {
             // Handle menu button press
@@ -800,14 +802,14 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         ),
         BTN.fill_gray_it_l(
           width: 130,
-          text: CretaDeviceLang.setPower,
+          text: CretaDeviceLang['setPower']!,
           icon: Icons.power_settings_new_outlined,
           onPressed: () {
             // Handle menu button press
           },
         ),
         BTN.fill_gray_it_l(
-          text: CretaDeviceLang.notice,
+          text: CretaDeviceLang['notice']!,
           icon: Icons.notifications_outlined,
           onPressed: () {
             // Handle menu button press
@@ -869,7 +871,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('${CretaDeviceLang.deviceDetail} ${selectedHost!.hostName}'),
+          title: Text('${CretaDeviceLang['deviceDetail']!} ${selectedHost!.hostName}'),
           content: Container(
             width: width,
             height: height,

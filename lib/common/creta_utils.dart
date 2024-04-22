@@ -269,13 +269,13 @@ class CretaUtils {
     };
 
     http.Response? res = await CretaUtils.post(url, body, onError: (code) {
-      showSnackBar(context, '${CretaStudioLang.inviteEmailFailed}($code)');
+      showSnackBar(context, '${CretaStudioLang['inviteEmailFailed']!}($code)');
     }, onException: (e) {
-      showSnackBar(context, '${CretaStudioLang.inviteEmailFailed}($e)');
+      showSnackBar(context, '${CretaStudioLang['inviteEmailFailed']!}($e)');
     });
 
     if (res != null) {
-      showSnackBar(context, CretaStudioLang.inviteEmailSucceed);
+      showSnackBar(context, CretaStudioLang['inviteEmailSucceed']!);
       return true;
     }
     return false;
@@ -306,9 +306,9 @@ class CretaUtils {
     };
 
     http.Response? res = await CretaUtils.post(url, body, onError: (code) {
-      //showSnackBar(context, '${CretaStudioLang.inviteEmailFailed}($code)');
+      //showSnackBar(context, '${CretaStudioLang['inviteEmailFailed']!}($code)');
     }, onException: (e) {
-      //showSnackBar(context, '${CretaStudioLang.inviteEmailFailed}($e)');
+      //showSnackBar(context, '${CretaStudioLang['inviteEmailFailed']!}($e)');
     });
 
     if (res != null) {
@@ -339,9 +339,9 @@ class CretaUtils {
     };
 
     http.Response? res = await CretaUtils.post(url, body, onError: (code) {
-      //showSnackBar(context, '${CretaStudioLang.inviteEmailFailed}($code)');
+      //showSnackBar(context, '${CretaStudioLang['inviteEmailFailed']!}($code)');
     }, onException: (e) {
-      //showSnackBar(context, '${CretaStudioLang.inviteEmailFailed}($e)');
+      //showSnackBar(context, '${CretaStudioLang['inviteEmailFailed']!}($e)');
     });
 
     if (res != null) {

@@ -1195,7 +1195,7 @@ class FrameManager extends BaseFrameManager {
   Future<bool> removeSelected(BuildContext context) async {
     FrameModel? model = getSelected() as FrameModel?;
     if (model == null) {
-      showSnackBar(context, CretaLang.frameNotSelected, duration: StudioConst.snackBarDuration);
+      showSnackBar(context, CretaLang['frameNotSelected']!, duration: StudioConst.snackBarDuration);
       await Future.delayed(StudioConst.snackBarDuration);
       return false;
     }

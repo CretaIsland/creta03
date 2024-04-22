@@ -64,13 +64,13 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
   Widget build(BuildContext context) {
     if (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Frame) {
       //print('frame=======================================================');
-      _selectedTab = CretaStudioLang.frameTabBar.values.first;
+      _selectedTab = CretaStudioLang['frameTabBar']!.values.first;
     } else if (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Contents) {
-      var valuesList = CretaStudioLang.frameTabBar.values.toList();
+      var valuesList = CretaStudioLang['frameTabBar']!.values.toList();
       _selectedTab = valuesList[1];
       //print('contents=======================================================');
     } else if (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Link) {
-      _selectedTab = CretaStudioLang.frameTabBar.values.last;
+      _selectedTab = CretaStudioLang['frameTabBar']!.values.last;
       //print('contents=======================================================');
     } else {
       return SizedBox.shrink();
@@ -96,7 +96,7 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
         padding: const EdgeInsets.only(right: 50),
         child: CustomRadioButton(
           radioButtonValue: (value) {
-            List<String> menu = CretaStudioLang.frameTabBar.values.toList();
+            List<String> menu = CretaStudioLang['frameTabBar']!.values.toList();
             if (value == menu[0]) {
               MiniMenu.setShowFrame(true);
               BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
@@ -123,8 +123,8 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
           selectedColor: Colors.white,
           unSelectedColor: CretaColor.text[100]!,
           defaultSelected: _selectedTab,
-          buttonLables: CretaStudioLang.frameTabBar.keys.toList(),
-          buttonValues: CretaStudioLang.frameTabBar.values.toList(),
+          buttonLables: CretaStudioLang['frameTabBar']!.keys.toList(),
+          buttonValues: CretaStudioLang['frameTabBar']!.values.toList(),
           selectedBorderColor: Colors.transparent,
           unSelectedBorderColor: Colors.transparent,
           elevation: 0,
@@ -137,7 +137,7 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
   }
 
   Widget _pageView() {
-    List<String> menu = CretaStudioLang.frameTabBar.values.toList();
+    List<String> menu = CretaStudioLang['frameTabBar']!.values.toList();
     if (_selectedTab == menu[0]) {
       return Container(
         padding: EdgeInsets.symmetric(vertical: horizontalPadding),

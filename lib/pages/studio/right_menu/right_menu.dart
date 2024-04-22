@@ -98,7 +98,7 @@ class _RightMenuState
             boxShadow: StudioSnippet.basicShadow(direction: ShadowDirection.leftTop),
           ),
           child: BTN.fill_gray_i_m(
-              tooltip: CretaStudioLang.hidden,
+              tooltip: CretaStudioLang['hidden']!,
               tooltipBg: CretaColor.text[700]!,
               icon: Icons.keyboard_double_arrow_left,
               iconSize: 20.0,
@@ -148,7 +148,7 @@ class _RightMenuState
                     child: Row(
                       children: [
                         // BTN.fill_gray_i_m(
-                        //   tooltip: CretaStudioLang.close,
+                        //   tooltip: CretaStudioLang['close']!,
                         //   tooltipBg: CretaColor.text[700]!,
                         //   icon: Icons.close_sharp,
                         //   onPressed: () async {
@@ -158,7 +158,7 @@ class _RightMenuState
                         //   },
                         // ),
                         BTN.fill_gray_i_m(
-                          tooltip: CretaStudioLang.collapsed,
+                          tooltip: CretaStudioLang['collapsed']!,
                           tooltipBg: CretaColor.text[700]!,
                           icon: Icons.keyboard_double_arrow_right_outlined,
                           onPressed: _onPressed,
@@ -210,11 +210,11 @@ class _RightMenuState
       case ContaineeEnum.Frame:
         return RightMenuFrameAndContents(key: GlobalKey());
       // key: GlobalObjectKey(
-      //     'RightMenuFrameAndContents${CretaStudioLang.frameTabBar.values.first}'));
+      //     'RightMenuFrameAndContents${CretaStudioLang['frameTabBar']!.values.first}'));
       // return RightMenuFrameAndContents(
       //     key: GlobalObjectKey(
-      //         'RightMenuFrameAndContents${CretaStudioLang.frameTabBar.values.first}'),
-      //     selectedTap: CretaStudioLang.frameTabBar.values.first);
+      //         'RightMenuFrameAndContents${CretaStudioLang['frameTabBar']!.values.first}'),
+      //     selectedTap: CretaStudioLang['frameTabBar']!.values.first);
       // {
       //   FrameModel? frame = BookMainPage.pageManagerHolder!.getSelectedFrame();
       //   if (frame == null) {
@@ -227,11 +227,11 @@ class _RightMenuState
       case ContaineeEnum.Link:
         return RightMenuFrameAndContents(key: GlobalKey());
       // key: GlobalObjectKey(
-      //     'RightMenuFrameAndContents${CretaStudioLang.frameTabBar.values.last}'));
+      //     'RightMenuFrameAndContents${CretaStudioLang['frameTabBar']!.values.last}'));
       // return RightMenuFrameAndContents(
       //     key: GlobalObjectKey(
-      //         'RightMenuFrameAndContents${CretaStudioLang.frameTabBar.values.last}'),
-      //     selectedTap: CretaStudioLang.frameTabBar.values.last);
+      //         'RightMenuFrameAndContents${CretaStudioLang['frameTabBar']!.values.last}'),
+      //     selectedTap: CretaStudioLang['frameTabBar']!.values.last);
       // BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
       // FrameModel? frame = BookMainPage.pageManagerHolder!.getSelectedFrame();
       // FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();

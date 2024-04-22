@@ -47,12 +47,12 @@ class _LeftTextTemplateState extends State<LeftTextTemplate>
     return [
       Padding(
         padding: const EdgeInsets.only(bottom: 12),
-        child: Text(CretaStudioLang.newText, style: CretaFont.titleSmall),
+        child: Text(CretaStudioLang['newText']!, style: CretaFont.titleSmall),
       ),
       Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: CretaRectButton(
-          title: CretaStudioLang.hugeText,
+          title: CretaStudioLang['hugeText']!,
           onPressed: () {
             createText(0.8, FontSizeType.enumToVal[FontSizeType.huge]!, FontSizeType.huge);
             BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.None); // leftMenu 를 닫는다.
@@ -62,7 +62,7 @@ class _LeftTextTemplateState extends State<LeftTextTemplate>
       Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: CretaRectButton(
-          title: CretaStudioLang.bigText,
+          title: CretaStudioLang['bigText']!,
           onPressed: () {
             createText(0.6, FontSizeType.enumToVal[FontSizeType.big]!, FontSizeType.big);
             BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.None); // leftMenu 를 닫는다.
@@ -72,7 +72,7 @@ class _LeftTextTemplateState extends State<LeftTextTemplate>
       Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: CretaRectButton(
-          title: CretaStudioLang.middleText,
+          title: CretaStudioLang['middleText']!,
           onPressed: () {
             createText(0.4, FontSizeType.enumToVal[FontSizeType.middle]!, FontSizeType.middle);
             BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.None); // leftMenu 를 닫는다.
@@ -82,7 +82,7 @@ class _LeftTextTemplateState extends State<LeftTextTemplate>
       Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: CretaRectButton(
-          title: CretaStudioLang.smallText,
+          title: CretaStudioLang['smallText']!,
           onPressed: () {
             createText(0.2, FontSizeType.enumToVal[FontSizeType.small]!, FontSizeType.small);
             BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.None); // leftMenu 를 닫는다.

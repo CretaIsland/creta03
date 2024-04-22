@@ -99,7 +99,7 @@ class _MiniMenuContentsState extends State<MiniMenuContents> {
   List<Widget> _contentsMenu(ContentsModel? model) {
     return [
       BTN.fill_blue_i_menu(
-          tooltip: CretaStudioLang.flipConTooltip,
+          tooltip: CretaStudioLang['flipConTooltip']!,
           tooltipFg: CretaColor.text,
           icon: Icons.flip_outlined,
           decoType: CretaButtonDeco.opacity,
@@ -111,7 +111,7 @@ class _MiniMenuContentsState extends State<MiniMenuContents> {
             widget.onContentsFlip.call();
           }),
       BTN.fill_blue_i_menu(
-          tooltip: CretaStudioLang.rotateConTooltip,
+          tooltip: CretaStudioLang['rotateConTooltip']!,
           tooltipFg: CretaColor.text,
           icon: Icons.rotate_90_degrees_cw_outlined,
           iconColor: CretaColor.secondary,
@@ -123,7 +123,7 @@ class _MiniMenuContentsState extends State<MiniMenuContents> {
             widget.onContentsRotate.call();
           }),
       BTN.fill_blue_i_menu(
-          tooltip: CretaStudioLang.cropConTooltip,
+          tooltip: CretaStudioLang['cropConTooltip']!,
           tooltipFg: CretaColor.text,
           icon: Icons.crop_outlined,
           iconColor: CretaColor.secondary,
@@ -135,7 +135,7 @@ class _MiniMenuContentsState extends State<MiniMenuContents> {
             widget.onContentsCrop.call();
           }),
       BTN.fill_blue_i_menu(
-          tooltip: CretaStudioLang.fullscreenConTooltip,
+          tooltip: CretaStudioLang['fullscreenConTooltip']!,
           tooltipFg: CretaColor.text,
           icon: model != null ? model.fitIcon() : Icons.photo_size_select_large,
           iconColor: CretaColor.secondary,
@@ -156,7 +156,7 @@ class _MiniMenuContentsState extends State<MiniMenuContents> {
       if (!widget.contentsManager.iamBusy)
         BTN.fill_blue_i_menu(
             tooltipFg: CretaColor.text,
-            tooltip: CretaStudioLang.deleteConTooltip,
+            tooltip: CretaStudioLang['deleteConTooltip']!,
             iconColor: CretaColor.secondary,
             icon: Icons.delete_outlined,
             buttonColor: CretaButtonColor.secondary,
@@ -167,7 +167,7 @@ class _MiniMenuContentsState extends State<MiniMenuContents> {
               widget.onContentsDelete.call();
             }),
       BTN.fill_blue_i_menu(
-          tooltip: CretaStudioLang.editConTooltip,
+          tooltip: CretaStudioLang['editConTooltip']!,
           tooltipFg: CretaColor.text,
           iconColor: CretaColor.secondary,
           icon: Icons.edit_outlined,

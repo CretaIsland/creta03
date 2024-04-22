@@ -246,7 +246,7 @@ class MiniMenuState extends State<MiniMenu> {
     return [
       // 보이기 안보이기
       BTN.fill_blue_i_menu(
-          tooltip: CretaStudioLang.showUnshow,
+          tooltip: CretaStudioLang['showUnshow']!,
           tooltipFg: CretaColor.text,
           icon:
               _frameModel.isShow.value ? Icons.visibility_outlined : Icons.visibility_off_outlined,
@@ -264,7 +264,7 @@ class MiniMenuState extends State<MiniMenu> {
           }),
       // 메인 프레임 설정
       BTN.fill_blue_i_menu(
-          tooltip: CretaStudioLang.mainFrameTooltip,
+          tooltip: CretaStudioLang['mainFrameTooltip']!,
           tooltipFg: CretaColor.text,
           icon: Icons.schedule_outlined,
           decoType: CretaButtonDeco.opacity,
@@ -277,7 +277,7 @@ class MiniMenuState extends State<MiniMenu> {
           }),
       // 앞으로 가져오기
       BTN.fill_blue_i_menu(
-          tooltip: CretaStudioLang.frontFrameTooltip,
+          tooltip: CretaStudioLang['frontFrameTooltip']!,
           tooltipFg: CretaColor.text,
           icon: Icons.flip_to_front_outlined,
           decoType: CretaButtonDeco.opacity,
@@ -292,7 +292,7 @@ class MiniMenuState extends State<MiniMenu> {
           }),
       //뒤로 보내기
       BTN.fill_blue_i_menu(
-          tooltip: CretaStudioLang.backFrameTooltip,
+          tooltip: CretaStudioLang['backFrameTooltip']!,
           tooltipFg: CretaColor.text,
           icon: Icons.flip_to_back_outlined,
           decoType: CretaButtonDeco.opacity,
@@ -307,7 +307,7 @@ class MiniMenuState extends State<MiniMenu> {
           }),
       // 복사하기
       BTN.fill_blue_i_menu(
-          tooltip: CretaStudioLang.copyFrameTooltip,
+          tooltip: CretaStudioLang['copyFrameTooltip']!,
           tooltipFg: CretaColor.text,
           icon: Icons.copy_all_outlined,
           decoType: CretaButtonDeco.opacity,
@@ -319,7 +319,7 @@ class MiniMenuState extends State<MiniMenu> {
             widget.onFrameCopy.call();
           }),
       // BTN.fill_blue_i_menu(
-      //     tooltip: CretaStudioLang.rotateFrameTooltip,
+      //     tooltip: CretaStudioLang['rotateFrameTooltip']!,
       //     tooltipFg: CretaColor.text,
       //     icon: Icons.screen_rotation_outlined,
       //     decoType: CretaButtonDeco.opacity,
@@ -332,7 +332,7 @@ class MiniMenuState extends State<MiniMenu> {
       //     }),
       // 링크하기
       BTN.fill_blue_i_menu(
-          tooltip: CretaStudioLang.linkFrameTooltip,
+          tooltip: CretaStudioLang['linkFrameTooltip']!,
           tooltipFg: CretaColor.text,
           icon: LinkParams.isLinkNewMode ? Icons.close : Icons.radio_button_checked_outlined,
           decoType: CretaButtonDeco.opacity,
@@ -356,7 +356,7 @@ class MiniMenuState extends State<MiniMenu> {
 
       // BTN.fill_blue_i_menu(
       //     tooltipFg: CretaColor.text,
-      //     tooltip: CretaStudioLang.deleteFrameTooltip,
+      //     tooltip: CretaStudioLang['deleteFrameTooltip']!,
       //     icon: Icons.delete_outlined,
       //     decoType: CretaButtonDeco.opacity,
       //     iconColor: CretaColor.primary,
@@ -370,7 +370,7 @@ class MiniMenuState extends State<MiniMenu> {
       // 삭제하기
       BTN.fill_blue_image_menu(
           tooltipFg: CretaColor.text,
-          tooltip: CretaStudioLang.deleteFrameTooltip,
+          tooltip: CretaStudioLang['deleteFrameTooltip']!,
           iconImageFile: "assets/delete_frame.svg",
           decoType: CretaButtonDeco.opacity,
           iconColor: CretaColor.primary,
@@ -384,7 +384,7 @@ class MiniMenuState extends State<MiniMenu> {
       if (hasContents && MiniMenu.showFrame == false)
         BTN.fill_blue_i_menu(
             tooltipFg: CretaColor.text,
-            tooltip: CretaStudioLang.toFrameMenu,
+            tooltip: CretaStudioLang['toFrameMenu']!,
             icon: Icons.space_dashboard_outlined,
             decoType: CretaButtonDeco.opacity,
             iconColor: CretaColor.primary,
@@ -432,7 +432,7 @@ class MiniMenuState extends State<MiniMenu> {
     return [
       // 콘텐츠 반전
       BTN.fill_blue_i_menu(
-          tooltip: CretaStudioLang.flipConTooltip,
+          tooltip: CretaStudioLang['flipConTooltip']!,
           tooltipFg: CretaColor.text,
           icon: Icons.flip_outlined,
           decoType: CretaButtonDeco.opacity,
@@ -448,7 +448,7 @@ class MiniMenuState extends State<MiniMenu> {
           }),
       // 콘텐츠 회전
       BTN.fill_blue_i_menu(
-          tooltip: CretaStudioLang.rotateConTooltip,
+          tooltip: CretaStudioLang['rotateConTooltip']!,
           tooltipFg: CretaColor.text,
           icon: model != null && model.isFlip.value
               ? Icons.rotate_90_degrees_ccw_outlined
@@ -467,7 +467,7 @@ class MiniMenuState extends State<MiniMenu> {
           }),
       // 콘텐츠 크롭
       BTN.fill_blue_i_menu(
-          tooltip: CretaStudioLang.cropConTooltip,
+          tooltip: CretaStudioLang['cropConTooltip']!,
           tooltipFg: CretaColor.text,
           icon: Icons.crop_outlined,
           iconColor: CretaColor.secondary,
@@ -481,7 +481,7 @@ class MiniMenuState extends State<MiniMenu> {
           }),
       // 콘텐츠 맞춤
       BTN.fill_blue_i_menu(
-          tooltip: CretaStudioLang.fullscreenConTooltip,
+          tooltip: CretaStudioLang['fullscreenConTooltip']!,
           tooltipFg: CretaColor.text,
           icon: model != null ? model.fitIcon() : Icons.photo_size_select_large,
           iconColor: CretaColor.secondary,
@@ -503,7 +503,7 @@ class MiniMenuState extends State<MiniMenu> {
       if (widget.contentsManager != null && widget.contentsManager!.iamBusy == false)
         BTN.fill_blue_image_menu(
             tooltipFg: CretaColor.text,
-            tooltip: CretaStudioLang.deleteConTooltip,
+            tooltip: CretaStudioLang['deleteConTooltip']!,
             iconColor: CretaColor.secondary,
             iconImageFile: "assets/delete_content.svg",
             buttonColor: CretaButtonColor.secondary,
@@ -515,7 +515,7 @@ class MiniMenuState extends State<MiniMenu> {
             }),
       // BTN.fill_blue_i_menu(
       //     tooltipFg: CretaColor.text,
-      //     tooltip: CretaStudioLang.deleteConTooltip,
+      //     tooltip: CretaStudioLang['deleteConTooltip']!,
       //     iconColor: CretaColor.secondary,
       //     icon: Icons.delete_outlined,
       //     buttonColor: CretaButtonColor.secondary,
@@ -527,7 +527,7 @@ class MiniMenuState extends State<MiniMenu> {
       //     }),
       // 콘텐츠 편집
       BTN.fill_blue_i_menu(
-          tooltip: CretaStudioLang.editConTooltip,
+          tooltip: CretaStudioLang['editConTooltip']!,
           tooltipFg: CretaColor.text,
           iconColor: CretaColor.secondary,
           icon: Icons.edit_outlined,
@@ -543,7 +543,7 @@ class MiniMenuState extends State<MiniMenu> {
       if (MiniMenu.showFrame)
         BTN.fill_blue_i_menu(
             tooltipFg: CretaColor.text,
-            tooltip: CretaStudioLang.toContentsMenu,
+            tooltip: CretaStudioLang['toContentsMenu']!,
             icon: Icons.image_outlined,
             decoType: CretaButtonDeco.opacity,
             iconColor: CretaColor.secondary,

@@ -55,7 +55,7 @@ class _MainSymbolState extends State<MainSymbol> {
             //   //radius: 16,
             //   child:
             Tooltip(
-          message: CretaStudioLang.mainFrameExTooltip,
+          message: CretaStudioLang['mainFrameExTooltip']!,
           child: AnimatedSwitcherPlus.translationLeft(
             duration: const Duration(milliseconds: 1000),
             child: Container(

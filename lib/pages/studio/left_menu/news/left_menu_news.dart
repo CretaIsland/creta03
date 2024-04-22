@@ -35,7 +35,7 @@ class _LeftMenuNewsState extends State<LeftMenuNews> {
   late Future<List<Article>> _newsFuture;
 
   final double verticalPadding = 16;
-  String selectedCategory = CretaStudioLang.newsCategories.values.first;
+  String selectedCategory = CretaStudioLang['newsCategories']!.values.first;
 
   @override
   void initState() {
@@ -142,7 +142,7 @@ class _LeftMenuNewsState extends State<LeftMenuNews> {
     }
 
     // int defaultSubType = -1;
-    int defaultSubType = CretaStudioLang.newsCategories.keys.toList().indexOf(selectedCategory);
+    int defaultSubType = CretaStudioLang['newsCategories']!.keys.toList().indexOf(selectedCategory);
 
     mychangeStack.startTrans();
     await frameManager.createNextFrame(

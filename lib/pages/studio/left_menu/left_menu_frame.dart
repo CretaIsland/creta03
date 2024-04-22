@@ -71,7 +71,7 @@ class _LeftMenuFrameState extends State<LeftMenuFrame> with FrameMixin {
     //       Wrap(
     //         direction: Axis.horizontal,
     //         alignment: WrapAlignment.start,
-    //         children: CretaStudioLang.frameKind.map((e) {
+    //         children: CretaStudioLang['frameKind']!.map((e) {
     //           return Padding(
     //             padding: const EdgeInsets.all(2.0),
     //             child: BTN.line_blue_t_m(text: e, onPressed: () {}),
@@ -85,7 +85,7 @@ class _LeftMenuFrameState extends State<LeftMenuFrame> with FrameMixin {
     //         children: [
     //           Padding(
     //             padding: const EdgeInsets.only(left: 12.0),
-    //             child: Text(CretaStudioLang.latelyUsedFrame, style: CretaFont.titleSmall),
+    //             child: Text(CretaStudioLang['latelyUsedFrame']!, style: CretaFont.titleSmall),
     //           ),
     //           IconButton(
     //               onPressed: () {},
@@ -128,7 +128,7 @@ class _LeftMenuFrameState extends State<LeftMenuFrame> with FrameMixin {
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: BTN.fill_gray_100_i_m(
-                tooltip: CretaStudioLang.newFrame,
+                tooltip: CretaStudioLang['newFrame']!,
                 tooltipBg: CretaColor.text[700]!,
                 icon: Icons.add_outlined,
                 onPressed: (() {
@@ -145,7 +145,7 @@ class _LeftMenuFrameState extends State<LeftMenuFrame> with FrameMixin {
           // Padding(
           //   padding: const EdgeInsets.only(right: 8.0),
           //   child: BTN.fill_gray_100_i_m(
-          //       tooltip: CretaStudioLang.treePage,
+          //       tooltip: CretaStudioLang['treePage']!,
           //       tooltipBg: CretaColor.text[700]!,
           //       icon: Icons.account_tree_outlined,
           //       onPressed: (() {})),
@@ -186,7 +186,7 @@ class _LeftMenuFrameState extends State<LeftMenuFrame> with FrameMixin {
           children: [
             Text(title, style: CretaFont.titleSmall),
             BTN.fill_gray_i_m(
-              tooltip: CretaStudioLang.copy,
+              tooltip: CretaStudioLang['copy']!,
               tooltipBg: CretaColor.text[700]!,
               icon: Icons.arrow_forward_ios_outlined,
               onPressed: () {
@@ -203,12 +203,12 @@ class _LeftMenuFrameState extends State<LeftMenuFrame> with FrameMixin {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _header(CretaStudioLang.lastestFrame),
+        _header(CretaStudioLang['lastestFrame']!),
         SizedBox(
           height: 228,
           //color: Colors.amber,
           child: modelList.isEmpty
-              ? _emptyView(CretaStudioLang.lastestFrameError)
+              ? _emptyView(CretaStudioLang['lastestFrameError']!)
               : _itemListView(modelList),
         ),
       ],

@@ -80,7 +80,7 @@ class UploadingPopupState extends State<UploadingPopup> {
                 size: 20,
               ),
               Text(
-                  '${CretaLang.uploading}  ${UploadingPopup.fileSet.length}/${UploadingPopup._targetCount}',
+                  '${CretaLang['uploading']!}  ${UploadingPopup.fileSet.length}/${UploadingPopup._targetCount}',
                   style: CretaFont.bodySmall),
             ],
           ),

@@ -344,14 +344,14 @@ mixin FramePlayMixin {
   }
 
   String getCategory(int subType) {
-    String currentSelectedType = CretaStudioLang.newsCategories.values.first;
-    List<String> types = CretaStudioLang.newsCategories.values.toList();
+    String currentSelectedType = CretaStudioLang['newsCategories']!.values.first;
+    List<String> types = CretaStudioLang['newsCategories']!.values.toList();
     for (String ele in types) {
       if (currentSelectedType == ele) {
         return types[subType];
       }
     }
-    return CretaStudioLang.newsCategories.values.toString()[0];
+    return CretaStudioLang['newsCategories']!.values.toString()[0];
   }
 
   Widget newsFrame({
@@ -368,8 +368,8 @@ mixin FramePlayMixin {
   }
 
   XchangeEle getCurrencyCard(int subType) {
-    List<String> frontEle = CretaStudioLang.firstCurrency;
-    List<String> latterEle = CretaStudioLang.secondCurrency;
+    List<String> frontEle = CretaStudioLang['firstCurrency']!;
+    List<String> latterEle = CretaStudioLang['secondCurrency']!;
     return XchangeEle(
       baseCurrency: frontEle[subType],
       finalCurrency: latterEle[subType],
@@ -461,12 +461,12 @@ mixin FramePlayMixin {
     String? remoteUrl,
     String? name,
   }) async {
-    remoteUrl ??= CretaStudioLang.defaultText;
-    name ??= CretaStudioLang.defaultText;
+    remoteUrl ??= CretaStudioLang['defaultText']!;
+    name ??= CretaStudioLang['defaultText']!;
 
     ContentsModel retval = ContentsModel.withFrame(parent: frameMid, bookMid: bookMid);
     retval.contentsType = ContentsType.text;
-    retval.name = name;
+    retval.name = name!;
     retval.remoteUrl = remoteUrl;
     retval.fontSizeType.set(fontSizeType, noUndo: true, save: false);
     return retval;

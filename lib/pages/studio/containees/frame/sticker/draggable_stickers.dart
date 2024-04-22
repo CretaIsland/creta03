@@ -140,7 +140,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
     return Padding(
       padding: EdgeInsets.only(bottom: 5 * scale),
       child: BTN.fill_gray_i_s(
-        tooltip: CretaLang.prev,
+        tooltip: CretaLang['prev']!,
         iconSize: 16 * scale,
         buttonSize: 28 * scale,
         bgColor: LayoutConst.studioBGColor,
@@ -157,7 +157,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
     return Padding(
       padding: EdgeInsets.only(top: 5.0 * scale),
       child: BTN.fill_gray_i_s(
-        tooltip: CretaLang.next,
+        tooltip: CretaLang['next']!,
         iconSize: 16 * scale,
         buttonSize: 28 * scale,
         bgColor: LayoutConst.studioBGColor,
@@ -591,7 +591,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
         if (frameModel.frameType == FrameType.none && StudioVariables.isPreview == false)
           CretaMenuItem(
               subMenu: _subMenuItems(frameModel, true),
-              caption: CretaStudioLang.putInDepotContents,
+              caption: CretaStudioLang['putInDepotContents']!,
               onPressed: () {
                 // ContentsManager? contentsManager =
                 //     widget.frameManager!.getContentsManager(frameModel.mid);
@@ -605,16 +605,16 @@ class _DraggableStickersState extends State<DraggableStickers> {
         if (frameModel.frameType == FrameType.none && StudioVariables.isPreview == false)
           CretaMenuItem(
               subMenu: _subMenuItems(frameModel, false),
-              caption: CretaStudioLang.putInDepotFrame,
+              caption: CretaStudioLang['putInDepotFrame']!,
               onPressed: () {
                 // ContentsManager? contentsManager =
                 //     widget.frameManager!.getContentsManager(frameModel.mid);
                 // contentsManager?.putInDepot(null);
               }),
         CretaMenuItem(
-            caption: isFullScreen ? CretaStudioLang.realSize : CretaStudioLang.maxSize,
+            caption: isFullScreen ? CretaStudioLang['realSize']! : CretaStudioLang['maxSize']!,
             onPressed: () {
-              logger.fine('${CretaStudioLang.maxSize} menu clicked');
+              logger.fine('${CretaStudioLang['maxSize']!} menu clicked');
               setState(() {
                 frameModel.toggleFullscreen(isFullScreen, widget.book);
                 _sendEvent!.sendEvent(frameModel);
@@ -623,7 +623,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
             }),
         if (FrameModelUtil.isBackgroundMusic(frameModel) == false)
           CretaMenuItem(
-              caption: frameModel.isShow.value ? CretaStudioLang.unshow : CretaStudioLang.show,
+              caption:
+                  frameModel.isShow.value ? CretaStudioLang['unshow']! : CretaStudioLang['show']!,
               onPressed: () {
                 BookMainPage.containeeNotifier!.setFrameClick(true);
                 mychangeStack.startTrans();
@@ -639,14 +640,14 @@ class _DraggableStickersState extends State<DraggableStickers> {
           CretaMenuItem(caption: '', onPressed: () {}), //divider
         if (StudioVariables.isPreview == false)
           CretaMenuItem(
-              caption: CretaStudioLang.copy,
+              caption: CretaStudioLang['copy']!,
               onPressed: () {
                 StudioVariables.clipFrame(frameModel, widget.frameManager!);
                 //widget.onFrameShowUnshow.call(frameModel.mid);
               }),
         if (StudioVariables.isPreview == false)
           CretaMenuItem(
-              caption: CretaStudioLang.crop,
+              caption: CretaStudioLang['crop']!,
               onPressed: () {
                 frameModel.isRemoved.set(true);
                 StudioVariables.cropFrame(frameModel, widget.frameManager!);
@@ -657,7 +658,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
             contentsModel != null &&
             contentsModel.isText())
           CretaMenuItem(
-              caption: CretaStudioLang.copyStyle,
+              caption: CretaStudioLang['copyStyle']!,
               onPressed: () {
                 ExtraTextStyle.setStyleInClipBoard(contentsModel, context);
               }),
@@ -667,7 +668,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
             contentsModel.isText() &&
             ExtraTextStyle.sytleInClipBoard != null)
           CretaMenuItem(
-              caption: CretaStudioLang.pasteStyle,
+              caption: CretaStudioLang['pasteStyle']!,
               onPressed: () {
                 mychangeStack.startTrans();
                 ExtraTextStyle.pasteStyle(contentsModel);
@@ -684,10 +685,10 @@ class _DraggableStickersState extends State<DraggableStickers> {
         if (StudioVariables.isPreview == false && frameModel.isMusicType() == true) // 뮤직의 경우
           CretaMenuItem(
               caption: FrameModelUtil.isBackgroundMusic(frameModel)
-                  ? CretaStudioLang.foregroundMusic
-                  : CretaStudioLang.backgroundMusic,
+                  ? CretaStudioLang['foregroundMusic']!
+                  : CretaStudioLang['backgroundMusic']!,
               onPressed: () {
-                logger.fine('${CretaStudioLang.backgroundMusic} menu clicked');
+                logger.fine('${CretaStudioLang['backgroundMusic']!} menu clicked');
                 setState(() {
                   FrameModelUtil.toggeleBackgoundMusic(
                     !FrameModelUtil.isBackgroundMusic(frameModel),
@@ -702,10 +703,10 @@ class _DraggableStickersState extends State<DraggableStickers> {
         if (StudioVariables.isPreview == false && frameModel.isMusicType() == false)
           CretaMenuItem(
               caption: frameModel.isOverlay.value
-                  ? CretaStudioLang.noOverlayFrame
-                  : CretaStudioLang.overlayFrame,
+                  ? CretaStudioLang['noOverlayFrame']!
+                  : CretaStudioLang['overlayFrame']!,
               onPressed: () {
-                logger.fine('${CretaStudioLang.overlayFrame} menu clicked');
+                logger.fine('${CretaStudioLang['overlayFrame']!} menu clicked');
                 setState(() {
                   FrameModelUtil.toggeleOverlay(
                       !frameModel.isOverlay.value, widget.frameManager!, frameModel);
@@ -718,8 +719,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
             frameModel.parentMid.value != sticker.pageMid)
           CretaMenuItem(
               caption: frameModel.isThisPageExclude(sticker.pageMid)
-                  ? CretaStudioLang.noOverlayExclude
-                  : CretaStudioLang.overlayExclude,
+                  ? CretaStudioLang['noOverlayExclude']!
+                  : CretaStudioLang['overlayExclude']!,
               onPressed: () {
                 bool value = !frameModel.isThisPageExclude(sticker.pageMid);
                 setState(() {
@@ -736,7 +737,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
               }),
         // CretaMenuItem(
         //     disabled: StudioVariables.clipBoard == null ? true : false,
-        //     caption: CretaStudioLang.paste,
+        //     caption: CretaStudioLang['paste']!,
         //     onPressed: () {
         //
         //     }),
@@ -759,20 +760,20 @@ class _DraggableStickersState extends State<DraggableStickers> {
       String teamId = e.mid;
       return CretaMenuItem(
           isSub: true,
-          caption: '$teamName${CretaStudioLang.putInTeamDepot}',
+          caption: '$teamName${CretaStudioLang['putInTeamDepot']!}',
           onPressed: () {
             _putInDepot(frameModel, isContents, teamId);
-            showSnackBar(context, CretaStudioLang.depotComplete);
+            showSnackBar(context, CretaStudioLang['depotComplete']!);
           });
     }).toList();
 
     return [
       CretaMenuItem(
           isSub: true,
-          caption: CretaStudioLang.putInMyDepot,
+          caption: CretaStudioLang['putInMyDepot']!,
           onPressed: () {
             _putInDepot(frameModel, isContents, null);
-            showSnackBar(context, CretaStudioLang.depotComplete);
+            showSnackBar(context, CretaStudioLang['depotComplete']!);
           }),
       ...teamMenuList,
     ];
@@ -783,7 +784,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
   //   List<CretaMenuItem> teamMenuList = TeamManager.getTeamList.map((e) {
   //     String teamName = e.name;
   //     return CretaMenuItem(
-  //         caption: '$teamName${CretaStudioLang.putInTeamDepot}',
+  //         caption: '$teamName${CretaStudioLang['putInTeamDepot']!}',
   //         onPressed: () {
   //           _putInDepot(frameModel, isContents);
   //         });
@@ -796,7 +797,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
   //     context: context,
   //     popupMenu: [
   //       CretaMenuItem(
-  //           caption: CretaStudioLang.putInMyDepot,
+  //           caption: CretaStudioLang['putInMyDepot']!,
   //           onPressed: () {
   //             _putInDepot(frameModel, isContents);
   //           }),

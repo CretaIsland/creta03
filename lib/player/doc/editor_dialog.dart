@@ -30,8 +30,8 @@ class EditorDialog extends StatefulWidget {
       this.width = 387.0,
       this.height = 308.0,
       this.padding = const EdgeInsets.only(left: 32.0, right: 32.0),
-      this.cancelButtonText, // = CretaLang.cancel,
-      this.okButtonText, // = CretaLang.confirm,
+      this.cancelButtonText, // = CretaLang['cancel']!,
+      this.okButtonText, // = CretaLang['confirm']!,
       this.okButtonWidth = 55,
       this.backgroundColor,
       required this.dialogOffset,
@@ -42,8 +42,8 @@ class EditorDialog extends StatefulWidget {
       required this.initialText,
       //required this.onComplete,
       this.onPressedCancel}) {
-    cancelButtonText ??= CretaLang.cancel;
-    okButtonText ??= CretaLang.confirm;
+    cancelButtonText ??= CretaLang['cancel']!;
+    okButtonText ??= CretaLang['confirm']!;
   }
 
   @override
@@ -229,7 +229,7 @@ class _EditorDialogState extends State<EditorDialog> {
 
   Widget _trailButton() {
     return BTN.fill_gray_i_s(
-        tooltip: _isFullScreen ? CretaStudioLang.realSize : CretaStudioLang.maxSize,
+        tooltip: _isFullScreen ? CretaStudioLang['realSize']! : CretaStudioLang['maxSize']!,
         icon: _isFullScreen ? Icons.fullscreen_exit_outlined : Icons.fullscreen_outlined,
         onPressed: () {
           setState(() {

@@ -237,7 +237,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                     BookMainPage.containeeNotifier!.setOpenSize(_isSizeOpen);
                   });
                 },
-                titleWidget: Text(CretaStudioLang.frameSize, style: CretaFont.titleSmall),
+                titleWidget: Text(CretaStudioLang['frameSize']!, style: CretaFont.titleSmall),
                 trailWidget: widget.model.isOverlay.value == true
                     ? Row(
                         children: [
@@ -291,13 +291,13 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(CretaStudioLang.playersize, style: titleStyle),
+          Text(CretaStudioLang['playersize']!, style: titleStyle),
           CretaTabButton(
             defaultString: _getCurrentSizeString(),
             onEditComplete: (value) {
               int idx = 0;
               widget.model.musicPlayerSizeType = StudioConst.sizeStringMap[value]!;
-              for (String val in CretaStudioLang.playerSize.values) {
+              for (String val in CretaStudioLang['playerSize']!.values) {
                 if (value == val) {
                   mychangeStack.startTrans();
                   widget.model.width.set(StudioConst.musicPlayerSize[idx].width);
@@ -318,8 +318,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             selectedColor: Colors.white,
             unSelectedColor: CretaColor.text[100]!,
             selectedBorderColor: CretaColor.primary,
-            buttonLables: CretaStudioLang.playerSize.keys.toList(),
-            buttonValues: CretaStudioLang.playerSize.values.toList(),
+            buttonLables: CretaStudioLang['playerSize']!.keys.toList(),
+            buttonValues: CretaStudioLang['playerSize']!.values.toList(),
           ),
         ],
       ),
@@ -347,13 +347,13 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(CretaStudioLang.playersize, style: titleStyle),
+          Text(CretaStudioLang['playersize']!, style: titleStyle),
           CretaTabButton(
             defaultString: _getCurrentNewsSizeString(),
             onEditComplete: (value) {
               int idx = 0;
               widget.model.newsSizeType = StudioConst.newsSizeMap[value]!;
-              for (String val in CretaStudioLang.newsSize.values) {
+              for (String val in CretaStudioLang['newsSize']!.values) {
                 if (value == val) {
                   mychangeStack.startTrans();
                   widget.model.width.set(StudioConst.newsFrameSize[idx].width);
@@ -374,8 +374,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             selectedColor: Colors.white,
             unSelectedColor: CretaColor.text[100]!,
             selectedBorderColor: CretaColor.primary,
-            buttonLables: CretaStudioLang.newsSize.keys.toList(),
-            buttonValues: CretaStudioLang.newsSize.values.toList(),
+            buttonLables: CretaStudioLang['newsSize']!.keys.toList(),
+            buttonValues: CretaStudioLang['newsSize']!.values.toList(),
           ),
         ],
       ),
@@ -384,7 +384,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
 
   Widget _pageSizeBody(double width, double height) {
     //return Column(children: [
-    //Text(CretaStudioLang.pageSize, style: CretaFont.titleSmall),
+    //Text(CretaStudioLang['pageSize']!, style: CretaFont.titleSmall),
     return Column(
       children: [
 // 첫번쨰 줄  posX,y
@@ -399,7 +399,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      CretaStudioLang.posX,
+                      CretaStudioLang['posX']!,
                       style: titleStyle,
                     ),
                     CretaTextField.xshortNumber(
@@ -427,7 +427,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      CretaStudioLang.posY,
+                      CretaStudioLang['posY']!,
                       style: titleStyle,
                     ),
                     CretaTextField.xshortNumber(
@@ -469,7 +469,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              CretaStudioLang.width,
+                              CretaStudioLang['width']!,
                               style: titleStyle,
                             ),
                             CretaTextField.xshortNumber(
@@ -490,7 +490,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                         ),
                       ),
                       BTN.fill_gray_i_m(
-                          tooltip: CretaStudioLang.fixedRatio,
+                          tooltip: CretaStudioLang['fixedRatio']!,
                           tooltipBg: CretaColor.text[400]!,
                           icon: widget.model.isFixedRatio.value
                               ? Icons.lock_outlined
@@ -510,7 +510,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              CretaStudioLang.height,
+                              CretaStudioLang['height']!,
                               style: titleStyle,
                             ),
                             SizedBox(width: 15),
@@ -534,7 +534,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                   ),
                 ),
                 BTN.fill_gray_i_m(
-                    tooltip: CretaStudioLang.fullscreenTooltip,
+                    tooltip: CretaStudioLang['fullscreenTooltip']!,
                     tooltipBg: CretaColor.text[400]!,
                     iconSize: 18,
                     icon:
@@ -559,7 +559,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           child: propertyLine(
             // overlay
             topPadding: 10,
-            name: CretaStudioLang.overlayFrame,
+            name: CretaStudioLang['overlayFrame']!,
             widget: CretaToggleButton(
               width: 54 * 0.75,
               height: 28 * 0.75,
@@ -579,7 +579,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                   BTN.fill_gray_ti_m(
                     width: 180,
                     icon: Icons.crop_original_outlined,
-                    text: CretaStudioLang.autoFitContents,
+                    text: CretaStudioLang['autoFitContents']!,
                     onPressed: () async {
                       if (_frameManager == null) {
                         logger.fine('frameManager is null');
@@ -601,7 +601,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
               //   children: [
               //     Text(
-              //       CretaStudioLang.autoFitContents,
+              //       CretaStudioLang['autoFitContents']!,
               //       style: titleStyle,
               //     ),
               //     CretaToggleButton(
@@ -638,7 +638,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        CretaStudioLang.angle,
+                        CretaStudioLang['angle']!,
                         style: titleStyle,
                       ),
                       CretaTextField.xshortNumber(
@@ -679,7 +679,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                   ),
                 ),
                 BTN.fill_gray_i_m(
-                    tooltip: CretaStudioLang.angleTooltip,
+                    tooltip: CretaStudioLang['angleTooltip']!,
                     tooltipBg: CretaColor.text[400]!,
                     iconSize: 18,
                     icon: Icons.rotate_90_degrees_ccw_outlined,
@@ -697,7 +697,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                       _invalidateFrame();
                     }),
                 BTN.fill_gray_i_m(
-                    tooltip: CretaStudioLang.angleTooltip,
+                    tooltip: CretaStudioLang['angleTooltip']!,
                     tooltipBg: CretaColor.text[400]!,
                     iconSize: 18,
                     icon: Icons.rotate_90_degrees_cw_outlined,
@@ -714,7 +714,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                 // Row(
                 //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 //   children: [
-                //     Text('${CretaStudioLang.inSideRotate} ', style: titleStyle),
+                //     Text('${CretaStudioLang['inSideRotate']!} ', style: titleStyle),
                 //     CretaToggleButton(
                 //       width: 54 * 0.75,
                 //       height: 28 * 0.75,
@@ -741,7 +741,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      CretaStudioLang.radius,
+                      CretaStudioLang['radius']!,
                       style: titleStyle,
                     ),
                     CretaTextField.xshortNumber(
@@ -779,7 +779,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               ),
               SizedBox(width: 17),
               BTN.fill_gray_i_m(
-                  tooltip: CretaStudioLang.cornerTooltip,
+                  tooltip: CretaStudioLang['cornerTooltip']!,
                   tooltipBg: CretaColor.text[400]!,
                   iconSize: 18,
                   icon: Icons.rounded_corner_outlined,
@@ -1101,7 +1101,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: colorPropertyCard(
-        title: CretaStudioLang.frameBgColor,
+        title: CretaStudioLang['frameBgColor']!,
         color1: widget.model.bgColor1.value,
         color2: widget.model.bgColor2.value,
         opacity: widget.model.opacity.value,
@@ -1155,11 +1155,11 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             _isFrameTransOpen = !_isFrameTransOpen;
           });
         },
-        titleWidget: Text(CretaStudioLang.contentFlipEffect, style: CretaFont.titleSmall),
+        titleWidget: Text(CretaStudioLang['contentFlipEffect']!, style: CretaFont.titleSmall),
         trailWidget: Text(
           widget.model.nextContentTypes.value == NextContentTypes.none
               ? ''
-              : CretaStudioLang.nextContentTypes[widget.model.nextContentTypes.value.index],
+              : CretaStudioLang['nextContentTypes']![widget.model.nextContentTypes.value.index],
           textAlign: TextAlign.right,
           style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
         ),
@@ -1189,7 +1189,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               frameManager: _frameManager!,
               model: widget.model,
               nextContentTypes: NextContentTypes.values[i],
-              name: CretaStudioLang.nextContentTypes[i],
+              name: CretaStudioLang['nextContentTypes']![i],
               selectedType: _isTypeSelected(i, widget.model.nextContentTypes.value),
               onTypeSelected: () {
                 setState(() {});
@@ -1284,7 +1284,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       if (trails.isNotEmpty) {
         trails += "+";
       }
-      trails += CretaLang.animationTypes[ele.index];
+      trails += CretaLang['animationTypes']![ele.index];
     }
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
@@ -1295,7 +1295,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             _isTransitionOpen = !_isTransitionOpen;
           });
         },
-        titleWidget: Text(CretaStudioLang.ani, style: CretaFont.titleSmall),
+        titleWidget: Text(CretaStudioLang['ani']!, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
         trailWidget: SizedBox(
           width: 160,
@@ -1330,7 +1330,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                 AniExampleBox(
                     key: ValueKey('frame=${AnimationType.values[i].name}+${_isSelect(i)}'),
                     model: widget.model,
-                    name: CretaLang.animationTypes[i],
+                    name: CretaLang['animationTypes']![i],
                     aniType: AnimationType.values[i],
                     selected: _isSelect(i),
                     onSelected: () {
@@ -1338,9 +1338,9 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                       _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
                       //BookMainPage.bookManagerHolder!.notify();
                     }),
-              // AniExampleBox(model: widget.model, name: CretaStudioLang.flip, aniType: AnimationType.flip),
-              // AniExampleBox(model: widget.model, name: CretaStudioLang.shake, aniType: AnimationType.shake),
-              // AniExampleBox(model: widget.model, name: CretaStudioLang.shimmer, aniType: AnimationType.shimmer),
+              // AniExampleBox(model: widget.model, name: CretaStudioLang['flip']!, aniType: AnimationType.flip),
+              // AniExampleBox(model: widget.model, name: CretaStudioLang['shake']!, aniType: AnimationType.shake),
+              // AniExampleBox(model: widget.model, name: CretaStudioLang['shimmer']!, aniType: AnimationType.shimmer),
             ],
           ),
           _speed(),
@@ -1357,7 +1357,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     double duration = widget.model.aniDuration.value.toDouble() / 100.0;
     if (duration > 100) duration = 100;
     return propertyLine(
-      name: CretaStudioLang.speed,
+      name: CretaStudioLang['speed']!,
       widget: CretaExSlider(
           valueType: SliderValueType.normal,
           value: duration,
@@ -1379,7 +1379,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     double delay = widget.model.aniDelay.value.toDouble() / 100;
     if (delay > 100) delay = 100;
     return propertyLine(
-      name: CretaStudioLang.delay,
+      name: CretaStudioLang['delay']!,
       widget: CretaExSlider(
         valueType: SliderValueType.normal,
         value: delay,
@@ -1414,7 +1414,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           SizedBox(
             width: 160,
             child: propertyLine(
-              name: CretaStudioLang.repeatOrOnce,
+              name: CretaStudioLang['repeatOrOnce']!,
               widget: CretaToggleButton(
                 width: 54 * 0.75,
                 height: 28 * 0.75,
@@ -1439,7 +1439,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               child: SizedBox(
                 width: 120,
                 child: propertyLine(
-                  name: CretaStudioLang.repeatCount,
+                  name: CretaStudioLang['repeatCount']!,
                   widget: CretaTextField.shortNumber(
                     width: 50,
                     defaultBorder: Border.all(color: CretaColor.text[100]!),
@@ -1479,7 +1479,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           SizedBox(
             width: 160,
             child: propertyLine(
-              name: CretaStudioLang.reverseMove,
+              name: CretaStudioLang['reverseMove']!,
               widget: CretaToggleButton(
                 width: 54 * 0.75,
                 height: 28 * 0.75,
@@ -1514,7 +1514,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             _isBorderOpen = !_isBorderOpen;
           });
         },
-        titleWidget: Text(CretaStudioLang.border, style: CretaFont.titleSmall),
+        titleWidget: Text(CretaStudioLang['border']!, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
         trailWidget: widget.model.borderWidth.value == 0
             ? SizedBox.shrink()
@@ -1558,7 +1558,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             },
             // onPositionChanged: (value) {
             //   int idx = 1;
-            //   for (String val in CretaStudioLang.borderPositionList.values) {
+            //   for (String val in CretaStudioLang['borderPositionList']!.values) {
             //     if (value == val) {
             //       widget.model.borderPosition.set(BorderPositionType.values[idx]);
             //     }
@@ -1568,7 +1568,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             // },
             onPositionChanged: (value) {
               int idx = 1;
-              for (String val in CretaStudioLang.borderCapList.values) {
+              for (String val in CretaStudioLang['borderCapList']!.values) {
                 if (value == val) {
                   widget.model.borderCap.set(BorderCapType.values[idx]);
                 }
@@ -1602,13 +1602,13 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         //_gradationButton(),
         propertyLine(
           // 보더 색
-          name: CretaStudioLang.color,
+          name: CretaStudioLang['color']!,
           widget: colorIndicator(color1, 1.0, onColorChanged: onColor1Changed, onClicked: () {}),
         ),
 
         CretaPropertySlider(
           // 보더 두께
-          name: CretaStudioLang.borderWidth,
+          name: CretaStudioLang['borderWidth']!,
           min: 0,
           max: 36,
           value: borderWidth,
@@ -1624,7 +1624,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(CretaStudioLang.borderCap, style: titleStyle),
+              Text(CretaStudioLang['borderCap']!, style: titleStyle),
               CretaTabButton(
                 onEditComplete: onPositionChanged,
                 width: 75,
@@ -1635,8 +1635,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                 unSelectedColor: CretaColor.text[100]!,
                 selectedBorderColor: CretaColor.primary,
                 defaultString: _getBorderCap(),
-                buttonLables: CretaStudioLang.borderCapList.keys.toList(),
-                buttonValues: CretaStudioLang.borderCapList.values.toList(),
+                buttonLables: CretaStudioLang['borderCapList']!.keys.toList(),
+                buttonValues: CretaStudioLang['borderCapList']!.values.toList(),
               ),
             ],
           ),
@@ -1648,7 +1648,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(CretaStudioLang.style, style: titleStyle),
+              Text(CretaStudioLang['style']!, style: titleStyle),
               // CretaImageDropDown(
               //   imageList: _imageList,
               //   defaultValue: widget.model.borderType.value,
@@ -1658,7 +1658,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               // ),
               CretaWidgetDropDown(
                 items: [
-                  choiceStringElement(CretaStudioLang.noBorder, 156, 30),
+                  choiceStringElement(CretaStudioLang['noBorder']!, 156, 30),
                   ...CretaCommonUtils.borderStyle.map((e) {
                     return _borderStyle(156, 10, e[0], e[1]);
                   }).toList(),
@@ -1677,7 +1677,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             padding: const EdgeInsets.only(top: 20.0),
             child: propertyLine(
               topPadding: 10,
-              name: CretaStudioLang.glowingBorder,
+              name: CretaStudioLang['glowingBorder']!,
               widget: CretaExSlider(
                 valueType: SliderValueType.normal,
                 value: widget.model.glowSize.value.toDouble(),
@@ -1727,7 +1727,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             _isShadowOpen = !_isShadowOpen;
           });
         },
-        titleWidget: Text(CretaStudioLang.shadow, style: CretaFont.titleSmall),
+        titleWidget: Text(CretaStudioLang['shadow']!, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
         trailWidget: widget.model.isNoShadow()
             ? SizedBox.shrink()
@@ -1866,7 +1866,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
 
         propertyLine(
           // 그림자 색
-          name: CretaStudioLang.color,
+          name: CretaStudioLang['color']!,
           widget: colorIndicator(
             shadowColor,
             CretaCommonUtils.validCheckDouble(shadowOpacity, 0, 1),
@@ -1884,7 +1884,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         //   child: Row(
         //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
         //     children: [
-        //       Text(CretaStudioLang.shadowIn, style: titleStyle),
+        //       Text(CretaStudioLang['shadowIn']!, style: titleStyle),
         //       CretaTabButton(
         //         onEditComplete: onShadowInChanged,
         //         width: 90,
@@ -1895,8 +1895,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         //         unSelectedColor: CretaColor.text[100]!,
         //         selectedBorderColor: CretaColor.primary,
         //         defaultString: shadowIn ? 'inSide' : 'outSide',
-        //         buttonLables: CretaStudioLang.shadowInList.keys.toList(),
-        //         buttonValues: CretaStudioLang.shadowInList.values.toList(),
+        //         buttonLables: CretaStudioLang['shadowInList']!.keys.toList(),
+        //         buttonValues: CretaStudioLang['shadowInList']!.values.toList(),
         //       ),
         //     ],
         //   ),
@@ -1910,7 +1910,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           CretaPropertySlider(
             // 그림자 투명도
             key: GlobalKey(),
-            name: CretaStudioLang.opacity,
+            name: CretaStudioLang['opacity']!,
             min: 0,
             max: 100,
             value: CretaCommonUtils.validCheckDouble(shadowOpacity, 0, 1),
@@ -1924,7 +1924,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           CretaPropertySlider(
             // 그림자 크기
             key: GlobalKey(),
-            name: CretaStudioLang.spread,
+            name: CretaStudioLang['spread']!,
             min: 0,
             max: 100,
             value: shadowSpread,
@@ -1937,7 +1937,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           CretaPropertySlider(
             // 그림자 블러
             key: GlobalKey(),
-            name: CretaStudioLang.blur,
+            name: CretaStudioLang['blur']!,
             min: 0,
             max: 24,
             value: shadowBlur,
@@ -1950,7 +1950,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           CretaPropertySlider(
             // 그림자 방향거리
             key: GlobalKey(),
-            name: CretaStudioLang.offset,
+            name: CretaStudioLang['offset']!,
             min: 0,
             max: 36,
             value: shadowOffset,
@@ -1963,7 +1963,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           CretaPropertySlider(
             // 그림자 방향각도
             key: GlobalKey(),
-            name: CretaStudioLang.direction,
+            name: CretaStudioLang['direction']!,
             min: 0,
             max: 360,
             value: shadowDirection,
@@ -1998,7 +1998,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     //   opacity: 0,
     //   isSelected: model.isNoShadow(),
     //   onTapPressed: onTapPressed,
-    //   hintText: CretaStudioLang.nothing,
+    //   hintText: CretaStudioLang['nothing']!,
     // ));
 
     int len = CretaUtils.shadowDataList.length;
@@ -2045,7 +2045,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         });
         onTapPressed.call(spread, blur, direction, distance, opacity);
       }),
-      hintText: CretaStudioLang.custom,
+      hintText: CretaStudioLang['custom']!,
       showShadow: false,
     ));
 
@@ -2082,7 +2082,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             _isShapeOpen = !_isShapeOpen;
           });
         },
-        titleWidget: Text(CretaStudioLang.shape, style: CretaFont.titleSmall),
+        titleWidget: Text(CretaStudioLang['shape']!, style: CretaFont.titleSmall),
         trailWidget: widget.model.shape.value == ShapeType.none
             ? const SizedBox.shrink()
             : ShapeIndicator(
@@ -2161,7 +2161,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            CretaStudioLang.showWhenEventReceived,
+            CretaStudioLang['showWhenEventReceived']!,
             style: titleStyle,
           ),
           CretaToggleButton(
@@ -2184,7 +2184,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            CretaStudioLang.eventSend,
+            CretaStudioLang['eventSend']!,
             style: titleStyle,
           ),
           CretaTextField.short(
@@ -2211,10 +2211,10 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(CretaStudioLang.durationType, style: titleStyle),
+          Text(CretaStudioLang['durationType']!, style: titleStyle),
           CretaWidgetDropDown(
             items: [
-              ...CretaStudioLang.durationTypeList.keys.map((e) {
+              ...CretaStudioLang['durationTypeList']!.keys.map((e) {
                 return choiceStringElement(e, 156, 30);
               }).toList(),
             ],
@@ -2238,7 +2238,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(CretaStudioLang.durationSpecifiedTime, style: titleStyle),
+          Text(CretaStudioLang['durationSpecifiedTime']!, style: titleStyle),
           TimeInputWidget(
             textStyle: titleStyle,
             initValue: widget.model.duration.value,
@@ -2261,7 +2261,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             PropertyMixin.isHashTagOpen = !PropertyMixin.isHashTagOpen;
           });
         },
-        titleWidget: Text(CretaStudioLang.hashTab, style: CretaFont.titleSmall),
+        titleWidget: Text(CretaStudioLang['hashTab']!, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
         trailWidget: widget.model.hashTag.value.length < 3
             ? SizedBox.shrink()
@@ -2326,7 +2326,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
 /*
   Widget _eventBody() {
     //return Column(children: [
-    //Text(CretaStudioLang.pageSize, style: CretaFont.titleSmall),
+    //Text(CretaStudioLang['pageSize']!, style: CretaFont.titleSmall),
     List<String> hashTagList = CretaCommonUtils.jsonStringToList(widget.model.eventReceive.value);
 
     return Column(
@@ -2340,7 +2340,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                CretaStudioLang.eventSend,
+                CretaStudioLang['eventSend']!,
                 style: titleStyle,
               ),
               CretaTextField.short(
@@ -2366,7 +2366,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                CretaStudioLang.eventReceived,
+                CretaStudioLang['eventReceived']!,
                 style: titleStyle,
               ),
               // CretaTextField.short(
@@ -2433,7 +2433,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      CretaStudioLang.showWhenEventReceived,
+                      CretaStudioLang['showWhenEventReceived']!,
                       style: titleStyle,
                     ),
                     CretaToggleButton(
@@ -2456,10 +2456,10 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(CretaStudioLang.durationType, style: titleStyle),
+                    Text(CretaStudioLang['durationType']!, style: titleStyle),
                     CretaWidgetDropDown(
                       items: [
-                        ...CretaStudioLang.durationTypeList.keys.map((e) {
+                        ...CretaStudioLang['durationTypeList']!.keys.map((e) {
                           return _choiceStringElement(e, 156, 30);
                         }).toList(),
                       ],
@@ -2482,7 +2482,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(CretaStudioLang.durationSpecifiedTime, style: titleStyle),
+                    Text(CretaStudioLang['durationSpecifiedTime']!, style: titleStyle),
                     TimeInputWidget(
                       textStyle: titleStyle,
                       initValue: widget.model.duration.value,

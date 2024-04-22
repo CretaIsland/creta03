@@ -833,7 +833,7 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
                     const Text('fill_color_ic_el'),
                     const SizedBox(height: 20),
                     BTN.fill_color_ic_el(
-                      text: CretaCommuLang.watchHistory, // '시청기록',
+                      text: CretaCommuLang['watchHistory']!, // '시청기록',
                       onPressed: () {},
                       iconData: Icons.menu_outlined,
                     ),

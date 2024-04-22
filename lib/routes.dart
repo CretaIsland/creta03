@@ -174,7 +174,8 @@ final routesLoggedOut = RouteMap(
     AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
     AppRoutes.deviceMainPage: (_) =>
         TransitionPage(child: DeviceMainPage(selectedPage: DeviceSelectedPage.myPage)),
-    AppRoutes.adminMainPage: (_) => TransitionPage(child: AdminMainPage(selectedPage: AdminSelectedPage.license)),
+    AppRoutes.adminMainPage: (_) =>
+        TransitionPage(child: AdminMainPage(selectedPage: AdminSelectedPage.license)),
 
     //AppRoutes.deviceDetailPage: (_) => TransitionPage(child: DeviceDetailPage()),
     AppRoutes.studioBookMainPage: (routeData) {
@@ -463,10 +464,10 @@ final routesLoggedOut = RouteMap(
   },
 );
 
-final routesLoggedIn = RouteMap(
-  onUnknownRoute: (_) => const Redirect(AppRoutes.intro),
+final routesWait = RouteMap(
+  onUnknownRoute: (_) => const Redirect(AppRoutes.wait),
   routes: {
-    AppRoutes.intro: (_) => TransitionPage(child: LandingPage()),
+    AppRoutes.wait: (_) => const TransitionPage(child: WaitPage()),
     // AppRoutes.intro: (_) => TransitionPage(child: IntroPage()),
   },
 );

@@ -140,7 +140,7 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
           Align(
               alignment: Alignment.centerRight,
               child: BTN.fill_gray_i_m(
-                tooltip: CretaLang.fold,
+                tooltip: CretaLang['fold']!,
                 onPressed: () {
                   setState(() {
                     VerticalAppBar.fold = true;
@@ -204,7 +204,7 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
                               return BTN.fill_gray_l_profile(
                                 text: AccountManager.currentLoginUser.name,
                                 subText:
-                                    '구독자 ${CretaAccountManager.getChannel?.followerCount ?? 0}명', //CretaLang.billInfo,
+                                    '구독자 ${CretaAccountManager.getChannel?.followerCount ?? 0}명', //CretaLang['billInfo']!,
                                 image: const AssetImage('assets/creta_default.png'),
                                 onPressed: () {
                                   if (channelId.isNotEmpty) {

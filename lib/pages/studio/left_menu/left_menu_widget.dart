@@ -32,7 +32,7 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
   final double verticalPadding = 16;
 
   String searchText = '';
-  static String _selectedType = CretaStudioLang.widgetTypes.values.first;
+  static String _selectedType = CretaStudioLang['widgetTypes']!.values.first;
 
   late double _itemWidth;
   late double _itemHeight;
@@ -42,14 +42,14 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
   String _getCurrentTypes() {
     int index = 0;
     String currentSelectedType = _selectedType;
-    List<String> types = CretaStudioLang.widgetTypes.values.toList();
+    List<String> types = CretaStudioLang['widgetTypes']!.values.toList();
     for (String ele in types) {
       if (currentSelectedType == ele) {
         return types[index];
       }
       index++;
     }
-    return CretaStudioLang.widgetTypes.values.toString()[0];
+    return CretaStudioLang['widgetTypes']!.values.toString()[0];
   }
 
   @override
@@ -76,7 +76,7 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
   Widget _searchBar() {
     return CretaSearchBar(
       width: bodyWidth,
-      hintText: CretaStudioLang.queryHintText,
+      hintText: CretaStudioLang['queryHintText']!,
       onSearch: (value) {
         searchText = value;
       },
@@ -105,10 +105,10 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
         defaultString: _getCurrentTypes(),
         onEditComplete: (value) {
           int idx = 0;
-          for (String val in CretaStudioLang.widgetTypes.values) {
+          for (String val in CretaStudioLang['widgetTypes']!.values) {
             if (value == val) {
               setState(() {
-                _selectedType = CretaStudioLang.widgetTypes.values.toList()[idx];
+                _selectedType = CretaStudioLang['widgetTypes']!.values.toList()[idx];
               });
             }
             idx++;
@@ -122,14 +122,14 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
         selectedColor: CretaColor.primary,
         unSelectedColor: Colors.white,
         unSelectedBorderColor: CretaColor.primary,
-        buttonLables: CretaStudioLang.widgetTypes.keys.toList(),
-        buttonValues: CretaStudioLang.widgetTypes.values.toList(),
+        buttonLables: CretaStudioLang['widgetTypes']!.keys.toList(),
+        buttonValues: CretaStudioLang['widgetTypes']!.values.toList(),
       ),
     );
   }
 
   Widget _selectedWidget() {
-    List<String> type = CretaStudioLang.widgetTypes.values.toList();
+    List<String> type = CretaStudioLang['widgetTypes']!.values.toList();
     if (_selectedType == type[0]) {
       return SizedBox(
         height: StudioVariables.workHeight - 240.0,
@@ -139,26 +139,26 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               LeftMenuMusic(
-                title: CretaStudioLang.music,
+                title: CretaStudioLang['music']!,
                 titleStyle: titleStyle,
                 dataStyle: dataStyle,
               ),
               LeftMenuWeather(
-                title: CretaStudioLang.weather,
+                title: CretaStudioLang['weather']!,
                 width: _itemWidth,
                 height: _itemHeight,
                 titleStyle: titleStyle,
                 dataStyle: dataStyle,
               ),
               LeftMenuDate(
-                title: CretaStudioLang.date,
+                title: CretaStudioLang['date']!,
                 width: _itemWidth,
                 height: _itemHeight,
                 titleStyle: titleStyle,
                 dataStyle: dataStyle,
               ),
               LeftMenuClock(
-                title: CretaStudioLang.clockandWatch,
+                title: CretaStudioLang['clockandWatch']!,
                 width: _itemWidth,
                 height: _itemHeight,
                 titleStyle: titleStyle,
@@ -166,7 +166,7 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
               ),
               Container(),
               LeftMenuTimeline(
-                title: CretaStudioLang.timeline,
+                title: CretaStudioLang['timeline']!,
                 width: _itemWidth,
                 height: _itemHeight,
                 titleStyle: titleStyle,
@@ -174,14 +174,14 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
               ),
               Container(),
               LeftMenuCamera(
-                title: CretaStudioLang.camera,
+                title: CretaStudioLang['camera']!,
                 width: _itemWidth,
                 height: _itemHeight,
                 titleStyle: titleStyle,
                 dataStyle: dataStyle,
               ),
               LeftMenuMap(
-                title: CretaStudioLang.map,
+                title: CretaStudioLang['map']!,
                 width: _itemWidth,
                 height: _itemHeight,
                 titleStyle: titleStyle,
@@ -195,14 +195,14 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
     }
     if (_selectedType == type[1]) {
       return LeftMenuMusic(
-        title: CretaStudioLang.music,
+        title: CretaStudioLang['music']!,
         titleStyle: titleStyle,
         dataStyle: dataStyle,
       );
     }
     if (_selectedType == type[2]) {
       return LeftMenuWeather(
-        title: CretaStudioLang.weather,
+        title: CretaStudioLang['weather']!,
         width: _itemWidth,
         height: _itemHeight,
         titleStyle: titleStyle,
@@ -211,7 +211,7 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
     }
     if (_selectedType == type[3]) {
       return LeftMenuDate(
-        title: CretaStudioLang.date,
+        title: CretaStudioLang['date']!,
         width: _itemWidth,
         height: _itemHeight,
         titleStyle: titleStyle,
@@ -220,7 +220,7 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
     }
     if (_selectedType == type[4]) {
       return LeftMenuClock(
-        title: CretaStudioLang.clockandWatch,
+        title: CretaStudioLang['clockandWatch']!,
         width: _itemWidth,
         height: _itemHeight,
         titleStyle: titleStyle,
@@ -229,7 +229,7 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
     }
     if (_selectedType == type[5]) {
       return LeftMenuSticker(
-        title: CretaStudioLang.sticker,
+        title: CretaStudioLang['sticker']!,
         width: _itemWidth,
         height: _itemHeight,
         titleStyle: titleStyle,
@@ -238,7 +238,7 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
     }
     if (_selectedType == type[6]) {
       return LeftMenuTimeline(
-        title: CretaStudioLang.timeline,
+        title: CretaStudioLang['timeline']!,
         width: _itemWidth,
         height: _itemHeight,
         titleStyle: titleStyle,
@@ -250,7 +250,7 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
     }
     if (_selectedType == type[8]) {
       return LeftMenuCamera(
-        title: CretaStudioLang.camera,
+        title: CretaStudioLang['camera']!,
         width: _itemWidth,
         height: _itemHeight,
         titleStyle: titleStyle,
@@ -259,7 +259,7 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
     }
     if (_selectedType == type[9]) {
       return LeftMenuMap(
-        title: CretaStudioLang.map,
+        title: CretaStudioLang['map']!,
         width: _itemWidth,
         height: _itemHeight,
         titleStyle: titleStyle,
@@ -268,21 +268,21 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
     }
     if (_selectedType == type[10]) {
       return LeftMenuNews(
-        title: CretaStudioLang.news,
+        title: CretaStudioLang['news']!,
         titleStyle: titleStyle,
         dataStyle: dataStyle,
       );
     }
     if (_selectedType == type[11]) {
       return LeftMenuCurrency(
-        title: CretaStudioLang.currencyXchange,
+        title: CretaStudioLang['currencyXchange']!,
         titleStyle: titleStyle,
         dataStyle: dataStyle,
       );
     }
     if (_selectedType == type[12]) {
       return LeftMenuQuote(
-        title: CretaStudioLang.dailyEnglish,
+        title: CretaStudioLang['dailyEnglish']!,
         titleStyle: titleStyle,
         dataStyle: dataStyle,
       );

@@ -105,7 +105,7 @@ class _LinkPropertyState extends State<LinkProperty> with PropertyMixin {
               _isSizeOpen = !_isSizeOpen;
             });
           },
-          titleWidget: Text(CretaStudioLang.linkProp, style: CretaFont.titleSmall),
+          titleWidget: Text(CretaStudioLang['linkProp']!, style: CretaFont.titleSmall),
           onDelete: () {},
           hasRemoveButton: false,
           bodyWidget: Column(
@@ -113,7 +113,7 @@ class _LinkPropertyState extends State<LinkProperty> with PropertyMixin {
               _position(),
               propertyLine(
                 // 아이콘 색
-                name: CretaStudioLang.linkColor,
+                name: CretaStudioLang['linkColor']!,
                 widget: colorIndicator(
                   widget.linkModel.bgColor.value,
                   1.0,
@@ -127,7 +127,7 @@ class _LinkPropertyState extends State<LinkProperty> with PropertyMixin {
               CretaPropertySlider(
                 // 아이콘 투명도
                 key: GlobalKey(),
-                name: CretaStudioLang.opacity,
+                name: CretaStudioLang['opacity']!,
                 min: 0,
                 max: 100,
                 value:
@@ -141,7 +141,7 @@ class _LinkPropertyState extends State<LinkProperty> with PropertyMixin {
               CretaPropertySlider(
                 // 아이콘 크기
                 key: GlobalKey(),
-                name: CretaStudioLang.linkIconSize,
+                name: CretaStudioLang['linkIconSize']!,
                 min: 0,
                 max: 50,
                 value: widget.linkModel.iconSize.value,
@@ -151,7 +151,7 @@ class _LinkPropertyState extends State<LinkProperty> with PropertyMixin {
                 //onChanngeComplete: onSpreadChangeComplete,
               ),
               propertyLine(
-                name: CretaStudioLang.linkClass,
+                name: CretaStudioLang['linkClass']!,
                 widget: Text(widget.linkModel.name),
               ),
             ],
@@ -177,7 +177,7 @@ class _LinkPropertyState extends State<LinkProperty> with PropertyMixin {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  CretaStudioLang.posX,
+                  CretaStudioLang['posX']!,
                   style: titleStyle,
                 ),
                 CretaTextField.xshortNumber(
@@ -204,7 +204,7 @@ class _LinkPropertyState extends State<LinkProperty> with PropertyMixin {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  CretaStudioLang.posY,
+                  CretaStudioLang['posY']!,
                   style: titleStyle,
                 ),
                 CretaTextField.xshortNumber(
@@ -238,7 +238,7 @@ class _LinkPropertyState extends State<LinkProperty> with PropertyMixin {
           _isShapeOpen = !_isShapeOpen;
         });
       },
-      titleWidget: Text(CretaStudioLang.shape, style: CretaFont.titleSmall),
+      titleWidget: Text(CretaStudioLang['shape']!, style: CretaFont.titleSmall),
       trailWidget: widget.linkModel.iconData.value == LinkIconType.none
           ? const SizedBox.shrink()
           : IconButton(
@@ -306,7 +306,7 @@ class _LinkPropertyState extends State<LinkProperty> with PropertyMixin {
   //                 _isLinkControlOpen = !_isLinkControlOpen;
   //               });
   //             },
-  //             titleWidget: Text(CretaStudioLang.linkControl, style: CretaFont.titleSmall),
+  //             titleWidget: Text(CretaStudioLang['linkControl']!, style: CretaFont.titleSmall),
   //             //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
   //             trailWidget: _linkToggle(isLinkEditMode),
   //             hasRemoveButton: false,
@@ -322,7 +322,7 @@ class _LinkPropertyState extends State<LinkProperty> with PropertyMixin {
   //     padding: const EdgeInsets.only(top: 16.0),
   //     child: propertyLine(
   //       // 링크 편집 모드
-  //       name: CretaStudioLang.linkControl,
+  //       name: CretaStudioLang['linkControl']!,
   //       widget: _linkToggle(isLinkEditMode),
   //     ),
   //   );

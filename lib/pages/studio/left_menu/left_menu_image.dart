@@ -64,9 +64,9 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
   AIState _state = AIState.ready;
 
   final imageTitle = [
-    CretaStudioLang.recentUsedImage,
-    CretaStudioLang.recommendedImage,
-    CretaStudioLang.myImage,
+    CretaStudioLang['recentUsedImage']!,
+    CretaStudioLang['recommendedImage']!,
+    CretaStudioLang['myImage']!,
   ];
 
   final imageSample = [
@@ -151,7 +151,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
   @override
   void initState() {
     logger.fine('_LeftMenuImageState.initState');
-    _selectedTab = CretaStudioLang.imageMenuTabBar.values.first;
+    _selectedTab = CretaStudioLang['imageMenuTabBar']!.values.first;
     bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
     originalText = '';
     super.initState();
@@ -188,8 +188,8 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
           selectedColor: Colors.white,
           unSelectedColor: CretaColor.text[100]!,
           defaultSelected: _selectedTab,
-          buttonLables: CretaStudioLang.imageMenuTabBar.keys.toList(),
-          buttonValues: CretaStudioLang.imageMenuTabBar.values.toList(),
+          buttonLables: CretaStudioLang['imageMenuTabBar']!.keys.toList(),
+          buttonValues: CretaStudioLang['imageMenuTabBar']!.values.toList(),
           selectedBorderColor: Colors.transparent,
           unSelectedBorderColor: Colors.transparent,
           elevation: 0,
@@ -211,7 +211,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
   Widget _textQuery() {
     return CretaSearchBar(
       width: bodyWidth,
-      hintText: CretaStudioLang.queryHintText,
+      hintText: CretaStudioLang['queryHintText']!,
       onSearch: (value) {
         searchText = value;
       },
@@ -219,7 +219,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
   }
 
   Widget _imageResult() {
-    List<String> menu = CretaStudioLang.imageMenuTabBar.values.toList();
+    List<String> menu = CretaStudioLang['imageMenuTabBar']!.values.toList();
     // 이미지
     if (_selectedTab == menu[0]) {
       return Column(
@@ -250,7 +250,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                BTN.line_blue_t_m(text: CretaStudioLang.myUploadedImage, onPressed: () {}),
+                BTN.line_blue_t_m(text: CretaStudioLang['myUploadedImage']!, onPressed: () {}),
                 _imageDisplayUploaded(),
               ],
             ),
@@ -266,8 +266,8 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
         children: [
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             _state == AIState.ready
-                ? Text(CretaStudioLang.aiImageGeneration, style: CretaFont.titleSmall)
-                : Text(CretaStudioLang.aiGeneratedImage, style: CretaFont.titleSmall),
+                ? Text(CretaStudioLang['aiImageGeneration']!, style: CretaFont.titleSmall)
+                : Text(CretaStudioLang['aiGeneratedImage']!, style: CretaFont.titleSmall),
             const TipToggleWidget(),
           ]),
           Padding(
@@ -323,10 +323,10 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
           logger.fine('------ Style open state: $_isStyleOpened---------');
         });
       },
-      titleWidget: Text(CretaStudioLang.imageStyle, style: CretaFont.titleSmall),
+      titleWidget: Text(CretaStudioLang['imageStyle']!, style: CretaFont.titleSmall),
       bodyWidget: _styleOptions(),
       trailWidget: Text(StyleSelectedWidget.selectedCard != -1
-          ? CretaStudioLang.imageStyleList[StyleSelectedWidget.selectedCard]
+          ? CretaStudioLang['imageStyleList']![StyleSelectedWidget.selectedCard]
           : ''),
       showTrail: _state == AIState.ready ? _isTrailShowed : !_isTrailShowed,
       hasRemoveButton: StyleSelectedWidget.selectedCard >= 0 ? true : false,
@@ -423,7 +423,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
         return SizedBox(
             height: 350.0,
             child: Center(
-              child: Text(CretaStudioLang.genAIerrorMsg, textAlign: TextAlign.center),
+              child: Text(CretaStudioLang['genAIerrorMsg']!, textAlign: TextAlign.center),
             ));
       default:
         return const SizedBox.shrink();
@@ -479,7 +479,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
     String textToGen = LeftMenuImage.textController.text;
     originalText = textToGen;
     String selectedStyle = StyleSelectedWidget.selectedCard != -1
-        ? CretaStudioLang.imageStyleList[StyleSelectedWidget.selectedCard]
+        ? CretaStudioLang['imageStyleList']![StyleSelectedWidget.selectedCard]
         : '';
     if (selectedStyle.isNotEmpty) textToGen += ' , $selectedStyle';
     translator.translate(textToGen, to: "en").then((value) {
@@ -501,7 +501,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
             alignment: Alignment.center,
             padding: EdgeInsets.symmetric(vertical: verticalPadding + 2.0),
             child: BTN.line_blue_t_m(
-              text: CretaStudioLang.genAIImage,
+              text: CretaStudioLang['genAIImage']!,
               onPressed: _onPressed,
             ));
       case AIState.processing:
@@ -513,12 +513,12 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               BTN.line_blue_t_m(
-                text: CretaStudioLang.genImageAgain,
+                text: CretaStudioLang['genImageAgain']!,
                 onPressed: _onPressed,
               ),
               const SizedBox(width: 5.0),
               BTN.line_blue_t_m(
-                text: CretaStudioLang.genFromBeginning,
+                text: CretaStudioLang['genFromBeginning']!,
                 onPressed: () {
                   setState(() {
                     TipToggleWidget.isTipOpened = false;
@@ -534,7 +534,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
         );
       case AIState.fail:
         return BTN.line_blue_t_m(
-          text: CretaStudioLang.genFromBeginning,
+          text: CretaStudioLang['genFromBeginning']!,
           onPressed: () {
             setState(() {
               TipToggleWidget.isTipOpened = false;
@@ -560,7 +560,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
             children: [
               Text(title, style: CretaFont.titleSmall),
               BTN.fill_gray_i_m(
-                // tooltip: CretaStudioLang.copy,
+                // tooltip: CretaStudioLang['copy']!,
                 // tooltipBg: CretaColor.text[700],
                 icon: Icons.arrow_forward_ios,
                 onPressed: () {},
@@ -616,7 +616,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
           Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.symmetric(vertical: 12.0),
-            child: Text(CretaStudioLang.recentUploadedImage, style: CretaFont.titleSmall),
+            child: Text(CretaStudioLang['recentUploadedImage']!, style: CretaFont.titleSmall),
           ),
           SizedBox(
               height: 450,

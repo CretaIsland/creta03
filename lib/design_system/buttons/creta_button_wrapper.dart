@@ -190,7 +190,7 @@ class BTN {
     bool enable = true,
   }) {
     return CretaButton(
-      tooltip: enable ? tooltip : '$tooltip, ${CretaStudioLang.notImpl}',
+      tooltip: enable ? tooltip : '$tooltip, ${CretaStudioLang['notImpl']!}',
       tooltipBg: tooltipBg,
       tooltipFg: tooltipFg,
       width: width,

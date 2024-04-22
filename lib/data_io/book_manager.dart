@@ -73,7 +73,7 @@ class BookManager extends BaseBookManager {
     int randomNumber = random.nextInt(100);
     String url = 'https://picsum.photos/200/?random=$randomNumber';
 
-    String name = '${CretaLang.sampleBookName} ';
+    String name = '${CretaLang['sampleBookName']!} ';
     name += CretaCommonUtils.getNowString(deli1: '', deli2: ' ', deli3: '', deli4: ' ');
 
     //print('old mid = ${onlyOne()!.mid}');
@@ -200,7 +200,7 @@ class BookManager extends BaseBookManager {
     newOne.copyFrom(srcModel, newMid: newOne.mid, pMid: newParentMid ?? newOne.parentMid.value);
 
     // 여기서 newName 이 이미 있는지를 검색해야 한다.
-    String newName = await makeCopyName('${srcModel.name.value}${CretaLang.copyOf}');
+    String newName = await makeCopyName('${srcModel.name.value}${CretaLang['copyOf']!}');
 
     // FileModel? res = (await HycopFactory.storage!.copyFile(srcModel.thumbnailUrl.value));
     // if (res != null) {
@@ -310,9 +310,9 @@ class BookManager extends BaseBookManager {
     String url = '$apiServer/downloadZip';
 
     Response? res = await CretaUtils.post(url, body, onError: (code) {
-      showSnackBar(context, '${CretaStudioLang.zipRequestFailed}($code)');
+      showSnackBar(context, '${CretaStudioLang['zipRequestFailed']!}($code)');
     }, onException: (e) {
-      showSnackBar(context, '${CretaStudioLang.zipRequestFailed}($e)');
+      showSnackBar(context, '${CretaStudioLang['zipRequestFailed']!}($e)');
     });
 
     if (res == null) {
@@ -321,7 +321,7 @@ class BookManager extends BaseBookManager {
 
     logger.fine('zipRequest succeed');
     _waitDownload(apiServer, book.mid, context);
-    showSnackBar(context, '${CretaStudioLang.zipStarting}(${res.statusCode})');
+    showSnackBar(context, '${CretaStudioLang['zipStarting']!}(${res.statusCode})');
     return true;
   }
 
@@ -337,9 +337,9 @@ class BookManager extends BaseBookManager {
       }; // 'appwrite' or 'firebase'
 
       Response? res = await CretaUtils.post(url, body, onError: (code) {
-        showSnackBar(context, '1.${CretaStudioLang.zipCompleteFailed}($code)');
+        showSnackBar(context, '1.${CretaStudioLang['zipCompleteFailed']!}($code)');
       }, onException: (e) {
-        showSnackBar(context, '2.${CretaStudioLang.zipCompleteFailed}($e)');
+        showSnackBar(context, '2.${CretaStudioLang['zipCompleteFailed']!}($e)');
       });
 
       if (res == null) {
@@ -352,11 +352,11 @@ class BookManager extends BaseBookManager {
       String? fileId = responseBody['fileId']; // API 응답에서 URL 추출
 
       if (status == null || status != 'success') {
-        showSnackBar(context, '3.${CretaStudioLang.zipCompleteFailed}(status=$status)');
+        showSnackBar(context, '3.${CretaStudioLang['zipCompleteFailed']!}(status=$status)');
         return;
       }
       if (fileId == null || fileId.isEmpty) {
-        showSnackBar(context, '4.${CretaStudioLang.zipCompleteFailed}($fileId is null)');
+        showSnackBar(context, '4.${CretaStudioLang['zipCompleteFailed']!}($fileId is null)');
         return;
       }
 
@@ -364,7 +364,7 @@ class BookManager extends BaseBookManager {
 
       HycopFactory.storage!.downloadFile(fileId, '$bookMid.zip').then((bool succeed) {
         //HycopFactory.storage!.downloadFile(zipUrl, bookMid).then((bool succeed) {
-        showSnackBar(context, '${CretaStudioLang.fileDownloading}(${res.statusCode})');
+        showSnackBar(context, '${CretaStudioLang['fileDownloading']!}(${res.statusCode})');
         //});
         return;
       });
@@ -402,7 +402,7 @@ class BookManager extends BaseBookManager {
       cloneBookIdMap[srcBook.mid] = newBook.mid;
       newBook.copyFrom(srcBook, newMid: newBook.mid);
       newBook.parentMid.set(newBook.mid);
-      newBook.name.set('${srcBook.name.value}${CretaLang.copyOf}');
+      newBook.name.set('${srcBook.name.value}${CretaLang['copyOf']!}');
       newBook.sourceMid = "";
       newBook.publishMid = "";
       if (CretaAccountManager.getUserProperty != null) {
@@ -434,7 +434,7 @@ class BookManager extends BaseBookManager {
     // int randomNumber = random.nextInt(1000);
     // int modelIdx = randomNumber % 10;
     // BookModel book = BookModel.withName(
-    //   '${CretaStudioLang.newBook}_$randomNumber',
+    //   '${CretaStudioLang['newBook']!}_$randomNumber',
     //   creator: AccountManager.currentLoginUser.email,
     //   creatorName: AccountManager.currentLoginUser.name,
     //   imageUrl: 'https://picsum.photos/200/?random=$modelIdx',

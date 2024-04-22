@@ -210,7 +210,7 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
                 StudioVariables.clipBoard != null && StudioVariables.clipBoardDataType == 'frame'
                     ? false
                     : true,
-            caption: CretaStudioLang.paste,
+            caption: CretaStudioLang['paste']!,
             onPressed: () {
               if (StudioVariables.clipBoard is FrameModel?) {
                 FrameModel? frame = StudioVariables.clipBoard as FrameModel?;

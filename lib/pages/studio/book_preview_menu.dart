@@ -130,7 +130,7 @@ class _BookPreviewMenuState extends State<BookPreviewMenu> {
                             doToggle: false,
                           )
                         : CretaTrasparentButton(
-                            tooltip: CretaStudioLang.gobackToStudio,
+                            tooltip: CretaStudioLang['gobackToStudio']!,
                             onPressed: widget.goBackProcess,
                             icon1: Icons.logout_outlined,
                             icon2: Icons.logout_outlined,

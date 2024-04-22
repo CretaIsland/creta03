@@ -38,7 +38,7 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 34, left: 28),
-            child: Text(CretaMyPageLang.accountInfo,
+            child: Text(CretaMyPageLang['accountInfo']!,
                 /*"계정 정보",*/
                 style: CretaFont.titleELarge),
           ),
@@ -63,14 +63,14 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(CretaMyPageLang.cretaGradeList[userProperty.cretaGrade.index],
+                  Text(CretaMyPageLang['cretaGradeList']![userProperty.cretaGrade.index],
                       style: CretaFont.bodyMedium),
                   const SizedBox(height: 28),
                   Text("${userProperty.bookCount}", style: CretaFont.bodyMedium),
                   const SizedBox(height: 20),
                   Row(
                     children: [
-                      Text(CretaMyPageLang.ratePlanList[userProperty.ratePlan.index],
+                      Text(CretaMyPageLang['ratePlanList']![userProperty.ratePlan.index],
                           style: CretaFont.bodyMedium),
                       const SizedBox(width: 24),
                       BTN.line_blue_t_m(height: 32, text: "요금제 변경", onPressed: () {})
@@ -100,7 +100,7 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 34, left: 28),
-            child: Text(CretaMyPageLang.accountInfo, //"계정 정보",
+            child: Text(CretaMyPageLang['accountInfo']!, //"계정 정보",
                 style: CretaFont.titleELarge),
           ),
           MyPageCommonWidget.divideLine(

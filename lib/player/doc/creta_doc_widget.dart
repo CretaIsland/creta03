@@ -188,7 +188,7 @@ class CretaDocPlayerWidgetState extends CretaState<CretaDocWidget> with CretaDoc
             right: 4,
           ),
           child: BTN.fill_blue_i_menu(
-            tooltip: CretaLang.edit,
+            tooltip: CretaLang['edit']!,
             width: 20,
             height: 20,
             buttonColor: CretaButtonColor.gray2,

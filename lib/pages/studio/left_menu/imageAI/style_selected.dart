@@ -38,7 +38,7 @@ class _StyleSelectedWidgetState extends State<StyleSelectedWidget> {
             crossAxisCount: 4, // Vertical axis
             mainAxisSpacing: 15.0,
             childAspectRatio: 1 / 1),
-        itemCount: CretaStudioLang.imageStyleList.length,
+        itemCount: CretaStudioLang['imageStyleList']!.length,
         itemBuilder: (context, int styleIndex) {
           return Column(
             children: [
@@ -64,7 +64,7 @@ class _StyleSelectedWidgetState extends State<StyleSelectedWidget> {
                 padding: const EdgeInsets.only(top: 2.0),
                 alignment: Alignment.center,
                 child: Text(
-                  CretaStudioLang.imageStyleList[styleIndex],
+                  CretaStudioLang['imageStyleList']![styleIndex],
                   style: CretaFont.buttonSmall,
                 ),
               )

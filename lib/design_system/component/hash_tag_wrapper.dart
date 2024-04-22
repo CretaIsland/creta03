@@ -48,7 +48,7 @@ class HashTagWrapper {
       Padding(
         padding: EdgeInsets.only(top: top, bottom: 12),
         child: hasTitle
-            ? Text(CretaStudioLang.hashTab, style: CretaFont.titleSmall)
+            ? Text(CretaStudioLang['hashTab']!, style: CretaFont.titleSmall)
             : const SizedBox.shrink(),
       ),
       TagEditor(
@@ -66,8 +66,8 @@ class HashTagWrapper {
         resetTextOnSubmitted: true,
         inputDecoration: InputDecoration(
           hintText: enabled
-              ? CretaStudioLang.hashTagHint
-              : '${CretaStudioLang.textOverflow1} $rest ${CretaStudioLang.textOverflow2},',
+              ? CretaStudioLang['hashTagHint']!
+              : '${CretaStudioLang['textOverflow1']!} $rest ${CretaStudioLang['textOverflow2']!},',
           iconColor: CretaColor.text[200]!,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),

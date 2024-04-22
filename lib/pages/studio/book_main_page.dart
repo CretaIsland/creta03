@@ -107,12 +107,12 @@ class BookMainPage extends StatefulWidget {
   static void warningNeedToLogin(BuildContext context) {
     CretaPopup.simple(
       context: context,
-      title: CretaLang.needToLoginTitle,
+      title: CretaLang['needToLoginTitle']!,
       icon: Icons.login,
-      question: CretaLang.needToLogin,
-      yesBtText: CretaLang.close,
+      question: CretaLang['needToLogin']!,
+      yesBtText: CretaLang['close']!,
       onYes: () {},
-      // noBtText: CretaStudioLang.noBtDnText,
+      // noBtText: CretaStudioLang['noBtDnText']!,
       // onNo: () {},
       // onYes: () {
       //   LoginDialog.popupDialog(
@@ -1475,7 +1475,7 @@ class _BookMainPageState extends State<BookMainPage> {
                   context: context,
                   builder: (BuildContext context) {
                     return CretaAlertDialog(
-                      title: CretaLang.invite,
+                      title: CretaLang['invite']!,
                       width: LayoutConst.rightMenuWidth,
                       height: 687,
                       padding: EdgeInsets.only(left: 20, right: 20),
@@ -1505,9 +1505,9 @@ class _BookMainPageState extends State<BookMainPage> {
                     //   key: GlobalKey(),
                     //   model: _bookModel,
                     //   currentStep: 2,
-                    //   title: CretaStudioLang.tooltipInvite,
-                    //   prevBtTitle: CretaLang.cancel,
-                    //   nextBtTitle: CretaLang.confirm,
+                    //   title: CretaStudioLang['tooltipInvite']!,
+                    //   prevBtTitle: CretaLang['cancel']!,
+                    //   nextBtTitle: CretaLang['confirm']!,
                     //   onPrev: () {
                     //     Navigator.of(context).pop();
                     //   },
@@ -1518,7 +1518,7 @@ class _BookMainPageState extends State<BookMainPage> {
                   });
             },
             hasShadow: false,
-            tooltip: CretaStudioLang.tooltipInvite,
+            tooltip: CretaStudioLang['tooltipInvite']!,
           ),
           SizedBox(width: padding),
           BTN.floating_l(
@@ -1532,13 +1532,13 @@ class _BookMainPageState extends State<BookMainPage> {
               StudioMainMenu.downloadDialog(context);
               // CretaPopup.yesNoDialog(
               //   context: context,
-              //   title: "${CretaStudioLang.export}      ",
+              //   title: "${CretaStudioLang['export']!}      ",
               //   icon: Icons.file_download_outlined,
-              //   question: CretaStudioLang.downloadConfirm,
+              //   question: CretaStudioLang['downloadConfirm']!,
               //   noBtText: CretaVars.isDeveloper
-              //       ? CretaStudioLang.noBtDnTextDeloper
-              //       : CretaStudioLang.noBtDnText,
-              //   yesBtText: CretaStudioLang.yesBtDnText,
+              //       ? CretaStudioLang['noBtDnTextDeloper']!
+              //       : CretaStudioLang['noBtDnText']!,
+              //   yesBtText: CretaStudioLang['yesBtDnText']!,
               //   yesIsDefault: true,
               //   onNo: () {
               //     if (CretaVars.isDeveloper) {
@@ -1553,7 +1553,7 @@ class _BookMainPageState extends State<BookMainPage> {
               // );
             },
             hasShadow: false,
-            tooltip: CretaLang.download,
+            tooltip: CretaLang['download']!,
           ),
           SizedBox(width: padding),
           BTN.floating_l(
@@ -1568,7 +1568,7 @@ class _BookMainPageState extends State<BookMainPage> {
               //   return;
               // }
               // if (pageModel.isShow.value == false) {
-              //   showSnackBar(context, CretaStudioLang.noUnshowPage);
+              //   showSnackBar(context, CretaStudioLang['noUnshowPage']!);
               //   return;
               // }
               BookPreviewMenu.previewMenuPressed = false;
@@ -1590,13 +1590,13 @@ class _BookMainPageState extends State<BookMainPage> {
               }
             },
             hasShadow: false,
-            tooltip: CretaStudioLang.tooltipPlay,
+            tooltip: CretaStudioLang['tooltipPlay']!,
           ),
           //SizedBox(width: padding),
           Padding(
             padding: EdgeInsets.only(left: padding),
             child: BTN.line_blue_it_m_animation(
-                text: CretaStudioLang.publish,
+                text: CretaStudioLang['publish']!,
                 image:
                     NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
                 onPressed: () {
@@ -1732,7 +1732,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
         // WillPopScope(
         //   onWillPop: () async {
-        //     //showSnackBar(context, CretaLang.cantGoBack);
+        //     //showSnackBar(context, CretaLang['cantGoBack']!);
         //     return false; // 뒤로가기 금지
         //   },
         //   child:
@@ -1762,7 +1762,7 @@ class _BookMainPageState extends State<BookMainPage> {
               child: isPageExist
                   ? _drawPage(context, pageModel)
                   : Text(
-                      CretaStudioLang.noUnshowPage,
+                      CretaStudioLang['noUnshowPage']!,
                       style: CretaFont.headlineLarge,
                     ),
             ),

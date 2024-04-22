@@ -314,7 +314,7 @@ mixin PropertyMixin {
         //_gradationButton(),
         propertyLine(
           // 색
-          name: CretaStudioLang.color,
+          name: CretaStudioLang['color']!,
           widget: colorIndicator(
             color1,
             opacity ?? 1,
@@ -324,7 +324,7 @@ mixin PropertyMixin {
         ),
         if (opacity != null)
           propertyLine(
-            name: CretaStudioLang.opacity,
+            name: CretaStudioLang['opacity']!,
             widget: CretaExSlider(
               // 투명도
               min: 0,
@@ -357,7 +357,7 @@ mixin PropertyMixin {
         isGradationOpen = !isGradationOpen;
         onPressed.call();
       },
-      titleWidget: Text(CretaStudioLang.gradation, style: CretaFont.titleSmall),
+      titleWidget: Text(CretaStudioLang['gradation']!, style: CretaFont.titleSmall),
       trailWidget: gradationType == GradationType.none
           ? const SizedBox.shrink()
           : colorIndicatorTotal(bgColor1, bgColor2, opacity, gradationType,
@@ -415,7 +415,7 @@ mixin PropertyMixin {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(CretaStudioLang.secondColor, style: titleStyle),
+              Text(CretaStudioLang['secondColor']!, style: titleStyle),
               colorIndicator(
                 color2,
                 opacity,
@@ -457,7 +457,7 @@ mixin PropertyMixin {
   }) {
     return Tooltip(
       preferBelow: false,
-      message: CretaStudioLang.colorTooltip,
+      message: CretaStudioLang['colorTooltip']!,
       child: MyColorIndicator(
         opacity: opacity,
         color: color,
@@ -479,11 +479,11 @@ mixin PropertyMixin {
         isTextureOpen = !isTextureOpen;
         onPressed.call();
       },
-      titleWidget: Text(CretaStudioLang.texture, style: CretaFont.titleSmall),
+      titleWidget: Text(CretaStudioLang['texture']!, style: CretaFont.titleSmall),
       trailWidget: textureType == TextureType.none
           ? const SizedBox.shrink()
           : Tooltip(
-              message: CretaStudioLang.textureTypeList[textureType.index],
+              message: CretaStudioLang['textureTypeList']![textureType.index],
               child: MyTextureIndicator(
                   textureType: textureType,
                   onTextureChanged: (val) {
@@ -538,7 +538,7 @@ mixin PropertyMixin {
         isTextureOpen = !isTextureOpen;
         onPressed.call();
       },
-      titleWidget: Text(CretaStudioLang.imageFilter, style: CretaFont.titleSmall),
+      titleWidget: Text(CretaStudioLang['imageFilter']!, style: CretaFont.titleSmall),
       trailWidget: Text(
         _trailString(imageFilterType.index),
         textAlign: TextAlign.right,
@@ -555,7 +555,7 @@ mixin PropertyMixin {
 
   String _trailString(int idx) {
     if (idx > ImageFilterType.none.index && idx < ImageFilterType.end.index) {
-      return CretaStudioLang.imageFilterTypeList[idx - 1];
+      return CretaStudioLang['imageFilterTypeList']![idx - 1];
     }
     return '';
   }
@@ -646,7 +646,7 @@ mixin PropertyMixin {
           isEffectOpen = !isEffectOpen;
           setState();
         },
-        titleWidget: Text(CretaStudioLang.effect, style: CretaFont.titleSmall),
+        titleWidget: Text(CretaStudioLang['effect']!, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
         trailWidget: Text(
           title,
@@ -770,7 +770,7 @@ mixin PropertyMixin {
         isEventOpen = !isEventOpen;
         setState();
       },
-      titleWidget: Text(CretaStudioLang.clickEvent, style: CretaFont.titleSmall),
+      titleWidget: Text(CretaStudioLang['clickEvent']!, style: CretaFont.titleSmall),
       trailWidget: SizedBox(
         width: 150,
         child: Text(
@@ -795,7 +795,7 @@ mixin PropertyMixin {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  CretaStudioLang.eventReceived,
+                  CretaStudioLang['eventReceived']!,
                   style: titleStyle,
                 ),
                 // CretaTextField.short(

@@ -487,7 +487,7 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
       popupMenu: [
         CretaMenuItem(
             subMenu: _subMenuItems(),
-            caption: CretaStudioLang.putInDepot,
+            caption: CretaStudioLang['putInDepot']!,
             onPressed: () {
               // Set<String> targetList = TreeView.ctrlNodeSet;
               // if (TreeView.shiftNodeSet.isNotEmpty) {
@@ -504,7 +504,7 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
               // }
             }),
         CretaMenuItem(
-            caption: CretaStudioLang.tooltipDelete,
+            caption: CretaStudioLang['tooltipDelete']!,
             onPressed: () {
               Set<String> targetList = TreeView.ctrlNodeSet;
               if (TreeView.shiftNodeSet.isNotEmpty) {
@@ -539,7 +539,7 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
       String teamId = e.mid;
       return CretaMenuItem(
           isSub: true,
-          caption: '$teamName${CretaStudioLang.putInTeamDepot}',
+          caption: '$teamName${CretaStudioLang['putInTeamDepot']!}',
           onPressed: () {
             Set<String> targetList = TreeView.ctrlNodeSet;
             if (TreeView.shiftNodeSet.isNotEmpty) {
@@ -548,13 +548,13 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
             if (targetList.isEmpty) {
               CretaModel? model = widget.node.data as CretaModel?;
               _putInDepot(model, widget.node.key, teamId);
-              showSnackBar(context, CretaStudioLang.depotComplete);
+              showSnackBar(context, CretaStudioLang['depotComplete']!);
             } else {
               for (var ele in targetList) {
                 CretaModel? model = LeftMenuPage.findModel(ele);
                 _putInDepot(model, ele, teamId);
               }
-              showSnackBar(context, CretaStudioLang.depotComplete);
+              showSnackBar(context, CretaStudioLang['depotComplete']!);
             }
           });
     }).toList();
@@ -562,7 +562,7 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     return [
       CretaMenuItem(
           isSub: true,
-          caption: CretaStudioLang.putInMyDepot,
+          caption: CretaStudioLang['putInMyDepot']!,
           onPressed: () {
             Set<String> targetList = TreeView.ctrlNodeSet;
             if (TreeView.shiftNodeSet.isNotEmpty) {

@@ -72,7 +72,7 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
     _setName();
     return CretaDialog(
       //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      title: CretaStudioLang.editFilterDialog,
+      title: CretaStudioLang['editFilterDialog']!,
       width: widget.width,
       height: widget.height,
       crossAxisAlign: CrossAxisAlignment.start,
@@ -96,7 +96,7 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
               //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
               //         children: [
               //           Text(
-              //             CretaStudioLang.editFilterDialog,
+              //             CretaStudioLang['editFilterDialog']!,
               //             style: CretaFont.titleMedium,
               //           ),
               //           BTN.fill_gray_i_m(
@@ -126,7 +126,7 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
                           child: CretaCheckbox(
                             //enable: !widget.isNew,
                             valueMap: {
-                              CretaStudioLang.newfilter: _isNew,
+                              CretaStudioLang['newfilter']!: _isNew,
                             },
                             onSelected: (name, isChecked, valueMap) {
                               setState(() {
@@ -147,7 +147,7 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  CretaStudioLang.filterName,
+                                  CretaStudioLang['filterName']!,
                                   style: titleStyle,
                                 ),
                                 CretaTextField.long(
@@ -176,7 +176,7 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
                             Padding(
                               padding: const EdgeInsets.only(top: 10.0),
                               child: Text(
-                                CretaStudioLang.excludeTag,
+                                CretaStudioLang['excludeTag']!,
                                 style: titleStyle,
                               ),
                             ),
@@ -214,7 +214,7 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
                       //     crossAxisAlignment: CrossAxisAlignment.center,
                       //     children: [
                       //       Text(
-                      //         CretaStudioLang.includeTag,
+                      //         CretaStudioLang['includeTag']!,
                       //         style: titleStyle,
                       //       ),
                       //       SizedBox(
@@ -255,7 +255,7 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
                   children: [
                     BTN.line_red_t_m(
                       //width: 55,
-                      text: _isNew ? CretaLang.create : CretaLang.save,
+                      text: _isNew ? CretaLang['create']! : CretaLang['save']!,
                       onPressed: () async {
                         if (_filter!.excludes.isEmpty) {
                           if (_excludeController.text.isNotEmpty) {
@@ -271,13 +271,13 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
                         if (_isNew) {
                           if (_textController.text.isNotEmpty) {
                             if (BookMainPage.filterManagerHolder!.isDup(_textController.text)) {
-                              showSnackBar(context, CretaStudioLang.filterAlreadyExist);
+                              showSnackBar(context, CretaStudioLang['filterAlreadyExist']!);
                               return;
                             }
                           }
                           _setName();
                           if (_filter!.name.isEmpty) {
-                            showSnackBar(context, CretaStudioLang.filterHasNoName);
+                            showSnackBar(context, CretaStudioLang['filterHasNoName']!);
                             return;
                           }
 
@@ -285,7 +285,7 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
                               filter: _filter!, doNotify: false, onComplete: (undo, value) {});
                         } else {
                           if (_filter!.name.isEmpty) {
-                            showSnackBar(context, CretaStudioLang.filterHasNoName);
+                            showSnackBar(context, CretaStudioLang['filterHasNoName']!);
                             return;
                           }
                           await BookMainPage.filterManagerHolder!
@@ -302,7 +302,7 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
                     // if (!_isNew)
                     //   BTN.fill_blue_t_m(
                     //     width: 55,
-                    //     text: CretaLang.remove,
+                    //     text: CretaLang['remove']!,
                     //     onPressed: () {
                     //       showDialog(
                     //           context: context,
@@ -310,7 +310,7 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
                     //             return CretaAlertDialog(
                     //               height: 140,
                     //               content: Text(
-                    //                 CretaLang.deleteConfirm,
+                    //                 CretaLang['deleteConfirm']!,
                     //                 style: CretaFont.titleMedium,
                     //               ),
                     //               onPressedOK: () async {
@@ -324,7 +324,7 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
                     //   ),
                     BTN.line_red_t_m(
                       //width: 55,
-                      text: CretaLang.close,
+                      text: CretaLang['close']!,
                       onPressed: () {
                         setState(() {
                           Navigator.of(context).pop();

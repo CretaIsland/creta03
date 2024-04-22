@@ -42,7 +42,7 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                   ? Padding(
                       padding: const EdgeInsets.only(left: 165.0, top: 72.0),
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text(CretaMyPageLang.accountManage,
+                        Text(CretaMyPageLang['accountManage']!,
                             /*'계정 관리',*/
                             style: CretaFont.displaySmall.copyWith(fontWeight: FontWeight.w600)),
                         // MyPageCommonWidget.divideLine(
@@ -53,19 +53,19 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                         //   Column(
                         //     crossAxisAlignment: CrossAxisAlignment.start,
                         //     children: [
-                        //       Text(CretaMyPageLang.purposeSetting,
+                        //       Text(CretaMyPageLang['purposeSetting']!,
                         //           /*'용도 설정',*/ style: CretaFont.titleELarge),
                         //       const SizedBox(height: 37),
-                        //       Text(CretaMyPageLang.usePresentation,
+                        //       Text(CretaMyPageLang['usePresentation']!,
                         //           /* '프레젠테이션 기능 사용하기1' */ style: CretaFont.titleMedium),
                         //       const SizedBox(height: 25),
-                        //       Text(CretaMyPageLang.useDigitalSignage,
+                        //       Text(CretaMyPageLang['useDigitalSignage']!,
                         //           /*'디지털 사이니지 기능 사용하기',*/ style: CretaFont.titleMedium),
                         //       const SizedBox(height: 25),
-                        //       Text(CretaMyPageLang.useDigitalBarricade,
+                        //       Text(CretaMyPageLang['useDigitalBarricade']!,
                         //           /*'디지털 바리케이드 기능 사용하기',*/ style: CretaFont.titleMedium),
                         //       const SizedBox(height: 25),
-                        //       Text(CretaMyPageLang.useBoard,
+                        //       Text(CretaMyPageLang['useBoard']!,
                         //           /*'전자칠판 기능 사용하기',*/ style: CretaFont.titleMedium),
                         //     ],
                         //   ),
@@ -153,7 +153,7 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                               Row(
                                 children: [
                                   Text(
-                                      CretaMyPageLang.ratePlanList[
+                                      CretaMyPageLang['ratePlanList']![
                                           userPropertyManager.userPropertyModel!.ratePlan.index],
                                       style: CretaFont.titleMedium),
                                   const SizedBox(width: 24),
@@ -258,14 +258,14 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                         Row(
                           children: [
                             const SizedBox(width: 12),
-                            Text(CretaMyPageLang.allDeviceLogout, style: CretaFont.titleMedium),
+                            Text(CretaMyPageLang['allDeviceLogout']!, style: CretaFont.titleMedium),
                             const SizedBox(width: 24.0),
-                            BTN.line_red_t_m(text: CretaMyPageLang.logoutBTN, onPressed: () {}),
+                            BTN.line_red_t_m(text: CretaMyPageLang['logoutBTN']!, onPressed: () {}),
                             const SizedBox(width: 80.0),
-                            Text(CretaMyPageLang.removeAccount, style: CretaFont.titleMedium),
+                            Text(CretaMyPageLang['removeAccount']!, style: CretaFont.titleMedium),
                             const SizedBox(width: 24.0),
                             BTN.fill_red_t_m(
-                                text: CretaMyPageLang.removeAccountBTN,
+                                text: CretaMyPageLang['removeAccountBTN']!,
                                 width: 81,
                                 onPressed: () {}),
                           ],

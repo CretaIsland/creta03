@@ -43,19 +43,19 @@ class TimeInputWidgetState extends State<TimeInputWidget> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _buildTimeInputField(CretaLang.hours, _hours, (value) {
+        _buildTimeInputField(CretaLang['hours']!, _hours, (value) {
           setState(() {
             _hours = int.parse(value);
           });
           widget.onValueChnaged.call(duration);
         }),
-        _buildTimeInputField(CretaLang.minutes, _minutes, (value) {
+        _buildTimeInputField(CretaLang['minutes']!, _minutes, (value) {
           setState(() {
             _minutes = int.parse(value);
           });
           widget.onValueChnaged.call(duration);
         }),
-        _buildTimeInputField(CretaLang.seconds, _seconds, (value) {
+        _buildTimeInputField(CretaLang['seconds']!, _seconds, (value) {
           setState(() {
             _seconds = int.parse(value);
           });

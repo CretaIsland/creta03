@@ -118,7 +118,7 @@ class _CretaFilterPaneState extends State<CretaFilterPane> {
             // onSearch
             showSearchbar
                 ? CretaSearchBar(
-                    hintText: CretaLang.searchBar,
+                    hintText: CretaLang['searchBar']!,
                     onSearch: (value) {
                       if (kDebugMode) print('widget.onSearch($value)');
                       widget.onSearch?.call(value);

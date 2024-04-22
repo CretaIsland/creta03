@@ -219,7 +219,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
     }
     // if (_selectedSize.isEmpty) {
     //   logger.fine('Selected size is not specified ${widget.size} ');
-    //   _selectedSize = CretaStudioLang.playerSize.values.toList()[0];
+    //   _selectedSize = CretaStudioLang['playerSize']!.values.toList()[0];
     // }
 
     if (frameModel.mute.value) {
@@ -364,7 +364,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
         logger.fine('Volume Icon Button Position is null');
       }
     }
-    // List<String> sizeStrList = CretaStudioLang.playerSize.values.toList();
+    // List<String> sizeStrList = CretaStudioLang['playerSize']!.values.toList();
 
     if (StudioVariables.applyScale <= 0.34) {
       return const Icon(Icons.queue_music_outlined);
@@ -514,8 +514,8 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
           });
         },
         titleWidget:
-            Text(CretaStudioLang.showPlayList, style: TextStyle(fontSize: 16.0 * scaleVal)),
-        // trailWidget: Text('${widget.contentsManager.getAvailLength()} ${CretaLang.count}',
+            Text(CretaStudioLang['showPlayList']!, style: TextStyle(fontSize: 16.0 * scaleVal)),
+        // trailWidget: Text('${widget.contentsManager.getAvailLength()} ${CretaLang['count']!}',
         //     style: dataStyle),
         onDelete: () {},
         hasRemoveButton: false,

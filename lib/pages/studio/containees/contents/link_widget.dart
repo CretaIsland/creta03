@@ -573,7 +573,7 @@ class _LinkWidgetState extends State<LinkWidget> {
       context: context,
       popupMenu: [
         CretaMenuItem(
-            caption: CretaStudioLang.deleteLink,
+            caption: CretaStudioLang['deleteLink']!,
             onPressed: () {
               linkManager.delete(link: model);
               LeftMenuPage.initTreeNodes();
@@ -581,8 +581,8 @@ class _LinkWidgetState extends State<LinkWidget> {
             }),
         CretaMenuItem(
             caption: widget.contentsModel.isLinkEditMode
-                ? CretaStudioLang.linkControlOff
-                : CretaStudioLang.linkControlOn,
+                ? CretaStudioLang['linkControlOff']!
+                : CretaStudioLang['linkControlOn']!,
             onPressed: () {
               widget.contentsModel.isLinkEditMode = !widget.contentsModel.isLinkEditMode;
               if (widget.contentsModel.isLinkEditMode == true) {
@@ -592,7 +592,7 @@ class _LinkWidgetState extends State<LinkWidget> {
               setState(() {});
             }),
         CretaMenuItem(
-            caption: CretaLang.properties,
+            caption: CretaLang['properties']!,
             onPressed: () {
               //  링크 속성 메뉴를 누르면, 현재 Frame 이 seletct 된것으로 간주해야 한다.
               widget.frameManager.setSelectedMid(widget.frameModel.mid);

@@ -27,7 +27,7 @@ mixin BookInfoMixin {
     return [
       Padding(
         padding: const EdgeInsets.only(bottom: 12),
-        child: Text(CretaLang.cretaBookName, style: CretaFont.titleSmall),
+        child: Text(CretaLang['cretaBookName']!, style: CretaFont.titleSmall),
       ),
       StudioSnippet.showTitleText(
         alwaysEditable: alwaysEdit,
@@ -48,7 +48,7 @@ mixin BookInfoMixin {
     return [
       Padding(
         padding: const EdgeInsets.only(bottom: 12),
-        child: Text(CretaStudioLang.description, style: CretaFont.titleSmall),
+        child: Text(CretaStudioLang['description']!, style: CretaFont.titleSmall),
       ),
       CretaTextField.long(
         maxLines: 10,
@@ -77,7 +77,7 @@ mixin BookInfoMixin {
   //   return [
   //     Padding(
   //       padding: EdgeInsets.only(top: top, bottom: 12),
-  //       child: Text(CretaStudioLang.hashTab, style: CretaFont.titleSmall),
+  //       child: Text(CretaStudioLang['hashTab']!, style: CretaFont.titleSmall),
   //     ),
   //     TagEditor(
   //       textFieldHeight: 36,
@@ -145,7 +145,7 @@ mixin BookInfoMixin {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(CretaStudioLang.copyRight, style: CretaFont.titleSmall),
+          Text(CretaStudioLang['copyRight']!, style: CretaFont.titleSmall),
           model.creator == AccountManager.currentLoginUser.email
               ? CretaDropDownButton(
                   selectedColor: CretaColor.text[700]!,
@@ -158,7 +158,8 @@ mixin BookInfoMixin {
                       onChanged: (val) {
                         model.copyRight.set(val);
                       }))
-              : Text(CretaStudioLang.copyWrightList[model.copyRight.value.index], style: dataStyle),
+              : Text(CretaStudioLang['copyWrightList']![model.copyRight.value.index],
+                  style: dataStyle),
         ],
       ),
     );

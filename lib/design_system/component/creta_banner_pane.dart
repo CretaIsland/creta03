@@ -213,7 +213,7 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
   //           showSearchbar
   //           //widget.width > 750 && widget.onSearch != null && !(widget.isSearchbarInBanner ?? false)
   //               ? CretaSearchBar(
-  //                   hintText: CretaLang.searchBar,
+  //                   hintText: CretaLang['searchBar']!,
   //                   onSearch: (value) {
   //                     widget.onSearch?.call(value);
   //                   },
@@ -293,7 +293,7 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
           ),
           widget.width > 600 && (widget.isSearchbarInBanner ?? false)
               ? CretaSearchBar(
-                  hintText: CretaLang.searchBar,
+                  hintText: CretaLang['searchBar']!,
                   onSearch: (value) {
                     if (kDebugMode) print('widget.onSearch($value)');
                     widget.onSearch?.call(value);

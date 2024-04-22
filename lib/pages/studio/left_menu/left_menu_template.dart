@@ -39,8 +39,8 @@ class _LeftMenuTemplateState extends State<LeftMenuTemplate> {
     logger.fine('_LeftMenuTemplateState.initState');
     bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
 
-    templateMenuTabBar[CretaStudioLang.myTemplate] = AccountManager.currentLoginUser.email;
-    templateMenuTabBar[CretaStudioLang.sharedTemplate] = 'SHARED_TEMPLATE';
+    templateMenuTabBar[CretaStudioLang['myTemplate']!] = AccountManager.currentLoginUser.email;
+    templateMenuTabBar[CretaStudioLang['sharedTemplate']!] = 'SHARED_TEMPLATE';
     _selectedTab = templateMenuTabBar.values.first;
 
     super.initState();
@@ -72,9 +72,9 @@ class _LeftMenuTemplateState extends State<LeftMenuTemplate> {
   //         Padding(
   //           padding: const EdgeInsets.only(left: 8.0),
   //           child: BTN.fill_gray_100_i_m_text(
-  //               // tooltip: CretaStudioLang.newTemplate,
+  //               // tooltip: CretaStudioLang['newTemplate']!,
   //               // tooltipBg: CretaColor.text[700]!,
-  //               text: CretaStudioLang.newTemplate,
+  //               text: CretaStudioLang['newTemplate']!,
   //               icon: Icons.add_outlined,
   //               onPressed: (() {
   //                 PageModel? pageModel =
@@ -172,7 +172,7 @@ class _LeftMenuTemplateState extends State<LeftMenuTemplate> {
   Widget _textQuery() {
     return CretaSearchBar(
       width: bodyWidth,
-      hintText: CretaStudioLang.queryHintText,
+      hintText: CretaStudioLang['queryHintText']!,
       onSearch: (value) {
         setState(() {
           searchText = value;

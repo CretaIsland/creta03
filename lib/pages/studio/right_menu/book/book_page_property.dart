@@ -103,7 +103,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
   //   return Padding(
   //     padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
   //     child: colorPropertyCard(
-  //       title: CretaStudioLang.bookBgColor,
+  //       title: CretaStudioLang['bookBgColor']!,
   //       color1: widget.model.bgColor1.value,
   //       color2: widget.model.bgColor2.value,
   //       opacity: widget.model.opacity.value,
@@ -198,7 +198,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
           _isSizeOpen = !_isSizeOpen;
         });
       },
-      titleWidget: Text(CretaStudioLang.pageSize, style: CretaFont.titleSmall),
+      titleWidget: Text(CretaStudioLang['pageSize']!, style: CretaFont.titleSmall),
       trailWidget: Text('${width.round()} x ${height.round()}', style: dataStyle),
       hasRemoveButton: false,
       onDelete: () {},
@@ -277,7 +277,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            CretaStudioLang.width,
+                            CretaStudioLang['width']!,
                             style: titleStyle,
                           ),
                           CretaTextField.xshortNumber(
@@ -296,7 +296,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
                       ),
                     ),
                     BTN.fill_gray_i_m(
-                        tooltip: CretaStudioLang.fixedRatio,
+                        tooltip: CretaStudioLang['fixedRatio']!,
                         tooltipBg: CretaColor.text[400]!,
                         icon: widget.model.isFixedRatio.value
                             ? Icons.lock_outlined
@@ -315,7 +315,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            CretaStudioLang.height,
+                            CretaStudioLang['height']!,
                             style: titleStyle,
                           ),
                           SizedBox(width: 15),
@@ -404,12 +404,12 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
 
   List<String> choicePageSizeName(BookType bookType) {
     if (bookType == BookType.presentaion) {
-      return CretaStudioLang.pageSizeMapPresentation.keys.toList();
+      return CretaStudioLang['pageSizeMapPresentation']!.keys.toList();
     }
     if (bookType == BookType.barricade) {
-      return CretaStudioLang.pageSizeListBarricade;
+      return CretaStudioLang['pageSizeListBarricade']!;
     }
-    return CretaStudioLang.pageSizeListSignage;
+    return CretaStudioLang['pageSizeListSignage']!;
   }
 
   List<Size> choiceResolution(BookType bookType, int idx) {
@@ -460,7 +460,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
 
   List<String>? getPageSizeListHint() {
     if (widget.model.bookType.value == BookType.presentaion) {
-      return CretaStudioLang.pageSizeMapPresentation.values.toList();
+      return CretaStudioLang['pageSizeMapPresentation']!.values.toList();
     }
     return null;
   }
@@ -520,7 +520,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
   List<CretaMenuItem> getFilterListItem(Function? onChnaged) {
     List<CretaMenuItem> retval = [];
     retval.add(CretaMenuItem(
-      caption: CretaStudioLang.nofilter,
+      caption: CretaStudioLang['nofilter']!,
       onPressed: () {
         widget.model.filter.set('');
         BookMainPage.bookManagerHolder!.notify();
@@ -576,7 +576,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
           _isOptionOpen = !_isOptionOpen;
         });
       },
-      titleWidget: Text(CretaStudioLang.option, style: CretaFont.titleSmall),
+      titleWidget: Text(CretaStudioLang['option']!, style: CretaFont.titleSmall),
       //trailWidget: SizedBox.shrink(),
       hasRemoveButton: false,
       onDelete: () {},
@@ -586,7 +586,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
 
   Widget _optionBody() {
     return propertyLine(
-        name: CretaStudioLang.autoPlay,
+        name: CretaStudioLang['autoPlay']!,
         widget: CretaToggleButton(
           defaultValue: widget.model.isAutoPlay.value,
           onSelected: (value) {
@@ -604,7 +604,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
             _isFilterOpen = !_isFilterOpen;
           });
         },
-        titleWidget: Text(CretaStudioLang.filter, style: CretaFont.titleSmall),
+        titleWidget: Text(CretaStudioLang['filter']!, style: CretaFont.titleSmall),
         trailWidget: Text(widget.model.filter.value, style: dataStyle),
         hasRemoveButton: true,
         onDelete: () {
@@ -634,7 +634,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
               align: MainAxisAlignment.start,
             ),
             BTN.fill_gray_i_m(
-              tooltip: CretaStudioLang.editFilter,
+              tooltip: CretaStudioLang['editFilter']!,
               tooltipBg: CretaColor.text[400]!,
               icon: Icons.edit_note_outlined,
               iconColor: CretaColor.primary,
@@ -677,7 +677,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  CretaStudioLang.excludeTag,
+                  CretaStudioLang['excludeTag']!,
                   style: titleStyle,
                 ),
                 SizedBox(
@@ -700,7 +700,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  CretaStudioLang.includeTag,
+                  CretaStudioLang['includeTag']!,
                   style: titleStyle,
                 ),
                 SizedBox(

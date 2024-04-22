@@ -925,7 +925,7 @@ class PageManager extends BasePageManager {
 
     newModel.order.set(nextOrderVal, save: false, noUndo: false);
     //newModel.isRemoved.set(false, save: false, noUndo: true);
-    newModel.name.set('${src.name.value}${CretaLang.copyOf}', save: false, noUndo: false);
+    newModel.name.set('${src.name.value}${CretaLang['copyOf']!}', save: false, noUndo: false);
     logger.fine('create new page ${newModel.mid}');
 
     if (srcPageManager != null) {
@@ -1085,7 +1085,7 @@ class PageManager extends BasePageManager {
   Future<bool> removeSelected(BuildContext context) async {
     PageModel? model = getSelected() as PageModel?;
     if (model == null) {
-      showSnackBar(context, CretaLang.pageNotSelected, duration: StudioConst.snackBarDuration);
+      showSnackBar(context, CretaLang['pageNotSelected']!, duration: StudioConst.snackBarDuration);
       await Future.delayed(StudioConst.snackBarDuration);
       return false;
     }

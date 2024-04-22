@@ -1,4 +1,5 @@
 import 'package:creta03/data_io/channel_manager.dart';
+import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_user_io/data_io/team_manager.dart';
 import 'package:creta_user_io/data_io/user_property_manager.dart';
 import 'package:creta_common/common/creta_const.dart';
@@ -39,6 +40,7 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
   late List<CretaMenuItem> _leftMenuItem;
   Color replaceColor = Colors.primaries[Random().nextInt(Colors.primaries.length)];
   bool _alreadyDataGet = false;
+  LanguageType oldLanguage = LanguageType.none;
 
   @override
   void initState() {
@@ -68,7 +70,7 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
   void _initMenu() {
     _leftMenuItem = [
       CretaMenuItem(
-          caption: CretaMyPageLang.dashboard,
+          caption: CretaMyPageLang['dashboard']!,
           iconData: Icons.account_circle_outlined,
           isIconText: true,
           linkUrl: AppRoutes.myPageDashBoard,
@@ -76,7 +78,7 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
             Routemaster.of(context).push(AppRoutes.myPageDashBoard);
           }),
       CretaMenuItem(
-          caption: CretaMyPageLang.info,
+          caption: CretaMyPageLang['info']!,
           iconData: Icons.lock_person_outlined,
           isIconText: true,
           linkUrl: AppRoutes.myPageInfo,
@@ -84,7 +86,7 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
             Routemaster.of(context).push(AppRoutes.myPageInfo);
           }),
       CretaMenuItem(
-          caption: CretaMyPageLang.accountManage,
+          caption: CretaMyPageLang['accountManage']!,
           iconData: Icons.manage_accounts_outlined,
           isIconText: true,
           linkUrl: AppRoutes.myPageAccountManage,
@@ -92,7 +94,7 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
             Routemaster.of(context).push(AppRoutes.myPageAccountManage);
           }),
       CretaMenuItem(
-          caption: CretaMyPageLang.settings,
+          caption: CretaMyPageLang['settings']!,
           iconData: Icons.notifications_outlined,
           isIconText: true,
           linkUrl: AppRoutes.myPageSettings,
@@ -100,7 +102,7 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
             Routemaster.of(context).push(AppRoutes.myPageSettings);
           }),
       CretaMenuItem(
-          caption: CretaMyPageLang.teamManage,
+          caption: CretaMyPageLang['teamManage']!,
           iconData: Icons.group_outlined,
           isIconText: true,
           linkUrl: AppRoutes.myPageTeamManage,
@@ -241,8 +243,8 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
           context: context,
           child: Consumer<UserPropertyManager>(builder: (context, userPropertyManager, child) {
             if (oldLanguage != userPropertyManager.userPropertyModel!.language) {
-              _initMenu();
               oldLanguage = userPropertyManager.userPropertyModel!.language;
+              _initMenu();
             }
             return myPageMain();
           })),

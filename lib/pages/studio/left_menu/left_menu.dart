@@ -122,7 +122,7 @@ class LeftMenuState
                           (!_isButtonSelected(LeftMenuEnum.Page) && isCollapsed) |
                           !isCollapsed)
                         BTN.fill_gray_i_m(
-                          tooltip: CretaStudioLang.wide,
+                          tooltip: CretaStudioLang['wide']!,
                           tooltipBg: CretaColor.text[700]!,
                           icon: Icons.open_in_full_outlined,
                           iconSize: 14,
@@ -130,7 +130,9 @@ class LeftMenuState
                         ),
                       if (_isButtonSelected(LeftMenuEnum.Page) && LeftMenuPage.flipToTree == true)
                         BTN.fill_gray_i_m(
-                          tooltip: isCollapsed ? CretaStudioLang.open : CretaStudioLang.collapsed,
+                          tooltip: isCollapsed
+                              ? CretaStudioLang['open']!
+                              : CretaStudioLang['collapsed']!,
                           tooltipBg: CretaColor.text[700]!,
                           icon: isCollapsed
                               ? Icons.keyboard_double_arrow_right_outlined
@@ -138,7 +140,7 @@ class LeftMenuState
                           onPressed: changeState,
                         ),
                       BTN.fill_gray_i_m(
-                        tooltip: CretaStudioLang.close,
+                        tooltip: CretaStudioLang['close']!,
                         tooltipBg: CretaColor.text[700]!,
                         icon: Icons.close_sharp,
                         onPressed: () async {
@@ -159,8 +161,8 @@ class LeftMenuState
                   child: _isButtonSelected(LeftMenuEnum.None)
                       ? SizedBox.shrink()
                       : Text(
-                          CretaStudioLang
-                              .menuStick[BookMainPage.leftMenuNotifier!.selectedStick.index],
+                          CretaStudioLang["menuStick"]![
+                              BookMainPage.leftMenuNotifier!.selectedStick.index],
                           style: CretaFont.titleLarge)),
               Positioned(
                 top: 76,

@@ -100,6 +100,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   String _filterSearchKeyword = '';
   DateTime _filterSearchKeywordTime = DateTime.now();
 
+  LanguageType oldLanguage = LanguageType.none;
+
   void _scrollChangedCallback(bool bannerSizeChanged) {
     setState(() {
       //
@@ -129,7 +131,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   void _initLeftMenu() {
     _leftMenuItemList = [
       CretaMenuItem(
-        caption: CretaCommuLang.commuHome, // '커뮤니티 홈',
+        caption: CretaCommuLang['commuHome']!, // '커뮤니티 홈',
         iconData: Icons.home_outlined,
         onPressed: () {
           Routemaster.of(context).push(AppRoutes.communityHome);
@@ -138,7 +140,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         isIconText: true,
       ),
       CretaMenuItem(
-        caption: CretaCommuLang.subsList, // '구독목록',
+        caption: CretaCommuLang['subsList']!, // '구독목록',
         iconData: Icons.local_library_outlined,
         onPressed: () {
           if (AccountManager.currentLoginUser.isLoginedUser) {
@@ -151,7 +153,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         isIconText: true,
       ),
       CretaMenuItem(
-        caption: CretaCommuLang.watchHistory, // '시청기록',
+        caption: CretaCommuLang['watchHistory']!, // '시청기록',
         iconData: Icons.article_outlined,
         onPressed: () {
           if (AccountManager.currentLoginUser.isLoginedUser) {
@@ -164,7 +166,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         isIconText: true,
       ),
       CretaMenuItem(
-        caption: CretaCommuLang.iLikeIt, // '좋아요',
+        caption: CretaCommuLang['iLikeIt']!, // '좋아요',
         iconData: Icons.favorite_outline,
         onPressed: () {
           if (AccountManager.currentLoginUser.isLoginedUser) {
@@ -177,7 +179,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         isIconText: true,
       ),
       CretaMenuItem(
-        caption: CretaCommuLang.playList, // '재생목록',
+        caption: CretaCommuLang['playList']!, // '재생목록',
         iconData: Icons.playlist_play,
         onPressed: () {
           if (AccountManager.currentLoginUser.isLoginedUser) {
@@ -195,7 +197,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   void _initDropdownMenu() {
     _dropDownMenuItemListPurpose = [
       CretaMenuItem(
-        caption: CretaLang.basicBookFilter[0], // 용도별(전체)
+        caption: CretaLang['basicBookFilter']![0], // 용도별(전체)
         iconData: Icons.type_specimen,
         onPressed: () {
           setState(() {
@@ -207,7 +209,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         disabled: CretaVars.serviceType != ServiceType.none,
       ),
       CretaMenuItem(
-        caption: CretaLang.basicBookFilter[1], // 프리젠테이션용
+        caption: CretaLang['basicBookFilter']![1], // 프리젠테이션용
         iconData: Icons.local_library_outlined,
         onPressed: () {
           setState(() {
@@ -219,7 +221,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         disabled: CretaVars.serviceType != ServiceType.presentaion,
       ),
       CretaMenuItem(
-        caption: CretaLang.basicBookFilter[2], // 전자칠판용
+        caption: CretaLang['basicBookFilter']![2], // 전자칠판용
         iconData: Icons.favorite_outline,
         onPressed: () {
           setState(() {
@@ -231,7 +233,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         disabled: CretaVars.serviceType != ServiceType.board,
       ),
       CretaMenuItem(
-        caption: CretaLang.basicBookFilter[3], // 디지털사이니지용 전차칠판용
+        caption: CretaLang['basicBookFilter']![3], // 디지털사이니지용 전차칠판용
         iconData: Icons.article_outlined,
         onPressed: () {
           setState(() {
@@ -243,7 +245,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         disabled: CretaVars.serviceType != ServiceType.signage,
       ),
       CretaMenuItem(
-        caption: CretaLang.basicBookFilter[4], // 디지털바리케이드용
+        caption: CretaLang['basicBookFilter']![4], // 디지털바리케이드용
         iconData: Icons.favorite_outline,
         onPressed: () {
           setState(() {
@@ -255,7 +257,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         disabled: CretaVars.serviceType != ServiceType.barricade,
       ),
       CretaMenuItem(
-        caption: CretaLang.basicBookFilter[5], // 기타
+        caption: CretaLang['basicBookFilter']![5], // 기타
         iconData: Icons.favorite_outline,
         onPressed: () {
           setState(() {
@@ -270,7 +272,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     //
     _dropDownMenuItemListPermission = [
       CretaMenuItem(
-        caption: CretaLang.basicBookPermissionFilter[0], // 권한별(전체)
+        caption: CretaLang['basicBookPermissionFilter']![0], // 권한별(전체)
         iconData: Icons.power,
         onPressed: () {
           setState(() {
@@ -281,7 +283,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         selected: true,
       ),
       CretaMenuItem(
-        caption: CretaLang.basicBookPermissionFilter[1], // 소유자
+        caption: CretaLang['basicBookPermissionFilter']![1], // 소유자
         iconData: Icons.power,
         onPressed: () {
           setState(() {
@@ -292,7 +294,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         selected: false,
       ),
       CretaMenuItem(
-        caption: CretaLang.basicBookPermissionFilter[2], // 편집자
+        caption: CretaLang['basicBookPermissionFilter']![2], // 편집자
         iconData: Icons.power,
         onPressed: () {
           setState(() {
@@ -303,7 +305,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         selected: false,
       ),
       CretaMenuItem(
-        caption: CretaLang.basicBookPermissionFilter[3], // 뷰어
+        caption: CretaLang['basicBookPermissionFilter']![3], // 뷰어
         iconData: Icons.power,
         onPressed: () {
           setState(() {
@@ -317,7 +319,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     //
     _dropDownMenuItemListSort = [
       CretaMenuItem(
-        caption: CretaLang.basicBookSortFilter[0], // 최신순
+        caption: CretaLang['basicBookSortFilter']![0], // 최신순
         iconData: Icons.power,
         onPressed: () {
           setState(() {
@@ -328,7 +330,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         selected: true,
       ),
       CretaMenuItem(
-        caption: CretaLang.basicBookSortFilter[1], // 이름순
+        caption: CretaLang['basicBookSortFilter']![1], // 이름순
         iconData: Icons.local_library_outlined,
         onPressed: () {
           setState(() {
@@ -339,7 +341,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         selected: false,
       ),
       CretaMenuItem(
-        caption: CretaLang.basicBookSortFilter[2], // 좋아요순
+        caption: CretaLang['basicBookSortFilter']![2], // 좋아요순
         iconData: Icons.article_outlined,
         onPressed: () {
           setState(() {
@@ -350,7 +352,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         selected: false,
       ),
       CretaMenuItem(
-        caption: CretaLang.basicBookSortFilter[3], // 조회수순
+        caption: CretaLang['basicBookSortFilter']![3], // 조회수순
         iconData: Icons.favorite_outline,
         onPressed: () {
           setState(() {
@@ -411,7 +413,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             //isIconText: true,
           ),
           CretaMenuItem(
-            caption: CretaCommuLang.playList,
+            caption: CretaCommuLang['playList']!,
             //iconData: null,
             index: CommunityChannelType.playlists.index,
             onPressed: () {
@@ -624,7 +626,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       if (size.width > 175) {
         titleList.add(
           Text(
-            CretaCommuLang.commuHome,
+            CretaCommuLang['commuHome']!,
             style: CretaFont.displaySmall.copyWith(
               color: Colors.white,
               fontWeight: CretaFont.semiBold,
@@ -719,7 +721,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       if (size.width > 175) {
         titleList.add(
           Text(
-            CretaCommuLang.commuHome,
+            CretaCommuLang['commuHome']!,
             overflow: TextOverflow.ellipsis,
             style: CretaFont.displaySmall.copyWith(
               color: Colors.white,
@@ -814,7 +816,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         SizedBox(width: 12),
         //text
         Text(
-          CretaCommuLang.commuHome,
+          CretaCommuLang['commuHome']!,
           style: CretaFont.titleELarge.copyWith(fontWeight: CretaFont.semiBold),
         ),
       ]);
@@ -1122,7 +1124,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       //                     crossAxisAlignment: CrossAxisAlignment.start,
       //                     children: [
       //                       Text(
-      //                         CretaCommuLang.commuHome,
+      //                         CretaCommuLang['commuHome']!,
       //                         style: CretaFont.displaySmall.copyWith(
       //                           color: Colors.white,
       //                           fontWeight: CretaFont.semiBold,
@@ -1595,28 +1597,28 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         return _getSmallTitlePane(
           size: size,
           headIcon: Icons.local_library_outlined,
-          titleText: CretaCommuLang.subsList,
+          titleText: CretaCommuLang['subsList']!,
           descriptionText: '${AccountManager.currentLoginUser.name}님만을 위한 콘텐츠를 빠르게 만나보세요!',
         );
       case AppRoutes.watchHistory:
         return _getSmallTitlePane(
           size: size,
           headIcon: Icons.article_outlined,
-          titleText: CretaCommuLang.watchHistory,
+          titleText: CretaCommuLang['watchHistory']!,
           descriptionText: '${AccountManager.currentLoginUser.name}님의 최근에 시청한 크레타북입니다.',
         );
       case AppRoutes.favorites:
         return _getSmallTitlePane(
           size: size,
           headIcon: Icons.favorite_outline,
-          titleText: CretaCommuLang.iLikeIt,
+          titleText: CretaCommuLang['iLikeIt']!,
           descriptionText: '${AccountManager.currentLoginUser.name}님이 좋아요를 누른 크레타북입니다.',
         );
       case AppRoutes.playlist:
         return _getSmallTitlePane(
           size: size,
           headIcon: Icons.playlist_play,
-          titleText: CretaCommuLang.playList,
+          titleText: CretaCommuLang['playList']!,
           descriptionText: '${AccountManager.currentLoginUser.name}님이 만든 재생목록입니다.',
         );
       case AppRoutes.playlistDetail:
@@ -2072,9 +2074,11 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         // print(
         //     'Consumer<UserPropertyManager>---------${userPropertyManager.userPropertyModel!.language}---------');
         if (oldLanguage != userPropertyManager.userPropertyModel!.language) {
+          oldLanguage = userPropertyManager.userPropertyModel!.language;
+
           _initLeftMenu();
           _initDropdownMenu();
-          oldLanguage = userPropertyManager.userPropertyModel!.language;
+          _initPageVariables();
         }
         return Snippet.CretaScaffoldOfCommunity(
           onFoldButtonPressed: () {
@@ -2127,14 +2131,14 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                   }
                 },
                 gotoButtonTitle: CretaAccountManager.experienceWithoutLogin
-                    ? CretaCommuLang.tourStudio
-                    : CretaCommuLang.myCretaBookMenu,
+                    ? CretaCommuLang['tourStudio']!
+                    : CretaCommuLang['myCretaBookMenu']!,
 
                 gotoButtonPressed2: () {
                   Routemaster.of(context).push(AppRoutes.deviceMainPage);
                 },
                 gotoButtonTitle2: (CretaVars.serviceType == ServiceType.barricade)
-                    ? CretaCommuLang.myDeviceMenu
+                    ? CretaCommuLang['myDeviceMenu']!
                     : null,
 
                 leftMenuItemList: _leftMenuItemList,

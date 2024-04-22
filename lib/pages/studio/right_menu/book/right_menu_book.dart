@@ -39,7 +39,7 @@ class _RightMenuBookState extends State<RightMenuBook> {
     //_scrollController.addListener(_scrollListener);
     logger.finer('_RightMenuBookState.initState');
     //_scrollController = ScrollController(initialScrollOffset: 0.0);
-    _selectedTab = CretaStudioLang.bookInfoTabBar.values.first;
+    _selectedTab = CretaStudioLang['bookInfoTabBar']!.values.first;
     super.initState();
   }
 
@@ -90,8 +90,8 @@ class _RightMenuBookState extends State<RightMenuBook> {
         selectedColor: Colors.white,
         unSelectedColor: CretaColor.text[100]!,
         defaultSelected: _selectedTab,
-        buttonLables: CretaStudioLang.bookInfoTabBar.keys.toList(),
-        buttonValues: CretaStudioLang.bookInfoTabBar.values.toList(),
+        buttonLables: CretaStudioLang['bookInfoTabBar']!.keys.toList(),
+        buttonValues: CretaStudioLang['bookInfoTabBar']!.values.toList(),
         selectedBorderColor: Colors.transparent,
         unSelectedBorderColor: Colors.transparent,
         elevation: 0,
@@ -110,15 +110,15 @@ class _RightMenuBookState extends State<RightMenuBook> {
         // unSelectedTextColor: CretaColor.text[700]!,
         // selectedColor: Colors.white,
         // unSelectedColor: CretaColor.text[100]!,
-        // defaultString: CretaStudioLang.bookInfoTabBar.values.first,
-        // buttonLables: CretaStudioLang.bookInfoTabBar.keys.toList(),
-        // buttonValues: CretaStudioLang.bookInfoTabBar.values.toList(),
+        // defaultString: CretaStudioLang['bookInfoTabBar']!.values.first,
+        // buttonLables: CretaStudioLang['bookInfoTabBar']!.keys.toList(),
+        // buttonValues: CretaStudioLang['bookInfoTabBar']!.values.toList(),
       ),
     );
   }
 
   Widget _pageView() {
-    List<String> menu = CretaStudioLang.bookInfoTabBar.values.toList();
+    List<String> menu = CretaStudioLang['bookInfoTabBar']!.values.toList();
     if (_selectedTab == menu[0]) {
       return Container(
         padding: EdgeInsets.all(horizontalPadding),

@@ -84,7 +84,7 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
   Widget _textQuery() {
     return CretaSearchBar(
       width: bodyWidth,
-      hintText: CretaStudioLang.queryHintText,
+      hintText: CretaStudioLang['queryHintText']!,
       onSearch: (value) async {
         setState(() {
           searchText = value;
@@ -180,7 +180,7 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
 
   Widget _buildLoadMoreButton() {
     return BTN.line_blue_t_m(
-      text: CretaStudioLang.viewMore,
+      text: CretaStudioLang['viewMore']!,
       onPressed: _loadMoreItems,
     );
   }

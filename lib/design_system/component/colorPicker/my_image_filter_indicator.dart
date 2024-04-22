@@ -49,7 +49,7 @@ class _MyImageFilterIndicatorState extends State<MyImageFilterIndicator> {
           Padding(
             padding: const EdgeInsets.only(top: 4.0),
             child: Text(
-              CretaStudioLang.imageFilterTypeList[widget.imageFilterType.index - 1],
+              CretaStudioLang['imageFilterTypeList']![widget.imageFilterType.index - 1],
               style: CretaFont.buttonSmall,
             ),
           ),

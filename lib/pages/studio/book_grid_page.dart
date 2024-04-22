@@ -42,15 +42,15 @@ enum SelectedPage {
   String toDisplayString() {
     switch (this) {
       case SelectedPage.myPage:
-        return CretaStudioLang.myCretaBook;
+        return CretaStudioLang['myCretaBook']!;
       case SelectedPage.sharedPage:
-        return CretaStudioLang.sharedCretaBook;
+        return CretaStudioLang['sharedCretaBook']!;
       case SelectedPage.teamPage:
-        return CretaStudioLang.teamCretaBook;
+        return CretaStudioLang['teamCretaBook']!;
       case SelectedPage.trashCanPage:
-        return CretaStudioLang.trashCan;
+        return CretaStudioLang['trashCan']!;
       default:
-        return CretaStudioLang.myCretaBook;
+        return CretaStudioLang['myCretaBook']!;
     }
   }
 }
@@ -85,6 +85,8 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
   GlobalKey dropDownButtonKey = GlobalKey();
 
   late ScrollController _controller;
+
+  LanguageType oldLanguage = LanguageType.none;
 
   @override
   void initState() {
@@ -141,7 +143,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
   void _initMenu() {
     _leftMenuItemList = [
       CretaMenuItem(
-        caption: CretaStudioLang.myCretaBook,
+        caption: CretaStudioLang['myCretaBook']!,
         onPressed: () {
           Routemaster.of(context).push(AppRoutes.studioBookGridPage);
           BookGridPage.lastGridMenu = AppRoutes.studioBookSharedPage;
@@ -152,7 +154,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         isIconText: true,
       ),
       CretaMenuItem(
-        caption: CretaStudioLang.sharedCretaBook,
+        caption: CretaStudioLang['sharedCretaBook']!,
         onPressed: () {
           Routemaster.of(context).pop();
           Routemaster.of(context).push(AppRoutes.studioBookSharedPage);
@@ -164,7 +166,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         isIconText: true,
       ),
       CretaMenuItem(
-        caption: CretaStudioLang.teamCretaBook,
+        caption: CretaStudioLang['teamCretaBook']!,
         onPressed: () {
           Routemaster.of(context).push(AppRoutes.studioBookTeamPage);
           BookGridPage.lastGridMenu = AppRoutes.studioBookSharedPage;
@@ -175,7 +177,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         iconSize: 20,
       ),
       CretaMenuItem(
-        caption: CretaStudioLang.trashCan,
+        caption: CretaStudioLang['trashCan']!,
         onPressed: () {
           //Routemaster.of(context).push(AppRoutes.studioBookTrashCanPage);
           //BookGridPage.lastGridMenu = AppRoutes.studioBookTrashCanPage;
@@ -235,8 +237,8 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         // print(
         //     'Consumer<UserPropertyManager>---------${userPropertyManager.userPropertyModel!.language}---------');
         if (oldLanguage != userPropertyManager.userPropertyModel!.language) {
-          _initMenu();
           oldLanguage = userPropertyManager.userPropertyModel!.language;
+          _initMenu();
         }
 
         return Snippet.CretaScaffold(
@@ -249,7 +251,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
               width: windowWidth > 535 ? 130 : 60,
               child: BTN.fill_gray_it_l(
                 width: windowWidth > 535 ? 106 : 36,
-                text: windowWidth > 535 ? CretaStudioLang.newBook : '',
+                text: windowWidth > 535 ? CretaStudioLang['newBook']! : '',
                 onPressed: () {
                   Routemaster.of(context).push(AppRoutes.studioBookMainPage);
                 },
@@ -262,7 +264,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
               gotoButtonPressed: () {
                 Routemaster.of(context).push(AppRoutes.communityHome);
               },
-              gotoButtonTitle: CretaStudioLang.gotoCommunity,
+              gotoButtonTitle: CretaStudioLang['gotoCommunity']!,
               leftMenuItemList: _leftMenuItemList,
               bannerTitle: getBookTitle(),
               bannerDescription: getBookDesc(),
@@ -283,26 +285,26 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
   String getBookTitle() {
     switch (widget.selectedPage) {
       case SelectedPage.myPage:
-        return CretaStudioLang.myCretaBook;
+        return CretaStudioLang['myCretaBook']!;
       case SelectedPage.sharedPage:
-        return CretaStudioLang.sharedCretaBook;
+        return CretaStudioLang['sharedCretaBook']!;
       case SelectedPage.teamPage:
-        return CretaStudioLang.teamCretaBook;
+        return CretaStudioLang['teamCretaBook']!;
       default:
-        return CretaStudioLang.myCretaBook;
+        return CretaStudioLang['myCretaBook']!;
     }
   }
 
   String getBookDesc() {
     switch (widget.selectedPage) {
       case SelectedPage.myPage:
-        return CretaStudioLang.myCretaBookDesc;
+        return CretaStudioLang['myCretaBookDesc']!;
       case SelectedPage.sharedPage:
-        return CretaStudioLang.sharedCretaBookDesc;
+        return CretaStudioLang['sharedCretaBookDesc']!;
       case SelectedPage.teamPage:
-        return CretaStudioLang.teamCretaBookDesc;
+        return CretaStudioLang['teamCretaBookDesc']!;
       default:
-        return CretaStudioLang.myCretaBook;
+        return CretaStudioLang['myCretaBook']!;
     }
   }
 
@@ -464,27 +466,27 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
   List<CretaMenuItem> getSortMenu(Function? onModelSorted) {
     return [
       CretaMenuItem(
-          caption: CretaLang.basicBookSortFilter[0],
+          caption: CretaLang['basicBookSortFilter']![0],
           onPressed: () {
             bookManagerHolder?.toSorted('updateTime',
                 descending: true, onModelSorted: onModelSorted);
           },
           selected: true),
       CretaMenuItem(
-          caption: CretaLang.basicBookSortFilter[1],
+          caption: CretaLang['basicBookSortFilter']![1],
           onPressed: () {
             bookManagerHolder?.toSorted('name', onModelSorted: onModelSorted);
           },
           selected: false),
       CretaMenuItem(
-          caption: CretaLang.basicBookSortFilter[2],
+          caption: CretaLang['basicBookSortFilter']![2],
           onPressed: () {
             bookManagerHolder?.toSorted('likeCount',
                 descending: true, onModelSorted: onModelSorted);
           },
           selected: false),
       CretaMenuItem(
-          caption: CretaLang.basicBookSortFilter[3],
+          caption: CretaLang['basicBookSortFilter']![3],
           onPressed: () {
             bookManagerHolder?.toSorted('viewCount',
                 descending: true, onModelSorted: onModelSorted);
@@ -496,7 +498,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
   List<CretaMenuItem> getFilterMenu(Function? onModelFiltered) {
     return [
       CretaMenuItem(
-        caption: CretaLang.basicBookFilter[0],
+        caption: CretaLang['basicBookFilter']![0],
         onPressed: () {
           bookManagerHolder?.toFiltered(null, null, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
@@ -505,7 +507,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         disabled: CretaVars.serviceType != ServiceType.none,
       ),
       CretaMenuItem(
-        caption: CretaLang.basicBookFilter[1], // 프리젠테이션
+        caption: CretaLang['basicBookFilter']![1], // 프리젠테이션
         onPressed: () {
           bookManagerHolder?.toFiltered(
               'bookType', BookType.presentaion.index, AccountManager.currentLoginUser.email,
@@ -515,7 +517,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         disabled: CretaVars.serviceType != ServiceType.presentaion,
       ),
       CretaMenuItem(
-        caption: CretaLang.basicBookFilter[2], // 전자칠판
+        caption: CretaLang['basicBookFilter']![2], // 전자칠판
         onPressed: () {
           bookManagerHolder?.toFiltered(
               'bookType', BookType.board.index, AccountManager.currentLoginUser.email,
@@ -525,7 +527,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         disabled: CretaVars.serviceType != ServiceType.board,
       ),
       CretaMenuItem(
-        caption: CretaLang.basicBookFilter[3], // 사이니지
+        caption: CretaLang['basicBookFilter']![3], // 사이니지
         onPressed: () {
           bookManagerHolder?.toFiltered(
               'bookType', BookType.signage.index, AccountManager.currentLoginUser.email,
@@ -535,7 +537,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         disabled: CretaVars.serviceType != ServiceType.signage,
       ),
       CretaMenuItem(
-        caption: CretaLang.basicBookFilter[4], // 디지털 바리케이드
+        caption: CretaLang['basicBookFilter']![4], // 디지털 바리케이드
         onPressed: () {
           bookManagerHolder?.toFiltered(
               'bookType', BookType.barricade.index, AccountManager.currentLoginUser.email,
@@ -545,7 +547,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         disabled: CretaVars.serviceType != ServiceType.barricade,
       ),
       CretaMenuItem(
-        caption: CretaLang.basicBookFilter[5],
+        caption: CretaLang['basicBookFilter']![5],
         onPressed: () {
           bookManagerHolder?.toFiltered(
               'bookType', BookType.etc.index, AccountManager.currentLoginUser.email,

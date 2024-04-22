@@ -198,12 +198,12 @@ class ContentsThumbnailState extends CretaState<ContentsThumbnail>
                   Size frameSize = Size(frameModel.width.value, frameModel.height.value);
                   for (Size ele in StudioConst.musicPlayerSize) {
                     if (frameSize == ele) {
-                      selectedSize = CretaStudioLang.playerSize.values.toList()[index];
+                      selectedSize = CretaStudioLang['playerSize']!.values.toList()[index];
                       break;
                     }
                     index++;
                   }
-                  List<String> size = CretaStudioLang.playerSize.values.toList();
+                  List<String> size = CretaStudioLang['playerSize']!.values.toList();
                   if (selectedSize == size[0]) {
                     return Container(
                       alignment: Alignment.center,

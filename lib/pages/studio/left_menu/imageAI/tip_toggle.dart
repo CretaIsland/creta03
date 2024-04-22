@@ -47,7 +47,7 @@ class _TipToggleWidgetState extends State<TipToggleWidget> {
         icon: Icons.lightbulb_outline_sharp,
         iconColor: CretaColor.primary[400],
         bgColor: CretaColor.primary[100],
-        tooltip: CretaStudioLang.genAIimageTooltip,
+        tooltip: CretaStudioLang['genAIimageTooltip']!,
         tooltipFg: CretaColor.text[200],
         tooltipBg: Colors.transparent,
         onPressed: () {

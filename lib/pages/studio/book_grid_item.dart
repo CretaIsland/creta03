@@ -67,32 +67,32 @@ class BookGridItemState extends State<BookGridItem> {
 
     _popupMenuList = [
       CretaMenuItem(
-        caption: CretaLang.play,
+        caption: CretaLang['play']!,
         onPressed: () {
           openBook(AppRoutes.studioBookPreviewPage);
         },
       ),
       if (widget.bookModel != null && widget.bookModel!.hasWritePermition() == true)
         CretaMenuItem(
-          caption: CretaLang.edit,
+          caption: CretaLang['edit']!,
           onPressed: () {
             openBook(AppRoutes.studioBookMainPage);
           },
         ),
       // CretaMenuItem(
-      //   caption: CretaLang.addToPlayList,
+      //   caption: CretaLang['addToPlayList']!,
       //   onPressed: () {},
       // ),
       // CretaMenuItem(
-      //   caption: CretaLang.share,
+      //   caption: CretaLang['share']!,
       //   onPressed: () {},
       // ),
       // CretaMenuItem(
-      //   caption: CretaLang.download,
+      //   caption: CretaLang['download']!,
       //   onPressed: () {},
       // ),
       // CretaMenuItem(
-      //   caption: CretaLang.copy,
+      //   caption: CretaLang['copy']!,
       //   onPressed: () {},
       // ),
     ];
@@ -171,7 +171,7 @@ class BookGridItemState extends State<BookGridItem> {
       bgColor: CretaColor.text[100]!,
       fgColor: CretaColor.primary[300]!,
       fgSelectedColor: CretaColor.primary,
-      caption: CretaStudioLang.newBook,
+      caption: CretaStudioLang['newBook']!,
       captionStyle: CretaFont.bodyMedium,
       radius: 20.0,
       onPressed: insertItem,
@@ -307,11 +307,11 @@ class BookGridItemState extends State<BookGridItem> {
                                 logger.finest('delete pressed');
                                 CretaPopup.yesNoDialog(
                                   context: context,
-                                  title: CretaLang.deleteConfirmTitle,
+                                  title: CretaLang['deleteConfirmTitle']!,
                                   icon: Icons.file_download_outlined,
-                                  question: CretaLang.deleteConfirm,
-                                  noBtText: CretaStudioLang.noBtDnText,
-                                  yesBtText: CretaStudioLang.yesBtDnText,
+                                  question: CretaLang['deleteConfirm']!,
+                                  noBtText: CretaStudioLang['noBtDnText']!,
+                                  yesBtText: CretaStudioLang['yesBtDnText']!,
                                   yesIsDefault: true,
                                   onNo: () {
                                     //Navigator.of(context).pop();
@@ -343,9 +343,9 @@ class BookGridItemState extends State<BookGridItem> {
                                 //     builder: (context) {
                                 //       return CretaAlertDialog(
                                 //         height: 200,
-                                //         title: CretaLang.deleteConfirmTitle,
+                                //         title: CretaLang['deleteConfirmTitle']!,
                                 //         content: Text(
-                                //           CretaLang.deleteConfirm,
+                                //           CretaLang['deleteConfirm']!,
                                 //           style: CretaFont.titleMedium,
                                 //         ),
                                 //         onPressedOK: () async {
@@ -373,7 +373,7 @@ class BookGridItemState extends State<BookGridItem> {
                                 //       );
                                 //     });
                               },
-                              tooltip: CretaStudioLang.tooltipDelete,
+                              tooltip: CretaStudioLang['tooltipDelete']!,
                             ),
                           ),
                         Padding(
@@ -398,7 +398,7 @@ class BookGridItemState extends State<BookGridItem> {
                                 dropDownButtonOpened = !dropDownButtonOpened;
                               });
                             },
-                            tooltip: CretaStudioLang.tooltipMenu,
+                            tooltip: CretaStudioLang['tooltipMenu']!,
                           ),
                         ),
                       ],
@@ -514,7 +514,7 @@ class BookGridItemState extends State<BookGridItem> {
     // int randomNumber = random.nextInt(1000);
     // int modelIdx = randomNumber % 10;
     // BookModel book = BookModel.withName(
-    //   '${CretaStudioLang.newBook}_$randomNumber',
+    //   '${CretaStudioLang['newBook']!}_$randomNumber',
     //   creator: AccountManager.currentLoginUser.email,
     //   creatorName: AccountManager.currentLoginUser.name,
     //   imageUrl: 'https://picsum.photos/200/?random=$modelIdx',

@@ -63,7 +63,7 @@ class BookTopMenuState extends State<BookTopMenu> {
                   icon: Icons.undo_outlined,
                   onPressed: widget.onUndo,
                   hasShadow: false,
-                  tooltip: CretaStudioLang.tooltipUndo,
+                  tooltip: CretaStudioLang['tooltipUndo']!,
                 ),
               if (StudioVariables.displayWidth > 300) SizedBox(width: widget.padding / 2),
               if (StudioVariables.displayWidth > 300)
@@ -71,7 +71,7 @@ class BookTopMenuState extends State<BookTopMenu> {
                   icon: Icons.redo_outlined,
                   onPressed: widget.onRedo,
                   hasShadow: false,
-                  tooltip: CretaStudioLang.tooltipRedo,
+                  tooltip: CretaStudioLang['tooltipRedo']!,
                 ),
               if (StudioVariables.displayWidth > 550) SizedBox(width: widget.padding),
               if (StudioVariables.displayWidth > 550)
@@ -79,7 +79,7 @@ class BookTopMenuState extends State<BookTopMenu> {
                   icon: Icons.title_outlined,
                   onPressed: widget.onTextCreate,
                   hasShadow: false,
-                  tooltip: CretaStudioLang.tooltipText,
+                  tooltip: CretaStudioLang['tooltipText']!,
                 ),
               if (StudioVariables.displayWidth > 550) SizedBox(width: widget.padding / 2),
               if (StudioVariables.displayWidth > 550)
@@ -87,7 +87,7 @@ class BookTopMenuState extends State<BookTopMenu> {
                   icon: Icons.space_dashboard_outlined,
                   onPressed: widget.onFrameCreate,
                   hasShadow: false,
-                  tooltip: CretaStudioLang.tooltipFrame,
+                  tooltip: CretaStudioLang['tooltipFrame']!,
                 ),
               if (StudioVariables.displayWidth > 1000) SizedBox(width: widget.padding),
               if (StudioVariables.displayWidth > 1000)
@@ -96,7 +96,7 @@ class BookTopMenuState extends State<BookTopMenu> {
                   onManualScale: widget.onManualScale,
                   onAutoScale: widget.onAutoScale,
                   hasShadow: false,
-                  tooltip: CretaStudioLang.tooltipScale,
+                  tooltip: CretaStudioLang['tooltipScale']!,
                   extended: CretaIconToggleButton(
                     key: const ValueKey('HandToolToggleButton'),
                     buttonStyle: ToggleButtonStyle.fill_gray_i_m,
@@ -104,8 +104,8 @@ class BookTopMenuState extends State<BookTopMenu> {
                     icon1: Icons.transit_enterexit_outlined,
                     icon2: Icons.pan_tool_outlined,
                     tooltip: StudioVariables.isHandToolMode
-                        ? CretaStudioLang.tooltipEdit
-                        : CretaStudioLang.tooltipNoneEdit,
+                        ? CretaStudioLang['tooltipEdit']!
+                        : CretaStudioLang['tooltipNoneEdit']!,
                     onPressed: () {
                       StudioVariables.isHandToolMode = !StudioVariables.isHandToolMode;
                       BookMainPage.bookManagerHolder!.notify();
@@ -119,7 +119,7 @@ class BookTopMenuState extends State<BookTopMenu> {
                   toggleValue: StudioVariables.isMute,
                   icon1: Icons.volume_off_outlined,
                   icon2: Icons.volume_up_outlined,
-                  tooltip: CretaStudioLang.tooltipVolume,
+                  tooltip: CretaStudioLang['tooltipVolume']!,
                   buttonSize: 20,
                   onPressed: () {
                     StudioVariables.globalToggleMute();
@@ -132,7 +132,7 @@ class BookTopMenuState extends State<BookTopMenu> {
                   toggleValue: StudioVariables.isAutoPlay,
                   icon1: Icons.pause_outlined,
                   icon2: Icons.play_arrow,
-                  tooltip: CretaStudioLang.tooltipPause,
+                  tooltip: CretaStudioLang['tooltipPause']!,
                   buttonSize: StudioVariables.isAutoPlay ? 20 : 30,
                   onPressed: () {
                     //StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent);
@@ -153,7 +153,7 @@ class BookTopMenuState extends State<BookTopMenu> {
               //       });
               //     },
               //     hasShadow: false,
-              //     tooltip: CretaStudioLang.tooltipLink,
+              //     tooltip: CretaStudioLang['tooltipLink']!,
               //   ),
             ],
           ),

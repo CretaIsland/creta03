@@ -171,7 +171,7 @@ class _DepotSelectedState extends State<DepotSelected> {
       context: context,
       popupMenu: [
         CretaMenuItem(
-            caption: CretaStudioLang.tooltipDelete,
+            caption: CretaStudioLang['tooltipDelete']!,
             onPressed: () async {
               Set<DepotModel> targetList = DepotDisplay.ctrlSelectedSet;
               if (DepotDisplay.shiftSelectedSet.isNotEmpty) {

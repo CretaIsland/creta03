@@ -24,7 +24,7 @@ class NoAuthority extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                CretaLang.noAuth,
+                CretaLang['noAuth']!,
                 style: CretaFont.headlineLarge,
               ),
             ),
@@ -36,7 +36,7 @@ class NoAuthority extends StatelessWidget {
                 //fgColor: CretaColor.text[700]!,
                 width: 300,
                 height: 36,
-                text: isLogin ? CretaLang.gotoCommunity : CretaLang.home,
+                text: isLogin ? CretaLang['gotoCommunity']! : CretaLang['home']!,
                 //image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
                 //image:
                 //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),

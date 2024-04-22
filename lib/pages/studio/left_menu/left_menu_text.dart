@@ -50,7 +50,7 @@ class _LeftMenuTextState extends State<LeftMenuText> {
   @override
   void initState() {
     logger.fine('_LeftMenuPageState.initState');
-    _selectedTab = CretaStudioLang.textMenuTabBar.values.first;
+    _selectedTab = CretaStudioLang['textMenuTabBar']!.values.first;
     super.initState();
   }
 
@@ -84,8 +84,8 @@ class _LeftMenuTextState extends State<LeftMenuText> {
           selectedColor: Colors.white,
           unSelectedColor: CretaColor.text[100]!,
           defaultSelected: _selectedTab,
-          buttonLables: CretaStudioLang.textMenuTabBar.keys.toList(),
-          buttonValues: CretaStudioLang.textMenuTabBar.values.toList(),
+          buttonLables: CretaStudioLang['textMenuTabBar']!.keys.toList(),
+          buttonValues: CretaStudioLang['textMenuTabBar']!.values.toList(),
           selectedBorderColor: Colors.transparent,
           unSelectedBorderColor: Colors.transparent,
           elevation: 0,
@@ -98,7 +98,7 @@ class _LeftMenuTextState extends State<LeftMenuText> {
   }
 
   Widget _textView() {
-    List<String> menu = CretaStudioLang.textMenuTabBar.values.toList();
+    List<String> menu = CretaStudioLang['textMenuTabBar']!.values.toList();
     if (_selectedTab == menu[0]) {
       // 텍스트 추가
       return Container(

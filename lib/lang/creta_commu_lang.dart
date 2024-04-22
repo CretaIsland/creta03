@@ -1,34 +1,39 @@
+import 'package:creta_common/common/creta_common_utils.dart';
 import 'package:creta_common/model/app_enums.dart';
 
-import 'creta_commu_lang_en.dart';
-import 'creta_commu_lang_jp.dart';
-import 'creta_commu_lang_kr.dart';
-import 'creta_commu_lang_mixin.dart';
+// import 'creta_device_lang_en.dart';
+// import 'creta_device_lang_jp.dart';
+// import 'creta_device_lang_kr.dart';
+// import 'creta_device_lang_mixin.dart';
 
 // ignore: non_constant_identifier_names
-AbsCretaCommuLang CretaCommuLang = CretaCommuLangKR();
+Map<String, dynamic> CretaCommuLang = {};
 
-abstract class AbsCretaCommuLang with CretaCommuLangMixin {
+abstract class AbsCretaCommuLang /*with CretaCommuLangMixin*/ {
   //LanguageType language = LanguageType.korean;
 
   AbsCretaCommuLang();
 
-  static AbsCretaCommuLang cretaLangFactory(LanguageType language) {
+  static Future<Map<String, dynamic>> cretaLangFactory(LanguageType language) async {
+    late String lang;
     switch (language) {
       case LanguageType.korean:
-        return CretaCommuLangKR();
+        lang = 'lang/creta_lang_commu_kr.json';
+        break;
       case LanguageType.english:
-        return CretaCommuLangEN();
-      // case LanguageType.chinese:
-      //   return CretaLangChn();
+        lang = 'lang/creta_lang_commu_en.json';
+        break;
       case LanguageType.japanese:
-        return CretaCommuLangJP();
+        lang = 'lang/creta_lang_commu_jp.json';
+        break;
       default:
-        return CretaCommuLangKR();
+        lang = 'lang/creta_lang_commu_kr.json';
+        break;
     }
+    return await CretaCommonUtils.readJsonFromAssets(lang);
   }
 
-  static void changeLang(LanguageType language) {
-    CretaCommuLang = cretaLangFactory(language);
+  static Future<void> changeLang(LanguageType language) async {
+    CretaCommuLang = await cretaLangFactory(language);
   }
 }

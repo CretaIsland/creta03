@@ -501,7 +501,7 @@ class MyTreeViewState extends State<MyTreeView> {
   //       BTN.fill_blue_i_m(
   //         fgColor: CretaColor.text[700]!,
   //         buttonColor: CretaButtonColor.forTree,
-  //         tooltip: CretaStudioLang.showUnshow,
+  //         tooltip: CretaStudioLang['showUnshow']!,
   //         tooltipBg: CretaColor.text[200]!,
   //         icon: _isShow(model) ? Icons.visibility_outlined : Icons.visibility_off_outlined,
   //         onPressed: () {
@@ -514,7 +514,7 @@ class MyTreeViewState extends State<MyTreeView> {
   //       BTN.fill_blue_i_m(
   //         fgColor: CretaColor.text[700]!,
   //         buttonColor: CretaButtonColor.forTree,
-  //         tooltip: CretaStudioLang.tooltipDelete,
+  //         tooltip: CretaStudioLang['tooltipDelete']!,
   //         tooltipBg: CretaColor.text[200]!,
   //         //iconImageFile: "assets/delete.svg",
   //         icon: Icons.delete,
@@ -546,7 +546,7 @@ class MyTreeViewState extends State<MyTreeView> {
     return BTN.fill_blue_i_m(
       fgColor: CretaColor.text[700]!,
       buttonColor: CretaButtonColor.forTree,
-      tooltip: CretaStudioLang.showUnshow,
+      tooltip: CretaStudioLang['showUnshow']!,
       tooltipBg: CretaColor.text[200]!,
       icon: _isShow(model) ? Icons.visibility_outlined : Icons.visibility_off_outlined,
       onPressed: () {
@@ -562,7 +562,7 @@ class MyTreeViewState extends State<MyTreeView> {
     return BTN.fill_blue_i_m(
       fgColor: CretaColor.text[700]!,
       buttonColor: CretaButtonColor.forTree,
-      tooltip: CretaStudioLang.tooltipDelete,
+      tooltip: CretaStudioLang['tooltipDelete']!,
       tooltipBg: CretaColor.text[200]!,
       //iconImageFile: "assets/delete.svg",
       icon: Icons.delete,

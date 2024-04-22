@@ -10,7 +10,7 @@ class SampleData {
 
   static initSample() {
     sampleBook.name
-        .set(CretaLang.sampleBookName, save: false, noUndo: true, dontChangeBookTime: true);
+        .set(CretaLang['sampleBookName']!, save: false, noUndo: true, dontChangeBookTime: true);
     sampleBook.width
         .set(CretaVars.defaultSize().width, save: false, noUndo: true, dontChangeBookTime: true);
     sampleBook.height

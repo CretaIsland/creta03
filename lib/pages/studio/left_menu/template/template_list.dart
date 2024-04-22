@@ -110,7 +110,7 @@ class _TemplateListClassState extends State<TemplateList> {
               padding: EdgeInsets.symmetric(vertical: verticalPadding),
               height: 332.0,
               alignment: Alignment.center,
-              child: Text(CretaLang.nodatafounded),
+              child: Text(CretaLang['nodatafounded']!),
             );
           }
           return SingleChildScrollView(
@@ -232,19 +232,19 @@ class _TemplateListClassState extends State<TemplateList> {
       context: context,
       popupMenu: [
         CretaMenuItem(
-            caption: CretaStudioLang.tooltipDelete,
+            caption: CretaStudioLang['tooltipDelete']!,
             onPressed: () async {
               BookMainPage.templateManagerHolder!.deleteModel(templateModel!);
             }),
         CretaMenuItem(
-            caption: CretaStudioLang.tooltipApply,
+            caption: CretaStudioLang['tooltipApply']!,
             onPressed: () async {
               int pageCount = BookMainPage.pageManagerHolder!.getAvailLength();
               BookModel? book = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
               PageModel pageModel = PageModel('', book!);
               pageModel.copyFrom(templateModel!, newMid: pageModel.mid);
               pageModel.parentMid.set(book.mid);
-              pageModel.name.set('${CretaLang.noNamepage} ${pageCount + 1}');
+              pageModel.name.set('${CretaLang['noNamepage']!} ${pageCount + 1}');
               pageModel.setRealTimeKey(book.mid);
               pageModel.order.set(BookMainPage.pageManagerHolder!.safeLastOrder() + 1);
 

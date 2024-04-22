@@ -72,11 +72,11 @@ class HostGridItemState extends State<HostGridItem> {
 
     // _popupMenuList = [
     //   CretaMenuItem(
-    //     caption: CretaLang.play,
+    //     caption: CretaLang['play']!,
     //     onPressed: () {},
     //   ),
     //   CretaMenuItem(
-    //     caption: CretaLang.edit,
+    //     caption: CretaLang['edit']!,
     //     onPressed: () {
     //       widget.onEdit.call(widget.hostModel);
     //     },
@@ -170,7 +170,7 @@ class HostGridItemState extends State<HostGridItem> {
       bgColor: CretaColor.text[100]!,
       fgColor: CretaColor.primary[300]!,
       fgSelectedColor: CretaColor.primary,
-      caption: CretaDeviceLang.newHost,
+      caption: CretaDeviceLang['newHost']!,
       captionStyle: CretaFont.bodyMedium,
       radius: 20.0,
       onPressed: insertItem,
@@ -285,8 +285,8 @@ class HostGridItemState extends State<HostGridItem> {
                   padding: const EdgeInsets.symmetric(horizontal: 4.0),
                   child: Text(
                     widget.hostModel!.isValidLicense
-                        ? CretaDeviceLang.licensed
-                        : CretaDeviceLang.unLicensed,
+                        ? CretaDeviceLang['licensed']!
+                        : CretaDeviceLang['unLicensed']!,
                     overflow: TextOverflow.fade,
                     style: CretaFont.buttonSmall.copyWith(color: Colors.white),
                   ),
@@ -299,7 +299,9 @@ class HostGridItemState extends State<HostGridItem> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4.0),
                   child: Text(
-                    widget.hostModel!.isUsed ? CretaDeviceLang.used : CretaDeviceLang.unUsed,
+                    widget.hostModel!.isUsed
+                        ? CretaDeviceLang['used']!
+                        : CretaDeviceLang['unUsed']!,
                     overflow: TextOverflow.fade,
                     style: CretaFont.buttonSmall.copyWith(color: Colors.white),
                   ),
@@ -313,11 +315,11 @@ class HostGridItemState extends State<HostGridItem> {
                         logger.finest('delete pressed');
                         CretaPopup.yesNoDialog(
                           context: context,
-                          title: CretaLang.deleteConfirmTitle,
+                          title: CretaLang['deleteConfirmTitle']!,
                           icon: Icons.file_download_outlined,
-                          question: CretaLang.deleteConfirm,
-                          noBtText: CretaStudioLang.noBtDnText,
-                          yesBtText: CretaStudioLang.yesBtDnText,
+                          question: CretaLang['deleteConfirm']!,
+                          noBtText: CretaStudioLang['noBtDnText']!,
+                          yesBtText: CretaStudioLang['yesBtDnText']!,
                           yesIsDefault: true,
                           onNo: () {
                             //Navigator.of(context).pop();
@@ -348,9 +350,9 @@ class HostGridItemState extends State<HostGridItem> {
                         //     builder: (context) {
                         //       return CretaAlertDialog(
                         //         height: 200,
-                        //         title: CretaLang.deleteConfirmTitle,
+                        //         title: CretaLang['deleteConfirmTitle']!,
                         //         content: Text(
-                        //           CretaLang.deleteConfirm,
+                        //           CretaLang['deleteConfirm']!,
                         //           style: CretaFont.titleMedium,
                         //         ),
                         //         onPressedOK: () async {
@@ -378,7 +380,7 @@ class HostGridItemState extends State<HostGridItem> {
                         //       );
                         //     });
                       },
-                      tooltip: CretaStudioLang.tooltipDelete,
+                      tooltip: CretaStudioLang['tooltipDelete']!,
                     ),
                   ),
                 Padding(
@@ -404,7 +406,7 @@ class HostGridItemState extends State<HostGridItem> {
                       //   dropDownButtonOpened = !dropDownButtonOpened;
                       // });
                     },
-                    tooltip: CretaStudioLang.tooltipMenu,
+                    tooltip: CretaStudioLang['tooltipMenu']!,
                   ),
                 ),
               ],
@@ -543,7 +545,7 @@ class HostGridItemState extends State<HostGridItem> {
     // int randomNumber = random.nextInt(1000);
     // int modelIdx = randomNumber % 10;
     // HostModel host = HostModel.withName(
-    //   '${CretaStudioLang.newhost}_$randomNumber',
+    //   '${CretaStudioLang['newhost']!}_$randomNumber',
     //   creator: AccountManager.currentLoginUser.email,
     //   creatorName: AccountManager.currentLoginUser.name,
     //   imageUrl: 'https://picsum.photos/200/?random=$modelIdx',
@@ -569,7 +571,7 @@ class HostGridItemState extends State<HostGridItem> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(CretaDeviceLang.inputHostInfo),
+          title: Text(CretaDeviceLang['inputHostInfo']!),
           content: SizedBox(
             height: 200,
             child: Form(
@@ -581,10 +583,10 @@ class HostGridItemState extends State<HostGridItem> {
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
                       onChanged: (value) => hostId = value,
-                      decoration: InputDecoration(hintText: CretaDeviceLang.deviceId),
+                      decoration: InputDecoration(hintText: CretaDeviceLang['deviceId']!),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return CretaDeviceLang.shouldInputDeviceId;
+                          return CretaDeviceLang['shouldInputDeviceId']!;
                         }
                         return null;
                       },
@@ -594,10 +596,10 @@ class HostGridItemState extends State<HostGridItem> {
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
                       onChanged: (value) => hostName = value,
-                      decoration: InputDecoration(hintText: CretaDeviceLang.deviceName),
+                      decoration: InputDecoration(hintText: CretaDeviceLang['deviceName']!),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return CretaDeviceLang.shouldInputDeviceName;
+                          return CretaDeviceLang['shouldInputDeviceName']!;
                         }
                         return null;
                       },

@@ -79,7 +79,7 @@ mixin LeftMenuMixin {
 
   Widget closeButton({required IconData icon, required Function onClose}) {
     return BTN.fill_gray_i_m(
-      tooltip: CretaStudioLang.close,
+      tooltip: CretaStudioLang['close']!,
       tooltipBg: CretaColor.text[700]!,
       icon: icon,
       onPressed: () async {

@@ -280,7 +280,7 @@ class LeftMenuPageState extends State<LeftMenuPage> {
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: BTN.fill_gray_100_i_m(
-                tooltip: CretaStudioLang.newPage,
+                tooltip: CretaStudioLang['newPage']!,
                 tooltipBg: CretaColor.text[700]!,
                 icon: Icons.add_outlined,
                 onPressed: (() {
@@ -293,7 +293,7 @@ class LeftMenuPageState extends State<LeftMenuPage> {
             Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: BTN.fill_gray_100_i_m(
-                  tooltip: CretaStudioLang.treePage,
+                  tooltip: CretaStudioLang['treePage']!,
                   tooltipBg: CretaColor.text[700]!,
                   icon: LeftMenuPage._flipToTree
                       ? Icons.account_tree_outlined
@@ -454,7 +454,7 @@ class LeftMenuPageState extends State<LeftMenuPage> {
               children: [
                 if (_pageManager!.isSelected(model.mid) == false)
                   BTN.fill_blue_i_menu(
-                      tooltip: CretaStudioLang.linkFrameTooltip,
+                      tooltip: CretaStudioLang['linkFrameTooltip']!,
                       tooltipFg: CretaColor.text,
                       icon: LinkParams.isLinkNewMode
                           ? Icons.close
@@ -479,7 +479,7 @@ class LeftMenuPageState extends State<LeftMenuPage> {
                         }
                       }),
                 BTN.fill_gray_i_m(
-                    tooltip: CretaStudioLang.copy,
+                    tooltip: CretaStudioLang['copy']!,
                     tooltipBg: CretaColor.text[700]!,
                     icon: Icons.content_copy_outlined,
                     onPressed: () async {
@@ -490,8 +490,8 @@ class LeftMenuPageState extends State<LeftMenuPage> {
                     }),
                 BTN.fill_gray_i_m(
                   tooltip: model.isTimeBase()
-                      ? CretaStudioLang.timeBasePage
-                      : CretaStudioLang.showUnshow,
+                      ? CretaStudioLang['timeBasePage']!
+                      : CretaStudioLang['showUnshow']!,
                   tooltipBg: CretaColor.text[700]!,
                   icon: model.isTimeBase()
                       ? Icons.timer_outlined
@@ -505,7 +505,7 @@ class LeftMenuPageState extends State<LeftMenuPage> {
                   },
                 ),
                 BTN.fill_gray_image_m(
-                  tooltip: CretaStudioLang.tooltipDelete,
+                  tooltip: CretaStudioLang['tooltipDelete']!,
                   tooltipBg: CretaColor.text[700]!,
                   iconImageFile: "assets/delete.svg",
                   onPressed: () {
@@ -527,7 +527,7 @@ class LeftMenuPageState extends State<LeftMenuPage> {
                 ),
                 if (_pageManager!.isSelected(model.mid) == true)
                   BTN.fill_gray_i_m(
-                    tooltip: CretaStudioLang.newTemplate,
+                    tooltip: CretaStudioLang['newTemplate']!,
                     tooltipBg: CretaColor.text[700]!,
                     icon: Icons.file_copy,
                     onPressed: () {
@@ -535,7 +535,7 @@ class LeftMenuPageState extends State<LeftMenuPage> {
                     },
                   ),
                 //  BTN.fill_gray_i_m(
-                //   tooltip: CretaStudioLang.tooltipDelete,
+                //   tooltip: CretaStudioLang['tooltipDelete']!,
                 //   tooltipBg: CretaColor.text[700]!,
                 //   icon: Icons.delete_outlined,
                 //   onPressed: () {
@@ -765,13 +765,13 @@ class LeftMenuPageState extends State<LeftMenuPage> {
           context: context,
           popupMenu: [
             CretaMenuItem(
-                caption: CretaStudioLang.copy,
+                caption: CretaStudioLang['copy']!,
                 onPressed: () {
                   StudioVariables.clipPage(model, _pageManager!);
                   //widget.onFrameShowUnshow.call(frameModel.mid);
                 }),
             CretaMenuItem(
-                caption: CretaStudioLang.crop,
+                caption: CretaStudioLang['crop']!,
                 onPressed: () {
                   model.isRemoved.set(true);
                   StudioVariables.cropPage(model, _pageManager!);
@@ -783,7 +783,7 @@ class LeftMenuPageState extends State<LeftMenuPage> {
                     StudioVariables.clipBoard != null && StudioVariables.clipBoardDataType == 'page'
                         ? false
                         : true,
-                caption: CretaStudioLang.paste,
+                caption: CretaStudioLang['paste']!,
                 onPressed: () {
                   if (StudioVariables.clipBoard is PageModel?) {
                     PageModel? page = StudioVariables.clipBoard as PageModel?;
@@ -796,7 +796,7 @@ class LeftMenuPageState extends State<LeftMenuPage> {
                 }),
             // if (_pageManager!.isSelected(model.mid) == true)
             //   CretaMenuItem(
-            //       caption: CretaStudioLang.newTemplate,
+            //       caption: CretaStudioLang['newTemplate']!,
             //       onPressed: () async {
             //         Navigator.of(context).pop();
             //         await _saveAsTemplate(model);
@@ -839,7 +839,7 @@ class LeftMenuPageState extends State<LeftMenuPage> {
       context: context,
       builder: (BuildContext context) {
         return CretaAlertDialog(
-          title: CretaStudioLang.inputTemplateName,
+          title: CretaStudioLang['inputTemplateName']!,
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -847,7 +847,7 @@ class LeftMenuPageState extends State<LeftMenuPage> {
                 controller: templateNameController,
                 autofocus: true,
                 decoration: InputDecoration(
-                  labelText: CretaStudioLang.inputTemplateName,
+                  labelText: CretaStudioLang['inputTemplateName']!,
                 ),
                 onSubmitted: (value) {
                   Navigator.of(context).pop(value);
@@ -856,7 +856,7 @@ class LeftMenuPageState extends State<LeftMenuPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 28.0),
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  Text(CretaStudioLang.saveAsSharedTemplate, style: CretaFont.bodyMedium),
+                  Text(CretaStudioLang['saveAsSharedTemplate']!, style: CretaFont.bodyMedium),
                   CretaToggleButton(
                       width: 54,
                       height: 28,
@@ -889,7 +889,7 @@ class LeftMenuPageState extends State<LeftMenuPage> {
               CircularProgressIndicator(),
               Padding(
                 padding: EdgeInsets.only(left: 10),
-                child: Text(CretaStudioLang.templateCreating, style: CretaFont.bodyMedium),
+                child: Text(CretaStudioLang['templateCreating']!, style: CretaFont.bodyMedium),
               ),
             ],
           ),
@@ -916,10 +916,10 @@ class LeftMenuPageState extends State<LeftMenuPage> {
 
       //print('templateModel.thumbnailUrl = ${templateModel.thumbnailUrl.value}');
 
-      String message = CretaStudioLang.templateCreated;
+      String message = CretaStudioLang['templateCreated']!;
       if (alreadyExistMid != null) {
         BookMainPage.templateManagerHolder!.setToDB(templateModel);
-        message = CretaStudioLang.templateUpdated;
+        message = CretaStudioLang['templateUpdated']!;
       } else {
         BookMainPage.templateManagerHolder!.createToDB(templateModel);
       }
@@ -1007,7 +1007,7 @@ class LeftMenuPageState extends State<LeftMenuPage> {
                     StudioVariables.clipBoard != null && StudioVariables.clipBoardDataType == 'page'
                         ? false
                         : true,
-                caption: CretaStudioLang.paste,
+                caption: CretaStudioLang['paste']!,
                 onPressed: () {
                   if (StudioVariables.clipBoard is PageModel?) {
                     PageModel? page = StudioVariables.clipBoard as PageModel?;
@@ -1065,7 +1065,7 @@ class LeftMenuPageState extends State<LeftMenuPage> {
                     SizedBox(height: widget.isFolded ? 12 * widthScale : 12), // added by Mai 230516
                     if (!widget.isFolded)
                       Text(
-                        CretaStudioLang.newPage,
+                        CretaStudioLang['newPage']!,
                         style: CretaFont.buttonLarge,
                       )
                   ],

@@ -30,7 +30,7 @@ class StickMenu extends StatefulWidget {
   // static List<bool> selected = [];
 
   // static void select(int n) {
-  //   int len = CretaStudioLang.menuIconList.length;
+  //   int len = CretaStudioLang['menuIconList']!.length;
   //   for (int i = 0; i < len; i++) {
   //     if (i == n && BookMainPage.selectedStick != LeftMenuEnum.None) {
   //       selected[i] = true;
@@ -42,7 +42,7 @@ class StickMenu extends StatefulWidget {
 
   // static void initSelect() {
   //   selected.clear();
-  //   int len = CretaStudioLang.menuIconList.length;
+  //   int len = CretaStudioLang['menuIconList']!.length;
   //   for (int i = 0; i < len; i++) {
   //     selected.add(false);
   //   }
@@ -50,6 +50,20 @@ class StickMenu extends StatefulWidget {
 }
 
 class _StickMenuState extends State<StickMenu> {
+  List<IconData> menuIconList = [
+    Icons.library_books_outlined, //Icons.dynamic_feed_outlined, //MaterialIcons.dynamic_feed,
+    Icons.insert_drive_file_outlined, //MaterialIcons.insert_drive_file,
+    Icons.space_dashboard_outlined,
+    Icons.inventory_2_outlined,
+    Icons.image_outlined,
+    Icons.slideshow_outlined,
+    Icons.title_outlined,
+    Icons.pentagon_outlined,
+    Icons.interests_outlined,
+    Icons.photo_camera_outlined,
+    Icons.chat_outlined,
+  ];
+
   @override
   void initState() {
     logger.finest('StickMenu::initState');
@@ -81,12 +95,12 @@ class _StickMenuState extends State<StickMenu> {
           ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false), // 스크롤바 감추기,
         child: ListView(
-          children: CretaStudioLang.menuIconList.map((iconData) {
-            int idx = CretaStudioLang.menuIconList.indexOf(iconData);
+          children: menuIconList.map((iconData) {
+            int idx = menuIconList.indexOf(iconData);
             return NavBarItem(
               menuType: LeftMenuEnum.values[idx],
               iconData: iconData,
-              title: CretaStudioLang.menuStick[idx],
+              title: CretaStudioLang['menuStick']![idx],
               onTap: () {
                 if (AccountManager.currentLoginUser.isLoginedUser == false && idx == 3) {
                   // 보관함의 경우

@@ -102,7 +102,7 @@ class _BookSelectFilterState extends State<BookSelectFilter> {
             //   },
             // ),
             CretaSearchBar(
-              hintText: CretaLang.searchBar,
+              hintText: CretaLang['searchBar']!,
               onSearch: (value) {
                 if (kDebugMode) print('widget.onSearch($value)');
                 //bookManagerHolder!.onSearch(value, () => setState(() {}));

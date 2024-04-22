@@ -30,16 +30,16 @@ class CretaAlertDialog extends StatelessWidget {
       this.padding = const EdgeInsets.only(left: 32.0, right: 32.0),
       this.icon,
       required this.content,
-      this.cancelButtonText, // = CretaLang.cancel,
-      this.okButtonText, // = CretaLang.confirm,
+      this.cancelButtonText, // = CretaLang['cancel']!,
+      this.okButtonText, // = CretaLang['confirm']!,
       this.okButtonWidth = 55,
       this.backgroundColor,
       this.title,
       this.titleTrail,
       required this.onPressedOK,
       this.onPressedCancel}) {
-    cancelButtonText ??= CretaLang.cancel;
-    okButtonText ??= CretaLang.confirm;
+    cancelButtonText ??= CretaLang['cancel']!;
+    okButtonText ??= CretaLang['confirm']!;
   }
 
   @override

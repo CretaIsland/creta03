@@ -43,8 +43,8 @@ class _LeftMenuQuoteState extends State<LeftMenuQuote> {
             spacing: 6.0,
             runSpacing: 12.0,
             children: [
-              _getElement(FrameType.dailyQuote, CretaStudioLang.dailyQuote),
-              _getElement(FrameType.dailyWord, CretaStudioLang.dailyWord),
+              _getElement(FrameType.dailyQuote, CretaStudioLang['dailyQuote']!),
+              _getElement(FrameType.dailyWord, CretaStudioLang['dailyWord']!),
             ],
           ),
         ),
