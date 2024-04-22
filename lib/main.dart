@@ -137,7 +137,6 @@ class _MainRouteAppState extends ConsumerState<MainRouteApp> {
           }
           if (snapshot.hasData == false) {
             logger.finest("wait data ...(WaitData)");
-            print("----------------------------saaaaaa");
             return Directionality(
               textDirection: TextDirection.ltr, // or TextDirection.rtl, as needed
               child: Center(
