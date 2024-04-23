@@ -93,6 +93,7 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
   Future<bool>? initLang() async {
     UserPropertyModel? userModel = CretaAccountManager.userPropertyManagerHolder.userPropertyModel;
     if (userModel != null) {
+      //print('initLang-----------------------------------${userModel.language}');
       await Snippet.setLang(userModel.language);
     }
     for (var element in CretaMyPageLang['languageList']!) {
@@ -122,6 +123,7 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
             return const Center(child: Text('data fetch error(WaitDatum)'));
           }
           if (snapshot.hasData == false) {
+            //print('xxxxxxxxxxxxxxxxxxxxx');
             logger.finest("wait data ...(WaitData)");
             return Center(
               child: CretaSnippet.showWaitSign(),
@@ -386,6 +388,7 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
       if (langStr.length > 3) {
         langStr = langStr.substring(0, 3);
       }
+      //print('${userModel.language.index}--------------------------------------------');
       //print('$langStr--------------------------------------------');
 
       const GlobalObjectKey langSettingKey = GlobalObjectKey('_langSettingKey');

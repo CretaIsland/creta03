@@ -77,7 +77,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   late List<CretaMenuItem> _dropDownMenuItemListPermission;
   late List<CretaMenuItem> _dropDownMenuItemListSort;
 
-  late final Widget Function(Size)? _titlePane;
+  late Widget Function(Size)? _titlePane;
 
   final ScrollController _rightOverlayPaneScrollController = ScrollController();
 

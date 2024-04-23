@@ -1128,6 +1128,9 @@ class Snippet {
     required Function() invalidate,
   }) async {
     userPropertyManager.userPropertyModel!.language = LanguageType.fromInt(value);
+    //userPropertyManager.userPropertyModel!.save();
+    userPropertyManager.setToDB(userPropertyManager.userPropertyModel!);
+    //print('onLangSelected=${userPropertyManager.userPropertyModel!.language}');
     await setLang(userPropertyManager.userPropertyModel!.language);
     invalidate();
   }
