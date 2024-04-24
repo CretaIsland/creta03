@@ -22,6 +22,7 @@ import '../../design_system/menu/creta_popup_menu.dart';
 //import 'package:image_network/image_network.dart';
 //import 'package:cached_network_image/cached_network_image.dart';
 //import '../../common/cross_common_job.dart';
+import '../../lang/creta_commu_lang.dart';
 import '../../routes.dart';
 //import 'sub_pages/community_left_menu_pane.dart';
 //import 'community_sample_data.dart';
@@ -87,11 +88,11 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
         GlobalObjectKey('CretaPlaylistItemState.${widget.playlistModel.getMid}.popmenu');
     _popupMenuList = [
       CretaMenuItem(
-        caption: '재생목록 수정',
+        caption: CretaCommuLang['playListModify'],
         onPressed: _editPlaylistProperty,
       ),
       CretaMenuItem(
-        caption: '재생목록 삭제',
+        caption: CretaCommuLang['playListDelete'],
         onPressed: _deletePlaylist,
       ),
     ];
@@ -170,12 +171,12 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
               Row(
                 children: [
                   Text(
-                    '영상 ${widget.playlistModel.bookIdList.length}개',
+                    '${CretaCommuLang['videoCount']} ${widget.playlistModel.bookIdList.length}',
                     style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[400]),
                   ),
                   SizedBox(width: 8),
                   Text(
-                    '최근 업데이트 ${CretaCommonUtils.dateToDurationString(widget.playlistModel.updateTime)}',
+                    '${CretaCommuLang['recentUpdates']} ${CretaCommonUtils.dateToDurationString(widget.playlistModel.updateTime)}',
                     style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[400]),
                   ),
                 ],
@@ -201,7 +202,7 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
                 uri: Uri.parse(showDetailLinkUrl),
                 builder: (context, function) {
                   return BTN.fill_gray_t_m(
-                    text: '전체보기',
+                    text: CretaCommuLang['viewAll'],
                     width: 77,
                     height: 32,
                     onPressed: () {
@@ -218,7 +219,7 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
                   return BTN.fill_blue_t_m(
                     width: 77,
                     height: 32,
-                    text: '재생하기',
+                    text: CretaCommuLang['play'],
                     onPressed: () {
                       if (playDetailLinkUrl.isNotEmpty) {
                         Routemaster.of(context).push(playDetailLinkUrl);

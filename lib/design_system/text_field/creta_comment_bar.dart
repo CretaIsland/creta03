@@ -17,6 +17,7 @@ import 'package:creta_common/common/creta_font.dart';
 import '../../design_system/buttons/creta_button.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import 'package:creta_common/model/app_enums.dart';
+import '../../lang/creta_commu_lang.dart';
 import '../../model/comment_model.dart';
 
 class CretaCommentBar extends StatefulWidget {
@@ -194,7 +195,7 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
               (!_hover || widget.onClickedModify == null)
                   ? SizedBox(height: 20)
                   : BTN.fill_gray_t_es(
-                      text: '수정하기',
+                      text: CretaCommuLang['modify'],
                       onPressed: () {
                         setState(() {
                           _isEditMode = true;
@@ -208,7 +209,7 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
               (!_hover || widget.onClickedRemove == null)
                   ? SizedBox(height: 20)
                   : BTN.fill_gray_t_es(
-                      text: '삭제하기',
+                      text: CretaCommuLang['delete'],
                       onPressed: () {
                         setState(() {
                           if (kDebugMode) print('widget.onRemoveComment.call(${widget.data.mid})');
@@ -245,7 +246,7 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
               : Container(
                   padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
                   child: BTN.fill_gray_t_es(
-                    text: '자세히 보기',
+                    text: CretaCommuLang['viewDetails'],
                     onPressed: () {
                       setState(() {
                         _showMoreButton = false;
@@ -284,7 +285,7 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
           Container(
             padding: EdgeInsets.fromLTRB(8, 3, 0, 0),
             child: BTN.fill_blue_t_m(
-              text: '댓글 등록',
+              text: CretaCommuLang['writeComment'],
               width: 81,
               onPressed: () {
                 setState(() {
@@ -316,7 +317,7 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
               : Container(
                   padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
                   child: BTN.fill_gray_t_es(
-                    text: '답글달기',
+                    text: CretaCommuLang['replyToComment'],
                     width: 61,
                     buttonColor: CretaButtonColor.gray100light,
                     onPressed: () {
@@ -328,7 +329,7 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
           (widget.data.hasNoReply)
               ? Container()
               : BTN.fill_gray_t_es(
-                  text: '답글 ${widget.data.replyList.length}개',
+                  text: '${CretaCommuLang['reply']} ${widget.data.replyList.length}',
                   width: null,
                   buttonColor: CretaButtonColor.gray100blue,
                   textColor: CretaColor.primary[400],
@@ -413,7 +414,7 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
               Container(
                 padding: EdgeInsets.fromLTRB(8, 3, 0, 0),
                 child: BTN.fill_blue_t_m(
-                  text: '댓글 수정',
+                  text: CretaCommuLang['editComment'],
                   width: 81,
                   onPressed: () {
                     setState(() {
@@ -427,7 +428,7 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
               Container(
                 padding: EdgeInsets.fromLTRB(8, 3, 0, 0),
                 child: BTN.fill_blue_t_m(
-                  text: '취소',
+                  text: CretaCommuLang['cancel'],
                   width: 81,
                   onPressed: () {
                     setState(() {
@@ -472,7 +473,7 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
               Container(
                 padding: EdgeInsets.fromLTRB(8, 3, 0, 0),
                 child: BTN.fill_blue_t_m(
-                  text: '답글 등록',
+                  text: CretaCommuLang['postReply'],
                   width: 81,
                   onPressed: () {
                     setState(() {
@@ -487,7 +488,7 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
               Container(
                 padding: EdgeInsets.fromLTRB(8, 3, 0, 0),
                 child: BTN.fill_blue_t_m(
-                  text: '취소',
+                  text: CretaCommuLang['cancel'],
                   width: 81,
                   onPressed: () {
                     widget.onClickedRemove?.call(widget.data);

@@ -5,6 +5,8 @@ import 'package:creta03/lang/creta_mypage_lang.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 
+import '../../../lang/creta_commu_lang.dart';
+
 class ChangePwdPopUp {
   static String _nowPassword = '';
   static String _newPassword = '';
@@ -14,7 +16,7 @@ class ChangePwdPopUp {
     return CretaDialog(
       width: 406.0,
       height: 289.0,
-      title: '비밀번호 변경',
+      title: CretaCommuLang['changePassword'],
       crossAxisAlign: CrossAxisAlignment.center,
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

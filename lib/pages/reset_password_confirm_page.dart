@@ -12,6 +12,7 @@ import 'package:creta_common/common/creta_color.dart';
 import '../../design_system/buttons/creta_button.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/dialog/creta_dialog.dart';
+import '../lang/creta_commu_lang.dart';
 
 class ResetPasswordConfirmPage extends StatefulWidget {
   const ResetPasswordConfirmPage({
@@ -44,7 +45,8 @@ class _ResetPasswordConfirmPageState extends State<ResetPasswordConfirmPage> {
   void _doResetPasswordConfirm() {
     String newPassword = _newPasswordTextEditingController.text;
     if (HycopFactory.account == null) {
-      showSnackBar(context, '내부 에러가 발생하였습니다. 관리자에게 문의해주세요.');
+      showSnackBar(context, CretaCommuLang["internalError"]! //'내부 에러가 발생하였습니다. 관리자에게 문의해주세요.'
+          );
       return;
     }
 
@@ -58,12 +60,14 @@ class _ResetPasswordConfirmPageState extends State<ResetPasswordConfirmPage> {
       setState(() {
         _isJobProcessing = false;
         _successResetPassword = true;
-        showSnackBar(context, '비밀번호가 변경되었습니다.');
+        showSnackBar(context, CretaCommuLang["passwordChanged"]! //'비밀번호가 변경되었습니다.'
+            );
       });
     }).catchError((error, stackTrace) {
       setState(() {
         _isJobProcessing = false;
-        showSnackBar(context, '비밀번호를 변경할 수 없습니다.');
+        showSnackBar(context, CretaCommuLang["cantChangePassword"]! //'비밀번호를 변경할 수 없습니다.'
+            );
       });
     });
   }
@@ -84,7 +88,9 @@ class _ResetPasswordConfirmPageState extends State<ResetPasswordConfirmPage> {
           )
         : BTN.line_blue_iti_m(
             width: 326,
-            text: _successResetPassword ? '비밀번호가 변경되었습니다' : '비밀번호 변경',
+            text: _successResetPassword
+                ? CretaCommuLang["passwordChanged"]! //'비밀번호가 변경되었습니다'
+                : CretaCommuLang["passwordChanged"]!, //'비밀번호 변경',
             buttonColor: CretaButtonColor.skyTitle,
             decoType: CretaButtonDeco.fill,
             textColor: Colors.white,
@@ -93,7 +99,8 @@ class _ResetPasswordConfirmPageState extends State<ResetPasswordConfirmPage> {
               String newPasswordConfirm = _newPasswordConfirmTextEditingController.text;
               if (newPassword != newPasswordConfirm ||
                   !CretaCommonUtils.checkPasswordStrength(newPassword)) {
-                showSnackBar(context, '비밀번호를 다시 확인해주세요');
+                showSnackBar(context, CretaCommuLang["confirmPasswordAgain"]! //'비밀번호를 다시 확인해주세요'
+                    );
                 return;
               }
               _doResetPasswordConfirm();
@@ -166,7 +173,7 @@ class _ResetPasswordConfirmPageState extends State<ResetPasswordConfirmPage> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(40, 40, 0, 0),
                   child: Text(
-                    '비밀번호',
+                    CretaCommuLang["password"]!, //'비밀번호',
                     style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[400]),
                   ),
                 ),
@@ -179,7 +186,7 @@ class _ResetPasswordConfirmPageState extends State<ResetPasswordConfirmPage> {
                     height: 30,
                     value: '',
                     textType: CretaTextFieldType.password,
-                    hintText: '비밀번호 (6자~16자, 영문/숫자 필수)',
+                    hintText: CretaCommuLang["enterPassword"]!,
                     autofillHints: const [AutofillHints.newPassword],
                     onEditComplete: (value) {},
                     onChanged: checkPasswordStrength,
@@ -189,7 +196,7 @@ class _ResetPasswordConfirmPageState extends State<ResetPasswordConfirmPage> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(40, 32, 0, 0),
                   child: Text(
-                    '비밀번호 확인',
+                    CretaCommuLang["confirmPassword"]!, // '비밀번호 확인',
                     style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[400]),
                   ),
                 ),
@@ -202,7 +209,7 @@ class _ResetPasswordConfirmPageState extends State<ResetPasswordConfirmPage> {
                     height: 30,
                     value: '',
                     textType: CretaTextFieldType.password,
-                    hintText: '비밀번호 (6자~16자, 영문/숫자 필수)',
+                    hintText: CretaCommuLang["enterPassword"]!,
                     autofillHints: const [AutofillHints.newPassword],
                     onEditComplete: (value) {},
                     onChanged: checkPasswordConfirmStrength,

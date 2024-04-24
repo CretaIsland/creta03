@@ -36,6 +36,7 @@ import 'package:creta_common/common/creta_color.dart';
 //import 'package:image_network/image_network.dart';
 //import 'package:cached_network_image/cached_network_image.dart';
 //import '../../../pages/login_page.dart';
+import '../../../lang/creta_commu_lang.dart';
 import '../../../pages/login/creta_account_manager.dart';
 //import '../../common/cross_common_job.dart';
 import '../../../routes.dart';
@@ -722,7 +723,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                   ),
                   if (bookCount > 5)
                     BTN.fill_gray_t_es(
-                      text: _showAllPlaylistItems ? '간략보기' : '전체보기',
+                      text: _showAllPlaylistItems ? CretaCommuLang['viewShort'] : CretaCommuLang['viewAll'],
                       width: 61,
                       buttonColor: CretaButtonColor.gray100light,
                       textColor: CretaColor.text[400],
@@ -1059,7 +1060,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
             width: 42,
           ),
           Text(
-            (_channelModel != null) ? '구독자 ${_channelModel!.followerCount}명' : '',
+            (_channelModel != null) ? '${CretaCommuLang['subsriber']} ${_channelModel!.followerCount}' : '',
             style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[400]),
           ),
           SizedBox(
@@ -1070,7 +1071,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                   AccountManager.currentLoginUser.isLoginedUser == false)
               ? SizedBox.shrink()
               : BTN.fill_blue_t_m(
-                  text: (_subscriptionModel == null) ? '구독하기' : '구독중',
+                  text: (_subscriptionModel == null) ? CretaCommuLang['subscribe'] : CretaCommuLang['subscribing'],
                   width: 84,
                   onPressed: () {
                     if (_subscriptionModel == null) {
@@ -1081,7 +1082,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                       )
                           .then(
                         (value) {
-                          showSnackBar(context, '구독되었습니다');
+                          showSnackBar(context, CretaCommuLang['subscribed']);
                           setState(() {
                             _subscriptionModel = SubscriptionModel.withName(
                                 channelId: CretaAccountManager.getUserProperty!.channelId,
@@ -1097,7 +1098,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                       )
                           .then(
                         (value) {
-                          showSnackBar(context, '구독 해지되었습니다');
+                          showSnackBar(context, CretaCommuLang['unsubscribed']);
                           setState(() {
                             _subscriptionModel = null;
                           });
@@ -1145,7 +1146,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                   height: 32,
                   padding: EdgeInsets.fromLTRB(0, 3, 0, 2),
                   child: Text(
-                    '내용',
+                    CretaCommuLang['details'],
                     style: CretaFont.titleELarge
                         .copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
                     textAlign: TextAlign.left,
@@ -1303,14 +1304,14 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
             Row(
               children: [
                 Text(
-                  '위 크레타북에서 사용된 콘텐츠',
+                  CretaCommuLang['usedContents'],
                   style: CretaFont.titleELarge
                       .copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
                   textAlign: TextAlign.left,
                 ),
                 Expanded(child: Container()),
                 BTN.fill_gray_t_es(
-                  text: '접어두기',
+                  text: CretaCommuLang['fold'],
                   width: 58,
                   textColor: CretaColor.text[400],
                   onPressed: () {
@@ -1358,14 +1359,14 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
           Row(
             children: [
               Text(
-                '위 크레타북에서 사용된 콘텐츠',
+                CretaCommuLang['usedContents'],
                 style: CretaFont.titleELarge
                     .copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
                 textAlign: TextAlign.left,
               ),
               Expanded(child: Container()),
               BTN.fill_gray_t_es(
-                text: '전체보기',
+                text: CretaCommuLang['viewAll'],
                 width: 58,
                 textColor: CretaColor.text[400],
                 onPressed: () {
@@ -1443,7 +1444,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '댓글',
+            CretaCommuLang['comment'],
             style: CretaFont.titleELarge
                 .copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
             textAlign: TextAlign.left,
@@ -1621,7 +1622,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                 Row(
                   children: [
                     Text(
-                      '해시태그',
+                      CretaCommuLang['hashtag'],
                       style: CretaFont.titleLarge.copyWith(color: CretaColor.text[700]),
                     ),
                     Expanded(child: Container()),
@@ -1692,7 +1693,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                 Row(
                   children: [
                     Text(
-                      '인기 크레타북',
+                      CretaCommuLang['popularBook'],
                       style: CretaFont.titleLarge.copyWith(color: CretaColor.text[700]),
                     ),
                     Expanded(child: Container()),

@@ -15,6 +15,7 @@ import '../design_system/component/snippet.dart';
 //import 'package:creta_common/common/creta_font.dart';
 import '../../design_system/buttons/creta_button.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
+import '../lang/creta_commu_lang.dart';
 
 class VerifyEmailPage extends StatefulWidget {
   const VerifyEmailPage({
@@ -100,7 +101,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
           )
         : BTN.line_blue_iti_m(
             width: 200,
-            text: '회원 인증 하기',
+            text: CretaCommuLang["memberAuthentication"], //'회원 인증 하기',
             buttonColor: CretaButtonColor.skyTitle,
             decoType: CretaButtonDeco.fill,
             textColor: Colors.white,
@@ -116,11 +117,15 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('회원 인증이 완료되었습니다.'),
-            Text('크레타 홈으로 이동한 후 로그인 하세요.'),
+            Text(
+              CretaCommuLang["memberAuthenticationCompleted"], //'회원 인증이 완료되었습니다.
+            ),
+            Text(
+              CretaCommuLang["moveToCretaHomeAndLogin"], //'크레타 홈으로 이동한 후 로그인 하세요.
+            ),
             BTN.line_blue_iti_m(
               width: 200,
-              text: '크레타 홈으로 이동',
+              text: CretaCommuLang["moveToCretaHome"], //'크레타 홈으로 이동',
               buttonColor: CretaButtonColor.skyTitle,
               decoType: CretaButtonDeco.fill,
               textColor: Colors.white,
@@ -143,10 +148,14 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('아래 버튼을 눌러 인증을 완료하세요.'),
+            Text(
+              CretaCommuLang["completeAuthenticationByClickingButton"], //'아래 버튼을 눌러 인증을 완료하세요.'
+            ),
             Text(''),
             _getVerifyButton(),
-            Text(_error ? '에러가 발생하였습니다. 관리자에 문의하세요' : ''),
+            Text(_error
+                ? CretaCommuLang["errorOccurredContactAdmin"] //'에러가 발생하였습니다. 관리자에 문의하세요'
+                : ''),
           ],
         ),
       ),

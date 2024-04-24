@@ -384,7 +384,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         );
         _rightTabMenuList = [
           CretaMenuItem(
-            caption: '크레타북',
+            caption: CretaCommuLang['cretaBook'],
             //iconData: null,
             index: CommunityChannelType.books.index,
             selected: true,
@@ -441,7 +441,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             //isIconText: true,
           ),
           CretaMenuItem(
-            caption: '팀원 채널',
+            caption: CretaCommuLang['teamChannel'],
             //iconData: null,
             index: CommunityChannelType.memberChannels.index,
             onPressed: () {
@@ -469,7 +469,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             //isIconText: true,
           ),
           CretaMenuItem(
-            caption: '정보',
+            caption: CretaCommuLang['information'],
             //iconData: null,
             index: CommunityChannelType.info.index,
             onPressed: () {
@@ -582,7 +582,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   List<Widget> _getHashtagListOnBanner() {
     return [
       BTN.opacity_gray_it_s(
-        text: '#크레타',
+        text: CretaCommuLang['hashtagCreta'],
         textStyle: CretaFont.buttonMedium.copyWith(color: Colors.white),
         width: null,
         onPressed: () {},
@@ -591,7 +591,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       ),
       SizedBox(width: 12),
       BTN.opacity_gray_it_s(
-        text: '#추천',
+        text: CretaCommuLang['hashtagRecommend'],
         textStyle: CretaFont.buttonMedium.copyWith(color: Colors.white),
         width: null,
         onPressed: () {},
@@ -600,7 +600,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       ),
       SizedBox(width: 12),
       BTN.opacity_gray_it_s(
-        text: '#인기',
+        text: CretaCommuLang['hashtagPopular'],
         textStyle: CretaFont.buttonMedium.copyWith(color: Colors.white),
         width: null,
         onPressed: () {},
@@ -609,7 +609,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       ),
       SizedBox(width: 12),
       BTN.opacity_gray_it_s(
-        text: '#해시태그',
+        text: CretaCommuLang['hashtag'],
         textStyle: CretaFont.buttonMedium.copyWith(color: Colors.white),
         width: null,
         onPressed: () {},
@@ -638,7 +638,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         titleList.addAll([
           SizedBox(height: 23),
           Text(
-            '전세계의 작가들이 업로드한 크레타북을 탐색합니다.',
+            CretaCommuLang['exploreCretaBooks'],
             overflow: TextOverflow.ellipsis,
             style: CretaFont.bodyMedium.copyWith(
               color: Colors.white,
@@ -648,7 +648,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           ),
           SizedBox(height: 13),
           Text(
-            '다양한 크레타북을 시청하고 새로운 아이디어를 얻으세요.',
+            CretaCommuLang['watchCretaBooks'],
             overflow: TextOverflow.ellipsis,
             style: CretaFont.bodyMedium.copyWith(
               color: Colors.white,
@@ -734,7 +734,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         titleList.addAll([
           SizedBox(height: 23),
           Text(
-            '전세계의 작가들이 업로드한 크레타북을 탐색합니다.',
+            CretaCommuLang['exploreCretaBooks'],
             overflow: TextOverflow.ellipsis,
             style: CretaFont.bodyMedium.copyWith(
               color: Colors.white,
@@ -744,7 +744,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           ),
           SizedBox(height: 13),
           Text(
-            '다양한 크레타북을 시청하고 새로운 아이디어를 얻으세요.',
+            CretaCommuLang['watchCretaBooks'],
             overflow: TextOverflow.ellipsis,
             style: CretaFont.bodyMedium.copyWith(
               color: Colors.white,
@@ -826,7 +826,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         SizedBox(width: 24),
         //text
         Text(
-          '전세계의 작가들이 업로드한 크레타북을 탐색합니다.',
+          CretaCommuLang['exploreCretaBooks'],
           overflow: TextOverflow.ellipsis,
           style: CretaFont.bodyMedium.copyWith(fontWeight: CretaFont.regular),
         ),
@@ -969,7 +969,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                           Text(
                             (_currentChannelModel == null)
                                 ? ''
-                                : '${_currentChannelModel!.name}님의 채널',
+                                : '${_currentChannelModel!.name}${CretaCommuLang['channelOfUser']}',
                             overflow: TextOverflow.ellipsis,
                             style: CretaFont.displaySmall.copyWith(
                               color: CretaColor.text[700],
@@ -983,7 +983,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                               icon: Icons.link_outlined,
                               buttonColor: CretaButtonColor.gray100light,
                               iconColor: CretaColor.text[700],
-                              tooltip: '채널 주소 복사',
+                              tooltip: CretaCommuLang['copyChannelAddress'],
                               onPressed: () {
                                 String url = Uri.base.origin;
                                 url +=
@@ -1000,7 +1000,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                           if (_currentChannelModel != null &&
                               _currentChannelModel!.teamId.isNotEmpty)
                             Text(
-                              '${_currentChannelModel!.name} 외 ${_currentChannelModel!.followerCount}명',
+                              '${_currentChannelModel!.name} + ${_currentChannelModel!.followerCount}${CretaCommuLang['peaple']}',
                               overflow: TextOverflow.ellipsis,
                               style: CretaFont.buttonLarge.copyWith(
                                 color: CretaColor.text[400],
@@ -1024,7 +1024,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                           Text(
                             (_currentChannelModel == null)
                                 ? ''
-                                : '구독자 ${_currentChannelModel!.followerCount}명',
+                                : '${CretaCommuLang['subscribers']} ${_currentChannelModel!.followerCount}',
                             overflow: TextOverflow.ellipsis,
                             style: CretaFont.buttonLarge.copyWith(
                               color: CretaColor.text[400],
@@ -1038,7 +1038,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                               ? SizedBox.shrink()
                               : BTN.fill_blue_t_m(
                                   width: 84,
-                                  text: (_selectedSubscriptionModel == null) ? '구독하기' : '구독중',
+                                  text: (_selectedSubscriptionModel == null)
+                                      ? CretaCommuLang['subscribe']
+                                      : CretaCommuLang['subscribing'],
                                   onPressed: () {
                                     SubscriptionManager subscriptionManagerHolder =
                                         SubscriptionManager();
@@ -1050,7 +1052,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                                       )
                                           .then(
                                         (value) {
-                                          showSnackBar(context, '구독되었습니다');
+                                          showSnackBar(context, CretaCommuLang['subscribed']);
                                           setState(() {
                                             _selectedSubscriptionModel = SubscriptionModel.withName(
                                                 channelId:
@@ -1068,7 +1070,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                                       )
                                           .then(
                                         (value) {
-                                          showSnackBar(context, '구독 해지되었습니다');
+                                          showSnackBar(context, CretaCommuLang['unsubscribed']);
                                           setState(() {
                                             _selectedSubscriptionModel = null;
                                           });
@@ -1132,7 +1134,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       //                       ),
       //                       SizedBox(height: 23),
       //                       Text(
-      //                         '전세계의 작가들이 업로드한 크레타북을 탐색합니다.',
+      //                         CretaCommuLang['exploreCretaBooks'],
       //                         overflow: TextOverflow.ellipsis,
       //                         style: CretaFont.bodyMedium.copyWith(
       //                           color: Colors.white,
@@ -1142,7 +1144,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       //                       ),
       //                       SizedBox(height: 13),
       //                       Text(
-      //                         '다양한 크레타북을 시청하고 새로운 아이디어를 얻으세요.',
+      //                         CretaCommuLang['watchCretaBooks'],
       //                         overflow: TextOverflow.ellipsis,
       //                         style: CretaFont.bodyMedium.copyWith(
       //                           color: Colors.white,
@@ -1240,7 +1242,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                     ),
                     SizedBox(width: 12),
                     Text(
-                      (_currentChannelModel == null) ? '' : '${_currentChannelModel!.name}님의 채널',
+                      (_currentChannelModel == null)
+                          ? ''
+                          : '${_currentChannelModel!.name} ${CretaCommuLang["channelOfUser"]}',
                       style: CretaFont.titleELarge
                           .copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
                     ),
@@ -1248,7 +1252,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                     Text(
                       (_currentChannelModel == null)
                           ? ''
-                          : '${_currentChannelModel!.name} 외 ${_currentChannelModel!.followerCount}명',
+                          : '${_currentChannelModel!.name} + ${_currentChannelModel!.followerCount}${CretaCommuLang['peaple']}',
                       style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[400]),
                     ),
                     SizedBox(width: 20),
@@ -1256,7 +1260,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                       icon: Icons.link_outlined,
                       buttonColor: CretaButtonColor.gray100light,
                       iconColor: CretaColor.text[700],
-                      tooltip: '채널 주소 복사',
+                      tooltip: CretaCommuLang['copyChannelAddress'],
                       onPressed: () {
                         String url = Uri.base.origin;
                         url += '${AppRoutes.channel}?${CommunityRightChannelPane.channelId}';
@@ -1271,7 +1275,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                     Text(
                       (_currentChannelModel == null)
                           ? ''
-                          : '구독자 ${_currentChannelModel!.followerCount}명',
+                          : '${CretaCommuLang['subscribers']} ${_currentChannelModel!.followerCount}${CretaCommuLang['peaple']}',
                       style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[400]),
                     ),
                     SizedBox(width: 12),
@@ -1279,7 +1283,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                         ? SizedBox.shrink()
                         : BTN.fill_blue_t_m(
                             width: 84,
-                            text: (_selectedSubscriptionModel == null) ? '구독하기' : '구독중',
+                            text: (_selectedSubscriptionModel == null)
+                                ? CretaCommuLang['subscribe']
+                                : CretaCommuLang['subscribing'],
                             onPressed: () {
                               SubscriptionManager subscriptionManagerHolder = SubscriptionManager();
                               if (_selectedSubscriptionModel == null) {
@@ -1290,7 +1296,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                                 )
                                     .then(
                                   (value) {
-                                    showSnackBar(context, '구독되었습니다');
+                                    showSnackBar(context, CretaCommuLang['subscribed']);
                                     setState(() {
                                       _selectedSubscriptionModel = SubscriptionModel.withName(
                                           channelId: CretaAccountManager.getUserProperty!.channelId,
@@ -1306,7 +1312,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                                 )
                                     .then(
                                   (value) {
-                                    showSnackBar(context, '구독 해지되었습니다');
+                                    showSnackBar(context, CretaCommuLang['unsubscribed']);
                                     setState(() {
                                       _selectedSubscriptionModel = null;
                                     });
@@ -1406,7 +1412,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                         ),
                         SizedBox(width: 20),
                         Text(
-                          '조회수 ${_currentBookModel!.viewCount}회',
+                          '${CretaCommuLang['views']} ${_currentBookModel!.viewCount}회',
                           style: CretaFont.bodyMedium.copyWith(color: Colors.white),
                         ),
                       ],
@@ -1439,7 +1445,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                       if (_currentBookModel!.isCopyable)
                         BTN.fill_gray_itt_l(
                           icon: Icons.copy_rounded,
-                          text: '사본만들기',
+                          text: CretaCommuLang['createCopy'],
                           subText: '${_currentBookModel!.copyCount}',
                           onPressed: () {
                             if (_currentBookModel != null) {
@@ -1452,12 +1458,13 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                               )
                                   .then((newBook) {
                                 if (newBook == null) {
-                                  showSnackBar(context, '사본 생성에 실패하였습니다.');
+                                  showSnackBar(context, CretaCommuLang['copyCreationFailed']);
                                 } else {
-                                  showSnackBar(context, '${newBook.name.value}이 생성되었습니다.');
+                                  showSnackBar(context,
+                                      '${newBook.name.value}${CretaCommuLang['createdSuccessfully']}');
                                 }
                               }).catchError((error, stackTrace) {
-                                showSnackBar(context, '사본 생성에 실패하였습니다.');
+                                showSnackBar(context, CretaCommuLang['copyCreationFailed']);
                               });
                             }
                           },
@@ -1478,10 +1485,10 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                             xOffset: -100,
                             width: 160,
                             popupMenu: [
-                              //CretaMenuItem(caption: '재생하기', onPressed: () {}),
+                              //CretaMenuItem(caption: CretaCommuLang['play'], onPressed: () {}),
                               if (_currentBookModel!.isEditable)
                                 CretaMenuItem(
-                                  caption: '편집하기',
+                                  caption: CretaCommuLang['edit'],
                                   onPressed: () {
                                     String url =
                                         '${AppRoutes.studioBookMainPage}?${_currentBookModel?.sourceMid}';
@@ -1491,21 +1498,23 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                                 ),
                               if (AccountManager.currentLoginUser.isLoginedUser)
                                 CretaMenuItem(
-                                  caption: '재생목록에 추가',
+                                  caption: CretaCommuLang['addToPlaylist'],
                                   onPressed: () {
                                     _addToPlaylist?.call();
                                   },
                                 ),
-                              CretaMenuItem(caption: '공유하기', onPressed: () {}),
-                              if (AccountManager.currentLoginUser.isLoginedUser)
-                                CretaMenuItem(caption: '다운로드', onPressed: () {}),
-                              if (_currentBookModel!.isEditable)
-                                CretaMenuItem(caption: '삭제하기', onPressed: () {}),
-                              if (_currentBookModel!.isCopyable)
-                                CretaMenuItem(caption: '사본만들기', onPressed: () {}),
+                              CretaMenuItem(caption: CretaCommuLang['share'], onPressed: () {}),
                               if (AccountManager.currentLoginUser.isLoginedUser)
                                 CretaMenuItem(
-                                  caption: '전체화면 재생 주소 복사',
+                                    caption: CretaCommuLang['download'], onPressed: () {}),
+                              if (_currentBookModel!.isEditable)
+                                CretaMenuItem(caption: CretaCommuLang['delete'], onPressed: () {}),
+                              if (_currentBookModel!.isCopyable)
+                                CretaMenuItem(
+                                    caption: CretaCommuLang['createCopy'], onPressed: () {}),
+                              if (AccountManager.currentLoginUser.isLoginedUser)
+                                CretaMenuItem(
+                                  caption: CretaCommuLang['copyFullScreenAddress'],
                                   onPressed: () {
                                     String url = Uri.base.origin;
                                     url +=
@@ -1598,28 +1607,32 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           size: size,
           headIcon: Icons.local_library_outlined,
           titleText: CretaCommuLang['subsList']!,
-          descriptionText: '${AccountManager.currentLoginUser.name}님만을 위한 콘텐츠를 빠르게 만나보세요!',
+          descriptionText:
+              '${AccountManager.currentLoginUser.name}${CretaCommuLang["contentForUser"]}',
         );
       case AppRoutes.watchHistory:
         return _getSmallTitlePane(
           size: size,
           headIcon: Icons.article_outlined,
           titleText: CretaCommuLang['watchHistory']!,
-          descriptionText: '${AccountManager.currentLoginUser.name}님의 최근에 시청한 크레타북입니다.',
+          descriptionText:
+              '${AccountManager.currentLoginUser.name}${CretaCommuLang["recentlyWatched"]}',
         );
       case AppRoutes.favorites:
         return _getSmallTitlePane(
           size: size,
           headIcon: Icons.favorite_outline,
           titleText: CretaCommuLang['iLikeIt']!,
-          descriptionText: '${AccountManager.currentLoginUser.name}님이 좋아요를 누른 크레타북입니다.',
+          descriptionText:
+              '${AccountManager.currentLoginUser.name}${CretaCommuLang["likedCretaBooks"]}',
         );
       case AppRoutes.playlist:
         return _getSmallTitlePane(
           size: size,
           headIcon: Icons.playlist_play,
           titleText: CretaCommuLang['playList']!,
-          descriptionText: '${AccountManager.currentLoginUser.name}님이 만든 재생목록입니다.',
+          descriptionText:
+              '${AccountManager.currentLoginUser.name}${CretaCommuLang["userPlaylists"]}',
         );
       case AppRoutes.playlistDetail:
         return Container(
@@ -1663,13 +1676,13 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                           ),
                           SizedBox(width: 28),
                           Text(
-                            '영상 ${_currentPlaylistModel!.bookIdList.length}개',
+                            '${CretaCommuLang["videoCount"]} ${_currentPlaylistModel!.bookIdList.length}',
                             style: CretaFont.buttonMedium,
                           ),
                           SizedBox(width: 28),
                           Text(
                             //'최근 업데이트 ${CretaCommonUtils.dateToDurationString(_currentPlaylistModel!.lastUpdateTime)}',
-                            '최근 업데이트 ${CretaCommonUtils.dateToDurationString(_currentPlaylistModel!.updateTime)}',
+                            '${CretaCommuLang["recentUpdates"]} ${CretaCommonUtils.dateToDurationString(_currentPlaylistModel!.updateTime)}',
                             style: CretaFont.buttonMedium,
                           ),
                           Expanded(child: Container()),
@@ -1678,7 +1691,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                             builder: (context, function) {
                               return BTN.fill_blue_t_m(
                                 width: null,
-                                text: '재생하기',
+                                text: CretaCommuLang['play'],
                                 textStyle: CretaFont.buttonLarge.copyWith(color: Colors.white),
                                 onPressed: () {
                                   if (playDetailLinkUrl.isNotEmpty) {

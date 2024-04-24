@@ -27,6 +27,7 @@ import 'package:creta_common/common/creta_font.dart';
 //import '../../../design_system/menu/creta_drop_down.dart';
 // import '../../../design_system/menu/creta_drop_down_button.dart';
 // import '../../../design_system/text_field/creta_search_bar.dart';
+import '../../../lang/creta_commu_lang.dart';
 import 'community_right_channel_pane.dart';
 //import '../../../common/creta_utils.dart';
 import '../../../design_system/component/creta_layout_rect.dart';
@@ -336,12 +337,12 @@ class _CommunityRightChannelMembersPaneState extends State<CommunityRightChannel
                       ),
                       SizedBox(height: 10),
                       Text(
-                        '구독자 ${chModel.followerCount}명',
+                        '${CretaCommuLang['subsriber']} ${chModel.followerCount}명',
                         style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[400]),
                       ),
                       SizedBox(height: 22),
                       BTN.fill_blue_t_m(
-                        text: '구독하기',
+                        text: CretaCommuLang['subscribe'],
                         width: 84,
                         height: 34,
                         onPressed: () {},

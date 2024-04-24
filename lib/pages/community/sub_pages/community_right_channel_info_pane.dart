@@ -27,6 +27,7 @@ import 'package:creta_common/common/creta_font.dart';
 //import '../../../design_system/menu/creta_drop_down.dart';
 // import '../../../design_system/menu/creta_drop_down_button.dart';
 // import '../../../design_system/text_field/creta_search_bar.dart';
+import '../../../lang/creta_commu_lang.dart';
 import 'community_right_channel_pane.dart';
 //import '../../../common/creta_utils.dart';
 import '../../../design_system/component/creta_layout_rect.dart';
@@ -263,7 +264,7 @@ class _CommunityRightChannelInfoPaneState extends State<CommunityRightChannelInf
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '설명',
+                  CretaCommuLang['description'],
                   style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]),
                 ),
                 SizedBox(height: 20),

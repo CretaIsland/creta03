@@ -551,7 +551,7 @@ class Snippet {
       ],
       initFunc: () {},
     ).then((value) {
-      logger.finest('팝업메뉴 닫기');
+      logger.finest('Close popu menu');
     });
   }
 
@@ -698,7 +698,7 @@ class Snippet {
                   Icons.person,
                   //size: 24.0,
                 ),
-                label: Text('+ 새 크레타북'),
+                label: Text('+ ${CretaStudioLang["newCretaBook"]!}'), //새 크레타북'),
               ),
               ElevatedButton.icon(
                 onPressed: () {
@@ -998,8 +998,8 @@ class Snippet {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       BTN.fill_gray_l_profile(
-                        text: '사용자 닉네임',
-                        subText: '요금제 정보',
+                        text: CretaCommuLang["nickname"]!, //'사용자 닉네임',
+                        subText: CretaCommuLang["planInfo"]!, //'요금제 정보',
                         image: AssetImage('assets/creta_default.png'),
                         onPressed: () {},
                       ),
@@ -1008,7 +1008,7 @@ class Snippet {
                       ),
                       BTN.fill_blue_ti_el(
                         icon: Icons.arrow_forward_outlined,
-                        text: '내 크레타북 관리',
+                        text: CretaStudioLang["myCretaBookManage"]!, // '내 크레타북 관리',
                         onPressed: () {},
                       ),
                     ],

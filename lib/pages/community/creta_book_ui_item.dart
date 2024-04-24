@@ -23,6 +23,7 @@ import '../../design_system/menu/creta_popup_menu.dart';
 //import 'package:image_network/image_network.dart';
 //import 'package:cached_network_image/cached_network_image.dart';
 //import '../../common/cross_common_job.dart';
+import '../../lang/creta_commu_lang.dart';
 import '../../routes.dart';
 //import 'sub_pages/community_left_menu_pane.dart';
 //import 'community_sample_data.dart';
@@ -142,23 +143,23 @@ const double _itemDescriptionHeight = 56;
 //         onPressed: _doPopupMenuPlay,
 //       ),
 //       CretaMenuItem(
-//         caption: '편집하기',
+//         caption: CretaCommuLang['edit'],
 //         onPressed: _doPopupMenuEdit,
 //       ),
 //       CretaMenuItem(
-//         caption: '재생목록에 추가',
+//         caption: CretaCommuLang['addToPlaylist'],
 //         onPressed: _doPopupMenuAddToPlayList,
 //       ),
 //       CretaMenuItem(
-//         caption: '공유하기',
+//         caption: CretaCommuLang['share'],
 //         onPressed: _doPopupMenuShare,
 //       ),
 //       CretaMenuItem(
-//         caption: '다운로드',
+//         caption: CretaCommuLang['download'],
 //         onPressed: _doPopupMenuDownload,
 //       ),
 //       CretaMenuItem(
-//         caption: '사본만들기',
+//         caption: CretaCommuLang['createCopy'],
 //         onPressed: _doPopupMenuCopy,
 //       ),
 //     ];
@@ -183,7 +184,7 @@ const double _itemDescriptionHeight = 56;
 //             BTN.opacity_gray_it_s(
 //               width: 91,
 //               icon: Icons.edit_outlined,
-//               text: '편집하기',
+//               text: CretaCommuLang['edit'],
 //               onPressed: () => _editItem(),
 //               alwaysShowIcon: true,
 //             ),
@@ -543,7 +544,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
       builder: (context) => CretaDialog(
         width: 364.0 + 28,
         height: 304.0,
-        title: '공유하기',
+        title: CretaCommuLang['share'],
         crossAxisAlign: CrossAxisAlignment.center,
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -551,7 +552,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 16 - 1, 0, 0),
               child: Text(
-                '링크 공유',
+                CretaCommuLang['shareLink'],
                 style: CretaFont.titleSmall.copyWith(color: CretaColor.text[700]),
               ),
             ),
@@ -572,14 +573,14 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
                   ),
                   SizedBox(width: 11),
                   BTN.line_blue_t_m(
-                    text: '복사하기',
+                    text: CretaCommuLang['copy'],
                     width: 45,
                     height: 32,
                     onPressed: () {
                       Clipboard.setData(ClipboardData(text: bookLinkUrl));
                       showSnackBar(
                         context,
-                        '링크 공유 주소가 클립보드로 복사되었습니다',
+                        CretaCommuLang['linkCopiedToClipboard'],
                         duration: const Duration(seconds: 2),
                       );
                     },
@@ -590,7 +591,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 19, 0, 0),
               child: Text(
-                'SNS에 공유',
+                CretaCommuLang['shareOnSns'],
                 style: CretaFont.titleSmall.copyWith(color: CretaColor.text[700]),
               ),
             ),
@@ -688,7 +689,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
             Padding(
               padding: const EdgeInsets.fromLTRB(364 - 67 + 28, 12 - 1, 0, 0),
               child: BTN.fill_blue_t_m(
-                text: '완료',
+                text: CretaCommuLang['complete'],
                 width: 55,
                 height: 32,
                 onPressed: () {
@@ -722,12 +723,12 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
     )
         .then((newBook) {
       if (newBook == null) {
-        showSnackBar(context, '사본 생성에 실패하였습니다.');
+        showSnackBar(context, CretaCommuLang['copyCreationFailed']);
       } else {
-        showSnackBar(context, '${newBook.name.value}이 생성되었습니다.');
+        showSnackBar(context, '${newBook.name.value}${CretaCommuLang['createdSuccessfully']}');
       }
     }).catchError((error, stackTrace) {
-      showSnackBar(context, '사본 생성에 실패하였습니다.');
+      showSnackBar(context, CretaCommuLang['copyCreationFailed']);
     });
   }
 
@@ -742,32 +743,32 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
       // ),
       // if (widget.bookModel.shares.contains(owner) || widget.bookModel.shares.contains(writer))
       //   CretaMenuItem(
-      //     caption: '편집하기',
+      //     caption: CretaCommuLang['edit'],
       //     onPressed: () {},//_doPopupMenuEdit,
       //     linkUrl: '${AppRoutes.studioBookMainPage}?${widget.bookModel.sourceMid}',
       //   ),
       if (AccountManager.currentLoginUser.isLoginedUser)
         CretaMenuItem(
-          caption: '재생목록에 추가',
+          caption: CretaCommuLang['addToPlaylist'],
           onPressed: _doPopupMenuAddToPlayList,
         ),
       CretaMenuItem(
-        caption: '공유하기',
+        caption: CretaCommuLang['share'],
         onPressed: _doPopupMenuShare,
       ),
       if (AccountManager.currentLoginUser.isLoginedUser)
         CretaMenuItem(
-          caption: '다운로드',
+          caption: CretaCommuLang['download'],
           onPressed: _doPopupMenuDownload,
         ),
       if (widget.bookModel.isEditable && widget.onRemoveBook != null)
         CretaMenuItem(
-          caption: '삭제하기',
+          caption: CretaCommuLang['delete'],
           onPressed: _doPopupMenuRemove,
         ),
       if (widget.bookModel.isCopyable)
         CretaMenuItem(
-          caption: '사본만들기',
+          caption: CretaCommuLang['createCopy'],
           onPressed: _doPopupMenuCopy,
         ),
     ];
@@ -778,7 +779,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
 
     _shareItemList = [
       SNSShareItem(
-        title: '페이스북',
+        title: CretaCommuLang['facebook'],
         onPressed: () {
           String tabUrl = 'https://www.facebook.com/sharer/sharer.php?u=$encodeLinkUrl';
           AppRoutes.launchTab(tabUrl, isFullUrl: true);
@@ -794,7 +795,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
       //   image: AssetImage('assets/social/kakaostory.png'),
       // ),
       SNSShareItem(
-        title: '트위터',
+        title: CretaCommuLang['twitter'],
         onPressed: () {
           String tabUrl = 'https://twitter.com/share?url=$encodeLinkUrl&text=$encodeTitle';
           AppRoutes.launchTab(tabUrl, isFullUrl: true);
@@ -802,7 +803,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
         image: AssetImage('assets/social/twitter.png'),
       ),
       SNSShareItem(
-        title: '레딧',
+        title: CretaCommuLang['reddit'],
         onPressed: () {
           String tabUrl = 'https://reddit.com/submit?url=$encodeLinkUrl&title=$encodeTitle';
           AppRoutes.launchTab(tabUrl, isFullUrl: true);
@@ -810,7 +811,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
         image: AssetImage('assets/social/reddit.png'),
       ),
       SNSShareItem(
-        title: '핀터레스트',
+        title: CretaCommuLang['pinterest'],
         onPressed: () {
           String encodeThumbUrl = Uri.encodeComponent(widget.bookModel.thumbnailUrl.value);
           String tabUrl =
@@ -820,7 +821,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
         image: AssetImage('assets/social/pinterest.png'),
       ),
       SNSShareItem(
-        title: '링크드인',
+        title: CretaCommuLang['linkedin'],
         onPressed: () {
           String tabUrl = 'https://www.linkedin.com/sharing/share-offsite/?url=$encodeLinkUrl';
           AppRoutes.launchTab(tabUrl, isFullUrl: true);
@@ -828,7 +829,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
         image: AssetImage('assets/social/linkedin.png'),
       ),
       SNSShareItem(
-        title: '라인',
+        title: CretaCommuLang['line'],
         onPressed: () {
           String tabUrl = 'https://social-plugins.line.me/lineit/share?url=$encodeLinkUrl';
           AppRoutes.launchTab(tabUrl, isFullUrl: true);
@@ -836,11 +837,11 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
         image: AssetImage('assets/social/line.png'),
       ),
       SNSShareItem(
-        title: '카카오톡',
+        title: CretaCommuLang['kakaoTalk'],
         onPressed: () {
           //String tabUrl = 'https://sharer.kakao.com/talk/friends/picker/easylink?app_key=(APP_KEY))&......';
           //AppRoutes.launchTab(tabUrl, isFullUrl: true);
-          showSnackBar(context, '아직 지원하지 않습니다');
+          showSnackBar(context, CretaCommuLang['notSupportedYet']);
         },
         image: AssetImage('assets/social/kakaotalk.png'),
       ),
@@ -913,7 +914,7 @@ https://sharer.kakao.com/talk/friends/picker/easylink?app_key=437a6516bd110eb436
               BTN.opacity_gray_it_s(
                 width: 91,
                 icon: Icons.edit_outlined,
-                text: '편집하기',
+                text: CretaCommuLang['edit'],
                 onPressed: () => _doPopupMenuEdit(),
                 alwaysShowIcon: true,
                 textStyle: CretaFont.buttonSmall.copyWith(color: CretaColor.text[100]),

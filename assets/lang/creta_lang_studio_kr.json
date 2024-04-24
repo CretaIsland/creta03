@@ -683,6 +683,11 @@
     "endDate" : "종료 일자",
     "endTime" : "종료 시간",
     "timeBasePage" : "시간 지정",
-    "useTimeBasePage" : "시간 지정 사용"
-    
+    "useTimeBasePage" : "시간 지정 사용",
+
+    "newCretaBook" : "새 크레타북",
+    "myCretaBookManage" : "내 크레타북 관리",
+ 
+    "end" : "End"
+
 }

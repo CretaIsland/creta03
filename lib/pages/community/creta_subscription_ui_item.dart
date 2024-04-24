@@ -39,6 +39,7 @@ import '../../../design_system/component/custom_image.dart';
 // import '../../../model/watch_history_model.dart';
 // import 'package:creta_user_model/model/user_property_model.dart';
 // import '../../../model/channel_model.dart';
+import '../../lang/creta_commu_lang.dart';
 import '../../model/subscription_model.dart';
 
 // const double _rightViewTopPane = 40;
@@ -139,7 +140,7 @@ class _SubscriptionItemState extends State<SubscriptionItem> {
                     ),
                   ),
                   Text(
-                    '구독자 ${widget.subscriptionModel.subscriptionChannel!.followerCount}명',
+                    '${CretaCommuLang['subsriber']} ${widget.subscriptionModel.subscriptionChannel!.followerCount}',
                     style: CretaFont.bodySmall.copyWith(color: textColor),
                   ),
                 ],
