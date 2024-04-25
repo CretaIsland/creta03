@@ -32,7 +32,7 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
   String searchText = '';
   static String _selectedType = CretaStudioLang['storageTypes']!.values.first;
 
-  Map<String, String> depotMenuTabBar = {'내 보관함': 'myDepot'};
+  Map<String, String> depotMenuTabBar = {};
   String? _myTeamId;
   late DepotManager _depotManager;
 
@@ -61,6 +61,9 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
   void initState() {
     logger.fine('_LeftMenuStorageState.initState');
     super.initState();
+
+    depotMenuTabBar[CretaStudioLang['myStorage']] = 'myDepot';
+
     // _selectedTab = CretaStudioLang['storageMenuTabBar']!.values.first;
     bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
     _selectedType = _getCurrentTypes();

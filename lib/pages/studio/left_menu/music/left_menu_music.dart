@@ -113,7 +113,7 @@ class _LeftMenuMusicState extends State<LeftMenuMusic> with LeftTemplateMixin, F
 
     retval.contentsType = ContentsType.music;
     //retval.remoteUrl = '$name $text';
-    retval.name = '크레타 샘플 뮤직';
+    retval.name = 'Sample Music';
     retval.remoteUrl =
         'https://firebasestorage.googleapis.com/v0/b/hycop-example.appspot.com/o/creta_default%2F16.Michael%20Nyman%20-%20The%20heart%20asks%20pleasure%20first.mp3?alt=media&token=4dd20e63-c831-4d87-a320-ecf22c5ab5db';
     retval.playTime.set(-1, noUndo: true, save: false);

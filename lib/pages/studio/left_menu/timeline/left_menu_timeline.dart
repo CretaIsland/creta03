@@ -66,7 +66,7 @@ class _LeftMenuTimelineState extends State<LeftMenuTimeline> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       TimelineSample(
-                        title: '쇼케이스 샘플',
+                        title: 'Showcase Sample',
                         child: LeftMenuEleButton(
                           onPressed: () async {
                             await _createTimeline(frameType: FrameType.showcaseTimeline);
@@ -84,7 +84,7 @@ class _LeftMenuTimelineState extends State<LeftMenuTimeline> {
                         ),
                       ),
                       TimelineSample(
-                        title: '축구 샘플',
+                        title: 'Sccoer Sample',
                         child: LeftMenuEleButton(
                           onPressed: () async {
                             await _createTimeline(frameType: FrameType.footballTimeline);
@@ -102,7 +102,7 @@ class _LeftMenuTimelineState extends State<LeftMenuTimeline> {
                         ),
                       ),
                       TimelineSample(
-                        title: '생활 샘플',
+                        title: 'Activity Sample',
                         child: LeftMenuEleButton(
                           onPressed: () async {
                             await _createTimeline(frameType: FrameType.activityTimeline);
@@ -120,7 +120,7 @@ class _LeftMenuTimelineState extends State<LeftMenuTimeline> {
                         ),
                       ),
                       TimelineSample(
-                        title: '성공 단계 샘플',
+                        title: 'Success Stage Sample',
                         child: LeftMenuEleButton(
                           onPressed: () async {
                             await _createTimeline(frameType: FrameType.successTimeline);
@@ -138,7 +138,7 @@ class _LeftMenuTimelineState extends State<LeftMenuTimeline> {
                         ),
                       ),
                       TimelineSample(
-                        title: '배달 샘플',
+                        title: 'Delivery Sample',
                         child: LeftMenuEleButton(
                           onPressed: () async {
                             await _createTimeline(frameType: FrameType.deliveryTimeline);
@@ -156,7 +156,7 @@ class _LeftMenuTimelineState extends State<LeftMenuTimeline> {
                         ),
                       ),
                       TimelineSample(
-                        title: '날씨 샘플',
+                        title: 'Weather Sample',
                         child: LeftMenuEleButton(
                           onPressed: () async {
                             await _createTimeline(frameType: FrameType.weatherTimeline);
@@ -188,7 +188,7 @@ class _LeftMenuTimelineState extends State<LeftMenuTimeline> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TimelineSample(
-                    title: '월 수평 샘플',
+                    title: 'Monthly Sample',
                     child: LeftMenuEleButton(
                       onPressed: () async {
                         await _createTimeline(frameType: FrameType.monthHorizTimeline);
@@ -206,7 +206,7 @@ class _LeftMenuTimelineState extends State<LeftMenuTimeline> {
                     ),
                   ),
                   TimelineSample(
-                    title: '앱 수평 샘플',
+                    title: 'Monthly Sample',
                     child: LeftMenuEleButton(
                       onPressed: () async {
                         await _createTimeline(frameType: FrameType.appHorizTimeline);
@@ -224,7 +224,7 @@ class _LeftMenuTimelineState extends State<LeftMenuTimeline> {
                     ),
                   ),
                   TimelineSample(
-                    title: '배달 수평 샘플',
+                    title: 'Delivery Sample 2',
                     child: LeftMenuEleButton(
                       onPressed: () async {
                         await _createTimeline(frameType: FrameType.deliveryHorizTimeline);

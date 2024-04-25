@@ -1000,7 +1000,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                           if (_currentChannelModel != null &&
                               _currentChannelModel!.teamId.isNotEmpty)
                             Text(
-                              '${_currentChannelModel!.name} + ${_currentChannelModel!.followerCount}${CretaCommuLang['peaple']}',
+                              '${_currentChannelModel!.name} + ${_currentChannelModel!.followerCount}${CretaCommuLang['people']}',
                               overflow: TextOverflow.ellipsis,
                               style: CretaFont.buttonLarge.copyWith(
                                 color: CretaColor.text[400],
@@ -1252,7 +1252,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                     Text(
                       (_currentChannelModel == null)
                           ? ''
-                          : '${_currentChannelModel!.name} + ${_currentChannelModel!.followerCount}${CretaCommuLang['peaple']}',
+                          : '${_currentChannelModel!.name} + ${_currentChannelModel!.followerCount}${CretaCommuLang['people']}',
                       style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[400]),
                     ),
                     SizedBox(width: 20),
@@ -1275,7 +1275,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                     Text(
                       (_currentChannelModel == null)
                           ? ''
-                          : '${CretaCommuLang['subscribers']} ${_currentChannelModel!.followerCount}${CretaCommuLang['peaple']}',
+                          : '${CretaCommuLang['subscribers']} ${_currentChannelModel!.followerCount}${CretaCommuLang['people']}',
                       style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[400]),
                     ),
                     SizedBox(width: 12),

@@ -390,7 +390,7 @@ class BookGridItemState extends State<BookGridItem> {
                                     initFunc: () {
                                       dropDownButtonOpened = true;
                                     }).then((value) {
-                                  logger.finest('팝업메뉴 닫기');
+                                  logger.finest('Close menu');
                                   setState(() {
                                     dropDownButtonOpened = false;
                                   });

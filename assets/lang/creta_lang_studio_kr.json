@@ -687,7 +687,14 @@
 
     "newCretaBook" : "새 크레타북",
     "myCretaBookManage" : "내 크레타북 관리",
- 
-    "end" : "End"
+    "channel"  : "채널",
 
+    "specifyGenScript" : "이미지 생성을 위한 텍스트 설명을 입력하세요",
+    "myStorage" : "내 보관함",
+    "addPlayList" : "플레이 리스트에 노래를 추가하세요!",
+    "weatherSticker" : "날씨 스티커",
+    "mute" : "음소거",
+    "unmute" : "음소거 해제",
+    
+    "end" : "End"
 }

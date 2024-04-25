@@ -69,16 +69,19 @@ class _MyPageSettingsState extends State<MyPageSettings> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("내 알림", style: CretaFont.titleELarge),
+                                Text(CretaMyPageLang['myNotice'], //"내 알림", 
+                                style: CretaFont.titleELarge),
                                 const SizedBox(height: 32),
                                 Row(
                                   children: [
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("푸시 알림", style: CretaFont.titleMedium),
+                                        Text(CretaMyPageLang['pushNotice'], //"푸시 알림", 
+                                        style: CretaFont.titleMedium),
                                         const SizedBox(height: 25),
-                                        Text("이메일 알림", style: CretaFont.titleMedium)
+                                        Text(CretaMyPageLang['emailNotice'], //"이메일 알림", 
+                                        style: CretaFont.titleMedium)
                                       ],
                                     ),
                                     const SizedBox(width: 200),
@@ -120,11 +123,13 @@ class _MyPageSettingsState extends State<MyPageSettings> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("내 설정", style: CretaFont.titleELarge),
+                                Text(CretaMyPageLang['mySetting'], //"내 설정", 
+                                style: CretaFont.titleELarge),
                                 const SizedBox(height: 32),
                                 Row(
                                   children: [
-                                    Text("테마", style: CretaFont.titleMedium),
+                                    Text(CretaMyPageLang['theme'], //"테마", 
+                                    style: CretaFont.titleMedium),
                                     const SizedBox(width: 245.0),
                                     CretaWidgetDropDown(
                                         items: themeItemList,

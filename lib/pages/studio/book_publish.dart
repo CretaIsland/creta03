@@ -1211,7 +1211,9 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                               ? userModel.email
                               : '${teamModel.name} ${CretaLang['team']!}',
                           child: Text(
-                            (teamModel == null) ? CretaLang['myChannel']! : '${teamModel.name} 채널',
+                            (teamModel == null)
+                                ? CretaLang['myChannel']!
+                                : '${teamModel.name} ${CretaStudioLang["channel"]!}',
                             style: (index > 0) // isNotCreator
                                 ? CretaFont.bodySmall
                                 : CretaFont.bodySmall.copyWith(

@@ -87,7 +87,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
   Future<void> generateImage(String text) async {
     if (LeftMenuImage.textController.text.isEmpty) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('이미지 생성을 위한 텍스트 설명을 입력하세요.')));
+          .showSnackBar(SnackBar(content: Text(CretaStudioLang['specifyGenScript']!)));
       return;
     }
 
@@ -276,7 +276,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
                 controller: LeftMenuImage.textController,
                 textFieldKey: GlobalKey(),
                 value: originalText,
-                hintText: '플레이스홀더',
+                hintText: '',
                 onEditComplete: (value) {
                   originalText = value;
                   logger.fine('onEditComplete value = $value');

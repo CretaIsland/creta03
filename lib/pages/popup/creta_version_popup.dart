@@ -28,7 +28,7 @@ class _CretaVersionPopUpState extends State<CretaVersionPopUp> {
     return CretaDialog(
       width: 364,
       height: widgetHeight,
-      title: "버전 정보",
+      title: "About Creta",
       content: Padding(
           padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
           child: Column(

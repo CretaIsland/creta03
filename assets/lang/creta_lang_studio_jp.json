@@ -682,7 +682,20 @@
         "endDate" : "終了日",
         "endTime" : "終了時間",
         "timeBasePage" : "時間指定",
-        "useTimeBasePage" : "時間指定使用" 
+        "useTimeBasePage" : "時間指定使用" ,
+
+        "newCretaBook": "新しいクレタブック",
+        "myCretaBookManage": "私のクレタブック管理",
+        "channel": "チャンネル",
+
+        "specifyGenScript": "画像生成のためのテキスト説明を入力してください",
+        "myStorage": "私の保管庫",
+        "addPlayList": "プレイリストに曲を追加してください！",
+        "weatherSticker": "天気ステッカー",
+        "mute": "ミュート",
+        "unmute": "ミュート解除",
+          
+        "end" : "End"
         
     }
      

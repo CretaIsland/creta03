@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:hycop/hycop/hycop_factory.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../lang/creta_mypage_lang.dart';
+
 class EditBannerImgPopUp extends StatefulWidget {
   final Uint8List bannerImgBytes;
   final XFile selectedImg;
@@ -30,7 +32,7 @@ class _EditBannerImgPopUpState extends State<EditBannerImgPopUp> {
     return CretaDialog(
         width: 897,
         height: 518,
-        title: '배경 이미지 설정',
+        title: CretaMyPageLang["backgroundImgSetting"], //'배경 이미지 설정',
         content: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Stack(
             alignment: Alignment.topLeft,
@@ -73,7 +75,7 @@ class _EditBannerImgPopUpState extends State<EditBannerImgPopUp> {
           Padding(
               padding: const EdgeInsets.only(left: 826.0),
               child: BTN.fill_blue_t_m(
-                  text: '완료',
+                  text: CretaMyPageLang["OK"], //'완료',
                   width: 55,
                   onPressed: () {
                     Uint8List cropImgBytes = CretaCommonUtils.cropImage(widget.bannerImgBytes,

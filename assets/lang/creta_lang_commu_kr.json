@@ -185,7 +185,7 @@
     "recentUpdates": "최근 업데이트",
     "play": "재생하기",
     "subscribe" : "구독하기",
-    "peaple" : "명",
+    "people" : "명",
    
     "shareLink": "링크 공유",
     "copy": "복사하기",
@@ -201,11 +201,6 @@
     "kakaoTalk": "카카오톡",
     "notSupportedYet": "아직 지원하지 않습니다",
 
-    
-
-
-
-
     "playListModify" : "재생목록 수정",
     "playListDelete" : "재생목록 삭제",
     "viewAll" : "전체보기",
@@ -216,8 +211,8 @@
     "comment" : "댓글",
     "popularBook" : "인기 크레타북",
     "description" : "설명",
-
     
-    "end"  :  "끝"
+  
+    "end" : "끝"
   
   }

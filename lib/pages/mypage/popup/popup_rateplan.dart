@@ -1,25 +1,24 @@
-import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
-import 'package:creta03/design_system/buttons/creta_radio_button.dart';
-import 'package:creta_common/common/creta_font.dart';
-import 'package:creta_common/common/creta_color.dart';
-import 'package:creta03/design_system/dialog/creta_alert_dialog.dart';
-import 'package:creta03/design_system/dialog/creta_dialog.dart';
-import 'package:creta03/design_system/text_field/creta_text_field.dart';
-import 'package:flutter/material.dart';
+import "package:creta03/design_system/buttons/creta_button_wrapper.dart";
+import "package:creta03/design_system/buttons/creta_radio_button.dart";
+import "package:creta_common/common/creta_font.dart";
+import "package:creta_common/common/creta_color.dart";
+import "package:creta03/design_system/dialog/creta_alert_dialog.dart";
+import "package:creta03/design_system/dialog/creta_dialog.dart";
+import "package:creta03/design_system/text_field/creta_text_field.dart";
+import "package:flutter/material.dart";
+import "../../../lang/creta_mypage_lang.dart";
 
 class PopUpRatePlan {
-  static List<String> freeRatePlanTip = [
-    "1GB의 저장공간 제공",
-    "공유된 크레타북 복제 및 편집 가능",
-    "기본 템플릿 무료 사용 가능",
-    "공동 편집자 3명까지 추가 가능",
-    "제작한 크레타북 전세계에 공유 가능"
-  ];
-
-  static List<Widget> ratePlanTipText(List<String> tipList) {
+  static List<Widget> ratePlanTipText() {
     List<Widget> tipTextList = [];
 
-    for (var tip in tipList) {
+    for (var tip in [
+      CretaMyPageLang["provide1GBStorage"], // "1GB의 저장공간 제공",
+      CretaMyPageLang["sharedCreataBookEditable"], // "공유된 크레타북 복제 및 편집 가능",
+      CretaMyPageLang["freeUseOfBasicTemplates"], // "기본 템플릿 무료 사용 가능",
+      CretaMyPageLang["addUpToThreeCoEditors"], // "공동 편집자 3명까지 추가 가능",
+      CretaMyPageLang["shareCreataBooksGlobally"], // "제작한 크레타북 전세계에 공유 가능"
+    ]) {
       tipTextList.add(Row(
         children: [
           Icon(Icons.check, size: 16, color: Colors.grey.shade200),
@@ -40,7 +39,7 @@ class PopUpRatePlan {
     return CretaDialog(
         width: 1084,
         height: 852,
-        title: '요금제 변경',
+        title: CretaMyPageLang["changePlan"], // "요금제 변경",
         content: Column(
           children: [
             const SizedBox(height: 24),
@@ -66,9 +65,11 @@ class PopUpRatePlan {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text('무료', style: CretaFont.titleMedium),
+                            Text(
+                                CretaMyPageLang["freePlan"]), // "무료", style: CretaFont.titleMedium),
                             const SizedBox(height: 24.0),
-                            Text('크레타를 시작하는 모든 사람을 위한 요금제입니다.', style: CretaFont.titleSmall),
+                            Text(CretaMyPageLang[
+                                "planForEveryoneStarting"]), // "크레타를 시작하는 모든 사람을 위한 요금제입니다.", style: CretaFont.titleSmall),
                             const SizedBox(height: 32.0),
                             Text("\u20A90", style: CretaFont.titleLarge),
                             const SizedBox(height: 20.0),
@@ -80,7 +81,7 @@ class PopUpRatePlan {
                         child: BTN.line_blue_t_m(
                             width: 300,
                             height: 32,
-                            text: "현재 요금제",
+                            text: CretaMyPageLang["currentPlan"], // "현재 요금제",
                             onPressed: () {
                               showDialog(
                                 context: context,
@@ -93,7 +94,7 @@ class PopUpRatePlan {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
-                          children: ratePlanTipText(freeRatePlanTip),
+                          children: ratePlanTipText(),
                         ),
                       )
                     ],
@@ -117,9 +118,13 @@ class PopUpRatePlan {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text('팀 요금제', style: CretaFont.titleMedium),
+                            Text(CretaMyPageLang["teamPlan"], // "팀 요금제",
+                                style: CretaFont.titleMedium),
                             const SizedBox(height: 24.0),
-                            Text('편집 기능과 더 효율적인 팀 협업을 지원합니다.', style: CretaFont.titleSmall),
+                            Text(
+                                CretaMyPageLang[
+                                    "supportEditingAndCollaboration"], // "편집 기능과 더 효율적인 팀 협업을 지원합니다.",
+                                style: CretaFont.titleSmall),
                             const SizedBox(height: 32.0),
                             Text("\u20A9129,000", style: CretaFont.titleLarge),
                             const SizedBox(height: 20.0),
@@ -131,7 +136,7 @@ class PopUpRatePlan {
                         child: BTN.fill_blue_t_m(
                             width: 300,
                             height: 32,
-                            text: "업그레이드",
+                            text: CretaMyPageLang["upgrade"], // "업그레이드",
                             onPressed: () {
                               showDialog(
                                 context: context,
@@ -144,7 +149,7 @@ class PopUpRatePlan {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
-                          children: ratePlanTipText(freeRatePlanTip),
+                          children: ratePlanTipText(),
                         ),
                       )
                     ],
@@ -168,11 +173,16 @@ class PopUpRatePlan {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text('기업 요금제', style: CretaFont.titleMedium),
+                            Text(CretaMyPageLang["enterprisePlan"], // "기업 요금제",
+                                style: CretaFont.titleMedium),
                             const SizedBox(height: 24.0),
-                            Text('대규모 조직을 위한 관리 기능을 제공합니다.', style: CretaFont.titleSmall),
+                            Text(
+                                CretaMyPageLang[
+                                    "managementFeaturesForLargeOrganizations"], // "대규모 조직을 위한 관리 기능을 제공합니다.",
+                                style: CretaFont.titleSmall),
                             const SizedBox(height: 32.0),
-                            Text("영업팀 문의", style: CretaFont.titleLarge),
+                            Text(CretaMyPageLang["salesTeamInquiry"], // "영업팀 문의",
+                                style: CretaFont.titleLarge),
                             const SizedBox(height: 20.0),
                           ],
                         ),
@@ -180,14 +190,17 @@ class PopUpRatePlan {
                       Padding(
                         padding: const EdgeInsets.only(left: 16.0, right: 16.0),
                         child: BTN.fill_blue_t_m(
-                            width: 300, height: 32, text: "영업팀에 문의", onPressed: () {}),
+                            width: 300,
+                            height: 32,
+                            text: CretaMyPageLang["salesTeamInquiry"], //"영업팀에 문의",
+                            onPressed: () {}),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 32.0, left: 24.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
-                          children: ratePlanTipText(freeRatePlanTip),
+                          children: ratePlanTipText(),
                         ),
                       )
                     ],
@@ -212,10 +225,12 @@ class PopUpRatePlan {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text('고급 기능 추가 구매', style: CretaFont.titleMedium),
+                          Text(CretaMyPageLang["purchaseAdvancedFeatures"], // "고급 기능 추가 구매",
+                              style: CretaFont.titleMedium),
                           const SizedBox(height: 14),
                           Text(
-                            '더욱 효과적으로 편집할 수 있는 고급 기능을 무제한으로 이용해보세요.',
+                            CretaMyPageLang[
+                                "useUnlimitedAdvancedFeatures"], // "더욱 효과적으로 편집할 수 있는 고급 기능을 무제한으로 이용해보세요.",
                             style: CretaFont.titleSmall,
                           )
                         ]),
@@ -233,9 +248,10 @@ class PopUpRatePlan {
                             padding: const EdgeInsets.only(top: 20, left: 28.0),
                             child: Row(
                               children: [
-                                Text('\u20A959,000', style: CretaFont.titleLarge),
+                                Text("\u20A959,000", style: CretaFont.titleLarge),
                                 const SizedBox(width: 125.0),
-                                Text('/년 (멤버당)', style: CretaFont.titleSmall)
+                                Text(CretaMyPageLang["perEachMember"], //"/년 (멤버당)",
+                                    style: CretaFont.titleSmall)
                               ],
                             ),
                           ),
@@ -244,7 +260,7 @@ class PopUpRatePlan {
                             child: BTN.fill_purple_t_m(
                                 width: 300,
                                 height: 32,
-                                text: "기능 구매",
+                                text: CretaMyPageLang["purchaseFunction"], // "기능 구매",
                                 onPressed: () {
                                   showDialog(
                                     context: context,
@@ -272,12 +288,12 @@ class PopUpRatePlan {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '이미지 배경 제거',
+                                    CretaMyPageLang["removeImageBackground"], // "이미지 배경 제거",
                                     style: CretaFont.titleSmall,
                                   ),
                                   const SizedBox(height: 12),
                                   Text(
-                                    '0/100 개의 사용 (0%)',
+                                    "${CretaMyPageLang['usageRate']} : 0/100 (0%)",
                                     style: CretaFont.titleSmall,
                                   ),
                                   const SizedBox(height: 12),
@@ -298,12 +314,12 @@ class PopUpRatePlan {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '이미지 AI 생성',
+                                    CretaMyPageLang["createImageAI"], // "이미지 AI 생성",
                                     style: CretaFont.titleSmall,
                                   ),
                                   const SizedBox(height: 12),
                                   Text(
-                                    '0/100 개의 사용 (0%)',
+                                    "${CretaMyPageLang['usageRate']} : 0/100 (0%)",
                                     style: CretaFont.titleSmall,
                                   ),
                                   const SizedBox(height: 12),
@@ -349,13 +365,15 @@ class PopUpRatePlan {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        '팀 요금제로 업그레이드',
+                        CretaMyPageLang["upgradeToTeamPlan"], // "팀 요금제로 업그레이드",
                         style: CretaFont.titleLarge,
                       ),
                       const SizedBox(height: 12),
-                      Text('모든 편집 기능과 더 효율적인 팀 협업을 지원합니다.', style: CretaFont.titleMedium),
+                      Text(CretaMyPageLang["weSupport"], //"모든 편집 기능과 더 효율적인 팀 협업을 지원합니다.", s
+                          style: CretaFont.titleMedium),
                       const SizedBox(height: 32),
-                      Text('팀 인원', style: CretaFont.titleSmall),
+                      Text(CretaMyPageLang["teamMembers"], // "팀 인원",
+                          style: CretaFont.titleSmall),
                       const SizedBox(height: 15),
                       Row(
                         children: [
@@ -376,8 +394,8 @@ class PopUpRatePlan {
                           CretaTextField(
                             textFieldKey: GlobalKey(),
                             align: TextAlign.center,
-                            value: '4',
-                            hintText: '0',
+                            value: "4",
+                            hintText: "0",
                             width: 128.0,
                             height: 32.0,
                             onEditComplete: (value) {},
@@ -400,7 +418,8 @@ class PopUpRatePlan {
                         ],
                       ),
                       const SizedBox(height: 25.0),
-                      Text('청구 기간', style: CretaFont.titleSmall),
+                      Text(CretaMyPageLang["billingPeriod"], // "청구 기간",
+                          style: CretaFont.titleSmall),
                       const SizedBox(height: 12.0),
                       Row(
                         children: [
@@ -412,7 +431,9 @@ class PopUpRatePlan {
                               decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey.shade200, width: 1),
                                   borderRadius: BorderRadius.circular(3)),
-                              child: Center(child: Text('월간', style: CretaFont.buttonMedium)),
+                              child: Center(
+                                  child: Text(CretaMyPageLang["monthly"], // "월간",
+                                      style: CretaFont.buttonMedium)),
                             ),
                           ),
                           const SizedBox(width: 14),
@@ -428,9 +449,11 @@ class PopUpRatePlan {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text('연간', style: CretaFont.buttonMedium),
+                                      Text(CretaMyPageLang["annual"], // "연간",
+                                          style: CretaFont.buttonMedium),
                                       const SizedBox(width: 10.0),
-                                      Text('(20% 할인)', style: CretaFont.buttonSmall)
+                                      Text("(20% ${CretaMyPageLang['discount']})",
+                                          style: CretaFont.buttonSmall)
                                     ],
                                   ),
                                 )),
@@ -438,7 +461,8 @@ class PopUpRatePlan {
                         ],
                       ),
                       const SizedBox(height: 20.0),
-                      Text('이미지 고급 기능', style: CretaFont.titleSmall),
+                      Text(CretaMyPageLang["advancedImageFeatures"], // "이미지 고급 기능",
+                          style: CretaFont.titleSmall),
                       const SizedBox(height: 12.0),
                       Row(
                         children: [
@@ -450,7 +474,9 @@ class PopUpRatePlan {
                               decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey.shade200, width: 1),
                                   borderRadius: BorderRadius.circular(3)),
-                              child: Center(child: Text('추가 안함', style: CretaFont.buttonMedium)),
+                              child: Center(
+                                  child: Text(CretaMyPageLang["doNotAddFeature"], // "추가 안함",
+                                      style: CretaFont.buttonMedium)),
                             ),
                           ),
                           const SizedBox(width: 14),
@@ -466,9 +492,11 @@ class PopUpRatePlan {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text('추가', style: CretaFont.buttonMedium),
+                                      Text(CretaMyPageLang["addFeature"], // "추가",
+                                          style: CretaFont.buttonMedium),
                                       const SizedBox(width: 10.0),
-                                      Text('(20% 할인)', style: CretaFont.buttonSmall)
+                                      Text("(20% ${CretaMyPageLang['discount']})",
+                                          style: CretaFont.buttonSmall)
                                     ],
                                   ),
                                 )),
@@ -476,7 +504,8 @@ class PopUpRatePlan {
                         ],
                       ),
                       const SizedBox(height: 20.0),
-                      Text('결제 수단', style: CretaFont.titleSmall),
+                      Text(CretaMyPageLang["paymentMethod"], // "결제 수단",
+                          style: CretaFont.titleSmall),
                       const SizedBox(height: 12.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -486,8 +515,13 @@ class PopUpRatePlan {
                             height: 20,
                             child: CretaRadioButton(
                               onSelected: (title, value) {},
-                              valueMap: const {'카드': 1, '무통장입금': 2, '카카오페이': '3', '네이버페이': 4},
-                              defaultTitle: 'card',
+                              valueMap: {
+                                CretaMyPageLang["card"] /*"카드"*/ : 1,
+                                CretaMyPageLang["cash"] /*"무통장입금"*/ : 2,
+                                CretaMyPageLang["kakaoPay"] /*"카카오페이"*/ : "3",
+                                CretaMyPageLang["naverPay"] /*"네이버페이"*/ : 4,
+                              },
+                              defaultTitle: "card",
                               spacebetween: 10,
                               direction: Axis.horizontal,
                               padding: EdgeInsets.zero,
@@ -509,12 +543,13 @@ class PopUpRatePlan {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('카드 번호', style: CretaFont.buttonSmall),
+                              Text(CretaMyPageLang["cardNumber"], // "카드 번호",
+                                  style: CretaFont.buttonSmall),
                               const SizedBox(height: 12.0),
                               CretaTextField(
                                 textFieldKey: GlobalKey(),
-                                value: '',
-                                hintText: '0000 0000 0000 0000',
+                                value: "",
+                                hintText: "0000 0000 0000 0000",
                                 width: 244.0,
                                 height: 30.0,
                                 onEditComplete: (value) {},
@@ -523,9 +558,10 @@ class PopUpRatePlan {
                               const SizedBox(height: 18),
                               Row(
                                 children: [
-                                  Text('유효기간', style: CretaFont.buttonSmall),
+                                  Text(CretaMyPageLang["cardExpiry"], // "유효기간",
+                                      style: CretaFont.buttonSmall),
                                   const SizedBox(width: 93),
-                                  Text('CVC', style: CretaFont.buttonSmall)
+                                  Text("CVC", style: CretaFont.buttonSmall)
                                 ],
                               ),
                               const SizedBox(height: 12),
@@ -533,8 +569,8 @@ class PopUpRatePlan {
                                 children: [
                                   CretaTextField(
                                     textFieldKey: GlobalKey(),
-                                    value: '',
-                                    hintText: 'MM/YY',
+                                    value: "",
+                                    hintText: "MM/YY",
                                     width: 112.0,
                                     height: 30.0,
                                     onEditComplete: (value) {},
@@ -544,8 +580,8 @@ class PopUpRatePlan {
                                   const SizedBox(width: 20),
                                   CretaTextField(
                                     textFieldKey: GlobalKey(),
-                                    value: '',
-                                    hintText: 'CVC',
+                                    value: "",
+                                    hintText: "CVC",
                                     width: 112.0,
                                     height: 30.0,
                                     onEditComplete: (value) {},
@@ -572,7 +608,8 @@ class PopUpRatePlan {
                                 onChanged: (value) {}),
                           ),
                           const SizedBox(width: 10.0),
-                          Text('기본 결제 수단으로 등록하기', style: CretaFont.bodyESmall)
+                          Text(CretaMyPageLang["setDefaultPaymentMethod"], // "기본 결제 수단으로 등록하기",
+                              style: CretaFont.bodyESmall)
                         ],
                       )
                     ],
@@ -600,14 +637,16 @@ class PopUpRatePlan {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('결제 내역', style: CretaFont.titleLarge),
+                          Text(CretaMyPageLang["paymentDetails"], // "결제 내역",
+                              style: CretaFont.titleLarge),
                           const SizedBox(height: 60),
                           Row(
                             children: [
                               const SizedBox(width: 20),
-                              Text('팀 요금제', style: CretaFont.titleSmall),
+                              Text(CretaMyPageLang["teamPlan"], // "팀 요금제",
+                                  style: CretaFont.titleSmall),
                               const SizedBox(width: 150),
-                              Text('129,000 원', style: CretaFont.titleSmall)
+                              Text("129,000 원", style: CretaFont.titleSmall)
                             ],
                           ),
                           Padding(
@@ -621,27 +660,31 @@ class PopUpRatePlan {
                           Row(
                             children: [
                               const SizedBox(width: 20),
-                              Text('팀 인원', style: CretaFont.titleSmall),
+                              Text(CretaMyPageLang["teamMembers"], // "팀 인원",
+                                  style: CretaFont.titleSmall),
                               const SizedBox(width: 220),
-                              Text('4명', style: CretaFont.titleSmall)
+                              Text("4명", style: CretaFont.titleSmall)
                             ],
                           ),
                           const SizedBox(height: 20),
                           Row(
                             children: [
                               const SizedBox(width: 20),
-                              Text('청구기간', style: CretaFont.titleSmall),
+                              Text("청구기간", style: CretaFont.titleSmall),
                               const SizedBox(width: 180),
-                              Text('연간 결제', style: CretaFont.titleSmall)
+                              Text(CretaMyPageLang["annualBilling"], // "연간 결제",
+                                  style: CretaFont.titleSmall)
                             ],
                           ),
                           const SizedBox(height: 20),
                           Row(
                             children: [
                               const SizedBox(width: 20),
-                              Text('이미지 고급 기능', style: CretaFont.titleSmall),
+                              Text(CretaMyPageLang["advancedImageFeatures"], // "이미지 고급 기능",
+                                  style: CretaFont.titleSmall),
                               const SizedBox(width: 160),
-                              Text('추가', style: CretaFont.titleSmall)
+                              Text(CretaMyPageLang["addFeature"], // "추가",
+                                  style: CretaFont.titleSmall)
                             ],
                           ),
                           Padding(
@@ -655,9 +698,10 @@ class PopUpRatePlan {
                           Row(
                             children: [
                               const SizedBox(width: 20),
-                              Text('결제 금액', style: CretaFont.titleSmall),
+                              Text(CretaMyPageLang["paymentAmount"], // "결제 금액",
+                                  style: CretaFont.titleSmall),
                               const SizedBox(width: 150),
-                              Text('129,000', style: CretaFont.titleLarge)
+                              Text("129,000", style: CretaFont.titleLarge)
                             ],
                           ),
                           const SizedBox(height: 178),
@@ -674,16 +718,17 @@ class PopUpRatePlan {
                                     onChanged: (value) {}),
                               ),
                               const SizedBox(width: 8),
-                              const Text('서비스 이용약관에 모두 동의합니다.'),
+                              Text(CretaMyPageLang[
+                                  "agreeToTermsOfService"]), // "서비스 이용약관에 모두 동의합니다."),
                               const SizedBox(width: 8),
-                              const Text('약관 보기')
+                              Text(CretaMyPageLang["viewTerms"]), // "약관 보기")
                             ],
                           ),
                           const SizedBox(height: 40),
                           BTN.fill_blue_t_m(
-                              text: '결제하기',
+                              text: CretaMyPageLang["makePayment"], // "결제하기",
                               textStyle: const TextStyle(
-                                  fontFamily: 'Pretendard', fontSize: 20, color: Colors.white),
+                                  fontFamily: "Pretendard", fontSize: 20, color: Colors.white),
                               width: 314,
                               height: 56,
                               onPressed: () {})
@@ -718,13 +763,17 @@ class PopUpRatePlan {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        '고급 기능 추가 구매',
+                        CretaMyPageLang["purchaseAdvancedFeatures"], // "고급 기능 추가 구매",
                         style: CretaFont.titleLarge,
                       ),
                       const SizedBox(height: 12),
-                      Text('더욱 효과적으로 편집할 수 있는 고급 기능을 무제한으로 이용해보세요.', style: CretaFont.titleMedium),
+                      Text(
+                          CretaMyPageLang[
+                              "useUnlimitedAdvancedFeatures"], // "더욱 효과적으로 편집할 수 있는 고급 기능을 무제한으로 이용해보세요.",
+                          style: CretaFont.titleMedium),
                       const SizedBox(height: 32),
-                      Text('청구 기간', style: CretaFont.titleSmall),
+                      Text(CretaMyPageLang["billingPeriod"], // "청구 기간",
+                          style: CretaFont.titleSmall),
                       const SizedBox(height: 12.0),
                       Row(
                         children: [
@@ -736,7 +785,9 @@ class PopUpRatePlan {
                               decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey.shade200, width: 1),
                                   borderRadius: BorderRadius.circular(3)),
-                              child: Center(child: Text('월간', style: CretaFont.buttonMedium)),
+                              child: Center(
+                                  child: Text(CretaMyPageLang["monthly"], // "월간",
+                                      style: CretaFont.buttonMedium)),
                             ),
                           ),
                           const SizedBox(width: 14),
@@ -752,9 +803,11 @@ class PopUpRatePlan {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text('연간', style: CretaFont.buttonMedium),
+                                      Text(CretaMyPageLang["annual"], // "연간",
+                                          style: CretaFont.buttonMedium),
                                       const SizedBox(width: 10.0),
-                                      Text('(20% 할인)', style: CretaFont.buttonSmall)
+                                      Text("(20% ${CretaMyPageLang['discount']})",
+                                          style: CretaFont.buttonSmall)
                                     ],
                                   ),
                                 )),
@@ -762,7 +815,8 @@ class PopUpRatePlan {
                         ],
                       ),
                       const SizedBox(height: 20.0),
-                      Text('결제 수단', style: CretaFont.titleSmall),
+                      Text(CretaMyPageLang["paymentMethod"], // "결제 수단",
+                          style: CretaFont.titleSmall),
                       const SizedBox(height: 12.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -772,8 +826,13 @@ class PopUpRatePlan {
                             height: 20,
                             child: CretaRadioButton(
                               onSelected: (title, value) {},
-                              valueMap: const {'카드': 1, '무통장입금': 2, '카카오페이': '3', '네이버페이': 4},
-                              defaultTitle: 'card',
+                              valueMap: {
+                                CretaMyPageLang["card"] /*"카드"*/ : 1,
+                                CretaMyPageLang["cash"] /*"무통장입금"*/ : 2,
+                                CretaMyPageLang["kakaoPay"] /*"카카오페이"*/ : "3",
+                                CretaMyPageLang["naverPay"] /*"네이버페이"*/ : 4,
+                              },
+                              defaultTitle: "card",
                               spacebetween: 10,
                               direction: Axis.horizontal,
                               padding: EdgeInsets.zero,
@@ -795,12 +854,13 @@ class PopUpRatePlan {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('카드 번호', style: CretaFont.buttonSmall),
+                              Text(CretaMyPageLang["cardNumber"], // "카드 번호",
+                                  style: CretaFont.buttonSmall),
                               const SizedBox(height: 12.0),
                               CretaTextField(
                                 textFieldKey: GlobalKey(),
-                                value: '',
-                                hintText: '0000 0000 0000 0000',
+                                value: "",
+                                hintText: "0000 0000 0000 0000",
                                 width: 244.0,
                                 height: 30.0,
                                 onEditComplete: (value) {},
@@ -809,9 +869,10 @@ class PopUpRatePlan {
                               const SizedBox(height: 18),
                               Row(
                                 children: [
-                                  Text('유효기간', style: CretaFont.buttonSmall),
+                                  Text(CretaMyPageLang["cardExpiry"], // "유효기간",
+                                      style: CretaFont.buttonSmall),
                                   const SizedBox(width: 93),
-                                  Text('CVC', style: CretaFont.buttonSmall)
+                                  Text("CVC", style: CretaFont.buttonSmall)
                                 ],
                               ),
                               const SizedBox(height: 12),
@@ -819,8 +880,8 @@ class PopUpRatePlan {
                                 children: [
                                   CretaTextField(
                                     textFieldKey: GlobalKey(),
-                                    value: '',
-                                    hintText: 'MM/YY',
+                                    value: "",
+                                    hintText: "MM/YY",
                                     width: 112.0,
                                     height: 30.0,
                                     onEditComplete: (value) {},
@@ -830,8 +891,8 @@ class PopUpRatePlan {
                                   const SizedBox(width: 20),
                                   CretaTextField(
                                     textFieldKey: GlobalKey(),
-                                    value: '',
-                                    hintText: 'CVC',
+                                    value: "",
+                                    hintText: "CVC",
                                     width: 112.0,
                                     height: 30.0,
                                     onEditComplete: (value) {},
@@ -858,7 +919,8 @@ class PopUpRatePlan {
                                 onChanged: (value) {}),
                           ),
                           const SizedBox(width: 10.0),
-                          Text('기본 결제 수단으로 등록하기', style: CretaFont.bodyESmall)
+                          Text(CretaMyPageLang["setDefaultPaymentMethod"], // "기본 결제 수단으로 등록하기",
+                              style: CretaFont.bodyESmall)
                         ],
                       )
                     ],
@@ -886,14 +948,17 @@ class PopUpRatePlan {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('결제 내역', style: CretaFont.titleLarge),
+                          Text(CretaMyPageLang["paymentDetails"], // "결제 내역",
+                              style: CretaFont.titleLarge),
                           const SizedBox(height: 60),
                           Row(
                             children: [
                               const SizedBox(width: 20),
-                              Text('고급 기능 추가 구매', style: CretaFont.titleSmall),
+                              Text(CretaMyPageLang["purchaseAdvancedFeatures"], // "고급 기능 추가 구매",
+                                  style: CretaFont.titleSmall),
                               const SizedBox(width: 100),
-                              Text('59,000 원', style: CretaFont.titleSmall)
+                              Text("59,000 ${CretaMyPageLang['dollor']}",
+                                  style: CretaFont.titleSmall)
                             ],
                           ),
                           Padding(
@@ -907,18 +972,21 @@ class PopUpRatePlan {
                           Row(
                             children: [
                               const SizedBox(width: 20),
-                              Text('인원', style: CretaFont.titleSmall),
+                              Text(CretaMyPageLang['peopleNo'], // "인원",
+                                  style: CretaFont.titleSmall),
                               const SizedBox(width: 230),
-                              Text('1명', style: CretaFont.titleSmall)
+                              Text("1${CretaMyPageLang['people']}", style: CretaFont.titleSmall)
                             ],
                           ),
                           const SizedBox(height: 20),
                           Row(
                             children: [
                               const SizedBox(width: 20),
-                              Text('청구기간', style: CretaFont.titleSmall),
+                              Text(CretaMyPageLang["billingPeriod"], //,
+                                  style: CretaFont.titleSmall),
                               const SizedBox(width: 170),
-                              Text('연간 결제', style: CretaFont.titleSmall)
+                              Text(CretaMyPageLang["annualBilling"], // "연간 결제",
+                                  style: CretaFont.titleSmall)
                             ],
                           ),
                           Padding(
@@ -932,9 +1000,10 @@ class PopUpRatePlan {
                           Row(
                             children: [
                               const SizedBox(width: 20),
-                              Text('결제 금액', style: CretaFont.titleSmall),
+                              Text(CretaMyPageLang["paymentAmount"], // "결제 금액",
+                                  style: CretaFont.titleSmall),
                               const SizedBox(width: 150),
-                              Text('59,000', style: CretaFont.titleLarge)
+                              Text("59,000", style: CretaFont.titleLarge)
                             ],
                           ),
                           const SizedBox(height: 178),
@@ -951,16 +1020,17 @@ class PopUpRatePlan {
                                     onChanged: (value) {}),
                               ),
                               const SizedBox(width: 8),
-                              const Text('서비스 이용약관에 모두 동의합니다.'),
+                              Text(CretaMyPageLang[
+                                  "agreeToTermsOfService"]), // "서비스 이용약관에 모두 동의합니다."),
                               const SizedBox(width: 8),
-                              const Text('약관 보기')
+                              Text(CretaMyPageLang["viewTerms"]), // "약관 보기")
                             ],
                           ),
                           const SizedBox(height: 40),
                           BTN.fill_blue_t_m(
-                              text: '결제하기',
+                              text: CretaMyPageLang["makePayment"], // "결제하기",
                               textStyle: const TextStyle(
-                                  fontFamily: 'Pretendard', fontSize: 20, color: Colors.white),
+                                  fontFamily: "Pretendard", fontSize: 20, color: Colors.white),
                               width: 314,
                               height: 56,
                               onPressed: () {})
@@ -985,12 +1055,14 @@ class PopUpRatePlan {
           children: [
             const Icon(Icons.warning_amber_rounded, size: 32, color: CretaColor.red),
             const SizedBox(height: 12),
-            Text('다운그레이드 하시겠습니까?', style: CretaFont.titleMedium),
+            Text(CretaMyPageLang["downgradePrompt"], // "다운그레이드 하시겠습니까?",
+                style: CretaFont.titleMedium),
             const SizedBox(height: 12),
-            Text('다운그레이드 하시는 경우, 팀에 속한 데이터는 모두 삭제됩니다.', style: CretaFont.bodySmall)
+            Text(CretaMyPageLang["downgradeWarnning"], //"다운그레이드 하시는 경우, 팀에 속한 데이터는 모두 삭제됩니다.",
+                style: CretaFont.bodySmall)
           ],
         ),
-        okButtonText: '다운그레이드',
+        okButtonText: CretaMyPageLang["downgrade"], // "다운그레이드",
         okButtonWidth: 100.0,
         onPressedOK: () {});
   }

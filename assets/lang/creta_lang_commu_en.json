@@ -182,7 +182,7 @@
     "recentUpdates": "Recent updates",
     "play": "Play",
     "subscribe" : "Subscribe",
-    "peaple" : "people",
+    "people" : "people",
 
     
     "shareLink": "Share Link",
@@ -199,21 +199,19 @@
     "kakaoTalk": "KakaoTalk",
     "notSupportedYet": "Not supported yet",
     
+    "playListModify": "Modify Playlist",
+    "playListDelete": "Delete Playlist",
+    "viewAll": "View All",
+    "viewShort": "View Summary",
+    "details": "Details",
+    "usedContents": "Content used in this Creta Book",
+    "fold": "Fold",
+    "comment": "Comment",
+    "popularBook": "Popular Creta Book",
+    "description": "Description",
     
-      "playListModify": "Modify Playlist",
-      "playListDelete": "Delete Playlist",
-      "viewAll": "View All",
-      "viewShort": "View Summary",
-      "details": "Details",
-      "usedContents": "Content used in this Creta Book",
-      "fold": "Fold",
-      "comment": "Comment",
-      "popularBook": "Popular Creta Book",
-      "description": "Description",
-    
-    
-
-    "endOfList": "End of List"
+  
+      "endOfList": "End of List"
   }
   
   

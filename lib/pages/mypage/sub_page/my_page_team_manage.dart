@@ -385,7 +385,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
         (permission == 0 || permission == 1) &&
                 memberModel.email != CretaAccountManager.currentLoginUser.email
             ? BTN.line_blue_t_m(
-                text: "내보내기",
+                text: CretaMyPageLang['throwBTN']!, //"내보내기",
                 onPressed: () {
                   teamManager.deleteTeamMember(memberModel.email,
                       checkPermission(memberModel.email, TeamManager.getCurrentTeam!));

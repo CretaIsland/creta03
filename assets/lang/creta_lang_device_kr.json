@@ -32,5 +32,14 @@
     "basicHostFilter": ["용도별(전체)", "사이니지", "디지털바리케이드", "에스컬레이터", "보드", "CDU", "기타"],
     "usageHostFilter": ["전체", "사용", "미사용"],
     "connectedHostFilter": ["전체", "연결", "미연결"],
-    "notice": "긴급공지"
+    "notice": "긴급공지",
+
+    "usageSetting": "사용상태 설정",
+    "generalSetting": "일반 정보 설정",
+    "powerSetting": "전원 설정", 
+    "currentBookSetting": "현재 방송 설정",
+
+
+
+    "END" : ""
 }

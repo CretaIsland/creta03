@@ -1,4 +1,6 @@
 import 'package:creta03/data_io/contents_manager.dart';
+import 'package:creta_common/model/app_enums.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
@@ -7,6 +9,8 @@ import 'dart:async';
 //import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import 'package:creta_studio_model/model/contents_model.dart';
+
+import '../../../login/creta_account_manager.dart';
 
 enum DateTimeFormat {
   date,
@@ -45,6 +49,20 @@ class DateTimeType extends StatefulWidget {
   State<DateTimeType> createState() => _DateTimeTypeState();
 
   static String getFormattedTime(DateTimeFormat format) {
+    UserPropertyModel? userModel = CretaAccountManager.userPropertyManagerHolder.userPropertyModel;
+    if (userModel != null) {
+      if (userModel.language == LanguageType.korean) {
+        return getFormattedTimeKOR(format);
+      }
+      if (userModel.language == LanguageType.japanese) {
+        return getFormattedTimeJPN(format);
+      }
+    }
+
+    return getFormattedTimeENG(format);
+  }
+
+  static String getFormattedTimeKOR(DateTimeFormat format) {
     switch (format) {
       case DateTimeFormat.date:
         return DateFormat.EEEE('ko').format(DateTime.now());
@@ -78,6 +96,82 @@ class DateTimeType extends StatefulWidget {
         return DateFormat.jm('ko').format(DateTime.now());
       case DateTimeFormat.hourMinSecJM:
         return DateFormat.jms('ko').format(DateTime.now());
+    }
+  }
+
+  static String getFormattedTimeENG(DateTimeFormat format) {
+    switch (format) {
+      case DateTimeFormat.date:
+        return DateFormat.EEEE('en_US').format(DateTime.now());
+      case DateTimeFormat.day:
+        return DateFormat.d('en_US').format(DateTime.now());
+      case DateTimeFormat.month:
+        return DateFormat.LLL('en_US').format(DateTime.now());
+      case DateTimeFormat.year:
+        return DateFormat.y('en_US').format(DateTime.now());
+      case DateTimeFormat.quarter:
+        return DateFormat('Qo quarter').format(DateTime.now()); // "1st quarter" 등으로 표현됨
+      case DateTimeFormat.dateDay:
+        return DateFormat('EEEE, d', 'en_US').format(DateTime.now()); // "Monday, 1" 등으로 표현됨
+      case DateTimeFormat.monthDay:
+        return DateFormat('MMMM d').format(DateTime.now()); // "January 1" 등으로 표현됨
+      case DateTimeFormat.yearMonth:
+        return DateFormat('y MMMM').format(DateTime.now()); // "2023 January" 등으로 표현됨
+      case DateTimeFormat.dayMonYear:
+        return DateFormat('MMMM d, y').format(DateTime.now()); // "January 1, 2023" 등으로 표현됨
+      case DateTimeFormat.dateDayMonYear:
+        return DateFormat('MMMM d, y (EEEE)', 'en_US')
+            .format(DateTime.now()); // "January 1, 2023 (Monday)" 등으로 표현됨
+      case DateTimeFormat.quarterYear:
+        return DateFormat.yQQQ('en_US').format(DateTime.now()); // "2023 Q1" 등으로 표현됨
+      case DateTimeFormat.hourMin:
+        return DateFormat('h:mm a').format(DateTime.now()); // "3:45 PM" 등으로 표현됨
+      case DateTimeFormat.hourMinSec:
+        return DateFormat('h:mm:ss a').format(DateTime.now()); // "3:45:30 PM" 등으로 표현됨
+      case DateTimeFormat.hourJM:
+        return DateFormat.j('en_US').format(DateTime.now()); // "3 PM" 등으로 표현됨
+      case DateTimeFormat.hourMinJM:
+        return DateFormat.jm('en_US').format(DateTime.now()); // "3:45 PM" 등으로 표현됨
+      case DateTimeFormat.hourMinSecJM:
+        return DateFormat.jms('en_US').format(DateTime.now()); // "3:45:30 PM" 등으로 표현됨
+    }
+  }
+
+  static String getFormattedTimeJPN(DateTimeFormat format) {
+    switch (format) {
+      case DateTimeFormat.date:
+        return DateFormat.EEEE('ja_JP').format(DateTime.now());
+      case DateTimeFormat.day:
+        return DateFormat.d('ja_JP').format(DateTime.now());
+      case DateTimeFormat.month:
+        return DateFormat.LLL('ja_JP').format(DateTime.now());
+      case DateTimeFormat.year:
+        return DateFormat.y('ja_JP').format(DateTime.now());
+      case DateTimeFormat.quarter:
+        return DateFormat('第QQQ四半期').format(DateTime.now()); // "第1四半期" 등으로 표현됨
+      case DateTimeFormat.dateDay:
+        return DateFormat('EEEE, d日', 'ja_JP').format(DateTime.now()); // "月曜日, 1日" 등으로 표현됨
+      case DateTimeFormat.monthDay:
+        return DateFormat('M月d日').format(DateTime.now()); // "1月1日" 등으로 표현됨
+      case DateTimeFormat.yearMonth:
+        return DateFormat('y年M月').format(DateTime.now()); // "2023年1月" 등으로 표현됨
+      case DateTimeFormat.dayMonYear:
+        return DateFormat('y年M月d日').format(DateTime.now()); // "2023年1月1日" 등으로 표현됨
+      case DateTimeFormat.dateDayMonYear:
+        return DateFormat('y年M月d日 (EEEE)', 'ja_JP')
+            .format(DateTime.now()); // "2023年1月1日 (月曜日)" 등으로 표현됨
+      case DateTimeFormat.quarterYear:
+        return DateFormat.yQQQ('ja_JP').format(DateTime.now()); // "2023年第1四半期" 등으로 표현됨
+      case DateTimeFormat.hourMin:
+        return DateFormat('H時m分').format(DateTime.now()); // "15時45分" 등으로 표현됨
+      case DateTimeFormat.hourMinSec:
+        return DateFormat('H時m分s秒').format(DateTime.now()); // "15時45分30秒" 등으로 표현됨
+      case DateTimeFormat.hourJM:
+        return DateFormat.j('ja_JP').format(DateTime.now()); // "15時" 등으로 표현됨
+      case DateTimeFormat.hourMinJM:
+        return DateFormat.jm('ja_JP').format(DateTime.now()); // "15時45分" 등으로 표현됨
+      case DateTimeFormat.hourMinSecJM:
+        return DateFormat.jms('ja_JP').format(DateTime.now()); // "15時45分30秒" 등으로 표현됨
     }
   }
 }

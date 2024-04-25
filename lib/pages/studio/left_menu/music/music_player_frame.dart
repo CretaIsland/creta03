@@ -545,7 +545,8 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
                 ),
               ),
               SizedBox(height: 8.0 * scaleVal),
-              Text('플레이 리스트에 노래를 추가하세요!', style: TextStyle(fontSize: 20 * scaleVal)),
+              Text(CretaStudioLang["addPlayList"], //'플레이 리스트에 노래를 추가하세요!',
+                  style: TextStyle(fontSize: 20 * scaleVal)),
             ]);
           }
           final metadata = state!.currentSource!.tag as MediaItem;

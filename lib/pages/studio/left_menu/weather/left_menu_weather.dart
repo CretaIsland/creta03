@@ -19,6 +19,7 @@ import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_studio_model/model/contents_model.dart';
 import 'package:creta_studio_model/model/frame_model.dart';
 import 'package:creta_studio_model/model/page_model.dart';
+import '../../../../lang/creta_studio_lang.dart';
 import '../../book_main_page.dart';
 import 'weather_element.dart';
 import 'wether_variables.dart';
@@ -118,7 +119,8 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
             const WeatherLiveData(),
             Padding(
               padding: const EdgeInsets.only(top: 24.0, left: 24.0),
-              child: Text('날씨 스티커', style: widget.dataStyle),
+              child: Text(CretaStudioLang["weatherSticker"], //'날씨 스티커',
+                  style: widget.dataStyle),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 12.0, left: 24.0),

@@ -182,7 +182,7 @@
     "recentUpdates": "最新の更新",
     "play": "再生",
     "subscribe" : "チャンネル登録",
-    "peaple" : "人",
+    "people" : "人",
 
     
     "shareLink": "リンク共有",
@@ -200,18 +200,18 @@
     "notSupportedYet": "まだサポートされていません",
     
 
-        "playListModify": "プレイリスト編集",
-        "playListDelete": "プレイリスト削除",
-        "viewAll": "すべて見る",
-        "viewShort": "概要を見る",
-        "details": "詳細",
-        "usedContents": "上記のクレタブックで使用されたコンテンツ",
-        "fold": "折りたたむ",
-        "comment": "コメント",
-        "popularBook": "人気クレタブック",
-        "description": "説明",
-      
-
+    "playListModify": "プレイリスト編集",
+    "playListDelete": "プレイリスト削除",
+    "viewAll": "すべて見る",
+    "viewShort": "概要を見る",
+    "details": "詳細",
+    "usedContents": "上記のクレタブックで使用されたコンテンツ",
+    "fold": "折りたたむ",
+    "comment": "コメント",
+    "popularBook": "人気クレタブック",
+    "description": "説明",
+    
+ 
     "end" : ""
   
 }

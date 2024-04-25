@@ -167,9 +167,9 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   Widget _musicAudioControl() {
     String musicMuted;
     if (_contentsManager!.frameModel.mute.value == true) {
-      musicMuted = '음소거'; //muted
+      musicMuted = CretaStudioLang["mute"]; //'음소거'; //muted
     } else {
-      musicMuted = '음소거 해제'; //unmuted
+      musicMuted = CretaStudioLang["unmute"]; //'음소거 해제'; //unmuted
     }
     String trails = '${_contentsManager!.frameModel.volume.value.round()}, $musicMuted';
     return Padding(

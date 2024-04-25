@@ -25,7 +25,7 @@ class ChangePwdPopUp {
           CretaTextField(
             textFieldKey: GlobalKey(),
             value: '',
-            hintText: '현재 비밀번호',
+            hintText: CretaMyPageLang['oldPassword'], //'현재 비밀번호',
             width: 294.0,
             height: 30.0,
             onChanged: (value) => _nowPassword = value,
@@ -35,7 +35,7 @@ class ChangePwdPopUp {
           CretaTextField(
             textFieldKey: GlobalKey(),
             value: '',
-            hintText: '새 비밀번호',
+            hintText: CretaMyPageLang['newPassword'], //'새 비밀번호',
             width: 294.0,
             height: 30.0,
             onChanged: (value) => _newPassword = value,
@@ -45,7 +45,7 @@ class ChangePwdPopUp {
           CretaTextField(
             textFieldKey: GlobalKey(),
             value: '',
-            hintText: '새 비밀번호 확인',
+            hintText: CretaMyPageLang['newPasswordConfirm'], //'새 비밀번호 확인',
             width: 294.0,
             height: 30.0,
             onChanged: (value) => _checkNewPassword = value,

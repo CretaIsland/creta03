@@ -112,7 +112,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 Padding(
                   padding: const EdgeInsets.only(left: 4, bottom: 8.0, right: 2),
                   child: _boolRow(
-                    '사용상태 설정',
+                    CretaDeviceLang["usageSetting"],//'사용상태 설정',
                     widget.hostModel.isUsed,
                     true,
                     onChanged: (bool value) {
@@ -133,7 +133,9 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text("일반 정보 설정", style: dataStyle),
+                          child: Text(
+                            CretaDeviceLang["generalSetting"],//"일반 정보 설정", 
+                            style: dataStyle),
                         ),
                         TextFormField(
                           initialValue: widget.hostModel.hostName,
@@ -165,7 +167,9 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text("전원 설정", style: dataStyle),
+                          child: Text(
+                            CretaDeviceLang["powerSetting"],// "전원 설정", 
+                          style: dataStyle),
                         ),
                         //const Divider(color: Colors.grey),
                         _nvChanged(
@@ -277,7 +281,8 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text("현재 방송 설정", style: dataStyle),
+                          child: Text(CretaDeviceLang["currentBookSetting"],//"현재 방송 설정", 
+                          style: dataStyle),
                         ),
                         _nvChanged(
                           'Requested Book 1',
