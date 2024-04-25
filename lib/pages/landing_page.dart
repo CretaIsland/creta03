@@ -47,7 +47,7 @@ class _LandingPageState extends State<LandingPage> {
   late List<DropdownMenuItem> purposeItems;
   late List<DropdownMenuItem> sortItems;
   // selected value of dropdown menu
-  late String selectedLanguage;
+  //late String selectedLanguage;
   late BookType selectedPurpose;
   late BookSort selectedSort;
 
@@ -66,6 +66,8 @@ class _LandingPageState extends State<LandingPage> {
 
   final ValueNotifier<String> _animationLogoImgPath =
       ValueNotifier<String>("assets/landing_page/image/creta_animation_logo.png");
+
+  double _imageLeffOffset = 0;
 
   // initalize video controller
   Future<void> initalizeVideoController() async {
@@ -168,6 +170,8 @@ class _LandingPageState extends State<LandingPage> {
     //selectedLanguage = languageItems.first.value;
     selectedPurpose = purposeItems.first.value;
     selectedSort = sortItems.first.value;
+
+    _imageLeffOffset = _calcImageLeftOffset();
   }
 
   Future<void> afterBuild() async {
@@ -689,6 +693,43 @@ class _LandingPageState extends State<LandingPage> {
     );
   }
 
+  double _calcImageLeftOffset() {
+    LanguageType language =
+        CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.language;
+    switch (language) {
+      case LanguageType.english:
+        return 145.0;
+      case LanguageType.japanese:
+        return 120.0;
+      default:
+        return 0;
+    }
+  }
+
+  String _getTextEffect1BGFile() {
+    LanguageType language =
+        CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.language;
+    switch (language) {
+      case LanguageType.english:
+        return "assets/landing_page/image/text_effect_1_big.png";
+      case LanguageType.japanese:
+        return "assets/landing_page/image/text_effect_1_big.png";
+      default:
+        return "assets/landing_page/image/text_effect_1.png";
+    }
+  }
+
+  String _getTextEffect2BGFile() {
+    LanguageType language =
+        CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.language;
+    switch (language) {
+      case LanguageType.english:
+        return "assets/landing_page/image/text_effect_2_eng.png";
+      default:
+        return "assets/landing_page/image/text_effect_2.png";
+    }
+  }
+
   // ************************************ experience section ************************************
   Widget experienceSection() {
     TextStyle titleFontStyle = CretaFont.titleLarge
@@ -701,12 +742,9 @@ class _LandingPageState extends State<LandingPage> {
         children: [
           Stack(
             children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 45, bottom: 10),
-                child: Image(
-                    image: AssetImage("assets/landing_page/image/text_effect_1.png"),
-                    width: 623,
-                    height: 63),
+              Padding(
+                padding: EdgeInsets.only(top: 45, bottom: 10, left: _imageLeffOffset),
+                child: Image(image: AssetImage(_getTextEffect1BGFile()), width: 623, height: 63),
               ),
               //Text(CretaCommuLang['exp1']!, style: titleFontStyle, textAlign: TextAlign.center),
               RichText(
@@ -725,7 +763,7 @@ class _LandingPageState extends State<LandingPage> {
                           text: CretaCommuLang['exp4']!, //" 을 체험해보세요",
                           style: titleFontStyle)
                     ]),
-              )
+              ),
             ],
           ),
 
@@ -917,7 +955,7 @@ class _LandingPageState extends State<LandingPage> {
   // ************************************ promotion section ************************************
   Widget promotionSection() {
     return SizedBox(
-      width: 1256,
+      width: 1256 + 52,
       height: 1161,
       child: Row(
         children: [
@@ -969,10 +1007,10 @@ class _LandingPageState extends State<LandingPage> {
             children: [
               Stack(
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 74, left: 28),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 74, left: 28),
                     child: Image(
-                      image: AssetImage("assets/landing_page/image/text_effect_2.png"),
+                      image: AssetImage(_getTextEffect2BGFile()),
                     ),
                   ),
                   Padding(
@@ -1084,7 +1122,7 @@ class _LandingPageState extends State<LandingPage> {
   // ************************************ creta guide section ************************************
   Widget guideSection() {
     return SizedBox(
-      width: 1360,
+      width: 1360 + 66,
       height: 792,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

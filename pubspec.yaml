@@ -300,7 +300,9 @@ flutter:
     - assets/landing_page/image/promotion_3.png
     - assets/landing_page/image/promotion_4.png
     - assets/landing_page/image/text_effect_1.png
+    - assets/landing_page/image/text_effect_1_big.png
     - assets/landing_page/image/text_effect_2.png
+    - assets/landing_page/image/text_effect_2_eng.png
     - assets/landing_page/image/text_effect_3.png
     - assets/landing_page/image/text_effect_4.png
 

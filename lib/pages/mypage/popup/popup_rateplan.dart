@@ -23,9 +23,13 @@ class PopUpRatePlan {
         children: [
           Icon(Icons.check, size: 16, color: Colors.grey.shade200),
           const SizedBox(width: 10),
-          Text(
-            tip,
-            style: CretaFont.titleSmall,
+          Expanded(
+            child: Text(
+              tip,
+              maxLines: 2,
+              softWrap: true,
+              style: CretaFont.titleSmall,
+            ),
           )
         ],
       ));
@@ -65,8 +69,8 @@ class PopUpRatePlan {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text(
-                                CretaMyPageLang["freePlan"]), // "무료", style: CretaFont.titleMedium),
+                            Text(CretaMyPageLang[
+                                "freePlan"]), // "무료", style: CretaFont.titleMedium),
                             const SizedBox(height: 24.0),
                             Text(CretaMyPageLang[
                                 "planForEveryoneStarting"]), // "크레타를 시작하는 모든 사람을 위한 요금제입니다.", style: CretaFont.titleSmall),
@@ -272,7 +276,7 @@ class PopUpRatePlan {
                       ),
                       const SizedBox(width: 56),
                       Container(
-                        width: 632,
+                        width: 615,
                         height: 102,
                         decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey.shade200, width: 1),
@@ -282,7 +286,7 @@ class PopUpRatePlan {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(top: 20, left: 32.0),
+                              padding: const EdgeInsets.only(top: 20, left: 25.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -308,7 +312,7 @@ class PopUpRatePlan {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(top: 20, left: 80.0),
+                              padding: const EdgeInsets.only(top: 20, left: 72.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
