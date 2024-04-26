@@ -17,16 +17,16 @@ abstract class AbsCretaStudioLang /*with CretaStudioLangMixin */ {
     late String lang;
     switch (language) {
       case LanguageType.korean:
-        lang = 'lang/creta_lang_studio_kr.json';
+        lang = 'assets/lang/creta_lang_studio_kr.json';
         break;
       case LanguageType.english:
-        lang = 'lang/creta_lang_studio_en.json';
+        lang = 'assets/lang/creta_lang_studio_en.json';
         break;
       case LanguageType.japanese:
-        lang = 'lang/creta_lang_studio_jp.json';
+        lang = 'assets/lang/creta_lang_studio_jp.json';
         break;
       default:
-        lang = 'lang/creta_lang_studio_kr.json';
+        lang = 'assets/qlang/creta_lang_studio_kr.json';
         break;
     }
     return await CretaCommonUtils.readJsonFromAssets(lang);
