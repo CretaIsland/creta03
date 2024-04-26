@@ -21,6 +21,7 @@ class CretaTapBarButton extends StatefulWidget {
   Color? fgClickColor;
   Color? fgHoverColor;
   final bool isIconText;
+  double? leftPadding;
 
   CretaTapBarButton({
     super.key,
@@ -38,6 +39,7 @@ class CretaTapBarButton extends StatefulWidget {
     this.iconData,
     this.iconSize,
     this.isIconText = false,
+    this.leftPadding = 0,
   }) {
     bgColor ??= CretaColor.text[100]!;
     bgClickColor ??= Colors.white;
@@ -94,6 +96,7 @@ class _CretaTapBarButtonState extends State<CretaTapBarButton> {
         },
         child: SizedBox(
           child: AnimatedContainer(
+            padding: EdgeInsets.only(right: widget.leftPadding!),
             duration: const Duration(milliseconds: 200),
             transformAlignment: AlignmentDirectional.center,
             transform: Matrix4.identity()..scale(_getScale()),

@@ -19,7 +19,7 @@ class LeftMenuStorage extends StatefulWidget {
 
   @override
   State<LeftMenuStorage> createState() => _LeftMenuStorageState();
-  static String selectedType = CretaStudioLang['storageTypes']!.values.first;
+  //static String selectedType = CretaStudioLang['storageTypes']!.values.first;
 }
 
 class _LeftMenuStorageState extends State<LeftMenuStorage> {
@@ -30,7 +30,7 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
   late double bodyWidth;
 
   String searchText = '';
-  static String _selectedType = CretaStudioLang['storageTypes']!.values.first;
+  static String _selectedType = '';
 
   Map<String, String> depotMenuTabBar = {};
   String? _myTeamId;
@@ -41,7 +41,7 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
   String _getCurrentTypes() {
     int index = 0;
     String currentSelectedType = _selectedType;
-    List<String> types = CretaStudioLang['storageTypes']!.values.toList();
+    List<String> types = [...CretaStudioLang['storageTypes']!.values.toList()];
     for (String ele in types) {
       if (currentSelectedType == ele) {
         return types[index];
@@ -61,6 +61,8 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
   void initState() {
     logger.fine('_LeftMenuStorageState.initState');
     super.initState();
+
+    _selectedType = CretaStudioLang['storageTypes']!.values.first;
 
     depotMenuTabBar[CretaStudioLang['myStorage']] = 'myDepot';
 
@@ -217,12 +219,12 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
       unSelectedColor: Colors.white,
       unSelectedBorderColor: CretaColor.primary,
       buttonLables: CretaStudioLang['storageTypes']!.keys.toList(),
-      buttonValues: CretaStudioLang['storageTypes']!.values.toList(),
+      buttonValues: [...CretaStudioLang['storageTypes']!.values.toList()],
     );
   }
 
   Widget _selectedStorage() {
-    List<String> type = CretaStudioLang['storageTypes']!.values.toList();
+    List<String> type = [...CretaStudioLang['storageTypes']!.values.toList()];
     if (_selectedType == type[0]) {
       return DepotDisplay(
         key: const GlobalObjectKey('DepotDisplayClass_0'),

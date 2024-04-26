@@ -60,6 +60,7 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
         caption: item.caption,
         iconSize: item.iconSize,
         isIconText: item.isIconText,
+        leftPadding: 10,
         onPressed: () {
           setState(() {
             for (var ele in widget.menuItem) {
@@ -203,9 +204,10 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
                             uri: Uri.parse(channelLinkUrl),
                             builder: (context, function) {
                               return BTN.fill_gray_l_profile(
+                                width: 225,
                                 text: AccountManager.currentLoginUser.name,
                                 subText:
-                                    '${CretaCommuLang["subsriber"]!} ${CretaAccountManager.getChannel?.followerCount ?? 0}', //CretaLang['billInfo']!,
+                                    '${CretaCommuLang["subscriber"]!} ${CretaAccountManager.getChannel?.followerCount ?? 0}', //CretaLang['billInfo']!,
                                 image: const AssetImage('assets/creta_default.png'),
                                 onPressed: () {
                                   if (channelId.isNotEmpty) {

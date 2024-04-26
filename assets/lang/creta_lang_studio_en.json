@@ -58,8 +58,8 @@
 
 
     "bookInfoTabBar" : {
-    "Cretan Book Information" : "book_info",
-    "CreteBook Settings" : "book_settings",
+    "Creta Book Information" : "book_info",
+    "Creta Book Settings" : "book_settings",
     "Editor Authority" : "authority",
     "Publication History" : "history"
     },
@@ -192,7 +192,7 @@
       ],
 
     "detailTipMessage2" : [
-        "A Monet-style drawing of a landscape on the island of Crete",
+        "A Monet-style drawing of a landscape on the island of Creta",
         "Representation of Johannes Vermeer's Girl with a Pearl Earring as a sea otter",
         "A photo of Michelangelo's sculpture of David with headphones DJing",
         "A painting of a French bulldog wearing Andy Warhol-style sunglasses"
@@ -201,7 +201,7 @@
     "dailyQuote" : "Today's\n quote",
     "dailyWord" : "Word of the day",
 
-    "myCretaBook" : "My Crete Book",
+    "myCretaBook" : "My Creta Book",
     "sharedCretaBook" : "Shared Creta Book",
     "teamCretaBook" : "Team book",
     "trashCan" : "Trash Can",
@@ -268,9 +268,9 @@
     "crop" : "Crop",
     "copyStyle" : "Formatting copy",
     "pasteStyle" : "Paste Style",
-    " var showUnshow" : "Show/Secure",
-    " var show" : "Show",
-    " var unshow" : "Unshow",
+    "showUnshow" : "Show/Secure",
+    "show" : "Show",
+    "unshow" : "Unshow",
 
     "description" : "Description",
     "hashTab" : "Hashtags",
@@ -660,7 +660,7 @@
     "zipStarting" : "The requested file is being compressed",
     "fileDownloading" : "Downloading the requested file has started",
     "cretaInviteYou" : "You have been invited to join creta",
-    "pressLinkToJoinCreta1" : "You have been invited to join Creta. Please press the link below to join Crete. ",
+    "pressLinkToJoinCreta1" : "You have been invited to join Creta. Please press the link below to join Creta. ",
     "isSendEmail" : "You are not yet signed up. Do you want to send an invitation email?",
     "mainFrameExTooltip" : "This is the main frame. When the content of this frame ends, you will automatically go to the next page.",
     "deleteLink" : "Delete link",

@@ -232,7 +232,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                     const SizedBox(height: 32.0),
                                     BTN.fill_blue_t_m(
                                         text: CretaMyPageLang['addMemberBTN']!,
-                                        width: 81.0,
+                                        width: 160,
                                         onPressed: () {})
                                   ],
                                 ),

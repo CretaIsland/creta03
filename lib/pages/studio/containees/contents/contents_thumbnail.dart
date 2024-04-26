@@ -203,7 +203,7 @@ class ContentsThumbnailState extends CretaState<ContentsThumbnail>
                     }
                     index++;
                   }
-                  List<String> size = CretaStudioLang['playerSize']!.values.toList();
+                  List<dynamic> size = CretaStudioLang['playerSize']!.values.toList();
                   if (selectedSize == size[0]) {
                     return Container(
                       alignment: Alignment.center,

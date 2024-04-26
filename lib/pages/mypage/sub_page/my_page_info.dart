@@ -45,14 +45,21 @@ class _MyPageInfoState extends State<MyPageInfo> {
   initState() {
     super.initState();
     // set country dropdown menu item
+    _initMenu();
+  }
+
+  void _initMenu() {
+    countryItemList.clear();
     for (var element in CretaMyPageLang['countryList']!) {
       countryItemList.add(Text(element, style: CretaFont.bodyMedium));
     }
     // set language dropdown menu item
+    languageItemList.clear();
     for (var element in CretaMyPageLang['languageList']!) {
       languageItemList.add(Text(element, style: CretaFont.bodyMedium));
     }
     // set job dropdown menu item
+    jobItemList.clear();
     for (var element in CretaMyPageLang['jobList']!) {
       jobItemList.add(Text(element, style: CretaFont.bodyMedium));
     }
@@ -224,7 +231,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 CretaWidgetDropDown(
-                                    width: 116,
+                                    width: 200,
                                     items: countryItemList,
                                     defaultValue: countryIndex > 0 ? countryIndex - 1 : 0,
                                     onSelected: (value) {
@@ -233,7 +240,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                                     }),
                                 const SizedBox(height: 20.0),
                                 CretaWidgetDropDown(
-                                    width: 102,
+                                    width: 200,
                                     items: languageItemList,
                                     defaultValue: langIndex > 0 ? langIndex - 1 : 0,
                                     onSelected: (value) {
@@ -244,6 +251,9 @@ class _MyPageInfoState extends State<MyPageInfo> {
                                           userPropertyManager.notify();
                                         },
                                       );
+                                      setState(() {
+                                        _initMenu();
+                                      });
                                       // userPropertyManager.userPropertyModel!.language =
                                       //     LanguageType.fromInt(value + 1);
                                       // setState(() {
@@ -253,7 +263,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                                     }),
                                 const SizedBox(height: 20.0),
                                 CretaWidgetDropDown(
-                                    width: 102,
+                                    width: 200,
                                     items: jobItemList,
                                     defaultValue: jobIndex > 0 ? jobIndex - 1 : 0,
                                     onSelected: (value) {

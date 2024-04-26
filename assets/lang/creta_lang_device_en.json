@@ -1,10 +1,10 @@
  {
-   "editHost": "Edit property",
-   "setBook": "Change broadcast",
+   "editHost": "Property",
+   "setBook": "Change Book",
    "powerOff": "Power off",
    "powerOn": "Power on",
    "reboot": "Reboot",
-   "setPower": "Auto Power Set",
+   "setPower": "Auto Power",
    "newHost": "Register new device",
    "used": "Enabled",
    "unUsed": "Unused",
@@ -32,5 +32,14 @@
    "basicHostFilter": ["usage (all)", "signage", "digitalbarricade", "escalator", "board", "CDU", "other"],
    "usageHostFilter": ["all", "used", "unused"],
    "connectedHostFilter": ["all", "connected", "unconnected"],
-   "notice": "Urgent notice"
+   "notice": "Urgent notice",
+
+  
+    "usageSetting": "Usage Status Settings",
+    "generalSetting": "General Settings",
+    "powerSetting": "Power Settings",
+    "currentBookSetting": "Current Broadcast Settings",
+  
+     "end"  : "End"
+
 }

@@ -407,9 +407,9 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
       return CretaStudioLang['pageSizeMapPresentation']!.keys.toList();
     }
     if (bookType == BookType.barricade) {
-      return CretaStudioLang['pageSizeListBarricade']!;
+      return [...CretaStudioLang['pageSizeListBarricade']!];
     }
-    return CretaStudioLang['pageSizeListSignage']!;
+    return [...CretaStudioLang['pageSizeListSignage']!];
   }
 
   List<Size> choiceResolution(BookType bookType, int idx) {
@@ -460,7 +460,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
 
   List<String>? getPageSizeListHint() {
     if (widget.model.bookType.value == BookType.presentaion) {
-      return CretaStudioLang['pageSizeMapPresentation']!.values.toList();
+      return [...CretaStudioLang['pageSizeMapPresentation']!.values.toList()];
     }
     return null;
   }

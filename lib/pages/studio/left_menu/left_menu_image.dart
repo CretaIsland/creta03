@@ -189,7 +189,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
           unSelectedColor: CretaColor.text[100]!,
           defaultSelected: _selectedTab,
           buttonLables: CretaStudioLang['imageMenuTabBar']!.keys.toList(),
-          buttonValues: CretaStudioLang['imageMenuTabBar']!.values.toList(),
+          buttonValues: [...CretaStudioLang['imageMenuTabBar']!.values.toList()],
           selectedBorderColor: Colors.transparent,
           unSelectedBorderColor: Colors.transparent,
           elevation: 0,
@@ -219,7 +219,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
   }
 
   Widget _imageResult() {
-    List<String> menu = CretaStudioLang['imageMenuTabBar']!.values.toList();
+    List<dynamic> menu = CretaStudioLang['imageMenuTabBar']!.values.toList();
     // 이미지
     if (_selectedTab == menu[0]) {
       return Column(

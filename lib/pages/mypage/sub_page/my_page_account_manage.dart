@@ -149,7 +149,7 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(CretaMyPageLang['ratePlan'], //'요금제', s
-                              style: CretaFont.titleELarge),
+                                  style: CretaFont.titleELarge),
                               const SizedBox(height: 32),
                               Row(
                                 children: [
@@ -157,7 +157,7 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                                       CretaMyPageLang['ratePlanList']![
                                           userPropertyManager.userPropertyModel!.ratePlan.index],
                                       style: CretaFont.titleMedium),
-                                  const SizedBox(width: 24),
+                                  const SizedBox(width: 12),
                                   BTN.line_blue_t_m(
                                       text: CretaMyPageLang['ratePlanChangeBTN'], //'요금제 변경',
                                       onPressed: () {
@@ -170,7 +170,7 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                                 ],
                               ),
                               const SizedBox(height: 13),
-                              Text(CretaMyPageLang['ratePlanTip'],//'팀 요금제를 사용해보세요!',
+                              Text(CretaMyPageLang['ratePlanTip'], //'팀 요금제를 사용해보세요!',
                                   style: CretaFont.bodySmall
                                       .copyWith(color: CretaColor.text.shade400)),
                             ],
@@ -184,14 +184,14 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(CretaMyPageLang['channelSetting'],//'채널 설정', 
-                              style: CretaFont.titleELarge),
+                              Text(CretaMyPageLang['channelSetting'], //'채널 설정',
+                                  style: CretaFont.titleELarge),
                               const SizedBox(height: 32),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(CretaMyPageLang['publicProfile'],//"프로필 공개", 
-                                  style: CretaFont.titleMedium),
+                                  Text(CretaMyPageLang['publicProfile'], //"프로필 공개",
+                                      style: CretaFont.titleMedium),
                                   const SizedBox(width: 100),
                                   CretaToggleButton(
                                       onSelected: (value) {
@@ -212,8 +212,8 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(CretaMyPageLang['backgroundImg'], //"배경 이미지", 
-                                  style: CretaFont.titleMedium),
+                                  Text(CretaMyPageLang['backgroundImg'], //"배경 이미지",
+                                      style: CretaFont.titleMedium),
                                   const SizedBox(width: 50),
                                   MyPageCommonWidget.channelBannerImgComponent(
                                       width: widget.width * .6,
@@ -247,8 +247,8 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(CretaMyPageLang['introChannel'], //"채널 소개", 
-                                  style: CretaFont.titleMedium),
+                                  Text(CretaMyPageLang['introChannel'], //"채널 소개",
+                                      style: CretaFont.titleMedium),
                                   const SizedBox(width: 64),
                                   MyPageCommonWidget.channelDescriptionComponent(
                                       width: widget.width * .6)
@@ -271,7 +271,7 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                             const SizedBox(width: 24.0),
                             BTN.fill_red_t_m(
                                 text: CretaMyPageLang['removeAccountBTN']!,
-                                width: 81,
+                                width: 140,
                                 onPressed: () {}),
                           ],
                         ),

@@ -3,7 +3,7 @@ import 'package:creta_user_io/data_io/user_property_manager.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 import 'package:creta_user_model/model/user_property_model.dart';
-import 'package:get/get.dart';
+//import 'package:get/get.dart';
 import 'package:creta03/routes.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_const.dart';
@@ -19,7 +19,7 @@ import 'design_system/component/snippet.dart';
 import 'design_system/menu/creta_popup_menu.dart';
 import 'lang/creta_mypage_lang.dart';
 import 'pages/login/creta_account_manager.dart';
-import 'pages/studio/studio_getx_controller.dart';
+//import 'pages/studio/studio_getx_controller.dart';
 
 class MyCustomPainter extends CustomPainter {
   @override
@@ -86,9 +86,9 @@ class VerticalAppBar extends StatefulWidget {
 }
 
 class _VerticalAppBarState extends State<VerticalAppBar> {
-  BoolEventController? _foldSendEvent;
+  //BoolEventController? _foldSendEvent;
   List<Text> languageItemList = [];
-  Future<bool>? isLangInit;
+  static Future<bool>? isLangInit;
 
   Future<bool>? initLang() async {
     UserPropertyModel? userModel = CretaAccountManager.userPropertyManagerHolder.userPropertyModel;
@@ -105,8 +105,8 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
   @override
   void initState() {
     super.initState();
-    final BoolEventController foldSendEvent = Get.find(tag: 'vertical-app-bar-to-creta-left-bar');
-    _foldSendEvent = foldSendEvent;
+    //final BoolEventController foldSendEvent = Get.find(tag: 'vertical-app-bar-to-creta-left-bar');
+    //_foldSendEvent = foldSendEvent;
     //Snippet.clearLang();
     isLangInit = initLang();
   }
@@ -198,12 +198,12 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
   }
 
   void _communityLogoPressed() {
-    Routemaster.of(context).push(AppRoutes.communityHome);
     VerticalAppBar.appBarSelected = VerticalAppBarType.community;
     VerticalAppBar.fold = false;
     CretaComponentLocation.TabBar.width = 310.0 - CretaConst.verticalAppbarWidth;
-    _foldSendEvent?.sendEvent(false);
-    widget.onFoldButtonPressed();
+    Routemaster.of(context).push(AppRoutes.communityHome);
+    //_foldSendEvent?.sendEvent(false);
+    //widget.onFoldButtonPressed();
   }
 
   Widget communityLogo(BuildContext context) {
@@ -228,12 +228,12 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
   }
 
   void _studioLogoPressed() {
-    Routemaster.of(context).push(AppRoutes.studioBookGridPage);
     VerticalAppBar.appBarSelected = VerticalAppBarType.studio;
     VerticalAppBar.fold = false;
     CretaComponentLocation.TabBar.width = 310.0 - CretaConst.verticalAppbarWidth;
-    _foldSendEvent?.sendEvent(false);
-    widget.onFoldButtonPressed();
+    //_foldSendEvent?.sendEvent(false);
+    Routemaster.of(context).push(AppRoutes.studioBookGridPage);
+    //widget.onFoldButtonPressed();
   }
 
   Widget studioLogo(BuildContext context) {
@@ -261,12 +261,12 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
   }
 
   void _deviceLogoPressed() {
-    Routemaster.of(context).push(AppRoutes.deviceMainPage);
     VerticalAppBar.appBarSelected = VerticalAppBarType.device;
     VerticalAppBar.fold = false;
-    _foldSendEvent?.sendEvent(false);
+    //_foldSendEvent?.sendEvent(false);
     CretaComponentLocation.TabBar.width = 310.0 - CretaConst.verticalAppbarWidth;
-    widget.onFoldButtonPressed();
+    Routemaster.of(context).push(AppRoutes.deviceMainPage);
+    //widget.onFoldButtonPressed();
   }
 
   Widget deviceLogo(BuildContext context) {
@@ -294,12 +294,12 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
   }
 
   void _myPageLogoPressed() {
-    Routemaster.of(context).push(AppRoutes.myPageDashBoard);
     VerticalAppBar.appBarSelected = VerticalAppBarType.mypage;
     VerticalAppBar.fold = false;
-    _foldSendEvent?.sendEvent(false);
+    //_foldSendEvent?.sendEvent(false);
     CretaComponentLocation.TabBar.width = 310.0 - CretaConst.verticalAppbarWidth;
-    widget.onFoldButtonPressed();
+    Routemaster.of(context).push(AppRoutes.myPageDashBoard);
+    //widget.onFoldButtonPressed();
   }
 
   Widget myPageLogo(BuildContext context) {
@@ -327,12 +327,12 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
   }
 
   void _adminLogoPressed() {
-    Routemaster.of(context).push(AppRoutes.adminMainPage);
     VerticalAppBar.appBarSelected = VerticalAppBarType.admin;
     VerticalAppBar.fold = false;
-    _foldSendEvent?.sendEvent(false);
+    //_foldSendEvent?.sendEvent(false);
     CretaComponentLocation.TabBar.width = 310.0 - CretaConst.verticalAppbarWidth;
-    widget.onFoldButtonPressed();
+    Routemaster.of(context).push(AppRoutes.adminMainPage);
+    //widget.onFoldButtonPressed();
   }
 
   Widget adminLogo(BuildContext context) {

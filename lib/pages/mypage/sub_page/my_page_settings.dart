@@ -69,19 +69,19 @@ class _MyPageSettingsState extends State<MyPageSettings> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(CretaMyPageLang['myNotice'], //"내 알림", 
-                                style: CretaFont.titleELarge),
+                                Text(CretaMyPageLang['myNotice'], //"내 알림",
+                                    style: CretaFont.titleELarge),
                                 const SizedBox(height: 32),
                                 Row(
                                   children: [
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(CretaMyPageLang['pushNotice'], //"푸시 알림", 
-                                        style: CretaFont.titleMedium),
+                                        Text(CretaMyPageLang['pushNotice'], //"푸시 알림",
+                                            style: CretaFont.titleMedium),
                                         const SizedBox(height: 25),
-                                        Text(CretaMyPageLang['emailNotice'], //"이메일 알림", 
-                                        style: CretaFont.titleMedium)
+                                        Text(CretaMyPageLang['emailNotice'], //"이메일 알림",
+                                            style: CretaFont.titleMedium)
                                       ],
                                     ),
                                     const SizedBox(width: 200),
@@ -123,19 +123,19 @@ class _MyPageSettingsState extends State<MyPageSettings> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(CretaMyPageLang['mySetting'], //"내 설정", 
-                                style: CretaFont.titleELarge),
+                                Text(CretaMyPageLang['mySetting'], //"내 설정",
+                                    style: CretaFont.titleELarge),
                                 const SizedBox(height: 32),
                                 Row(
                                   children: [
-                                    Text(CretaMyPageLang['theme'], //"테마", 
-                                    style: CretaFont.titleMedium),
+                                    Text(CretaMyPageLang['theme'], //"테마",
+                                        style: CretaFont.titleMedium),
                                     const SizedBox(width: 245.0),
                                     CretaWidgetDropDown(
                                         items: themeItemList,
                                         defaultValue:
                                             userPropertyManager.userPropertyModel!.theme.index,
-                                        width: 134.0,
+                                        width: 200.0,
                                         height: 32.0,
                                         onSelected: (value) {
                                           userPropertyManager.userPropertyModel!.theme =
@@ -160,7 +160,7 @@ class _MyPageSettingsState extends State<MyPageSettings> {
                                         items: initPageItemList,
                                         defaultValue:
                                             userPropertyManager.userPropertyModel!.initPage.index,
-                                        width: 116.0,
+                                        width: 200.0,
                                         height: 32.0,
                                         onSelected: (value) {
                                           userPropertyManager.userPropertyModel!.initPage =
@@ -185,7 +185,7 @@ class _MyPageSettingsState extends State<MyPageSettings> {
                                         items: cookieItemList,
                                         defaultValue:
                                             userPropertyManager.userPropertyModel!.cookie.index,
-                                        width: 120.0,
+                                        width: 200.0,
                                         height: 32.0,
                                         onSelected: (value) {
                                           userPropertyManager.userPropertyModel!.cookie =

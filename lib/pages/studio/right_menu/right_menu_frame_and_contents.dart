@@ -96,7 +96,7 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
         padding: const EdgeInsets.only(right: 50),
         child: CustomRadioButton(
           radioButtonValue: (value) {
-            List<String> menu = CretaStudioLang['frameTabBar']!.values.toList();
+            List<dynamic> menu = CretaStudioLang['frameTabBar']!.values.toList();
             if (value == menu[0]) {
               MiniMenu.setShowFrame(true);
               BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
@@ -124,7 +124,7 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
           unSelectedColor: CretaColor.text[100]!,
           defaultSelected: _selectedTab,
           buttonLables: CretaStudioLang['frameTabBar']!.keys.toList(),
-          buttonValues: CretaStudioLang['frameTabBar']!.values.toList(),
+          buttonValues: [...CretaStudioLang['frameTabBar']!.values.toList()],
           selectedBorderColor: Colors.transparent,
           unSelectedBorderColor: Colors.transparent,
           elevation: 0,
@@ -137,7 +137,7 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
   }
 
   Widget _pageView() {
-    List<String> menu = CretaStudioLang['frameTabBar']!.values.toList();
+    List<dynamic> menu = CretaStudioLang['frameTabBar']!.values.toList();
     if (_selectedTab == menu[0]) {
       return Container(
         padding: EdgeInsets.symmetric(vertical: horizontalPadding),

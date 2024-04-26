@@ -39,7 +39,7 @@ class _RightMenuBookState extends State<RightMenuBook> {
     //_scrollController.addListener(_scrollListener);
     logger.finer('_RightMenuBookState.initState');
     //_scrollController = ScrollController(initialScrollOffset: 0.0);
-    _selectedTab = CretaStudioLang['bookInfoTabBar']!.values.first;
+    _selectedTab = CretaStudioLang['bookInfoTabBar']!.values.map((e) => e.toString()).first;
     super.initState();
   }
 
@@ -91,7 +91,7 @@ class _RightMenuBookState extends State<RightMenuBook> {
         unSelectedColor: CretaColor.text[100]!,
         defaultSelected: _selectedTab,
         buttonLables: CretaStudioLang['bookInfoTabBar']!.keys.toList(),
-        buttonValues: CretaStudioLang['bookInfoTabBar']!.values.toList(),
+        buttonValues: [...CretaStudioLang['bookInfoTabBar']!.values.toList()],
         selectedBorderColor: Colors.transparent,
         unSelectedBorderColor: Colors.transparent,
         elevation: 0,
@@ -118,7 +118,12 @@ class _RightMenuBookState extends State<RightMenuBook> {
   }
 
   Widget _pageView() {
-    List<String> menu = CretaStudioLang['bookInfoTabBar']!.values.toList();
+    //List<dynamic> menu = CretaStudioLang['bookInfoTabBar']!.values.toList();
+    List<dynamic> menu = CretaStudioLang['bookInfoTabBar']!
+        .values
+        .map((e) => e.toString()) // 강제로 String으로 형변환
+        .toList();
+    //List<String> menu = bookInfoTabBar;
     if (_selectedTab == menu[0]) {
       return Container(
         padding: EdgeInsets.all(horizontalPadding),

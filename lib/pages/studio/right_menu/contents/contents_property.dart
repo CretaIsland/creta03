@@ -866,7 +866,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                     selectedBorderColor: CretaColor.primary,
                     defaultString: _getFit(),
                     buttonLables: CretaStudioLang['fitList']!.keys.toList(),
-                    buttonValues: CretaStudioLang['fitList']!.values.toList(),
+                    buttonValues: [...CretaStudioLang['fitList']!.values.toList()],
                   );
                 }),
               ],

@@ -167,7 +167,7 @@ class Snippet {
                 : child
             : Row(
                 children: [
-                  VerticalAppBar(onFoldButtonPressed: onFoldButtonPressed),
+                  VerticalAppBar(key: GlobalObjectKey('VerticalAppBar'), onFoldButtonPressed: onFoldButtonPressed),
                   StudioVariables.isHandToolMode == false ? handToolMode : child,
                 ],
               ));
@@ -205,7 +205,7 @@ class Snippet {
           Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          VerticalAppBar(onFoldButtonPressed: onFoldButtonPressed),
+          VerticalAppBar(key: GlobalObjectKey('VerticalAppBar'),onFoldButtonPressed: onFoldButtonPressed),
           Container(
             child: child,
           ),
@@ -409,7 +409,7 @@ class Snippet {
             CretaVars.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
         body: Row(
           children: [
-            VerticalAppBar(onFoldButtonPressed: onFoldButtonPressed),
+            VerticalAppBar(key: GlobalObjectKey('VerticalAppBar'),onFoldButtonPressed: onFoldButtonPressed),
             Container(
               color: Colors.white,
               child: child,

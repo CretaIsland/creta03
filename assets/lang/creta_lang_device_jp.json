@@ -1,5 +1,5 @@
  {
-   "editHost": "プロパティの修正",
+   "editHost": "プロパティ",
    "setBook": "放送の変更",
    "powerOff": "電源オフ",
    "powerOn": "電源オン",
@@ -32,6 +32,17 @@
    "basicHostFilter": ["用途別(全体)", "サイネージ", "デジタルバリケード", "エスカレーター", "ボード", "CDU", "その他"],
    "usageHostFilter": ["全体", "使用", "未使用"],
    "connectedHostFilter": ["全体", "接続", "未接続"],
-   "notice": "緊急通知"
+   "notice": "緊急通知",
+
+
+    "usageSetting": "使用状態設定",
+    "generalSetting": "一般設定",
+    "powerSetting": "電源設定",
+    "currentBookSetting": "現在の放送設定",
+
+  
+   "end"  : "End"
+
+
  }
 

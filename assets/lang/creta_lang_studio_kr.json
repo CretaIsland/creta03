@@ -267,9 +267,9 @@
     "crop" : "잘라내기",
     "copyStyle" : "서식복사",
     "pasteStyle" : "서식붙여넣기",
-    "  var showUnshow" : "보이기/안보이기",
-    "  var show" : "보이기",
-    "  var unshow" : "안보이기",
+    "showUnshow" : "보이기/안보이기",
+    "show" : "보이기",
+    "unshow" : "안보이기",
     
     "description" : "설명",
     "hashTab" : "해시태그",

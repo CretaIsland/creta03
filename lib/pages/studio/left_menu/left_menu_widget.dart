@@ -42,7 +42,7 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
   String _getCurrentTypes() {
     int index = 0;
     String currentSelectedType = _selectedType;
-    List<String> types = CretaStudioLang['widgetTypes']!.values.toList();
+    List<String> types = [...CretaStudioLang['widgetTypes']!.values.toList()];
     for (String ele in types) {
       if (currentSelectedType == ele) {
         return types[index];
@@ -123,13 +123,13 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
         unSelectedColor: Colors.white,
         unSelectedBorderColor: CretaColor.primary,
         buttonLables: CretaStudioLang['widgetTypes']!.keys.toList(),
-        buttonValues: CretaStudioLang['widgetTypes']!.values.toList(),
+        buttonValues: [...CretaStudioLang['widgetTypes']!.values.toList()],
       ),
     );
   }
 
   Widget _selectedWidget() {
-    List<String> type = CretaStudioLang['widgetTypes']!.values.toList();
+    List<dynamic> type = CretaStudioLang['widgetTypes']!.values.toList();
     if (_selectedType == type[0]) {
       return SizedBox(
         height: StudioVariables.workHeight - 240.0,

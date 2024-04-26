@@ -131,6 +131,7 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
         ? ''
         : '${AppRoutes.communityBook}?${widget.playlistModel.bookIdList[0]}&${widget.playlistModel.getMid}';
     return Container(
+      //color: Colors.amberAccent,
       width: 395,
       padding: EdgeInsets.fromLTRB(_rightViewLeftPane, 0, _rightViewRightPane, 0),
       child: Row(
@@ -178,6 +179,9 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
                   Text(
                     '${CretaCommuLang['recentUpdates']} ${CretaCommonUtils.dateToDurationString(widget.playlistModel.updateTime)}',
                     style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[400]),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: true,
                   ),
                 ],
               ),

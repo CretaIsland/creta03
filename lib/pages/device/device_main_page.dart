@@ -773,6 +773,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       //mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         BTN.fill_gray_it_l(
+          width: 106 + 31,
           text: CretaDeviceLang['editHost']!,
           icon: Icons.edit_outlined,
           onPressed: () {
@@ -780,6 +781,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
           },
         ),
         BTN.fill_gray_it_l(
+          width: 106 + 31,
           text: CretaDeviceLang['setBook']!,
           icon: Icons.play_circle_outline,
           onPressed: () {
@@ -787,6 +789,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
           },
         ),
         BTN.fill_gray_it_l(
+          width: 106 + 31,
           text: CretaDeviceLang['powerOff']!,
           icon: Icons.power_off_outlined,
           onPressed: () {
@@ -794,6 +797,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
           },
         ),
         BTN.fill_gray_it_l(
+          width: 106 + 31,
           text: CretaDeviceLang['reboot']!,
           icon: Icons.power_outlined,
           onPressed: () {
@@ -801,7 +805,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
           },
         ),
         BTN.fill_gray_it_l(
-          width: 130,
+          width: 106 + 31,
           text: CretaDeviceLang['setPower']!,
           icon: Icons.power_settings_new_outlined,
           onPressed: () {
@@ -809,6 +813,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
           },
         ),
         BTN.fill_gray_it_l(
+          width: 106 + 31,
           text: CretaDeviceLang['notice']!,
           icon: Icons.notifications_outlined,
           onPressed: () {

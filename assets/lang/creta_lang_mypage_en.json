@@ -74,9 +74,9 @@
     "emailNotice": "Email notifications",
     "mySetting": "My settings",
     "theme": "Theme",
-    "themeTip": "Change the look of Crete on your device",
+    "themeTip": "Change the look of Creta on your device",
     "initPage": "Welcome page",
-    "initPageTip": "Choose a page to show when you start Crete",
+    "initPageTip": "Choose a page to show when you start Creta",
     "cookieSetting": "Cookie settings",
     "cookieSettingTip": "Set cookies",
     "themeList": [
@@ -94,7 +94,7 @@
     "teamInfo": "Team info",
     "teamName": "Team name",
     "teamChannel": "Team channel",
-    "backgroundImage": "Background image",
+    "backgroundImg": "Background image",
     "teamMemberManage": "Manage team members",
     "inviteablePeopleNumber": "Inviteable people number",
     "teamExit": "Exit from the team",
@@ -104,13 +104,13 @@
     "exitBTN": "Exit",
     "deleteTeamBTN": "Delete team",
     "cretaGradeList": [
-      "Crete Rookie",
-      "Crete Star",
-      "Crete Celebrity"
+      "Creta Rookie",
+      "Creta Star",
+      "Creta Celebrity"
     ],
     "ratePlanList": [
-      "Individual Free",
-      "Individual Paid",
+      "Enterprise",
+      "Paid",
       "Team Paid",
       "Enterprise"
     ],

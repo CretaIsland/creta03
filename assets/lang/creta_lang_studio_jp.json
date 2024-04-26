@@ -266,9 +266,9 @@
         "crop" : "切り抜き",
         "copyStyle" : "書式コピー",
         "pasteStyle" : "書式貼り付け",
-        " var showUnshow" : "表示/非表示",
-        " var show" : "表示",
-        " var unshow" : "見えなくする",
+        "showUnshow" : "表示/非表示",
+        "show" : "表示",
+        "unshow" : "見えなくする",
         
         "description" : "説明",
         "hashTab" : "ハッシュタグ",

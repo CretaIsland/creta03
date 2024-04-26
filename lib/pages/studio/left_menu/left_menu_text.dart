@@ -85,7 +85,7 @@ class _LeftMenuTextState extends State<LeftMenuText> {
           unSelectedColor: CretaColor.text[100]!,
           defaultSelected: _selectedTab,
           buttonLables: CretaStudioLang['textMenuTabBar']!.keys.toList(),
-          buttonValues: CretaStudioLang['textMenuTabBar']!.values.toList(),
+          buttonValues: [...CretaStudioLang['textMenuTabBar']!.values.toList()],
           selectedBorderColor: Colors.transparent,
           unSelectedBorderColor: Colors.transparent,
           elevation: 0,
@@ -98,7 +98,7 @@ class _LeftMenuTextState extends State<LeftMenuText> {
   }
 
   Widget _textView() {
-    List<String> menu = CretaStudioLang['textMenuTabBar']!.values.toList();
+    List<dynamic> menu = CretaStudioLang['textMenuTabBar']!.values.toList();
     if (_selectedTab == menu[0]) {
       // 텍스트 추가
       return Container(

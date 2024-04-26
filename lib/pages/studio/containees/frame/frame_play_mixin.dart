@@ -345,13 +345,13 @@ mixin FramePlayMixin {
 
   String getCategory(int subType) {
     String currentSelectedType = CretaStudioLang['newsCategories']!.values.first;
-    List<String> types = CretaStudioLang['newsCategories']!.values.toList();
+    List<String> types = [...CretaStudioLang['newsCategories']!.values.toList()];
     for (String ele in types) {
       if (currentSelectedType == ele) {
         return types[subType];
       }
     }
-    return CretaStudioLang['newsCategories']!.values.toString()[0];
+    return CretaStudioLang['newsCategories']!.values.toList().first;
   }
 
   Widget newsFrame({
