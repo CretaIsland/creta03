@@ -1,4 +1,4 @@
-import 'package:creta_common/common/creta_snippet.dart';
+import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_user_io/data_io/user_property_manager.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
@@ -88,93 +88,106 @@ class VerticalAppBar extends StatefulWidget {
 class _VerticalAppBarState extends State<VerticalAppBar> {
   //BoolEventController? _foldSendEvent;
   List<Text> languageItemList = [];
-  static Future<bool>? isLangInit;
+  LanguageType oldLanguage = LanguageType.none;
 
-  Future<bool>? initLang() async {
-    UserPropertyModel? userModel = CretaAccountManager.userPropertyManagerHolder.userPropertyModel;
-    if (userModel != null) {
-      //print('initLang-----------------------------------${userModel.language}');
-      await Snippet.setLang(userModel.language);
-    }
+  // static Future<bool>? isLangInit;
+
+  // Future<bool>? initLang() async {
+  //   UserPropertyModel? userModel = CretaAccountManager.userPropertyManagerHolder.userPropertyModel;
+  //   if (userModel != null) {
+  //     print('initLang-----------------------------------${userModel.language}');
+  //     await Snippet.setLang(language : userModel.language);
+  //   }
+  //   _initMenu();
+  //   return true;
+  // }
+
+  void _initMenu() {
     for (var element in CretaMyPageLang['languageList']!) {
       languageItemList.add(Text(element, style: CretaFont.bodyESmall));
     }
-    return true;
   }
 
   @override
   void initState() {
+    print('VertialAppBar init');
     super.initState();
     //final BoolEventController foldSendEvent = Get.find(tag: 'vertical-app-bar-to-creta-left-bar');
     //_foldSendEvent = foldSendEvent;
     //Snippet.clearLang();
-    isLangInit = initLang();
+    //isLangInit = initLang();
+    _initMenu();
   }
 
   @override
   Widget build(BuildContext context) {
     final Size displaySize = MediaQuery.of(context).size;
-    return FutureBuilder<bool>(
-        future: isLangInit,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            //error가 발생하게 될 경우 반환하게 되는 부분
-            logger.severe("data fetch error(WaitDatum)");
-            return const Center(child: Text('data fetch error(WaitDatum)'));
-          }
-          if (snapshot.hasData == false) {
-            //print('xxxxxxxxxxxxxxxxxxxxx');
-            logger.finest("wait data ...(WaitData)");
-            return Center(
-              child: CretaSnippet.showWaitSign(),
-            );
-          }
-          if (snapshot.connectionState == ConnectionState.done) {
-            logger.finest("founded ${snapshot.data!}");
-            // if (snapshot.data!.isEmpty) {
-            //   return const Center(child: Text('no book founded'));
-            // }
+    // return FutureBuilder<bool>(
+    //     future: isLangInit,
+    //     builder: (context, snapshot) {
+    //       if (snapshot.hasError) {
+    //         //error가 발생하게 될 경우 반환하게 되는 부분
+    //         logger.severe("data fetch error(WaitDatum)");
+    //         return const Center(child: Text('data fetch error(WaitDatum)'));
+    //       }
+    //       if (snapshot.hasData == false) {
+    //         //print('xxxxxxxxxxxxxxxxxxxxx');
+    //         logger.finest("wait data ...(WaitData)");
+    //         return Center(
+    //           child: CretaSnippet.showWaitSign(),
+    //         );
+    //       }
+    //       if (snapshot.connectionState == ConnectionState.done) {
+    //         logger.finest("founded ${snapshot.data!}");
+    //         // if (snapshot.data!.isEmpty) {
+    //         //   return const Center(child: Text('no book founded'));
+    //         // }
 
-            return Consumer<UserPropertyManager>(builder: (context, userPropertyManager, child) {
-              return Container(
-                  //padding: const EdgeInsets.only(top: 20),
-                  width: CretaConst.verticalAppbarWidth,
-                  color: displaySize.height > 200 ? CretaColor.text[100] : CretaColor.primary,
-                  child: Stack(
-                    alignment: Alignment.topCenter,
+    return Consumer<UserPropertyManager>(builder: (context, userPropertyManager, child) {
+      if (oldLanguage != userPropertyManager.userPropertyModel!.language) {
+        oldLanguage = userPropertyManager.userPropertyModel!.language;
+        _initMenu();
+      }
+
+      return Container(
+          //padding: const EdgeInsets.only(top: 20),
+          width: CretaConst.verticalAppbarWidth,
+          color: displaySize.height > 200 ? CretaColor.text[100] : CretaColor.primary,
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              if (displaySize.height > 200)
+                CustomPaint(
+                    size: Size(CretaConst.verticalAppbarWidth, displaySize.height),
+                    painter: MyCustomPainter()),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  //const SizedBox(height: 20),
+                  Column(
                     children: [
-                      if (displaySize.height > 200)
-                        CustomPaint(
-                            size: Size(CretaConst.verticalAppbarWidth, displaySize.height),
-                            painter: MyCustomPainter()),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          //const SizedBox(height: 20),
-                          Column(
-                            children: [
-                              if (displaySize.height > 100) titleLogoVertical(),
-                              //const SizedBox(height: 32),
-                              if (displaySize.height > 200) communityLogo(context),
-                              if (displaySize.height > 250) const SizedBox(height: 12),
-                              if (displaySize.height > 250) studioLogo(context),
-                              if (displaySize.height > 300) const SizedBox(height: 12),
-                              if (displaySize.height > 300) deviceLogo(context),
-                              if (displaySize.height > 350) const SizedBox(height: 12),
-                              if (displaySize.height > 350) myPageLogo(context),
-                              if (displaySize.height > 400) const SizedBox(height: 12),
-                              if (displaySize.height > 400) adminLogo(context),
-                            ],
-                          ),
-                          if (displaySize.height > 450) _userInfoList(displaySize),
-                        ],
-                      ),
+                      if (displaySize.height > 100) titleLogoVertical(),
+                      //const SizedBox(height: 32),
+                      if (displaySize.height > 200) communityLogo(context),
+                      if (displaySize.height > 250) const SizedBox(height: 12),
+                      if (displaySize.height > 250) studioLogo(context),
+                      if (displaySize.height > 300) const SizedBox(height: 12),
+                      if (displaySize.height > 300) deviceLogo(context),
+                      if (displaySize.height > 350) const SizedBox(height: 12),
+                      if (displaySize.height > 350) myPageLogo(context),
+                      if (displaySize.height > 400) const SizedBox(height: 12),
+                      if (displaySize.height > 400) adminLogo(context),
                     ],
-                  ));
-            });
-          }
-          return const SizedBox.shrink();
-        });
+                  ),
+                  if (displaySize.height > 450) _userInfoList(displaySize),
+                ],
+              ),
+            ],
+          ));
+    });
+    //   }
+    //   return const SizedBox.shrink();
+    // });
   }
 
   Widget titleLogoVertical() {

@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:creta_common/common/creta_font.dart';
 import 'package:creta_common/common/creta_snippet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -11,12 +12,15 @@ class RemoteStream extends StatelessWidget {
   final Peer peer;
   final double screenHeight;
   final double screenWidth;
-  TextStyle userNameStyle = const TextStyle(
-    fontFamily: 'Pretendard',
-    fontWeight: FontWeight.w500,
-    fontSize: 14,
-    color: Colors.white,
-  );
+  TextStyle userNameStyle =
+      CretaFont.bodySmall.copyWith(color: Colors.white, fontWeight: FontWeight.w500);
+
+  //  const TextStyle(
+  //   fontFamily: 'Pretendard',
+  //   fontWeight: FontWeight.w500,
+  //   fontSize: 14,
+  //   color: Colors.white,
+  // );
 
   RemoteStream(
       {required Key key, required this.peer, required this.screenHeight, required this.screenWidth})

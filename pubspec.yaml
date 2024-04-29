@@ -382,6 +382,22 @@ flutter:
           weight: 800
         - asset: fonts/Pretendard/Pretendard-Black.otf
           weight: 900
+    - family: NotoSerifJP
+      fonts:
+        - asset: fonts/NotoSerifJP/NotoSerifJP-ExtraLight.otf                                           
+          weight: 200
+        - asset: fonts/NotoSerifJP/NotoSerifJP-Light.otf                                                
+          weight: 300
+        - asset: fonts/NotoSerifJP/NotoSerifJP-Regular.otf                                              
+          weight: 400
+        - asset: fonts/NotoSerifJP/NotoSerifJP-Medium.otf                                               
+          weight: 500
+        - asset: fonts/NotoSerifJP/NotoSerifJP-SemiBold.otf                                             
+          weight: 600
+        - asset: fonts/NotoSerifJP/NotoSerifJP-Bold.otf                                                 
+          weight: 700
+        - asset: fonts/NotoSerifJP/NotoSerifJP-Black.otf                                                
+          weight: 900
     - family: NanumMyeongjo
       fonts:
         - asset: fonts/Nanum_Myeongjo/NanumMyeongjo-Regular.ttf

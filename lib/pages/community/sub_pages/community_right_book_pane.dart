@@ -723,8 +723,10 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                   ),
                   if (bookCount > 5)
                     BTN.fill_gray_t_es(
-                      text: _showAllPlaylistItems ? CretaCommuLang['viewShort'] : CretaCommuLang['viewAll'],
-                      width: 61,
+                      text: _showAllPlaylistItems
+                          ? CretaCommuLang['viewShort']
+                          : CretaCommuLang['viewAll'],
+                      width: 69,
                       buttonColor: CretaButtonColor.gray100light,
                       textColor: CretaColor.text[400],
                       onPressed: () =>
@@ -1060,7 +1062,9 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
             width: 42,
           ),
           Text(
-            (_channelModel != null) ? '${CretaCommuLang['subsriber']} ${_channelModel!.followerCount}' : '',
+            (_channelModel != null)
+                ? '${CretaCommuLang['subsriber']} ${_channelModel!.followerCount}'
+                : '',
             style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[400]),
           ),
           SizedBox(
@@ -1071,7 +1075,9 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                   AccountManager.currentLoginUser.isLoginedUser == false)
               ? SizedBox.shrink()
               : BTN.fill_blue_t_m(
-                  text: (_subscriptionModel == null) ? CretaCommuLang['subscribe'] : CretaCommuLang['subscribing'],
+                  text: (_subscriptionModel == null)
+                      ? CretaCommuLang['subscribe']
+                      : CretaCommuLang['subscribing'],
                   width: 84,
                   onPressed: () {
                     if (_subscriptionModel == null) {
@@ -1367,7 +1373,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
               Expanded(child: Container()),
               BTN.fill_gray_t_es(
                 text: CretaCommuLang['viewAll'],
-                width: 58,
+                width: 66,
                 textColor: CretaColor.text[400],
                 onPressed: () {
                   setState(() {

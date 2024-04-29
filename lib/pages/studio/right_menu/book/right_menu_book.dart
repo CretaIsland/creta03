@@ -1,5 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
 
+import 'package:creta03/pages/login/creta_account_manager.dart';
+import 'package:creta_common/model/app_enums.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -28,7 +30,7 @@ class RightMenuBook extends StatefulWidget {
 class _RightMenuBookState extends State<RightMenuBook> {
   // ignore: unused_field
   //late ScrollController _scrollController;
-  double horizontalPadding = 24;
+  double horizontalPadding = 19;
 
   late String _selectedTab;
   BookModel? _model;
@@ -69,8 +71,14 @@ class _RightMenuBookState extends State<RightMenuBook> {
   }
 
   Widget _menuBar() {
+    double height = LayoutConst.innerMenuBarHeight;
+    if (CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.language ==
+        LanguageType.japanese) {
+      height = LayoutConst.innerMenuBarHeight * 2;
+    }
+
     return Container(
-      height: LayoutConst.innerMenuBarHeight,
+      height: height,
       width: LayoutConst.rightMenuWidth,
       color: CretaColor.text[100]!,
       child: CustomRadioButton(

@@ -2,6 +2,7 @@
 
 import 'dart:math';
 
+import 'package:creta_common/common/creta_snippet.dart';
 import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_user_io/data_io/user_property_manager.dart';
 import 'package:flutter/material.dart';
@@ -119,6 +120,8 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   late ScrollController _controller;
   LanguageType oldLanguage = LanguageType.none;
 
+  static Future<bool>? isLangInit;
+
   @override
   void initState() {
     logger.fine('initState start');
@@ -150,7 +153,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
         }
       });
     }
-    _initMenu();
+    isLangInit = initLang();
     logger.fine('initState end');
   }
 
@@ -215,6 +218,13 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
     if (mounted) super.setState(fn);
   }
 
+  Future<bool>? initLang() async {
+    await Snippet.setLang();
+    _initMenu();
+    oldLanguage = CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.language;
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     //double windowWidth = MediaQuery.of(context).size.width;
@@ -224,58 +234,78 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
         ChangeNotifierProvider<UserPropertyManager>.value(
             value: CretaAccountManager.userPropertyManagerHolder),
       ],
-      child: Consumer<UserPropertyManager>(builder: (context, userPropertyManager, childWidget) {
-        // print(
-        //     'Consumer<UserPropertyManager>---------${userPropertyManager.userPropertyModel!.language}---------');
+      child: FutureBuilder<bool>(
+          future: isLangInit,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              //error가 발생하게 될 경우 반환하게 되는 부분
+              logger.severe("data fetch error(WaitDatum)");
+              return const Center(child: Text('data fetch error(WaitDatum)'));
+            }
+            if (snapshot.hasData == false) {
+              //print('xxxxxxxxxxxxxxxxxxxxx');
+              logger.finest("wait data ...(WaitData)");
+              return Center(
+                child: CretaSnippet.showWaitSign(),
+              );
+            }
+            if (snapshot.connectionState == ConnectionState.done) {
+              logger.finest("founded ${snapshot.data!}");
 
-        if (oldLanguage != userPropertyManager.userPropertyModel!.language) {
-          oldLanguage = userPropertyManager.userPropertyModel!.language;
-          _initMenu();
-        }
-        return Snippet.CretaScaffold(
-            //title: Snippet.logo(CretaVars.serviceTypeString()),
-            onFoldButtonPressed: () {
-              setState(() {});
-            },
+              // if (snapshot.data!.isEm
+              return Consumer<UserPropertyManager>(
+                  builder: (context, userPropertyManager, childWidget) {
+                if (oldLanguage != userPropertyManager.userPropertyModel!.language) {
+                  oldLanguage = userPropertyManager.userPropertyModel!.language;
+                  _initMenu();
+                }
+                return Snippet.CretaScaffold(
+                    //title: Snippet.logo(CretaVars.serviceTypeString()),
+                    onFoldButtonPressed: () {
+                      setState(() {});
+                    },
 
-            // additionals: SizedBox(
-            //   height: 36,
-            //   width: windowWidth > 535 ? 130 : 60,
-            //   child: BTN.fill_gray_it_l(
-            //     width: windowWidth > 535 ? 106 : 36,
-            //     text: windowWidth > 535 ? CretaStudioLang['newBook']! : '',
-            //     onPressed: () {
-            //       Routemaster.of(context).push(AppRoutes.communityHome);
-            //     },
-            //     icon: Icons.add_outlined,
-            //   ),
-            // ),
-            context: context,
-            child: mainPage(
-              context,
-              gotoButtonPressed: () {
-                Routemaster.of(context).push(AppRoutes.communityHome);
-              },
-              gotoButtonTitle: CretaStudioLang['gotoCommunity']!,
-              leftMenuItemList: _leftMenuItemList,
-              bannerTitle: getAdminTitle(),
-              bannerDescription: getAdminDesc(),
-              listOfListFilter: [
-                // _dropDownMenuItemList1,
-                // _dropDownMenuItemList2,
-                // _dropDownMenuItemList3,
-                // _dropDownMenuItemList4
-              ],
-              //mainWidget: sizeListener.isResizing() ? Container() : _bookGrid(context))),
-              onSearch: (value) {
-                hostManagerHolder!.onSearch(value, () => setState(() {}));
-              },
-              mainWidget: _licenceGrid, // _bookGrid, //_bookGrid(context),
-              onFoldButtonPressed: () {
-                setState(() {});
-              },
-            ));
-      }),
+                    // additionals: SizedBox(
+                    //   height: 36,
+                    //   width: windowWidth > 535 ? 130 : 60,
+                    //   child: BTN.fill_gray_it_l(
+                    //     width: windowWidth > 535 ? 106 : 36,
+                    //     text: windowWidth > 535 ? CretaStudioLang['newBook']! : '',
+                    //     onPressed: () {
+                    //       Routemaster.of(context).push(AppRoutes.communityHome);
+                    //     },
+                    //     icon: Icons.add_outlined,
+                    //   ),
+                    // ),
+                    context: context,
+                    child: mainPage(
+                      context,
+                      gotoButtonPressed: () {
+                        Routemaster.of(context).push(AppRoutes.communityHome);
+                      },
+                      gotoButtonTitle: CretaStudioLang['gotoCommunity']!,
+                      leftMenuItemList: _leftMenuItemList,
+                      bannerTitle: getAdminTitle(),
+                      bannerDescription: getAdminDesc(),
+                      listOfListFilter: [
+                        // _dropDownMenuItemList1,
+                        // _dropDownMenuItemList2,
+                        // _dropDownMenuItemList3,
+                        // _dropDownMenuItemList4
+                      ],
+                      //mainWidget: sizeListener.isResizing() ? Container() : _bookGrid(context))),
+                      onSearch: (value) {
+                        hostManagerHolder!.onSearch(value, () => setState(() {}));
+                      },
+                      mainWidget: _licenceGrid, // _bookGrid, //_bookGrid(context),
+                      onFoldButtonPressed: () {
+                        setState(() {});
+                      },
+                    ));
+              });
+            }
+            return const SizedBox.shrink();
+          }),
     );
   }
 

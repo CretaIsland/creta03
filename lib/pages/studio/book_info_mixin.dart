@@ -11,7 +11,7 @@ import 'package:creta_studio_model/model/book_model.dart';
 import 'studio_snippet.dart';
 
 mixin BookInfoMixin {
-  double horizontalPadding = 24;
+  double horizontalPadding = 19;
 
   //List<String> hashTagList = [];
   late TextStyle titleStyle;

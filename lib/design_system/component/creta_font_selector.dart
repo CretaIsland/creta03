@@ -47,7 +47,7 @@ class _CretaFontSelectorState extends State<CretaFontSelector> {
       align: MainAxisAlignment.start,
       selectedColor: CretaColor.text[700]!,
       textStyle: widget.textStyle,
-      width: 180,
+      width: 167,
       height: 22,
       itemHeight: 24,
       dropDownMenuItemList: StudioSnippet.getFontListItem(
@@ -96,7 +96,7 @@ class _CretaFontSelectorState extends State<CretaFontSelector> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       font,
-                      const SizedBox(width: 20),
+                      const SizedBox(width: 10),
                       fontWeight,
                     ],
                   )

@@ -1298,7 +1298,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         titleWidget: Text(CretaStudioLang['ani']!, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
         trailWidget: SizedBox(
-          width: 160,
+          width: 140,
           child: Text(
             trails,
             textAlign: TextAlign.right,

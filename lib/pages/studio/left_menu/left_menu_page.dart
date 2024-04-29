@@ -125,7 +125,7 @@ class LeftMenuPageState extends State<LeftMenuPage> {
   TextEditingController templateNameController = TextEditingController();
 
   final double verticalPadding = 10;
-  final double horizontalPadding = 24;
+  final double horizontalPadding = 19;
   //final double cardHeight = 246;
   final double headerHeight = 36;
 

@@ -731,8 +731,9 @@ class PopUpRatePlan {
                           const SizedBox(height: 40),
                           BTN.fill_blue_t_m(
                               text: CretaMyPageLang["makePayment"], // "결제하기",
-                              textStyle: const TextStyle(
-                                  fontFamily: "Pretendard", fontSize: 20, color: Colors.white),
+                              textStyle: CretaFont.titleLarge.copyWith(color: Colors.white),
+                              // const TextStyle(
+                              //     fontFamily: "Pretendard", fontSize: 20, color: Colors.white),
                               width: 314,
                               height: 56,
                               onPressed: () {})
@@ -1033,8 +1034,9 @@ class PopUpRatePlan {
                           const SizedBox(height: 40),
                           BTN.fill_blue_t_m(
                               text: CretaMyPageLang["makePayment"], // "결제하기",
-                              textStyle: const TextStyle(
-                                  fontFamily: "Pretendard", fontSize: 20, color: Colors.white),
+                              textStyle:  CretaFont.titleLarge.copyWith(color: Colors.white),
+                              // const TextStyle(
+                              //     fontFamily: "Pretendard", fontSize: 20, color: Colors.white),
                               width: 314,
                               height: 56,
                               onPressed: () {})

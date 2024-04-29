@@ -167,7 +167,9 @@ class Snippet {
                 : child
             : Row(
                 children: [
-                  VerticalAppBar(key: GlobalObjectKey('VerticalAppBar'), onFoldButtonPressed: onFoldButtonPressed),
+                  VerticalAppBar(
+                      key: GlobalObjectKey('VerticalAppBar'),
+                      onFoldButtonPressed: onFoldButtonPressed),
                   StudioVariables.isHandToolMode == false ? handToolMode : child,
                 ],
               ));
@@ -205,7 +207,8 @@ class Snippet {
           Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          VerticalAppBar(key: GlobalObjectKey('VerticalAppBar'),onFoldButtonPressed: onFoldButtonPressed),
+          VerticalAppBar(
+              key: GlobalObjectKey('VerticalAppBar'), onFoldButtonPressed: onFoldButtonPressed),
           Container(
             child: child,
           ),
@@ -409,7 +412,8 @@ class Snippet {
             CretaVars.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
         body: Row(
           children: [
-            VerticalAppBar(key: GlobalObjectKey('VerticalAppBar'),onFoldButtonPressed: onFoldButtonPressed),
+            VerticalAppBar(
+                key: GlobalObjectKey('VerticalAppBar'), onFoldButtonPressed: onFoldButtonPressed),
             Container(
               color: Colors.white,
               child: child,
@@ -963,11 +967,12 @@ class Snippet {
                                           ),
                                           Text(
                                             item.caption,
-                                            style: const TextStyle(
-                                              //color: Colors.blue[400],
-                                              fontSize: 20,
-                                              fontFamily: 'Pretendard',
-                                            ),
+                                            style: CretaFont.titleSmall,
+                                            // const TextStyle(
+                                            //   //color: Colors.blue[400],
+                                            //   fontSize: 20,
+                                            //   fontFamily: 'Pretendard',
+                                            // ),
                                           ),
                                         ],
                                       )),
@@ -1131,7 +1136,7 @@ class Snippet {
     //userPropertyManager.userPropertyModel!.save();
     userPropertyManager.setToDB(userPropertyManager.userPropertyModel!);
     //print('onLangSelected=${userPropertyManager.userPropertyModel!.language}');
-    await setLang(userPropertyManager.userPropertyModel!.language);
+    await setLang(language: userPropertyManager.userPropertyModel!.language);
     invalidate();
   }
 
@@ -1139,11 +1144,27 @@ class Snippet {
   //   oldLanguage = LanguageType.none;
   // }
 
-  static Future<bool> setLang(LanguageType language) async {
+  static void setFont(LanguageType language) {
+    switch (language) {
+      case LanguageType.japanese:
+        CretaFont.fontFamily = 'NotoSerifJP';
+        break;
+      default:
+        CretaFont.fontFamily = 'Pretendard';
+        break;
+    }
+    return;
+  }
+
+  static Future<bool> setLang({LanguageType? language}) async {
+    language ??= CretaAccountManager.userPropertyManagerHolder.userPropertyModel != null
+        ? CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.language
+        : LanguageType.korean;
     if (language == LanguageType.none) {
       language = LanguageType.korean;
     }
     try {
+      setFont(language);
       await AbsCretaLang.changeLang(language);
       await AbsCretaStudioLang.changeLang(language);
       await AbsCretaDeviceLang.changeLang(language);

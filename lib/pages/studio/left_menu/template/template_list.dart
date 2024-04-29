@@ -43,7 +43,7 @@ class TemplateList extends StatefulWidget {
 
 class _TemplateListClassState extends State<TemplateList> {
   final double verticalPadding = 16;
-  final double horizontalPadding = 24;
+  final double horizontalPadding = 19;
 
   Future<List<TemplateModel>>? _templateList;
   int _selectedItemIndex = -1;
@@ -110,7 +110,7 @@ class _TemplateListClassState extends State<TemplateList> {
               padding: EdgeInsets.symmetric(vertical: verticalPadding),
               height: 332.0,
               alignment: Alignment.center,
-              child: Text(CretaLang['nodatafounded']!),
+              child: CretaLang['nodatafounded']!,
             );
           }
           return SingleChildScrollView(
@@ -125,7 +125,7 @@ class _TemplateListClassState extends State<TemplateList> {
                       CretaVars.serviceType == ServiceType.barricade ? spacing * 2 : spacing,
                   crossAxisCount: itemCount,
                   childAspectRatio: CretaVars.serviceType == ServiceType.barricade
-                      ? (360 + borderWidth * 2) / (28 + 24 + borderWidth * 2)
+                      ? (360 + borderWidth * 2) / (28 + 24 + borderWidth * 2 + 20)
                       : 160 / (95 + 24),
                 ),
                 scrollDirection: Axis.vertical,
@@ -163,7 +163,7 @@ class _TemplateListClassState extends State<TemplateList> {
                       (thumbnailUrl.isEmpty)
                           ? SizedBox(
                               width: imageWidth,
-                              height: imageHeight,
+                              height: imageHeight + 6,
                               child: Image.asset('assets/no_image.png'), // No Image
                             )
                           // ignore: avoid_unnecessary_containers
@@ -187,7 +187,7 @@ class _TemplateListClassState extends State<TemplateList> {
                       Container(
                         padding: const EdgeInsets.only(top: 4.0),
                         alignment: Alignment.center,
-                        width: 160.0,
+                        width: 180.0,
                         height: 20.0,
                         child: Text(
                           templateModel.name.value,

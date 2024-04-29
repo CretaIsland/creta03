@@ -4,7 +4,7 @@ import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_font.dart';
 
 mixin LeftTemplateMixin {
-  final double horizontalPadding = 24;
+  final double horizontalPadding = 19;
   late TextStyle titleStyle;
   late TextStyle dataStyle;
 

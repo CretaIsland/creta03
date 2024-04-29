@@ -83,7 +83,7 @@ class _MainRouteAppState extends ConsumerState<MainRouteApp> {
       if (userModel.language == LanguageType.none) {
         userModel.language = LanguageType.korean;
       }
-      await Snippet.setLang(userModel.language);
+      await Snippet.setLang(language: userModel.language);
     }
     return true;
   }

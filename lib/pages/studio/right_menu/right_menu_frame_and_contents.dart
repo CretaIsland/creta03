@@ -41,7 +41,7 @@ class RightMenuFrameAndContents extends StatefulWidget {
 class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
   // ignore: unused_field
   //late ScrollController _scrollController;
-  double horizontalPadding = 24;
+  double horizontalPadding = 19;
 
   String _selectedTab = '';
 

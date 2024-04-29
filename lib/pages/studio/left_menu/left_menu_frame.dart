@@ -33,7 +33,7 @@ class _LeftMenuFrameState extends State<LeftMenuFrame> with FrameMixin {
   //late ScrollController _scrollController;
 
   final double verticalPadding = 10;
-  final double horizontalPadding = 24;
+  final double horizontalPadding = 19;
   //final double cardHeight = 246;
   final double headerHeight = 36;
   final double menuBarHeight = 36;

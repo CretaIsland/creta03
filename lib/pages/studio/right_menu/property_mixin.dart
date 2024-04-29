@@ -30,7 +30,7 @@ import '../studio_getx_controller.dart';
 import '../studio_snippet.dart';
 
 mixin PropertyMixin {
-  final double horizontalPadding = 24;
+  final double horizontalPadding = 19;
   final double boderStyleDropBoxWidth = 224;
 
   late TextStyle titleStyle;
@@ -112,8 +112,8 @@ mixin PropertyMixin {
                       : const SizedBox.shrink()
                   : hasRemoveButton
                       ? SizedBox(
-                          width: 200,
-                          //color: Colors.amber,
+                          width: 180,
+                          //color: Colors.amberAccent,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [

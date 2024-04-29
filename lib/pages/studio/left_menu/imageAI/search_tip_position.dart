@@ -17,7 +17,7 @@ class SearchTipPosition extends StatefulWidget {
 
 class _SearchTipPositionState extends State<SearchTipPosition> {
   final double verticalPadding = 18;
-  final double horizontalPadding = 24;
+  final double horizontalPadding = 19;
 
   final tipImage1 = [
     "assets/tipImage-1-1.png",

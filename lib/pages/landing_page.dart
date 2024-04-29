@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:creta_common/common/creta_snippet.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:creta03/data_io/book_published_manager.dart';
@@ -11,6 +12,7 @@ import 'package:creta03/pages/login/creta_account_manager.dart';
 import 'package:creta03/pages/login/login_dialog.dart';
 import 'package:creta03/routes.dart';
 import 'package:flutter/material.dart';
+//import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hycop/hycop.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:video_player/video_player.dart';
@@ -68,6 +70,7 @@ class _LandingPageState extends State<LandingPage> {
       ValueNotifier<String>("assets/landing_page/image/creta_animation_logo.png");
 
   double _imageLeffOffset = 0;
+  LanguageType oldLanguage = LanguageType.none;
 
   // initalize video controller
   Future<void> initalizeVideoController() async {
@@ -96,7 +99,7 @@ class _LandingPageState extends State<LandingPage> {
     //   // DropdownMenuItem(value: "ja", child: Text("日本語", style: languageMenuStyle))
     // ];
 
-    _initMenu();
+    isLangInit = initLang();
 
     topBannerImgPaths = [
       // "assets/landing_page/image/banner/banner_top1.png",
@@ -136,6 +139,16 @@ class _LandingPageState extends State<LandingPage> {
         VideoPlayerController.asset("assets/landing_page/video/quick_start_animation.mp4");
 
     afterBuild();
+  }
+
+  static Future<bool>? isLangInit;
+
+  Future<bool>? initLang() async {
+    await Snippet.setLang();
+    _initMenu();
+    oldLanguage = CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.language;
+
+    return true;
   }
 
   void _initMenu() {
@@ -239,44 +252,65 @@ class _LandingPageState extends State<LandingPage> {
             ? MediaQuery.sizeOf(context).width
             : _screenWidth;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: MediaQuery.sizeOf(context).height < 140
-          ? const SizedBox.shrink()
-          : SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Column(
-                children: [
-                  appBar(),
-                  SizedBox(
-                    width: _screenWidth,
-                    height: MediaQuery.sizeOf(context).height - 117,
-                    child: SingleChildScrollView(
-                      controller: _verticalScroller,
+    return FutureBuilder<bool>(
+        future: isLangInit,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            //error가 발생하게 될 경우 반환하게 되는 부분
+            logger.severe("data fetch error(WaitDatum)");
+            return const Center(child: Text('data fetch error(WaitDatum)'));
+          }
+          if (snapshot.hasData == false) {
+            //print('xxxxxxxxxxxxxxxxxxxxx');
+            logger.finest("wait data ...(WaitData)");
+            return Center(
+              child: CretaSnippet.showWaitSign(),
+            );
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            logger.finest("founded ${snapshot.data!}");
+
+            return Scaffold(
+              backgroundColor: Colors.white,
+              body: MediaQuery.sizeOf(context).height < 140
+                  ? const SizedBox.shrink()
+                  : SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
                       child: Column(
                         children: [
-                          mainBanner(),
-                          const SizedBox(height: 14),
-                          exploreSection(),
-                          const SizedBox(height: 238),
-                          experienceSection(),
-                          const SizedBox(height: 183),
-                          promotionSection(),
-                          const SizedBox(height: 195),
-                          guideSection(),
-                          const SizedBox(height: 217),
-                          solutionSection(),
-                          const SizedBox(height: 258),
-                          quickStartSection(),
-                          const SizedBox(height: 200),
-                          footer()
+                          appBar(),
+                          SizedBox(
+                            width: _screenWidth,
+                            height: MediaQuery.sizeOf(context).height - 117,
+                            child: SingleChildScrollView(
+                              controller: _verticalScroller,
+                              child: Column(
+                                children: [
+                                  mainBanner(),
+                                  const SizedBox(height: 14),
+                                  exploreSection(),
+                                  const SizedBox(height: 238),
+                                  experienceSection(),
+                                  const SizedBox(height: 183),
+                                  promotionSection(),
+                                  const SizedBox(height: 195),
+                                  guideSection(),
+                                  const SizedBox(height: 217),
+                                  solutionSection(),
+                                  const SizedBox(height: 258),
+                                  quickStartSection(),
+                                  const SizedBox(height: 200),
+                                  footer()
+                                ],
+                              ),
+                            ),
+                          )
                         ],
-                      ),
-                    ),
-                  )
-                ],
-              )),
-    );
+                      )),
+            );
+          }
+          return const SizedBox.shrink();
+        });
   }
 
   // ************************************ get ************************************

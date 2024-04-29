@@ -300,19 +300,21 @@ class StudioSnippet {
 
   static List<CretaMenuItem> getFontListItem(
       {required String defaultValue, required void Function(String) onChanged}) {
-    return CretaLang['fontStringList']!.map(
-      (fontStr) {
-        String font = CretaCommonUtils.getFontFamily(fontStr);
-        logger.fine('font=$font');
-        return CretaMenuItem(
-            caption: fontStr,
-            fontFamily: font,
-            onPressed: () {
-              onChanged(font);
-            },
-            selected: defaultValue == font);
-      },
-    ).toList();
+    return [
+      ...CretaLang['fontStringList']!.map(
+        (fontStr) {
+          String font = CretaCommonUtils.getFontFamily(fontStr);
+          logger.fine('font=$font');
+          return CretaMenuItem(
+              caption: fontStr,
+              fontFamily: font,
+              onPressed: () {
+                onChanged(font);
+              },
+              selected: defaultValue == font);
+        },
+      ).toList()
+    ];
   }
 
   static List<CretaMenuItem> getFontWeightListItem({

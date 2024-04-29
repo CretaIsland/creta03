@@ -32,8 +32,8 @@ class LayoutConst {
   static const double topMenuBarHeight = 52;
 
   // stick menu
-  static const double menuStickWidth = 80.0;
-  static const double menuStickIconAreaHeight = 72.0;
+  static const double menuStickWidth = 84.0;
+  static const double menuStickIconAreaHeight = 80.0;
   static const double menuStickIconSize = 32.0;
 
   // left/Right menu
@@ -307,6 +307,7 @@ class StudioConst {
 
   static Map<String, List<int>> fontWeightListMap = {
     'Pretendard': [100, 200, 300, 400, 500, 600, 700, 800, 900],
+    'NotoSerifJP': [200, 300, 400, 500, 600, 700, 900],
     'NanumMyeongjo': [400, 700, 800],
     'Jua': [400],
     'NanumGothic': [400, 700, 800],

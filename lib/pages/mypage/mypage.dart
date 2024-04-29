@@ -1,9 +1,11 @@
 import 'package:creta03/data_io/channel_manager.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_user_io/data_io/team_manager.dart';
 import 'package:creta_user_io/data_io/user_property_manager.dart';
 import 'package:creta_common/common/creta_const.dart';
 import 'package:flutter/material.dart';
+import 'package:hycop/hycop.dart';
 
 import 'dart:math';
 // ignore: depend_on_referenced_packages
@@ -46,25 +48,17 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
   void initState() {
     super.initState();
 
-    _initMenu();
+    isLangInit = initLang();
+  }
 
-    switch (widget.selectedPage) {
-      case AppRoutes.myPageInfo:
-        _leftMenuItem[1].selected = true;
-        break;
-      case AppRoutes.myPageAccountManage:
-        _leftMenuItem[2].selected = true;
-        break;
-      case AppRoutes.myPageSettings:
-        _leftMenuItem[3].selected = true;
-        break;
-      case AppRoutes.myPageTeamManage:
-        _leftMenuItem[4].selected = true;
-        break;
-      default:
-        _leftMenuItem[0].selected = true;
-        break;
-    }
+  static Future<bool>? isLangInit;
+
+  Future<bool>? initLang() async {
+    await Snippet.setLang();
+    _initMenu();
+    oldLanguage = CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.language;
+
+    return true;
   }
 
   void _initMenu() {
@@ -110,6 +104,23 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
             Routemaster.of(context).push(AppRoutes.myPageTeamManage);
           })
     ];
+    switch (widget.selectedPage) {
+      case AppRoutes.myPageInfo:
+        _leftMenuItem[1].selected = true;
+        break;
+      case AppRoutes.myPageAccountManage:
+        _leftMenuItem[2].selected = true;
+        break;
+      case AppRoutes.myPageSettings:
+        _leftMenuItem[3].selected = true;
+        break;
+      case AppRoutes.myPageTeamManage:
+        _leftMenuItem[4].selected = true;
+        break;
+      default:
+        _leftMenuItem[0].selected = true;
+        break;
+    }
   }
 
   // ignore: unused_element
@@ -226,28 +237,49 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
         ChangeNotifierProvider<ChannelManager>.value(
             value: CretaAccountManager.channelManagerHolder),
       ],
-      child: Snippet.CretaScaffoldOfMyPage(
-          onFoldButtonPressed: () {
-            setState(() {});
-          },
-          title: Container(
-            padding: const EdgeInsets.only(left: 24),
-            child: InkWell(
-              onTap: () => Routemaster.of(context).push(AppRoutes.intro),
-              child: const Image(
-                image: AssetImage("assets/creta_logo_blue.png"),
-                height: 20,
-              ),
-            ),
-          ),
-          context: context,
-          child: Consumer<UserPropertyManager>(builder: (context, userPropertyManager, child) {
-            if (oldLanguage != userPropertyManager.userPropertyModel!.language) {
-              oldLanguage = userPropertyManager.userPropertyModel!.language;
-              _initMenu();
+      child: FutureBuilder<bool>(
+          future: isLangInit,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              //error가 발생하게 될 경우 반환하게 되는 부분
+              logger.severe("data fetch error(WaitDatum)");
+              return const Center(child: Text('data fetch error(WaitDatum)'));
             }
-            return myPageMain();
-          })),
+            if (snapshot.hasData == false) {
+              //print('xxxxxxxxxxxxxxxxxxxxx');
+              logger.finest("wait data ...(WaitData)");
+              return Center(
+                child: CretaSnippet.showWaitSign(),
+              );
+            }
+            if (snapshot.connectionState == ConnectionState.done) {
+              logger.finest("founded ${snapshot.data!}");
+              // if (snapshot.data!.isEm
+              return Consumer<UserPropertyManager>(builder: (context, userPropertyManager, child) {
+                if (oldLanguage != userPropertyManager.userPropertyModel!.language) {
+                  oldLanguage = userPropertyManager.userPropertyModel!.language;
+                  _initMenu();
+                }
+                return Snippet.CretaScaffoldOfMyPage(
+                    onFoldButtonPressed: () {
+                      setState(() {});
+                    },
+                    title: Container(
+                      padding: const EdgeInsets.only(left: 24),
+                      child: InkWell(
+                        onTap: () => Routemaster.of(context).push(AppRoutes.intro),
+                        child: const Image(
+                          image: AssetImage("assets/creta_logo_blue.png"),
+                          height: 20,
+                        ),
+                      ),
+                    ),
+                    context: context,
+                    child: myPageMain());
+              });
+            }
+            return const SizedBox.shrink();
+          }),
     );
   }
 }

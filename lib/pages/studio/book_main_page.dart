@@ -395,6 +395,7 @@ class _BookMainPageState extends State<BookMainPage> {
 //           peerName: LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname);
 //       webRTCClient!.connectSocket();
 //     });
+    isLangInit = initLang();
     afterBuild();
   }
 
@@ -651,6 +652,13 @@ class _BookMainPageState extends State<BookMainPage> {
     }
   }
 
+  static Future<bool>? isLangInit;
+
+  Future<bool>? initLang() async {
+    await Snippet.setLang();
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     screenWidthPercentage = MediaQuery.of(context).size.width * 0.01;
@@ -687,7 +695,9 @@ class _BookMainPageState extends State<BookMainPage> {
         ChangeNotifierProvider<ConnectedUserManager>.value(
           value: BookMainPage.connectedUserHolder!,
         ),
-        ChangeNotifierProvider<MouseTracer>.value(value: mouseTracerHolder!)
+        ChangeNotifierProvider<MouseTracer>.value(value: mouseTracerHolder!),
+        ChangeNotifierProvider<UserPropertyManager>.value(
+            value: CretaAccountManager.userPropertyManagerHolder),
       ],
       child: //RawKeyboardListener(
           //  키보드 이벤트 도착 순서 :   _keyEventHandler,  onKeyEvent,and onKey
@@ -695,67 +705,83 @@ class _BookMainPageState extends State<BookMainPage> {
           //focusNode: CretaTextField.mainFocusNode!, // _focusNodeEventHandler 가 호출됨.
           //onKey: _keyEventHandler,
           //child:
-          _bookMain(lastEventTime),
+          FutureBuilder<bool>(
+              future: isLangInit,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  //error가 발생하게 될 경우 반환하게 되는 부분
+                  logger.severe("data fetch error(WaitDatum)");
+                  return const Center(child: Text('data fetch error(WaitDatum)'));
+                }
+                if (snapshot.hasData == false) {
+                  //print('xxxxxxxxxxxxxxxxxxxxx');
+                  logger.finest("wait data ...(WaitData)");
+                  return Center(
+                    child: CretaSnippet.showWaitSign(),
+                  );
+                }
+                if (snapshot.connectionState == ConnectionState.done) {
+                  logger.finest("founded ${snapshot.data!}");
+                  // if (snapshot.data!.isEm
+                  return Consumer<UserPropertyManager>(
+                      builder: (context, userPropertyManager, childWidget) {
+                    return _bookMain(lastEventTime);
+                  });
+                }
+                return const SizedBox.shrink();
+              }),
       //),
     );
   }
 
   Widget _bookMain(DateTime lastEventTime) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<UserPropertyManager>.value(
-            value: CretaAccountManager.userPropertyManagerHolder),
-      ],
-      child: StudioVariables.isPreview
-          ? Scaffold(
-              body: MouseHider(
-                fromPriviewToMain: _fromPriviewToMain,
-                child: _waitBook(),
-                onMouseHideChanged: () {
-                  BookMainPage.pageManagerHolder?.notify();
-                },
-              ),
-            )
-          : Snippet.CretaScaffold(
-              noVerticalVar: true,
-              // title: Snippet.logo(CretaVars.serviceTypeString(), route: () {
-              //   Routemaster.of(context).push(AppRoutes.studioBookGridPage);
-              // }),
-              onFoldButtonPressed: () {
-                setState(() {});
+    return StudioVariables.isPreview
+        ? Scaffold(
+            body: MouseHider(
+              fromPriviewToMain: _fromPriviewToMain,
+              child: _waitBook(),
+              onMouseHideChanged: () {
+                BookMainPage.pageManagerHolder?.notify();
               },
-
-              invalidate: () {
-                setState(() {});
-              },
-              context: context,
-              child: Stack(
-                children: [
-                  MouseRegion(
-                    onHover: (pointerEvent) {
-                      //if (StudioVariables.allowMutilUser == true) {
-                      if (mouseTracerHolder!.mouseCursorList.isEmpty) return;
-                      if (_useSocket()) {
-                        if (lastEventTime
-                            .add(Duration(milliseconds: 100))
-                            .isBefore(DateTime.now())) {
-                          client.changeCursorPosition(
-                              pointerEvent.position.dx / screenWidthPercentage,
-                              (pointerEvent.position.dy - 50) / screenHeightPrecentage);
-
-                          lastEventTime = DateTime.now();
-                        }
-                      }
-                      //}
-                    },
-                    child: _waitBook(),
-                  ),
-                  //if (StudioVariables.allowMutilUser == true) mouseArea(),
-                  mouseArea(), // 프레임이나 텍스트를 원하는 위치에 그릴 수 있도록 추적하는 기능
-                ],
-              ),
             ),
-    );
+          )
+        : Snippet.CretaScaffold(
+            noVerticalVar: true,
+            // title: Snippet.logo(CretaVars.serviceTypeString(), route: () {
+            //   Routemaster.of(context).push(AppRoutes.studioBookGridPage);
+            // }),
+            onFoldButtonPressed: () {
+              setState(() {});
+            },
+
+            invalidate: () {
+              setState(() {});
+            },
+            context: context,
+            child: Stack(
+              children: [
+                MouseRegion(
+                  onHover: (pointerEvent) {
+                    //if (StudioVariables.allowMutilUser == true) {
+                    if (mouseTracerHolder!.mouseCursorList.isEmpty) return;
+                    if (_useSocket()) {
+                      if (lastEventTime.add(Duration(milliseconds: 100)).isBefore(DateTime.now())) {
+                        client.changeCursorPosition(
+                            pointerEvent.position.dx / screenWidthPercentage,
+                            (pointerEvent.position.dy - 50) / screenHeightPrecentage);
+
+                        lastEventTime = DateTime.now();
+                      }
+                    }
+                    //}
+                  },
+                  child: _waitBook(),
+                ),
+                //if (StudioVariables.allowMutilUser == true) mouseArea(),
+                mouseArea(), // 프레임이나 텍스트를 원하는 위치에 그릴 수 있도록 추적하는 기능
+              ],
+            ),
+          );
   }
 
   void _focusNodeEventHandler(FocusNode node, KeyEvent event) {

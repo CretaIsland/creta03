@@ -57,7 +57,7 @@ class DepotDisplay extends StatefulWidget {
 
 class _DepotDisplayClassState extends State<DepotDisplay> {
   final double verticalPadding = 16;
-  final double horizontalPadding = 24;
+  final double horizontalPadding = 19;
 
   final double imageWidth = 160.0;
   final double imageHeight = 95.0;

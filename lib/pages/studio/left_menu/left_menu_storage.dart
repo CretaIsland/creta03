@@ -24,7 +24,7 @@ class LeftMenuStorage extends StatefulWidget {
 
 class _LeftMenuStorageState extends State<LeftMenuStorage> {
   final double verticalPadding = 16;
-  final double horizontalPadding = 24;
+  final double horizontalPadding = 19;
 
   late String _selectedTab;
   late double bodyWidth;

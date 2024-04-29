@@ -37,7 +37,7 @@ enum AIState { ready, processing, succeed, fail }
 
 class _LeftMenuImageState extends State<LeftMenuImage> {
   final double verticalPadding = 18;
-  final double horizontalPadding = 24;
+  final double horizontalPadding = 19;
 
   String searchText = '';
   late String _selectedTab;

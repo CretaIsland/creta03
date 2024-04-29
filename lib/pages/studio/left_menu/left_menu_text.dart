@@ -21,7 +21,7 @@ class LeftMenuText extends StatefulWidget {
 
 class _LeftMenuTextState extends State<LeftMenuText> {
   final double verticalPadding = 10;
-  final double horizontalPadding = 24;
+  final double horizontalPadding = 19;
   //final double cardHeight = 246;
   final double headerHeight = 36;
   final double menuBarHeight = 36;

@@ -1,0 +1,17 @@
+
+
+    디렉터리: D:\Flutter\project\creta03\fonts\NotoSerifJP
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+-a----        2024-04-29   오후 4:11              0 ddd.txt                                                              
+-a----        2024-04-29   오후 4:11        6334956 NotoSerifJP-Black.otf                                                
+-a----        2024-04-29   오후 4:11        6431536 NotoSerifJP-Bold.otf                                                 
+-a----        2024-04-29   오후 4:11        5672308 NotoSerifJP-ExtraLight.otf                                           
+-a----        2024-04-29   오후 4:11        6088540 NotoSerifJP-Light.otf                                                
+-a----        2024-04-29   오후 4:11        6243088 NotoSerifJP-Medium.otf                                               
+-a----        2024-04-29   오후 4:11        6169440 NotoSerifJP-Regular.otf                                              
+-a----        2024-04-29   오후 4:11        6278548 NotoSerifJP-SemiBold.otf                                             
+
+

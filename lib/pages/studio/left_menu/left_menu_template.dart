@@ -24,7 +24,7 @@ class LeftMenuTemplate extends StatefulWidget {
 
 class _LeftMenuTemplateState extends State<LeftMenuTemplate> {
   final double verticalPadding = 18;
-  final double horizontalPadding = 24;
+  final double horizontalPadding = 19;
 
   late double bodyWidth;
 
