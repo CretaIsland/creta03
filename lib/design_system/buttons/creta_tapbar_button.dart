@@ -169,8 +169,11 @@ class _CretaTapBarButtonState extends State<CretaTapBarButton> {
               Expanded(
                 child: Text(
                   widget.caption,
-                  style: CretaFont.titleLarge
-                      .copyWith(color: _getfgColor(), fontWeight: CretaFont.medium),
+                  style: CretaFont.titleLarge.copyWith(
+                    color: _getfgColor(),
+                    fontWeight: CretaFont.medium,
+                    height: 0.9,
+                  ),
                   softWrap: true,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,

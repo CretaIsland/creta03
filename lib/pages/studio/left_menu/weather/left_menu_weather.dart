@@ -74,7 +74,7 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
               child: Text(widget.title, style: widget.dataStyle),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 12.0, left: 24.0),
+              padding: const EdgeInsets.only(top: 12.0, left: 24.0, right: 24),
               child: Wrap(
                 spacing: 12.0,
                 runSpacing: 6.0,

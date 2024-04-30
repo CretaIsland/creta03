@@ -71,6 +71,7 @@ mixin PropertyMixin {
     required Function onDelete,
     bool animate = false,
     double? iconSize = 20,
+    double trailWidth = 180,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,29 +112,30 @@ mixin PropertyMixin {
                           })
                       : const SizedBox.shrink()
                   : hasRemoveButton
-                      ? SizedBox(
-                          width: 180,
-                          //color: Colors.amberAccent,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  onPressed.call();
-                                },
-                                child: trailWidget ?? const SizedBox.shrink(),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: BTN.fill_gray_i_m(
-                                    icon: Icons.close_outlined,
-                                    onPressed: () {
-                                      onDelete.call();
-                                    }),
-                              ),
-                            ],
-                          ),
+                      ? //Container(
+                      //width: trailWidth,
+                      //color: Colors.amberAccent,
+                      //child:
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                onPressed.call();
+                              },
+                              child: trailWidget ?? const SizedBox.shrink(),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: BTN.fill_gray_i_m(
+                                  icon: Icons.close_outlined,
+                                  onPressed: () {
+                                    onDelete.call();
+                                  }),
+                            ),
+                          ],
                         )
+                      //)
                       : InkWell(
                           onTap: () {
                             onPressed.call();
@@ -268,8 +270,10 @@ mixin PropertyMixin {
     required Function(Color) onColor1Changed,
     required Function() onColorIndicatorClicked,
     required Function onDelete,
+    double trailWidth = 180,
   }) {
     return propertyCard(
+      trailWidth: trailWidth,
       isOpen: isColorOpen,
       onPressed: () {
         isColorOpen = !isColorOpen;

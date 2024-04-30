@@ -431,7 +431,7 @@
         " // shadowIn" : "種類",
         "nothing" : "なし",
         "noBorder" : "境界線なし",
-        "fitting" : "フィッティング",
+        "fitting" : "適合",
         "custom" : "カスタム",
         "playersize" : "サイズ",
         
@@ -485,10 +485,10 @@
         "linkFrameTooltip" : "他のフレームコンテンツにリンクします",
         "mainFrameTooltip" : "メインフレームに指定します", 
         
-        "flipConTooltip" : "コンテンツを反転します",
-        "rotateConTooltip" : "コンテンツを回転させます", 
+        "flipConTooltip" : "反転",
+        "rotateConTooltip" : "回転", 
         "cropConTooltip" : "コンテンツ財団",
-        "fullscreenConTooltip" : "コンテンツをフレームサイズに合わせる",
+        "fullscreenConTooltip" : "フレームサイズに合わせる",
         "deleteConTooltip" : "コンテンツを削除",
         "editConTooltip" : "コンテンツ編集", 
         

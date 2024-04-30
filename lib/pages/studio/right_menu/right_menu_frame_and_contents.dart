@@ -93,7 +93,7 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
       color: CretaColor.text[100]!,
       alignment: Alignment.centerLeft,
       child: Padding(
-        padding: const EdgeInsets.only(right: 50),
+        padding: const EdgeInsets.only(right: 20),
         child: CustomRadioButton(
           radioButtonValue: (value) {
             List<dynamic> menu = CretaStudioLang['frameTabBar']!.values.toList();

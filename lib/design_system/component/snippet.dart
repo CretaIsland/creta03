@@ -157,6 +157,7 @@ class Snippet {
     return Scaffold(
         // no appBar any more
         //appBar: Snippet.CretaAppBarOfStudio(context, title, additionals, invalidate: invalidate),
+        //appBar: Snippet.CretaAppBarOfMyPage(context, Text('title')),
         floatingActionButton:
             CretaVars.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -195,6 +196,7 @@ class Snippet {
       //   // onErrorReport: onErrorReport,
       //   getBuildContext: getBuildContext,
       // ),
+      //appBar: Snippet.CretaAppBarOfMyPage(context, Text('title')),
       floatingActionButton: CretaVars.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
       body:
           // GestureDetector(
@@ -407,6 +409,7 @@ class Snippet {
     required Widget child,
   }) {
     return Scaffold(
+        //appBar: Snippet.CretaAppBarOfMyPage(context, title),
         //appBar: Snippet.CretaAppBarOfMyPage(context, title),
         floatingActionButton:
             CretaVars.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
@@ -1147,10 +1150,10 @@ class Snippet {
   static void setFont(LanguageType language) {
     switch (language) {
       case LanguageType.japanese:
-        CretaFont.fontFamily = 'NotoSerifJP';
+        CretaFont.resetFont(family: 'NotoSerifJP');
         break;
       default:
-        CretaFont.fontFamily = 'Pretendard';
+        CretaFont.resetFont(family: 'Pretendard');
         break;
     }
     return;

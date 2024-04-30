@@ -16,6 +16,7 @@ import 'package:creta_common/lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_studio_model/model/contents_model.dart';
+import '../login/creta_account_manager.dart';
 import 'studio_constant.dart';
 import 'studio_variables.dart';
 
@@ -376,5 +377,17 @@ class StudioSnippet {
       indent: indent,
       endIndent: endIndent,
     );
+  }
+
+  static double getMenuBarHeight() {
+    if (CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.language ==
+        LanguageType.japanese) {
+      return LayoutConst.innerMenuBarHeight * 2;
+    }
+    if (CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.language ==
+        LanguageType.english) {
+      return LayoutConst.innerMenuBarHeight * 2;
+    }
+    return LayoutConst.innerMenuBarHeight;
   }
 }

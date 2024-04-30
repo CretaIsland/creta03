@@ -189,7 +189,7 @@ class _SearchTipPositionState extends State<SearchTipPosition> {
                   _activePage == 0
                       ? CretaStudioLang['detailTipMessage1']![tipIndex]
                       : CretaStudioLang['detailTipMessage2']![tipIndex],
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 8.0,
                     fontWeight: CretaFont.semiBold,
                     color: Colors.white,

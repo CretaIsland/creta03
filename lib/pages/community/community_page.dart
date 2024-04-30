@@ -653,6 +653,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             style: CretaFont.bodyMedium.copyWith(
               color: Colors.white,
               fontSize: 16,
+              height: 0.9,
               //fontWeight: CretaFont.regular,
             ),
           ),
@@ -663,6 +664,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             style: CretaFont.bodyMedium.copyWith(
               color: Colors.white,
               fontSize: 16,
+              height: 0.9,
               //fontWeight: CretaFont.regular,
             ),
           ),
@@ -736,6 +738,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             style: CretaFont.displaySmall.copyWith(
               color: Colors.white,
               fontWeight: CretaFont.semiBold,
+              height: 0.9,
             ),
           ),
         );
@@ -749,6 +752,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             style: CretaFont.bodyMedium.copyWith(
               color: Colors.white,
               fontSize: 16,
+              height: 0.9,
               //fontWeight: CretaFont.regular,
             ),
           ),
@@ -759,6 +763,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             style: CretaFont.bodyMedium.copyWith(
               color: Colors.white,
               fontSize: 16,
+              height: 0.9,
               //fontWeight: CretaFont.regular,
             ),
           ),
@@ -827,7 +832,10 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         //text
         Text(
           CretaCommuLang['commuHome']!,
-          style: CretaFont.titleELarge.copyWith(fontWeight: CretaFont.semiBold),
+          style: CretaFont.titleELarge.copyWith(
+            fontWeight: CretaFont.semiBold,
+            height: 0.9,
+          ),
         ),
       ]);
     }
@@ -838,7 +846,10 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         Text(
           CretaCommuLang['exploreCretaBooks'],
           overflow: TextOverflow.ellipsis,
-          style: CretaFont.bodyMedium.copyWith(fontWeight: CretaFont.regular),
+          style: CretaFont.bodyMedium.copyWith(
+            fontWeight: CretaFont.regular,
+            height: 0.9,
+          ),
         ),
       ]);
     }
@@ -1674,10 +1685,10 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                         children: [
                           Text(
                             _currentPlaylistModel!.name,
-                           style: CretaFont.titleELarge.copyWith(
-                          color: Colors.grey[800],
-                          fontWeight: FontWeight.w600,
-                        ),
+                            style: CretaFont.titleELarge.copyWith(
+                              color: Colors.grey[800],
+                              fontWeight: FontWeight.w600,
+                            ),
                             // TextStyle(
                             //   fontWeight: FontWeight.w600,
                             //   fontSize: 22,

@@ -1,7 +1,5 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
 
-import 'package:creta03/pages/login/creta_account_manager.dart';
-import 'package:creta_common/model/app_enums.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -15,6 +13,7 @@ import '../../../../lang/creta_studio_lang.dart';
 import 'package:creta_studio_model/model/book_model.dart';
 import '../../book_main_page.dart';
 import '../../studio_constant.dart';
+import '../../studio_snippet.dart';
 import 'book_editor_property.dart';
 import 'book_history_property.dart';
 import 'book_info_property.dart';
@@ -71,14 +70,8 @@ class _RightMenuBookState extends State<RightMenuBook> {
   }
 
   Widget _menuBar() {
-    double height = LayoutConst.innerMenuBarHeight;
-    if (CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.language ==
-        LanguageType.japanese) {
-      height = LayoutConst.innerMenuBarHeight * 2;
-    }
-
     return Container(
-      height: height,
+      height: StudioSnippet.getMenuBarHeight(),
       width: LayoutConst.rightMenuWidth,
       color: CretaColor.text[100]!,
       child: CustomRadioButton(

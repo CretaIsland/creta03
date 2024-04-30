@@ -329,12 +329,12 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                           top: 16,
                           left: horizontalPadding,
                           right: horizontalPadding,
-                          bottom: 8,
+                          bottom: 0,
                         ),
                         child: _stepsWidget(currentStep),
                       ),
                       const Divider(
-                        height: 22,
+                        height: 10,
                         indent: 0,
                       ),
                       Padding(

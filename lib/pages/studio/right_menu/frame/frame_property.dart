@@ -463,9 +463,10 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(
-                        width: 97,
-                        child: Row(
+                      //SizedBox(
+                        //width: 97,
+                       // child: 
+                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
@@ -488,7 +489,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                             ),
                           ],
                         ),
-                      ),
+                      //),
                       BTN.fill_gray_i_m(
                           tooltip: CretaStudioLang['fixedRatio']!,
                           tooltipBg: CretaColor.text[400]!,
@@ -504,32 +505,33 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                             });
                             _sendEvent!.sendEvent(widget.model);
                           }),
-                      SizedBox(
-                        width: 97,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              CretaStudioLang['height']!,
-                              style: titleStyle,
-                            ),
-                            SizedBox(width: 15),
-                            CretaTextField.xshortNumber(
-                              defaultBorder: Border.all(color: CretaColor.text[100]!),
-                              width: 45,
-                              limit: 5,
-                              textFieldKey: GlobalKey(),
-                              value: widget.model.height.value.round().toString(),
-                              hintText: '',
-                              minNumber: LayoutConst.minFrameSize.toDouble(),
-                              maxNumber: _bookModel!.height.value,
-                              onEditComplete: ((value) {
-                                _sizeChanged(value, widget.model.height, widget.model.width);
-                              }),
-                            ),
-                          ],
-                        ),
+                      //SizedBox(
+                      //width: 97,
+                      //child:
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            CretaStudioLang['height']!,
+                            style: titleStyle,
+                          ),
+                          SizedBox(width: 15),
+                          CretaTextField.xshortNumber(
+                            defaultBorder: Border.all(color: CretaColor.text[100]!),
+                            width: 45,
+                            limit: 5,
+                            textFieldKey: GlobalKey(),
+                            value: widget.model.height.value.round().toString(),
+                            hintText: '',
+                            minNumber: LayoutConst.minFrameSize.toDouble(),
+                            maxNumber: _bookModel!.height.value,
+                            onEditComplete: ((value) {
+                              _sizeChanged(value, widget.model.height, widget.model.width);
+                            }),
+                          ),
+                        ],
                       ),
+                      //),
                     ],
                   ),
                 ),

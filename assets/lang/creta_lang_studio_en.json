@@ -214,7 +214,7 @@
 
     "autoScale" : "AutoScale",
 
-    "publish" : "發布",
+    "publish" : "Publish",
     "channelList" : "Channel list",
     "tooltipNoti" : "You have a notification",
     "tooltipNoNoti" : "No notifications",
@@ -276,7 +276,7 @@
     "hashTab" : "Hashtags",
     "infomation" : "Information",
     "pageSize" : "Page size",
-    "frameSize" : "Frame default property",
+    "frameSize" : "Frame general property",
     "linkProp" : "Link basic properties",
     "clickEvent" : "Click event",
     "bookBgColor" : "Overall background color",
@@ -403,8 +403,8 @@
         "waterdrop"
       ],
 
-    "posX" : "X coordinate",
-    "posY" : "Y coordinate",
+    "posX" : "Pos X",
+    "posY" : "Pos Y",
 
     "autoFitContents" : "Auto fit to content size",
     "overlayFrame" : "Sticky on all pages",
@@ -415,7 +415,7 @@
     "foregroundMusic" : "Unpin as background music",
 
     "ani" : "animation",
-    "flip" : "Flip left and right",
+    "flip" : "Flip",
     "speed" : "Speed",
     "transitionSpeed" : "Progression time (in seconds)",
     "delay" : "Delay",
@@ -423,7 +423,7 @@
     "shadow" : "Shadow",
     "borderWidth" : "Thickness",
     "glowingBorder" : "Glow effect",
-    "offset" : "Directional distance",
+    "offset" : "distance",
     "direction" : "direction angle",
     "spread" : "Size",
     "blur" : "Blur",
@@ -487,10 +487,10 @@
     "linkFrameTooltip" : "Link to other frame content",
     "mainFrameTooltip" : "Make it the main frame",
 
-    "flipConTooltip" : "Flip content",
-    "rotateConTooltip" : "Rotate content",
-    "cropConTooltip" : "Crop content",
-    "fullscreenConTooltip" : "Fit content to frame size",
+    "flipConTooltip" : "Flip",
+    "rotateConTooltip" : "Rotate",
+    "cropConTooltip" : "Crop",
+    "fullscreenConTooltip" : "Fit to frame size",
     "deleteConTooltip" : "Delete content",
     "editConTooltip" : "Edit content",
 
@@ -552,7 +552,7 @@
     "tts" : "Broadcast by voice",
     "translate" : "Translate",
 
-    "noUnshowPage" : "There are no visible pages, please unshow them",
+    "noUnshowPage" : "There are no visible pages, Please disable hiding",
     "inSideRotate" : "Rotate inside the box",
 
     "publishSettings" : "Publish settings",
@@ -569,10 +569,10 @@
     "wrongEmail" : "Not a valid email format, no corresponding team name, please enter an email address or team name",
     "noExitEmail" : "You are not a registered user, the auto-invite feature is not yet implemented",
 
-    "publishComplete" : "The publication is complete",
+    "publishComplete" : " publication has been completed.",
     "publishFailed" : "Publishing failed",
-    "update" : "Update",
-    "newely" : "Newly",
+    "update" : "The amended",
+    "newely" : "The new",
 
     "showGrid" : "Grid view",
     "showRuler" : "Ruler view",

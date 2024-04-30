@@ -61,12 +61,12 @@ class _LeftMenuTextState extends State<LeftMenuText> {
 
   Widget _menuBar() {
     return Container(
-      height: LayoutConst.innerMenuBarHeight,
+      height: LayoutConst.innerMenuBarHeight, //StudioSnippet.getMenuBarHeight(),
       width: LayoutConst.rightMenuWidth,
       color: CretaColor.text[100]!,
       alignment: Alignment.centerLeft,
       child: Padding(
-        padding: const EdgeInsets.only(right: 100),
+        padding: const EdgeInsets.only(right: 30),
         child: CustomRadioButton(
           radioButtonValue: (value) {
             setState(() {

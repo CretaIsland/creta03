@@ -58,7 +58,7 @@ class _WeatherElementState extends State<WeatherElement> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.only(right: 8.0),
+                padding: const EdgeInsets.only(right: 8.0,),
                 child:
                     Text(WeatherVariables.getTitleText(widget.infoType), style: _titleTextStyle!),
               ),
@@ -89,7 +89,7 @@ class _WeatherElementState extends State<WeatherElement> {
           widget.onPressed?.call(widget.infoType);
         },
         child: Container(
-          width: _isClicked ? widget.width + 2 : widget.width,
+          //width: _isClicked ? widget.width + 2 : widget.width,
           height: _isClicked ? widget.height + 2 : widget.height,
           decoration: BoxDecoration(
             border: Border.all(
@@ -114,7 +114,7 @@ class _WeatherElementState extends State<WeatherElement> {
         borderRadius: widget.radius,
         color: Colors.transparent,
       ),
-      width: widget.width,
+      //width: widget.width,
       height: widget.height,
       child: Center(child: _main()),
     );

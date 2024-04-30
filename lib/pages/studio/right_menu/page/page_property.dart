@@ -168,6 +168,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: colorPropertyCard(
         title: CretaStudioLang['pageBgColor']!,
+        trailWidth: 154,
         color1: _model!.bgColor1.value,
         color2: _model!.bgColor2.value,
         opacity: _model!.opacity.value,
