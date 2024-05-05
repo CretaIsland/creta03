@@ -14,13 +14,11 @@ import 'book_select_filter.dart';
 
 class DeviceDetailPage extends StatefulWidget {
   final HostModel hostModel;
-  final void Function() onExit;
   final GlobalKey<FormState> formKey;
 
   const DeviceDetailPage({
     super.key,
     required this.hostModel,
-    required this.onExit,
     required this.formKey,
   });
 
@@ -112,7 +110,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 Padding(
                   padding: const EdgeInsets.only(left: 4, bottom: 8.0, right: 2),
                   child: _boolRow(
-                    CretaDeviceLang["usageSetting"],//'사용상태 설정',
+                    CretaDeviceLang["usageSetting"], //'사용상태 설정',
                     widget.hostModel.isUsed,
                     true,
                     onChanged: (bool value) {
@@ -133,14 +131,16 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text(
-                            CretaDeviceLang["generalSetting"],//"일반 정보 설정", 
-                            style: dataStyle),
+                          child: Text(CretaDeviceLang["generalSetting"], //"일반 정보 설정",
+                              style: dataStyle),
                         ),
                         TextFormField(
                           initialValue: widget.hostModel.hostName,
                           decoration: const InputDecoration(labelText: 'Host Name'),
-                          onSaved: (value) => widget.hostModel.hostName = value ?? '',
+                          onSaved: (value) {
+                            widget.hostModel.hostName = value ?? '';
+                            //print('Saved : ${widget.hostModel.hostName}');
+                          },
                         ),
                         TextFormField(
                           initialValue: widget.hostModel.description,
@@ -167,15 +167,14 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text(
-                            CretaDeviceLang["powerSetting"],// "전원 설정", 
-                          style: dataStyle),
+                          child: Text(CretaDeviceLang["powerSetting"], // "전원 설정",
+                              style: dataStyle),
                         ),
                         //const Divider(color: Colors.grey),
                         _nvChanged(
                           'Power On Time',
                           widget.hostModel.powerOnTime,
-                          () async {
+                          onPressed: () async {
                             TimeOfDay? selectedTime = await showTimePicker(
                               initialTime: TimeOfDay.now(),
                               context: context,
@@ -187,12 +186,17 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                               });
                             }
                           },
+                          onCanceled: () {
+                            setState(() {
+                              widget.hostModel.powerOnTime = '';
+                            });
+                          },
                           padding: 4,
                         ),
                         _nvChanged(
                           'Power Off Time',
                           widget.hostModel.powerOffTime,
-                          () async {
+                          onPressed: () async {
                             TimeOfDay? selectedTime = await showTimePicker(
                               initialTime: TimeOfDay.now(),
                               context: context,
@@ -203,6 +207,11 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                                 widget.hostModel.powerOffTime = selectedTime.format(context);
                               });
                             }
+                          },
+                          onCanceled: () {
+                            setState(() {
+                              widget.hostModel.powerOffTime = '';
+                            });
                           },
                           padding: 4,
                         ),
@@ -281,13 +290,13 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text(CretaDeviceLang["currentBookSetting"],//"현재 방송 설정", 
-                          style: dataStyle),
+                          child: Text(CretaDeviceLang["currentBookSetting"], //"현재 방송 설정",
+                              style: dataStyle),
                         ),
                         _nvChanged(
                           'Requested Book 1',
                           widget.hostModel.requestedBook1,
-                          () {
+                          onPressed: () {
                             _showBookList(context, books, (bookId, name) {
                               setState(() {
                                 widget.hostModel.requestedBook1 = name;
@@ -296,18 +305,32 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                               });
                             });
                           },
+                          onCanceled: () {
+                            setState(() {
+                              widget.hostModel.requestedBook1 = '';
+                              widget.hostModel.requestedBook1Id = '';
+                              widget.hostModel.requestedBook1Time = DateTime.now();
+                            });
+                          },
                           subInfo: HycopUtils.dateTimeToDB(widget.hostModel.requestedBook1Time),
                         ),
                         _nvChanged(
                           'Requested Book 2',
                           widget.hostModel.requestedBook2,
-                          () {
+                          onPressed: () {
                             _showBookList(context, books, (bookId, name) {
                               setState(() {
                                 widget.hostModel.requestedBook2 = name;
                                 widget.hostModel.requestedBook2Id = bookId;
                                 widget.hostModel.requestedBook2Time = DateTime.now();
                               });
+                            });
+                          },
+                          onCanceled: () {
+                            setState(() {
+                              widget.hostModel.requestedBook2 = '';
+                              widget.hostModel.requestedBook2Id = '';
+                              widget.hostModel.requestedBook2Time = DateTime.now();
                             });
                           },
                           subInfo: HycopUtils.dateTimeToDB(widget.hostModel.requestedBook2Time),
@@ -462,8 +485,12 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     );
   }
 
-  Widget _nvChanged(String name, String value, void Function() onPressed,
-      {String? subInfo, double padding = 2.0, Widget? dataChild}) {
+  Widget _nvChanged(String name, String value,
+      {required void Function() onPressed,
+      required void Function() onCanceled,
+      String? subInfo,
+      double padding = 2.0,
+      Widget? dataChild}) {
     Widget dataRow = dataChild ??
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -482,10 +509,17 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                   ),
                 ),
                 child: SizedBox(
-                  width: 160,
+                  width: 140,
                   child: Text(value.isEmpty ? '-' : value,
                       textAlign: TextAlign.right, style: dataStyle),
                 )),
+            IconButton(
+              onPressed: onCanceled,
+              icon: const Icon(
+                Icons.close,
+                color: CretaColor.primary,
+              ),
+            ),
           ],
         );
 

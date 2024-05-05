@@ -903,6 +903,12 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
     double width = screenSize.width * 0.5;
     double height = screenSize.height * 0.7;
     final formKey = GlobalKey<FormState>();
+
+    //print('selectHost.mid=${selectedHost!.mid}');
+    HostModel oldOne = HostModel(selectedHost!.mid);
+    oldOne.copyFrom(selectedHost!, newMid: selectedHost!.mid);
+    //print('oldOne.mid=${oldOne.mid}');
+
     await showDialog(
       context: context,
       builder: (context) {
@@ -916,12 +922,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
             child: DeviceDetailPage(
               formKey: formKey,
               hostModel: selectedHost!,
-              onExit: () {
-                //setState(() {
-                //_openDetail = false;
-                selectedHost = null;
-                //});
-              },
+              
             ),
           ),
           actions: <Widget>[
@@ -929,6 +930,9 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
               child: Text('OK'),
               onPressed: () {
                 if (formKey.currentState!.validate()) {
+                  //print('formKey.currentState!.validate()====================');
+                  formKey.currentState?.save();
+                  hostManagerHolder?.setToDB(selectedHost!);
                   Navigator.of(context).pop();
                 }
               },
@@ -938,7 +942,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
               onPressed: () {
                 //setState(() {
                 //_openDetail = false;
-                selectedHost = null;
+                selectedHost?.copyFrom(oldOne, newMid: selectedHost!.mid);
+                //print('selectHost.mid=${selectedHost!.mid}');
                 //});
                 Navigator.of(context).pop();
               },
@@ -947,5 +952,6 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         );
       },
     );
+    setState(() {});
   }
 }

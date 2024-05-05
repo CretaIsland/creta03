@@ -110,7 +110,7 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
 
   @override
   void initState() {
-    print('VertialAppBar init');
+    //print('VertialAppBar init');
     super.initState();
     //final BoolEventController foldSendEvent = Get.find(tag: 'vertical-app-bar-to-creta-left-bar');
     //_foldSendEvent = foldSendEvent;
