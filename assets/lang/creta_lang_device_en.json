@@ -10,7 +10,7 @@
    "unUsed": "Unused",
    "licensed": "Licensed",
    "unLicensed": "Unregistered",
-   "myCretaDevice": "My device",
+   "myCretaDevice": "My devices",
    "teamCretaDevice": "Team device",
    "sharedCretaDevice": "Shared device",
    "myCretaDeviceDesc": "Manage your Creta device",
@@ -39,6 +39,15 @@
     "generalSetting": "General Settings",
     "powerSetting": "Power Settings",
     "currentBookSetting": "Current Broadcast Settings",
+
+    "remoteLogin": "Remote Login",
+    "powerOffConfirm": "Are you sure you want to turn off the device?",
+    "powerOffRequested":    "The device is being turned off.",
+
+    "rebootConfirm": "Are you sure you want to reboot the device?",
+    "rebootRequested":    "The device is being rebooted.",
+
+    
   
      "end"  : "End"
 

@@ -178,6 +178,7 @@ dependencies:
   expandable_slider: ^2.0.0
   email_validator: ^2.1.17
   animate_icons: ^2.0.0
+  flutter_web_data_table: ^1.0.0
 
 dev_dependencies:
   flutter_test:

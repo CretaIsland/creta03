@@ -39,7 +39,14 @@
     "powerSetting": "전원 설정", 
     "currentBookSetting": "현재 방송 설정",
 
+    "remoteLogin": "원격 로그인",
 
-
+    "powerOffConfirm": "선택된 장비의 전원을 정말로 off 하시겠습니까?",
+    "powerOffRequested":    "전원 off 요청이 완료되었습니다.",
+    
+    "rebootConfirm": "선택된 장비를 정말로 reboot 하시겠습니까?",
+    "rebootRequested":    "reboot 요청이 완료되었습니다.",
+    
+    
     "END" : ""
 }

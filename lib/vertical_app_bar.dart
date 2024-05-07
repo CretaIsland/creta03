@@ -297,7 +297,7 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
           child: TextButton(
             onPressed: _deviceLogoPressed,
             child: Text(
-              "Device", //CretaDeviceLang['device']!,
+              "Devices", //CretaDeviceLang['device']!,
               style: CretaFont.logoStyle.copyWith(color: Colors.white),
             ),
           ),

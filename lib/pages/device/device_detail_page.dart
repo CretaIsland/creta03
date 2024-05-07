@@ -15,11 +15,15 @@ import 'book_select_filter.dart';
 class DeviceDetailPage extends StatefulWidget {
   final HostModel hostModel;
   final GlobalKey<FormState> formKey;
+  final bool isMultiSelected;
+  final bool isChangeBook;
 
   const DeviceDetailPage({
     super.key,
     required this.hostModel,
     required this.formKey,
+    this.isMultiSelected = false,
+    this.isChangeBook = false,
   });
 
   @override
@@ -70,215 +74,220 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       key: widget.formKey,
       child: Row(
         children: [
-          Expanded(
-            child: ListView(
-              children: <Widget>[
-                _nvRow('Device ID', widget.hostModel.hostId),
-                _nvRow('Device Type', widget.hostModel.hostType.name.split(".").last),
-                _nvRow('Owner', widget.hostModel.creator),
-                _nvRow('Interface Name', widget.hostModel.interfaceName),
-                _nvRow('IP', widget.hostModel.ip),
-                _nvRow('OS', widget.hostModel.os),
-                _boolRow('Is Connected', widget.hostModel.isConnected, false),
-                _boolRow('Is Operational', widget.hostModel.isOperational, false),
-                _boolRow('Is Initialized', widget.hostModel.isInitialized, false),
-                //_boolRow('Is Licensed', widget.hostModel.isValidLicense, false),
-                _nvRow('License Time', HycopUtils.dateTimeToDB(widget.hostModel.licenseTime)),
-                _nvRow('Initialize Time', HycopUtils.dateTimeToDB(widget.hostModel.initializeTime)),
-                _nvRow('Last Connected Time', HycopUtils.dateTimeToDB(widget.hostModel.updateTime)),
-                _nvRow('Last Boot Time', HycopUtils.dateTimeToDB(widget.hostModel.bootTime)),
-                _nvRow(
-                    'Last Shutdown Time', HycopUtils.dateTimeToDB(widget.hostModel.shutdownTime)),
+          if (widget.isMultiSelected == false)
+            Expanded(
+              child: ListView(
+                children: <Widget>[
+                  _nvRow('Device ID', widget.hostModel.hostId),
+                  _nvRow('Device Type', widget.hostModel.hostType.name.split(".").last),
+                  _nvRow('Owner', widget.hostModel.creator),
+                  _nvRow('Interface Name', widget.hostModel.interfaceName),
+                  _nvRow('IP', widget.hostModel.ip),
+                  _nvRow('OS', widget.hostModel.os),
+                  _boolRow('Is Connected', widget.hostModel.isConnected, false),
+                  _boolRow('Is Operational', widget.hostModel.isOperational, false),
+                  _boolRow('Is Initialized', widget.hostModel.isInitialized, false),
+                  //_boolRow('Is Licensed', widget.hostModel.isValidLicense, false),
+                  _nvRow('License Time', HycopUtils.dateTimeToDB(widget.hostModel.licenseTime)),
+                  _nvRow(
+                      'Initialize Time', HycopUtils.dateTimeToDB(widget.hostModel.initializeTime)),
+                  _nvRow(
+                      'Last Connected Time', HycopUtils.dateTimeToDB(widget.hostModel.updateTime)),
+                  _nvRow('Last Boot Time', HycopUtils.dateTimeToDB(widget.hostModel.bootTime)),
+                  _nvRow(
+                      'Last Shutdown Time', HycopUtils.dateTimeToDB(widget.hostModel.shutdownTime)),
 
-                _nvRow('HDD Info', widget.hostModel.hddInfo),
-                _nvRow('CPU Info', widget.hostModel.cpuInfo),
-                _nvRow('Memory Info', widget.hostModel.memInfo),
-                _nvRow('State Message', widget.hostModel.stateMsg),
-                _nvRow('Request', widget.hostModel.request),
-                _nvRow('Response', widget.hostModel.response),
-                _nvRow('Download Result', widget.hostModel.downloadResult.name.split('.').last),
-                _nvRow('Download Message', widget.hostModel.downloadMsg),
+                  _nvRow('HDD Info', widget.hostModel.hddInfo),
+                  _nvRow('CPU Info', widget.hostModel.cpuInfo),
+                  _nvRow('Memory Info', widget.hostModel.memInfo),
+                  _nvRow('State Message', widget.hostModel.stateMsg),
+                  _nvRow('Request', widget.hostModel.request),
+                  _nvRow('RequestedTime', HycopUtils.dateTimeToDB(widget.hostModel.requestedTime)),
+                  _nvRow('Response', widget.hostModel.response),
+                  _nvRow('Download Result', widget.hostModel.downloadResult.name.split('.').last),
+                  _nvRow('Download Message', widget.hostModel.downloadMsg),
 
-                //Text('Thumbnail URL: ${widget.hostModel.thumbnailUrl}'),
-              ],
+                  //Text('Thumbnail URL: ${widget.hostModel.thumbnailUrl}'),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(width: 90),
+          if (widget.isMultiSelected == false) const SizedBox(width: 90),
           Expanded(
             child: ListView(
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 4, bottom: 8.0, right: 2),
-                  child: _boolRow(
-                    CretaDeviceLang["usageSetting"], //'사용상태 설정',
-                    widget.hostModel.isUsed,
-                    true,
-                    onChanged: (bool value) {
-                      setState(() {
-                        widget.hostModel.isUsed = value;
-                      });
-                    },
-                  ),
-                ),
-
-                Card(
-                  elevation: 0,
-                  color: Colors.grey[200],
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text(CretaDeviceLang["generalSetting"], //"일반 정보 설정",
-                              style: dataStyle),
-                        ),
-                        TextFormField(
-                          initialValue: widget.hostModel.hostName,
-                          decoration: const InputDecoration(labelText: 'Host Name'),
-                          onSaved: (value) {
-                            widget.hostModel.hostName = value ?? '';
-                            //print('Saved : ${widget.hostModel.hostName}');
-                          },
-                        ),
-                        TextFormField(
-                          initialValue: widget.hostModel.description,
-                          decoration: const InputDecoration(labelText: 'Description'),
-                          onSaved: (value) => widget.hostModel.description = value ?? '',
-                        ),
-                        TextFormField(
-                          initialValue: widget.hostModel.location,
-                          decoration: const InputDecoration(labelText: 'Location'),
-                          onSaved: (value) => widget.hostModel.location = value ?? '',
-                        ),
-                      ],
+                if (widget.isChangeBook == false)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4, bottom: 8.0, right: 2),
+                    child: _boolRow(
+                      CretaDeviceLang["usageSetting"], //'사용상태 설정',
+                      widget.hostModel.isUsed,
+                      true,
+                      onChanged: (bool value) {
+                        setState(() {
+                          widget.hostModel.isUsed = value;
+                        });
+                      },
                     ),
                   ),
-                ),
-
-                Card(
-                  elevation: 0,
-                  color: Colors.grey[200],
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text(CretaDeviceLang["powerSetting"], // "전원 설정",
-                              style: dataStyle),
-                        ),
-                        //const Divider(color: Colors.grey),
-                        _nvChanged(
-                          'Power On Time',
-                          widget.hostModel.powerOnTime,
-                          onPressed: () async {
-                            TimeOfDay? selectedTime = await showTimePicker(
-                              initialTime: TimeOfDay.now(),
-                              context: context,
-                            );
-                            if (selectedTime != null) {
-                              // ignore: use_build_context_synchronously
+                if (widget.isChangeBook == false)
+                  Card(
+                    elevation: 0,
+                    color: Colors.grey[200],
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: Text(CretaDeviceLang["generalSetting"], //"일반 정보 설정",
+                                style: dataStyle),
+                          ),
+                          TextFormField(
+                            initialValue: widget.hostModel.hostName,
+                            decoration: const InputDecoration(labelText: 'Host Name'),
+                            onSaved: (value) {
+                              widget.hostModel.hostName = value ?? '';
+                              //print('Saved : ${widget.hostModel.hostName}');
+                            },
+                          ),
+                          TextFormField(
+                            initialValue: widget.hostModel.description,
+                            decoration: const InputDecoration(labelText: 'Description'),
+                            onSaved: (value) => widget.hostModel.description = value ?? '',
+                          ),
+                          TextFormField(
+                            initialValue: widget.hostModel.location,
+                            decoration: const InputDecoration(labelText: 'Location'),
+                            onSaved: (value) => widget.hostModel.location = value ?? '',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                if (widget.isChangeBook == false)
+                  Card(
+                    elevation: 0,
+                    color: Colors.grey[200],
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: Text(CretaDeviceLang["powerSetting"], // "전원 설정",
+                                style: dataStyle),
+                          ),
+                          //const Divider(color: Colors.grey),
+                          _nvChanged(
+                            'Power On Time',
+                            widget.hostModel.powerOnTime,
+                            onPressed: () async {
+                              TimeOfDay? selectedTime = await showTimePicker(
+                                initialTime: TimeOfDay.now(),
+                                context: context,
+                              );
+                              if (selectedTime != null) {
+                                // ignore: use_build_context_synchronously
+                                setState(() {
+                                  widget.hostModel.powerOnTime = selectedTime.format(context);
+                                });
+                              }
+                            },
+                            onCanceled: () {
                               setState(() {
-                                widget.hostModel.powerOnTime = selectedTime.format(context);
+                                widget.hostModel.powerOnTime = '';
                               });
-                            }
-                          },
-                          onCanceled: () {
-                            setState(() {
-                              widget.hostModel.powerOnTime = '';
-                            });
-                          },
-                          padding: 4,
-                        ),
-                        _nvChanged(
-                          'Power Off Time',
-                          widget.hostModel.powerOffTime,
-                          onPressed: () async {
-                            TimeOfDay? selectedTime = await showTimePicker(
-                              initialTime: TimeOfDay.now(),
-                              context: context,
-                            );
-                            if (selectedTime != null) {
-                              // ignore: use_build_context_synchronously
+                            },
+                            padding: 4,
+                          ),
+                          _nvChanged(
+                            'Power Off Time',
+                            widget.hostModel.powerOffTime,
+                            onPressed: () async {
+                              TimeOfDay? selectedTime = await showTimePicker(
+                                initialTime: TimeOfDay.now(),
+                                context: context,
+                              );
+                              if (selectedTime != null) {
+                                // ignore: use_build_context_synchronously
+                                setState(() {
+                                  widget.hostModel.powerOffTime = selectedTime.format(context);
+                                });
+                              }
+                            },
+                            onCanceled: () {
                               setState(() {
-                                widget.hostModel.powerOffTime = selectedTime.format(context);
+                                widget.hostModel.powerOffTime = '';
                               });
-                            }
-                          },
-                          onCanceled: () {
-                            setState(() {
-                              widget.hostModel.powerOffTime = '';
-                            });
-                          },
-                          padding: 4,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: TextFormField(
-                            initialValue: widget.hostModel.holiday,
-                            decoration: const InputDecoration(
-                              labelText: 'holiday',
-                              hintText: 'ex) 12-25,1-1,7-4',
+                            },
+                            padding: 4,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 10.0),
+                            child: TextFormField(
+                              initialValue: widget.hostModel.holiday,
+                              decoration: const InputDecoration(
+                                labelText: 'holiday',
+                                hintText: 'ex) 12-25,1-1,7-4',
+                              ),
+                              onSaved: (value) => widget.hostModel.holiday = value ?? '',
                             ),
-                            onSaved: (value) => widget.hostModel.holiday = value ?? '',
                           ),
-                        ),
-                        _nvChangedColumn(
-                          'Weekend',
-                          widget.hostModel.weekend,
-                          dataRow: Wrap(
-                            //alignment: WrapAlignment.end,
-                            //runAlignment: WrapAlignment.end,
-                            children: <Widget>[
-                              for (int i = 0; i < 7; i++)
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 4.0, horizontal: 10.0),
-                                  child: SizedBox(
-                                    width: 50,
-                                    child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            DateFormat.E().format(DateTime(2022, 1, i + 3)),
-                                          ),
-                                          Checkbox(
-                                            activeColor: CretaColor.primary,
-                                            value: weekend[i],
-                                            onChanged: (bool? value) {
-                                              setState(() {
-                                                weekend[i] = value!;
-                                                widget.hostModel.weekend = jsonEncode(weekend);
-                                              });
-                                            },
-                                          ),
-                                        ]),
+                          _nvChangedColumn(
+                            'Weekend',
+                            widget.hostModel.weekend,
+                            dataRow: Wrap(
+                              //alignment: WrapAlignment.end,
+                              //runAlignment: WrapAlignment.end,
+                              children: <Widget>[
+                                for (int i = 0; i < 7; i++)
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 4.0, horizontal: 10.0),
+                                    child: SizedBox(
+                                      width: 50,
+                                      child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              DateFormat.E().format(DateTime(2022, 1, i + 3)),
+                                            ),
+                                            Checkbox(
+                                              activeColor: CretaColor.primary,
+                                              value: weekend[i],
+                                              onChanged: (bool? value) {
+                                                setState(() {
+                                                  weekend[i] = value!;
+                                                  widget.hostModel.weekend = jsonEncode(weekend);
+                                                });
+                                              },
+                                            ),
+                                          ]),
+                                    ),
                                   ),
-                                ),
-                              // CheckboxListTile(
-                              //   title: Text(
-                              //     DateFormat.E()
-                              //         .format(DateTime(2022, 1, i + 3)), // Get day of week
-                              //   ),
-                              //   value: weekend[i],
-                              //   onChanged: (bool? value) {
-                              //     setState(() {
-                              //       weekend[i] = value!;
-                              //       widget.hostModel.weekend = jsonEncode(weekend);
-                              //     });
-                              //   },
-                              // ),
-                            ],
+                                // CheckboxListTile(
+                                //   title: Text(
+                                //     DateFormat.E()
+                                //         .format(DateTime(2022, 1, i + 3)), // Get day of week
+                                //   ),
+                                //   value: weekend[i],
+                                //   onChanged: (bool? value) {
+                                //     setState(() {
+                                //       weekend[i] = value!;
+                                //       widget.hostModel.weekend = jsonEncode(weekend);
+                                //     });
+                                //   },
+                                // ),
+                              ],
+                            ),
+                            padding: 4,
                           ),
-                          padding: 4,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
 
                 Card(
                   elevation: 0,

@@ -73,6 +73,7 @@ class HostModel extends CretaModel {
   DateTime notice2Time = DateTime(1970, 1, 1); // read only
 
   String request = ''; // read only
+  DateTime requestedTime = DateTime(1970, 1, 1); // read only
   String response = ''; // read only
 
   DownloadResult downloadResult = DownloadResult.none; // read only
@@ -89,6 +90,8 @@ class HostModel extends CretaModel {
   double monthlyUseTime = 0.0; // read only
 
   HostModel(String pmid) : super(pmid: pmid, type: ExModelType.host, parent: '');
+  HostModel.dummy()
+      : super(pmid: HycopUtils.genMid(ExModelType.host), type: ExModelType.host, parent: '');
 
   HostModel.withName({
     super.type = ExModelType.host,
@@ -135,6 +138,7 @@ class HostModel extends CretaModel {
         notice1Time,
         notice2Time,
         request,
+        requestedTime,
         response,
         downloadResult,
         downloadMsg,
@@ -191,6 +195,7 @@ class HostModel extends CretaModel {
     notice2Time = srcHost.notice2Time;
 
     request = srcHost.request;
+    requestedTime = srcHost.requestedTime;
     response = srcHost.response;
     downloadResult = srcHost.downloadResult;
     downloadMsg = srcHost.downloadMsg;
@@ -247,6 +252,7 @@ class HostModel extends CretaModel {
     notice2Time = srcHost.notice2Time;
 
     request = srcHost.request;
+    requestedTime = srcHost.requestedTime;
     response = srcHost.response;
     downloadResult = srcHost.downloadResult;
     downloadMsg = srcHost.downloadMsg;
@@ -266,6 +272,47 @@ class HostModel extends CretaModel {
     isOperational = srcHost.isOperational;
     licenseTime = srcHost.licenseTime;
     initializeTime = srcHost.initializeTime;
+  }
+
+  void modifiedFrom(HostModel srcHost, String request) {
+    if (srcHost.hostName.isNotEmpty && srcHost.hostName != hostName) {
+      hostName = srcHost.hostName;
+    }
+    if (srcHost.location.isNotEmpty && srcHost.location != location) {
+      location = srcHost.location;
+    }
+    if (srcHost.description.isNotEmpty && srcHost.description != description) {
+      description = srcHost.description;
+    }
+
+    if (srcHost.weekend.isNotEmpty && srcHost.weekend != weekend) {
+      weekend = srcHost.weekend;
+    }
+    if (srcHost.holiday.isNotEmpty && srcHost.holiday != holiday) {
+      holiday = srcHost.holiday;
+    }
+    if (srcHost.powerOnTime.isNotEmpty && srcHost.powerOnTime != powerOnTime) {
+      powerOnTime = srcHost.powerOnTime;
+    }
+    if (srcHost.powerOffTime.isNotEmpty && srcHost.powerOffTime != powerOffTime) {
+      powerOffTime = srcHost.powerOffTime;
+    }
+    if (srcHost.requestedBook1.isNotEmpty && srcHost.requestedBook1 != requestedBook1) {
+      requestedBook1 = srcHost.requestedBook1;
+    }
+    if (srcHost.requestedBook2.isNotEmpty && srcHost.requestedBook2 != requestedBook2) {
+      requestedBook2 = srcHost.requestedBook2;
+    }
+    if (srcHost.requestedBook1Id.isNotEmpty && srcHost.requestedBook1Id != requestedBook1Id) {
+      requestedBook1Id = srcHost.requestedBook1Id;
+      requestedBook1Time = srcHost.requestedBook1Time;
+    }
+    if (srcHost.requestedBook2Id.isNotEmpty && srcHost.requestedBook2Id != requestedBook2Id) {
+      requestedBook2Id = srcHost.requestedBook2Id;
+      requestedBook2Time = srcHost.requestedBook2Time;
+    }
+    request = request;
+    requestedTime = DateTime.now();
   }
 
   DateTime _stringToDate(String? val) {
@@ -311,6 +358,7 @@ class HostModel extends CretaModel {
     notice2Time = _stringToDate(map["notice2Time"]);
 
     request = map["request"] ?? '';
+    requestedTime = _stringToDate(map["requestedTime"]);
     response = map["response"] ?? '';
     downloadResult = DownloadResult.fromInt(map["downloadResult"] ?? DownloadResult.none.index);
     downloadMsg = map["downloadMsg"] ?? '';
@@ -364,6 +412,7 @@ class HostModel extends CretaModel {
         "notice1Time": HycopUtils.dateTimeToDB(notice1Time),
         "notice2Time": HycopUtils.dateTimeToDB(notice2Time),
         "request": request,
+        "requestedTime": HycopUtils.dateTimeToDB(requestedTime),
         "response": response,
         "downloadResult": downloadResult.index,
         "downloadMsg": downloadMsg,

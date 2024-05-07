@@ -40,7 +40,13 @@
     "powerSetting": "電源設定",
     "currentBookSetting": "現在の放送設定",
 
-  
+    "remoteLogin": "リモートログイン",
+    "powerOffConfirm": "電源をオフにしますか？",
+    "powerOffRequested":    "電源オフ要求が完了しました。",
+
+    "rebootConfirm": "再起動しますか？",
+    "rebootRequested":    "再起動要求が完了しました。",
+
    "end"  : "End"
 
 

@@ -19,6 +19,7 @@ import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_font.dart';
 //import '../../design_system/menu/creta_popup_menu.dart';
 import 'package:creta_common/lang/creta_lang.dart';
+import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_device_lang.dart';
 import '../../model/host_model.dart';
 import '../studio/studio_constant.dart';
@@ -43,6 +44,7 @@ class HostGridItem extends StatefulWidget {
     required this.height,
     required this.selectedPage,
     required this.onEdit,
+   
   }) : super(key: itemKey);
 
   @override
@@ -50,7 +52,7 @@ class HostGridItem extends StatefulWidget {
 }
 
 class HostGridItemState extends State<HostGridItem> {
-  //late List<CretaMenuItem> _popupMenuList;
+  List<CretaMenuItem> _popupMenuList = [];
   bool mouseOver = false;
   int counter = 0;
   final Random random = Random();
@@ -70,18 +72,18 @@ class HostGridItemState extends State<HostGridItem> {
 
     defaultThumbnailNumber = random.nextInt(1000);
 
-    // _popupMenuList = [
-    //   CretaMenuItem(
-    //     caption: CretaLang['play']!,
-    //     onPressed: () {},
-    //   ),
-    //   CretaMenuItem(
-    //     caption: CretaLang['edit']!,
-    //     onPressed: () {
-    //       widget.onEdit.call(widget.hostModel);
-    //     },
-    //   ),
-    // ];
+    _popupMenuList = [
+      CretaMenuItem(
+        caption: CretaDeviceLang['remoteLogin']!,
+        onPressed: () {},
+      ),
+      CretaMenuItem(
+        caption: CretaLang['edit']!,
+        onPressed: () {
+          widget.onEdit.call(widget.hostModel);
+        },
+      ),
+    ];
   }
 
   @override
@@ -386,25 +388,25 @@ class HostGridItemState extends State<HostGridItem> {
                 Padding(
                   padding: const EdgeInsets.only(left: 4.0),
                   child: BTN.opacity_gray_i_s(
-                    icon: Icons.edit_outlined,
+                    icon: Icons.menu,
                     onPressed: () {
                       logger.finest('menu pressed');
-                      widget.onEdit.call(widget.hostModel);
-                      // setState(() {
-                      //   CretaPopupMenu.showMenu(
-                      //       context: context,
-                      //       globalKey: widget.itemKey,
-                      //       popupMenu: _popupMenuList,
-                      //       initFunc: () {
-                      //         dropDownButtonOpened = true;
-                      //       }).then((value) {
-                      //     logger.finest('팝업메뉴 닫기');
-                      //     setState(() {
-                      //       dropDownButtonOpened = false;
-                      //     });
-                      //   });
-                      //   dropDownButtonOpened = !dropDownButtonOpened;
-                      // });
+                      //widget.onEdit.call(widget.hostModel);
+                      setState(() {
+                        CretaPopupMenu.showMenu(
+                            context: context,
+                            globalKey: widget.itemKey,
+                            popupMenu: _popupMenuList,
+                            initFunc: () {
+                              dropDownButtonOpened = true;
+                            }).then((value) {
+                          logger.finest('팝업메뉴 닫기');
+                          setState(() {
+                            dropDownButtonOpened = false;
+                          });
+                        });
+                        dropDownButtonOpened = !dropDownButtonOpened;
+                      });
                     },
                     tooltip: CretaStudioLang['tooltipMenu']!,
                   ),

@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors, prefer_final_fields
 
 import 'dart:math';
+import 'package:flutter_web_data_table/web_data_table.dart';
 
 import 'package:creta_common/common/creta_snippet.dart';
 import 'package:creta_common/common/creta_vars.dart';
@@ -20,6 +21,7 @@ import 'package:hycop/hycop/account/account_manager.dart';
 import '../../data_io/host_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/component/creta_basic_layout_mixin.dart';
+import '../../design_system/component/creta_popup.dart';
 import '../../design_system/component/snippet.dart';
 import 'package:creta_common/common/creta_font.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
@@ -132,11 +134,22 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
 
   LanguageType oldLanguage = LanguageType.none;
 
+  //data table
+  List<String> _selectedRowKeys = [];
+  int _rowsPerPage = 10;
+  late String _sortColumnName;
+  late bool _sortAscending;
+  List<String>? _filterTexts;
+
   @override
   void initState() {
     logger.fine('initState start');
 
     super.initState();
+
+    // data table
+    _sortColumnName = 'hostName';
+    _sortAscending = false;
 
     //_controller = ScrollController();
     //_controller.addListener(_scrollListener);
@@ -409,11 +422,11 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
 
     return Consumer<HostManager>(builder: (context, hostManager, child) {
       logger.fine('Consumer  ${hostManager.getLength() + 1}');
-      return _gridViewer(hostManager);
+      return _hostList(hostManager);
     });
   }
 
-  Widget _gridViewer(HostManager hostManager) {
+  Widget _hostList(HostManager hostManager) {
     double itemWidth = -1;
     double itemHeight = -1;
 
@@ -441,7 +454,179 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       }
     }
 
-    Widget listView = Scrollbar(
+    Widget dataTable = WebDataTable(
+      header: Text('Sample Data'),
+      actions: [
+        if (_selectedRowKeys.isNotEmpty)
+          SizedBox(
+            height: 50,
+            width: 100,
+            child: ElevatedButton(
+              child: Text(
+                'Delete',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              onPressed: () {
+                print('Delete!');
+                setState(() {
+                  _selectedRowKeys.clear();
+                });
+              },
+            ),
+          ),
+        SizedBox(
+          width: 300,
+          child: TextField(
+            decoration: InputDecoration(
+              prefixIcon: Icon(Icons.search),
+              hintText: 'increment search...',
+              focusedBorder: const OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color(0xFFCCCCCC),
+                ),
+              ),
+              border: const OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color(0xFFCCCCCC),
+                ),
+              ),
+            ),
+            onChanged: (text) {
+              _filterTexts = text.trim().split(' ');
+              //_willSearch = false;
+              //_latestTick = _timer?.tick;
+            },
+          ),
+        ),
+      ],
+      source: WebDataTableSource(
+        sortColumnName: _sortColumnName,
+        sortAscending: _sortAscending,
+        filterTexts: _filterTexts,
+        columns: [
+          WebDataColumn(
+            name: 'hostId',
+            label: const Text('ID'),
+            dataCell: (value) => DataCell(Text('$value')),
+          ),
+          WebDataColumn(
+            name: 'hostName',
+            label: const Text('hostName'),
+            dataCell: (value) => DataCell(Text('$value')),
+          ),
+          WebDataColumn(
+            name: 'creator',
+            label: const Text('creator'),
+            dataCell: (value) => DataCell(Text('$value')),
+          ),
+          WebDataColumn(
+            name: 'location',
+            label: const Text('location'),
+            dataCell: (value) => DataCell(Text('$value')),
+          ),
+          WebDataColumn(
+            name: 'description',
+            label: const Text('description'),
+            dataCell: (value) => DataCell(Text('$value')),
+          ),
+          WebDataColumn(
+            name: 'request',
+            label: const Text('request'),
+            dataCell: (value) => DataCell(Text('$value')),
+            sortable: false,
+          ),
+          WebDataColumn(
+              name: 'updateTime',
+              label: const Text('updateTime'),
+              dataCell: (value) {
+                if (value is DateTime) {
+                  final text =
+                      '${value.year}/${value.month}/${value.day} ${value.hour}:${value.minute}:${value.second}';
+                  return DataCell(Text(text));
+                }
+                return DataCell(Text(value.toString()));
+              },
+              filterText: (value) {
+                if (value is DateTime) {
+                  return '${value.year}/${value.month}/${value.day} ${value.hour}:${value.minute}:${value.second}';
+                }
+                return value.toString();
+              }),
+        ],
+        //rows: SampleData().data,
+        rows: hostManager.modelList.map((e) => e.toMap()).toList(),
+        selectedRowKeys: _selectedRowKeys,
+        onTapRow: (rows, index) {
+          print('onTapRow(): index = $index, row = ${rows[index]}');
+        },
+        onSelectRows: (keys) {
+          print('onSelectRows(): count = ${keys.length} keys = $keys');
+          setState(() {
+            _selectedRowKeys = keys;
+          });
+        },
+        primaryKeyName: 'id',
+      ),
+      horizontalMargin: 100,
+      onPageChanged: (offset) {
+        print('onPageChanged(): offset = $offset');
+      },
+      onSort: (columnName, ascending) {
+        print('onSort(): columnName = $columnName, ascending = $ascending');
+        setState(() {
+          _sortColumnName = columnName;
+          _sortAscending = ascending;
+        });
+      },
+      onRowsPerPageChanged: (rowsPerPage) {
+        print('onRowsPerPageChanged(): rowsPerPage = $rowsPerPage');
+        setState(() {
+          if (rowsPerPage != null) {
+            _rowsPerPage = rowsPerPage;
+          }
+        });
+      },
+      rowsPerPage: _rowsPerPage,
+    );
+
+    Widget gridView = GridView.builder(
+      controller: _controller,
+      //padding: LayoutConst.cretaPadding,
+      itemCount: hostManager.getLength() + 2, //item 개수
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
+        childAspectRatio:
+            CretaConst.bookThumbSize.width / CretaConst.bookThumbSize.height, // 가로÷세로 비율
+        mainAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수평 Padding
+        crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
+      ),
+      itemBuilder: (BuildContext context, int index) {
+        //if (isValidIndex(index)) {
+        return (itemWidth >= 0 && itemHeight >= 0)
+            ? hostGridItem(index, itemWidth, itemHeight, hostManager)
+            : LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  itemWidth = constraints.maxWidth;
+                  itemHeight = constraints.maxHeight;
+                  // double ratio = itemWidth / 267; //CretaConst.bookThumbSize.width;
+                  // // 너무 커지는 것을 막기위해.
+                  // if (ratio > 1) {
+                  //   itemWidth = 267; //CretaConst.bookThumbSize.width;
+                  //   itemHeight = itemHeight / ratio;
+                  // }
+
+                  //print('first data, $itemWidth, $itemHeight');
+                  return hostGridItem(index, itemWidth, itemHeight, hostManager);
+                },
+              );
+        //}
+        //return SizedBox.shrink();
+      },
+    );
+
+    return Scrollbar(
       thumbVisibility: true,
       controller: _controller,
       child: Padding(
@@ -450,68 +635,11 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _toolbar(),
-            Expanded(
-              child: GridView.builder(
-                controller: _controller,
-                //padding: LayoutConst.cretaPadding,
-                itemCount: hostManager.getLength() + 2, //item 개수
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
-                  childAspectRatio:
-                      CretaConst.bookThumbSize.width / CretaConst.bookThumbSize.height, // 가로÷세로 비율
-                  mainAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수평 Padding
-                  crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
-                ),
-                itemBuilder: (BuildContext context, int index) {
-                  //if (isValidIndex(index)) {
-                  return (itemWidth >= 0 && itemHeight >= 0)
-                      ? hostGridItem(index, itemWidth, itemHeight, hostManager)
-                      : LayoutBuilder(
-                          builder: (BuildContext context, BoxConstraints constraints) {
-                            itemWidth = constraints.maxWidth;
-                            itemHeight = constraints.maxHeight;
-                            // double ratio = itemWidth / 267; //CretaConst.bookThumbSize.width;
-                            // // 너무 커지는 것을 막기위해.
-                            // if (ratio > 1) {
-                            //   itemWidth = 267; //CretaConst.bookThumbSize.width;
-                            //   itemHeight = itemHeight / ratio;
-                            // }
-
-                            //print('first data, $itemWidth, $itemHeight');
-                            return hostGridItem(index, itemWidth, itemHeight, hostManager);
-                          },
-                        );
-                  //}
-                  //return SizedBox.shrink();
-                },
-              ),
-            ),
+            Expanded(child: _isGridView ? gridView : dataTable),
           ],
         ),
       ),
     );
-
-    // Widget detailView = selectedHost != null
-    //     ? Padding(
-    //         padding: LayoutConst.cretaPadding,
-    //         child: Center(
-    //             child: DeviceDetailPage(
-    //           hostModel: selectedHost!,
-    //           onExit: () {
-    //             setState(() {
-    //               _openDetail = false;
-    //               selectedHost = null;
-    //             });
-    //           },
-    //         )),
-    //       )
-    //     : SizedBox.shrink();
-
-    // if (selectedHost != null && _openDetail) {
-    //   return detailView;
-    // }
-
-    return listView;
   }
 
   bool isValidIndex(int index, HostManager hostManager) {
@@ -807,42 +935,83 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
           width: 106 + 31,
           text: CretaDeviceLang['editHost']!,
           icon: Icons.edit_outlined,
-          onPressed: () {
-            // Handle menu button press
+          onPressed: () async {
+            await _showDetailView(isMultiSelected: true);
           },
         ),
         BTN.fill_gray_it_l(
           width: 106 + 31,
           text: CretaDeviceLang['setBook']!,
           icon: Icons.play_circle_outline,
-          onPressed: () {
-            // Handle menu button press
+          onPressed: () async {
+            await _showDetailView(isMultiSelected: true, isChangeBook: true);
           },
         ),
         BTN.fill_gray_it_l(
-          width: 106 + 31,
-          text: CretaDeviceLang['powerOff']!,
-          icon: Icons.power_off_outlined,
-          onPressed: () {
-            // Handle menu button press
-          },
-        ),
+            width: 106 + 31,
+            text: CretaDeviceLang['powerOff']!,
+            icon: Icons.power_off_outlined,
+            onPressed: () {
+              _showConfirmDialog(
+                  title: "${CretaDeviceLang['powerOff']!}      ",
+                  question: CretaDeviceLang['powerOffConfirm']!,
+                  snackBarMessage: CretaDeviceLang['powerOffRequested']!,
+                  onYes: (HostModel model) {
+                    model.request = "power off";
+                    model.requestedTime = DateTime.now();
+                    hostManagerHolder?.setToDB(model);
+                  });
+              // CretaPopup.yesNoDialog(
+              //   context: context,
+              //   title: "${CretaDeviceLang['powerOff']!}      ",
+              //   icon: Icons.file_download_outlined,
+              //   question: CretaDeviceLang['powerOffConfirm']!,
+              //   noBtText: CretaVars.isDeveloper
+              //       ? CretaStudioLang['noBtDnTextDeloper']!
+              //       : CretaStudioLang['noBtDnText']!,
+              //   yesBtText: CretaStudioLang['yesBtDnText']!,
+              //   yesIsDefault: true,
+              //   onNo: () {},
+              //   onYes: () {
+              //     for (int i = 0; i < selectNotifierHolder._selectedItems.length; i++) {
+              //       if (selectNotifierHolder._selectedItems[i] == true) {
+              //         HostModel? model = hostManagerHolder!.findByIndex(i) as HostModel?;
+              //         if (model != null) {
+              //           model.request = "power off";
+              //           model.requestedTime = DateTime.now();
+              //           hostManagerHolder?.setToDB(model);
+              //         }
+              //       }
+              //     }
+              //     showSnackBar(context, CretaDeviceLang['powerOffRequested']!,
+              //         duration: StudioConst.snackBarDuration);
+              //   },
+              // );
+            }),
         BTN.fill_gray_it_l(
           width: 106 + 31,
           text: CretaDeviceLang['reboot']!,
           icon: Icons.power_outlined,
           onPressed: () {
-            // Handle menu button press
+            _showConfirmDialog(
+                title: "${CretaDeviceLang['reboot']!}      ",
+                question: CretaDeviceLang['rebootConfirm']!,
+                snackBarMessage: CretaDeviceLang['rebootRequested']!,
+                onYes: (HostModel model) {
+                  model.request = "reboot";
+                  model.requestedTime = DateTime.now();
+                  hostManagerHolder?.setToDB(model);
+                });
           },
         ),
-        BTN.fill_gray_it_l(
-          width: 106 + 31,
-          text: CretaDeviceLang['setPower']!,
-          icon: Icons.power_settings_new_outlined,
-          onPressed: () {
-            // Handle menu button press
-          },
-        ),
+        // BTN.fill_gray_it_l(
+        //   width: 106 + 31,
+        //   text: CretaDeviceLang['setPower']!,
+        //   icon: Icons.power_settings_new_outlined,
+        //   onPressed: () {
+        //     // Handle menu button press
+        //   },
+        // ),
         BTN.fill_gray_it_l(
           width: 106 + 31,
           text: CretaDeviceLang['notice']!,
@@ -897,23 +1066,33 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
     });
   }
 
-  Future<void> _showDetailView() async {
+  Future<void> _showDetailView({bool isMultiSelected = false, bool isChangeBook = false}) async {
     var screenSize = MediaQuery.of(context).size;
 
-    double width = screenSize.width * 0.5;
-    double height = screenSize.height * 0.7;
+    double width = screenSize.width * (isMultiSelected ? 0.25 : 0.5);
+    double height = screenSize.height * (isChangeBook ? 0.25 : 0.8);
     final formKey = GlobalKey<FormState>();
 
     //print('selectHost.mid=${selectedHost!.mid}');
-    HostModel oldOne = HostModel(selectedHost!.mid);
-    oldOne.copyFrom(selectedHost!, newMid: selectedHost!.mid);
-    //print('oldOne.mid=${oldOne.mid}');
+    HostModel? oldOne;
+    HostModel newOne = selectedHost ?? HostModel.dummy();
+
+    if (isMultiSelected == false) {
+      oldOne = HostModel(selectedHost!.mid);
+      oldOne.copyFrom(newOne, newMid: newOne.mid);
+      //print('oldOne.mid=${oldOne.mid}');
+    }
+
+    String title = '${CretaDeviceLang['deviceDetail']!} ${newOne.hostName}';
+    if (isChangeBook) {
+      title = CretaDeviceLang['selectBook']!;
+    }
 
     await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('${CretaDeviceLang['deviceDetail']!} ${selectedHost!.hostName}'),
+          title: Text(title),
           content: Container(
             width: width,
             height: height,
@@ -921,29 +1100,43 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
             color: Colors.white,
             child: DeviceDetailPage(
               formKey: formKey,
-              hostModel: selectedHost!,
-              
+              hostModel: newOne,
+              isMultiSelected: isMultiSelected,
+              isChangeBook: isChangeBook,
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                if (formKey.currentState!.validate()) {
-                  //print('formKey.currentState!.validate()====================');
-                  formKey.currentState?.save();
-                  hostManagerHolder?.setToDB(selectedHost!);
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
+                child: Text('OK'),
+                onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    //print('formKey.currentState!.validate()====================');
+                    formKey.currentState?.save();
+                    if (isMultiSelected == false) {
+                      hostManagerHolder?.setToDB(newOne);
+                    } else {
+                      for (int i = 0; i < selectNotifierHolder._selectedItems.length; i++) {
+                        if (selectNotifierHolder._selectedItems[i] == true) {
+                          HostModel? model = hostManagerHolder!.findByIndex(i) as HostModel?;
+                          if (model != null) {
+                            model.modifiedFrom(newOne, "set");
+                            hostManagerHolder?.setToDB(model);
+                          }
+                        }
+                      }
+                      Navigator.of(context).pop();
+                    }
+                  }
+                }),
             TextButton(
               child: Text('Cancel'),
               onPressed: () {
                 //setState(() {
                 //_openDetail = false;
-                selectedHost?.copyFrom(oldOne, newMid: selectedHost!.mid);
-                //print('selectHost.mid=${selectedHost!.mid}');
+                if (isMultiSelected == false) {
+                  selectedHost?.copyFrom(oldOne!, newMid: newOne.mid);
+                  //print('selectHost.mid=${newOne.mid}');
+                }
                 //});
                 Navigator.of(context).pop();
               },
@@ -953,5 +1146,42 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       },
     );
     setState(() {});
+  }
+
+  void _showConfirmDialog({
+    required String title,
+    required String question,
+    required void Function(HostModel model) onYes,
+    String? snackBarMessage,
+  }) {
+    CretaPopup.yesNoDialog(
+      context: context,
+      title: title,
+      icon: Icons.file_download_outlined,
+      question: question,
+      noBtText: CretaVars.isDeveloper
+          ? CretaStudioLang['noBtDnTextDeloper']!
+          : CretaStudioLang['noBtDnText']!,
+      yesBtText: CretaStudioLang['yesBtDnText']!,
+      yesIsDefault: true,
+      onNo: () {},
+      onYes: () {
+        for (int i = 0; i < selectNotifierHolder._selectedItems.length; i++) {
+          if (selectNotifierHolder._selectedItems[i] == true) {
+            HostModel? model = hostManagerHolder!.findByIndex(i) as HostModel?;
+            if (model != null) {
+              onYes(model);
+            }
+          }
+        }
+        if (snackBarMessage != null) {
+          showSnackBar(
+            context,
+            snackBarMessage,
+            duration: StudioConst.snackBarDuration,
+          );
+        }
+      },
+    );
   }
 }
