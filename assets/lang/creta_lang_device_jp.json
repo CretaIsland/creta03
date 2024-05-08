@@ -47,6 +47,12 @@
     "rebootConfirm": "再起動しますか？",
     "rebootRequested":    "再起動要求が完了しました。",
 
+    "delete" : "削除",
+    "deleteConfirm" : "削除しますか？",
+    "deleteRequested" : "削除要求が完了しました。",
+
+
+
    "end"  : "End"
 
 

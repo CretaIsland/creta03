@@ -47,7 +47,11 @@
     "rebootConfirm": "Are you sure you want to reboot the device?",
     "rebootRequested":    "The device is being rebooted.",
 
-    
+    "delete" : "Delete",
+    "deleteConfirm" : "Are you sure you want to delete the device?",
+    "deleteRequested" : "The device is being deleted.",
+
+
   
      "end"  : "End"
 

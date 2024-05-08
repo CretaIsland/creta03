@@ -46,6 +46,10 @@
     
     "rebootConfirm": "선택된 장비를 정말로 reboot 하시겠습니까?",
     "rebootRequested":    "reboot 요청이 완료되었습니다.",
+
+    "delete" : "삭제",
+    "deleteConfirm" : "정말로 삭제하시겠습니까 ?",
+    "deleteRequested" : "삭제되었습니다.",
     
     
     "END" : ""

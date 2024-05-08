@@ -34,6 +34,7 @@ class HostGridItem extends StatefulWidget {
   final GlobalKey<HostGridItemState> itemKey;
   final DeviceSelectedPage selectedPage;
   final void Function(HostModel? hostModel) onEdit;
+  final void Function(HostModel hostModel) onInsert;
 
   const HostGridItem({
     required this.itemKey,
@@ -44,7 +45,7 @@ class HostGridItem extends StatefulWidget {
     required this.height,
     required this.selectedPage,
     required this.onEdit,
-   
+    required this.onInsert,
   }) : super(key: itemKey);
 
   @override
@@ -62,7 +63,7 @@ class HostGridItemState extends State<HostGridItem> {
   double aHeight = 0;
   final double borderWidth = 6.0;
 
-  void notify(int index) {
+  void notify(String mid) {
     setState(() {});
   }
 
@@ -197,7 +198,8 @@ class HostGridItemState extends State<HostGridItem> {
               children: [
                 _thumnailArea(),
                 _controllArea(),
-                if (selectNotifierHolder.isSelected(widget.index))
+                if (widget.hostModel != null &&
+                    selectNotifierHolder.isSelected(widget.hostModel!.mid))
                   Positioned(
                     top: 4,
                     left: 4,
@@ -642,6 +644,7 @@ class HostGridItemState extends State<HostGridItem> {
     //StudioVariables.selectedhostMid = host.mid;
     // ignore: use_build_context_synchronously
     //Routemaster.of(context).push('${AppRoutes.deviceDetailPage}?${host.mid}');
+    widget.onInsert.call(host);
     widget.hostManager.notify();
   }
 

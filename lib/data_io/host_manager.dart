@@ -32,6 +32,13 @@ class HostManager extends CretaManager {
 
   String prefix() => CretaManager.modelPrefix(ExModelType.host);
 
+  int getIndexFromModelList(String mid) {
+    for (int i = 0; i < modelList.length; i++) {
+      if (modelList[i].mid == mid) return i;
+    }
+    return -1;
+  }
+
   @override
   Future<List<AbsExModel>> myDataOnly(String userId, {int? limit}) async {
     logger.finest('myDataOnly');
@@ -44,7 +51,10 @@ class HostManager extends CretaManager {
     return retval;
   }
 
-  HostModel createSample(String hostId, String hostName, ) {
+  HostModel createSample(
+    String hostId,
+    String hostName,
+  ) {
     final Random random = Random();
     int randomNumber = random.nextInt(100);
     String url = 'https://picsum.photos/200/?random=$randomNumber';
