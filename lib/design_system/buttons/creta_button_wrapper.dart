@@ -324,6 +324,9 @@ class BTN {
     CretaButtonColor buttonColor = CretaButtonColor.white,
     Color? iconColor,
     String? tooltip,
+    Color? tooltipFg,
+    Color? tooltipBg,
+    double iconSize = 20,
   }) {
     return CretaButton(
       key: key,
@@ -333,11 +336,13 @@ class BTN {
       buttonColor: buttonColor,
       onPressed: onPressed,
       tooltip: tooltip,
+      tooltipFg: tooltipFg,
+      tooltipBg: tooltipBg,
       child: CircleAvatar(
         backgroundColor: Colors.transparent,
         child: Icon(
           icon,
-          size: 20,
+          size: iconSize,
           color: iconColor ?? CretaColor.text[700]!,
         ),
       ),

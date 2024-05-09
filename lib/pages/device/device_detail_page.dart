@@ -92,7 +92,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                   _nvRow(
                       'Initialize Time', HycopUtils.dateTimeToDB(widget.hostModel.initializeTime)),
                   _nvRow(
-                      'Last Connected Time', HycopUtils.dateTimeToDB(widget.hostModel.updateTime)),
+                      'Last Connected Time', HycopUtils.dateTimeToDB(widget.hostModel.lastUpdateTime)),
                   _nvRow('Last Boot Time', HycopUtils.dateTimeToDB(widget.hostModel.bootTime)),
                   _nvRow(
                       'Last Shutdown Time', HycopUtils.dateTimeToDB(widget.hostModel.shutdownTime)),

@@ -34,7 +34,7 @@ class HostGridItem extends StatefulWidget {
   final GlobalKey<HostGridItemState> itemKey;
   final DeviceSelectedPage selectedPage;
   final void Function(HostModel? hostModel) onEdit;
-  final void Function(HostModel hostModel) onInsert;
+  final void Function() onInsert;
 
   const HostGridItem({
     required this.itemKey,
@@ -176,7 +176,7 @@ class HostGridItemState extends State<HostGridItem> {
       caption: CretaDeviceLang['newHost']!,
       captionStyle: CretaFont.bodyMedium,
       radius: 20.0,
-      onPressed: insertItem,
+      onPressed: widget.onInsert,
       icon: const Icon(
         Icons.add_outlined,
         size: 96,
@@ -545,108 +545,108 @@ class HostGridItemState extends State<HostGridItem> {
     );
   }
 
-  void insertItem() async {
-    // int randomNumber = random.nextInt(1000);
-    // int modelIdx = randomNumber % 10;
-    // HostModel host = HostModel.withName(
-    //   '${CretaStudioLang['newhost']!}_$randomNumber',
-    //   creator: AccountManager.currentLoginUser.email,
-    //   creatorName: AccountManager.currentLoginUser.name,
-    //   imageUrl: 'https://picsum.photos/200/?random=$modelIdx',
-    //   viewCount: randomNumber,
-    //   likeCount: 1000 - randomNumber,
-    //   hostTypeVal: hostType.fromInt(randomNumber % 4 + 1),
-    //   ownerList: const [],
-    //   readerList: const [],
-    //   writerList: const [],
-    //   desc: SampleData.sampleDesc[randomNumber % SampleData.sampleDesc.length],
-    // );
+  // void insertItem() async {
+  //   // int randomNumber = random.nextInt(1000);
+  //   // int modelIdx = randomNumber % 10;
+  //   // HostModel host = HostModel.withName(
+  //   //   '${CretaStudioLang['newhost']!}_$randomNumber',
+  //   //   creator: AccountManager.currentLoginUser.email,
+  //   //   creatorName: AccountManager.currentLoginUser.name,
+  //   //   imageUrl: 'https://picsum.photos/200/?random=$modelIdx',
+  //   //   viewCount: randomNumber,
+  //   //   likeCount: 1000 - randomNumber,
+  //   //   hostTypeVal: hostType.fromInt(randomNumber % 4 + 1),
+  //   //   ownerList: const [],
+  //   //   readerList: const [],
+  //   //   writerList: const [],
+  //   //   desc: SampleData.sampleDesc[randomNumber % SampleData.sampleDesc.length],
+  //   // );
 
-    // host.hashTag.set('#${randomNumber}tag');
+  //   // host.hashTag.set('#${randomNumber}tag');
 
-    // await widget.hostManager.createToDB(host);
-    // widget.hostManager.insert(host);
+  //   // await widget.hostManager.createToDB(host);
+  //   // widget.hostManager.insert(host);
 
-    String hostId = '';
-    String hostName = '';
-    final formKey = GlobalKey<FormState>();
+  //   String hostId = '';
+  //   String hostName = '';
+  //   final formKey = GlobalKey<FormState>();
 
-    await showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(CretaDeviceLang['inputHostInfo']!),
-          content: SizedBox(
-            height: 200,
-            child: Form(
-              key: formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      onChanged: (value) => hostId = value,
-                      decoration: InputDecoration(hintText: CretaDeviceLang['deviceId']!),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return CretaDeviceLang['shouldInputDeviceId']!;
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      onChanged: (value) => hostName = value,
-                      decoration: InputDecoration(hintText: CretaDeviceLang['deviceName']!),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return CretaDeviceLang['shouldInputDeviceName']!;
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                if (formKey.currentState!.validate()) {
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                hostId = '';
-                hostName = '';
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+  //   await showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return AlertDialog(
+  //         title: Text(CretaDeviceLang['inputHostInfo']!),
+  //         content: SizedBox(
+  //           height: 200,
+  //           child: Form(
+  //             key: formKey,
+  //             child: Column(
+  //               mainAxisAlignment: MainAxisAlignment.center,
+  //               children: <Widget>[
+  //                 Padding(
+  //                   padding: const EdgeInsets.all(8.0),
+  //                   child: TextFormField(
+  //                     onChanged: (value) => hostId = value,
+  //                     decoration: InputDecoration(hintText: CretaDeviceLang['deviceId']!),
+  //                     validator: (value) {
+  //                       if (value == null || value.isEmpty) {
+  //                         return CretaDeviceLang['shouldInputDeviceId']!;
+  //                       }
+  //                       return null;
+  //                     },
+  //                   ),
+  //                 ),
+  //                 Padding(
+  //                   padding: const EdgeInsets.all(8.0),
+  //                   child: TextFormField(
+  //                     onChanged: (value) => hostName = value,
+  //                     decoration: InputDecoration(hintText: CretaDeviceLang['deviceName']!),
+  //                     validator: (value) {
+  //                       if (value == null || value.isEmpty) {
+  //                         return CretaDeviceLang['shouldInputDeviceName']!;
+  //                       }
+  //                       return null;
+  //                     },
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //         actions: <Widget>[
+  //           TextButton(
+  //             child: Text('OK'),
+  //             onPressed: () {
+  //               if (formKey.currentState!.validate()) {
+  //                 Navigator.of(context).pop();
+  //               }
+  //             },
+  //           ),
+  //           TextButton(
+  //             child: Text('Cancel'),
+  //             onPressed: () {
+  //               hostId = '';
+  //               hostName = '';
+  //               Navigator.of(context).pop();
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
 
-    if (hostId.isEmpty || hostName.isEmpty) {
-      return;
-    }
+  //   if (hostId.isEmpty || hostName.isEmpty) {
+  //     return;
+  //   }
 
-    HostModel host = widget.hostManager.createSample(hostId, hostName);
-    await widget.hostManager.createNewHost(host);
-    //StudioVariables.selectedhostMid = host.mid;
-    // ignore: use_build_context_synchronously
-    //Routemaster.of(context).push('${AppRoutes.deviceDetailPage}?${host.mid}');
-    widget.onInsert.call(host);
-    widget.hostManager.notify();
-  }
+  //   HostModel host = widget.hostManager.createSample(hostId, hostName);
+  //   await widget.hostManager.createNewHost(host);
+  //   //StudioVariables.selectedhostMid = host.mid;
+  //   // ignore: use_build_context_synchronously
+  //   //Routemaster.of(context).push('${AppRoutes.deviceDetailPage}?${host.mid}');
+  //   widget.onInsert.call(host);
+  //   widget.hostManager.notify();
+  // }
 
   Future<HostModel?> _removeItem(HostModel? removedItem) async {
     if (removedItem != null) {

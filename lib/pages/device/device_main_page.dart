@@ -3,6 +3,7 @@
 import 'dart:math';
 //import 'package:flutter_web_data_table/web_data_table.dart';
 
+import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_snippet.dart';
 import 'package:creta_common/common/creta_vars.dart';
 import 'package:creta_user_io/data_io/creta_manager.dart';
@@ -106,7 +107,14 @@ class DeviceMainPage extends StatefulWidget {
   final VoidCallback? openDrawer;
   final DeviceSelectedPage selectedPage;
 
-  const DeviceMainPage({Key? key, required this.selectedPage, this.openDrawer}) : super(key: key);
+  //final List<String>? filterTexts;
+
+  const DeviceMainPage({
+    Key? key,
+    required this.selectedPage,
+    this.openDrawer,
+    //this.filterTexts,
+  }) : super(key: key);
 
   @override
   State<DeviceMainPage> createState() => _DeviceMainPageState();
@@ -147,12 +155,23 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
   late bool _sortAscending;
   List<String>? _filterTexts;
 
+  // @override
+  // void didUpdateWidget(covariant DeviceMainPage oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
+  //   if (oldWidget.filterTexts != widget.filterTexts && widget.filterTexts != null) {
+  //     _filterTexts = [...widget.filterTexts!];
+  //   }
+  // }
+
   @override
   void initState() {
     logger.fine('initState start');
 
     super.initState();
 
+    // if (widget.filterTexts != null) {
+    //   _filterTexts = [...widget.filterTexts!];
+    // }
     // data table
     _sortColumnName = 'hostName';
     _sortAscending = false;
@@ -172,6 +191,12 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
     hostManagerHolder!.clearAll();
 
     //print('--------------->>> widget.selectedPage = ${widget.selectedPage}');
+    _initData();
+
+    isLangInit = initLang();
+  }
+
+  void _initData() {
     if (widget.selectedPage == DeviceSelectedPage.myPage) {
       hostManagerHolder!
           .myDataOnly(
@@ -183,8 +208,6 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         }
       });
     }
-
-    isLangInit = initLang();
   }
 
   static Future<bool>? isLangInit;
@@ -283,6 +306,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
 
   @override
   Widget build(BuildContext context) {
+    displaySize = MediaQuery.of(context).size;
+    //print("displySize = ${displaySize.width}===================");
     //double windowWidth = MediaQuery.of(context).size.width;
     //logger.fine('`````````````````````````window width = $windowWidth');
     return MultiProvider(
@@ -360,7 +385,14 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
                       ],
                       //mainWidget: sizeListener.isResizing() ? Container() : _bookGrid(context))),
                       onSearch: (value) {
-                        hostManagerHolder!.onSearch(value, () => setState(() {}));
+                        if (_isGridView) {
+                          hostManagerHolder!.onSearch(value, () => setState(() {}));
+                        } else {
+                          //print('onSearch : value = $value');
+                          setState(() {
+                            _filterTexts = value.trim().split(' ');
+                          });
+                        }
                       },
                       mainWidget: _bookGrid, //_bookGrid(context),
                       onFoldButtonPressed: () {
@@ -466,10 +498,241 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         itemCount: 1,
         itemBuilder: (BuildContext context, int index) {
           return WebDataTable(
-            maxViewWidth: 2000.0,
-            horizontalMargin: 12,
-            columnSpacing: 6,
+            maxViewWidth: 1600.0,
+            horizontalMargin: 6,
+            columnSpacing: 10,
             controller: _horizontalController,
+
+            source: WebDataTableSource(
+              sortColumnName: _sortColumnName,
+              sortAscending: _sortAscending,
+              filterTexts: _filterTexts,
+              primaryKeyName: 'mid',
+              conditionalRowColor: Colors.yellow,
+              conditionalRowColorIndicator: 'isConnected',
+              rows: hostManager.modelList.map((e) => e.toMap()).toList(),
+              //rows: hostManager.getOrdered().map((e) => e.toMap()).toList(),
+              selectedRowKeys: _selectedRowKeys,
+              onTapRow: (rows, index) {
+                Map<String, dynamic> row = rows[index];
+                String mid = row['mid'] ?? '';
+                //print('model=$mid, selectNotifierHolder.length = ${selectNotifierHolder.length}');
+                selectNotifierHolder.toggleSelect(mid);
+                //print('onTapRows');
+              },
+              onSelectRows: (keys) {
+                //print('onSelectRows(): count = ${keys.length} keys = $keys}');
+
+                for (var mid in keys) {
+                  selectNotifierHolder.selected(mid, true);
+                }
+                //print(
+                //    '3. selectNotifierHolder.hasSelected() = ${selectNotifierHolder.hasSelected()}');
+
+                setState(() {
+                  _selectedRowKeys = keys;
+                });
+              },
+              columns: [
+                WebDataColumn(
+                  name: 'isVNC',
+                  label: const Text('vnc  '),
+                  dataCell: (value, key) => DataCell(
+                    Icon(
+                      value ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                      color: value ? Colors.green : Colors.grey,
+                    ),
+                    onTap: () async {
+                      HostModel? itemModel = hostManagerHolder!.getModel(key) as HostModel?;
+                      if (itemModel != null) {
+                        showSnackBar(context, 'VNC is not yet supported ${itemModel.mid}');
+                      }
+                    },
+                  ),
+                ),
+                WebDataColumn(
+                  name: 'isUsed',
+                  label: const Text('usage'),
+                  dataCell: (value, key) => DataCell(
+                    Icon(
+                      value ? Icons.check_circle_outline : Icons.cancel,
+                      color: value ? Colors.green : Colors.grey,
+                    ),
+                  ),
+                ),
+                // WebDataColumn(
+                //   name: 'isUsed',
+                //   label: const Text('usage init license fault'),
+                //   dataCell: (value, key) {
+                //     bool init = false;
+                //     bool license = false;
+                //     bool oper = false;
+
+                //     HostModel? itemModel = hostManagerHolder!.getModel(key) as HostModel?;
+                //     if (itemModel != null) {
+                //       init = itemModel.isInitialized;
+                //       license = itemModel.isValidLicense;
+                //       oper = itemModel.isOperational;
+                //     }
+                //     return DataCell(
+                //       Row(
+                //         children: [
+                //           Icon(
+                //             value ? Icons.check_circle_outline : Icons.cancel,
+                //             color: value ? Colors.green : Colors.grey,
+                //           ),
+                //           SizedBox(width: 10),
+                //           Icon(
+                //             init ? Icons.check_circle_outline : Icons.cancel,
+                //             color: init ? Colors.green : Colors.grey,
+                //           ),
+                //           SizedBox(width: 10),
+                //           Icon(
+                //             license ? Icons.check_circle_outline : Icons.cancel,
+                //             color: license ? Colors.green : Colors.grey,
+                //           ),
+                //           SizedBox(width: 10),
+                //           Icon(
+                //             oper ? Icons.check_circle_outline : Icons.warning,
+                //             color: oper ? Colors.green : Colors.red,
+                //           ),
+                //         ],
+                //       ),
+                //     );
+                //   },
+                // ),
+                // WebDataColumn(
+                //   name: 'isInitialized',
+                //   label: const Text('init'),
+                //   dataCell: (value, key) => DataCell(
+                //     Icon(
+                //       value ? Icons.check_circle_outline : Icons.cancel,
+                //       color: value ? Colors.green : Colors.grey,
+                //     ),
+                //   ),
+                // ),
+                // WebDataColumn(
+                //   name: 'isValidLicense',
+                //   label: const Text('license'),
+                //   dataCell: (value, key) => DataCell(
+                //     Icon(
+                //       value ? Icons.check_circle_outline : Icons.cancel,
+                //       color: value ? Colors.green : Colors.grey,
+                //     ),
+                //   ),
+                // ),
+                WebDataColumn(
+                  name: 'isOperational',
+                  label: const Text('fault '),
+                  dataCell: (value, key) => DataCell(
+                    Icon(
+                      value ? Icons.check_circle_outline : Icons.warning,
+                      color: value ? Colors.green : Colors.red,
+                    ),
+                  ),
+                ),
+                WebDataColumn(
+                  name: 'lastUpdateTime',
+                  label: const Text('lastUpdateTime'),
+                  dataCell: _dateToDataCell,
+                  filterText: _dynamicDateToString,
+                ),
+                WebDataColumn(
+                  name: 'hostId',
+                  label: const Text('ID'),
+                  dataCell: (value, key) => DataCell(
+                    Text(
+                      '$value',
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        color: CretaColor.primary,
+                      ),
+                    ),
+                    onTap: () async {
+                      HostModel? itemModel = hostManagerHolder!.getModelByHostId(value);
+                      if (itemModel != null) {
+                        setState(() {
+                          //_openDetail = true;
+                          selectedHost = itemModel;
+                        });
+                        await _showDetailView();
+                      }
+                    },
+                  ),
+                ),
+                WebDataColumn(
+                  name: 'hostName',
+                  label: const Text('hostName'),
+                  dataCell: (value, key) => DataCell(Text('$value')),
+                ),
+                WebDataColumn(
+                  name: 'creator',
+                  label: const Text('creator'),
+                  dataCell: (value, key) => DataCell(Text('$value')),
+                ),
+                WebDataColumn(
+                  name: 'location',
+                  label: const Text('location'),
+                  dataCell: (value, key) => DataCell(Text('$value')),
+                ),
+                WebDataColumn(
+                  name: 'description',
+                  label: const Text('description'),
+                  dataCell: (value, key) => DataCell(Text('$value')),
+                ),
+                WebDataColumn(
+                  name: 'requestedBook1',
+                  label: const Text('requestedBook1'),
+                  dataCell: (value, key) => DataCell(Text('$value')),
+                ),
+                WebDataColumn(
+                  name: 'playingBook1',
+                  label: const Text('playingBook1'),
+                  dataCell: (value, key) => DataCell(Text('$value')),
+                ),
+                WebDataColumn(
+                  name: 'requestedBook2',
+                  label: const Text('requestedBook2'),
+                  dataCell: (value, key) => DataCell(Text('$value')),
+                ),
+                WebDataColumn(
+                  name: 'playingBook2',
+                  label: const Text('playingBook2'),
+                  dataCell: (value, key) => DataCell(Text('$value')),
+                ),
+                WebDataColumn(
+                  name: 'request',
+                  label: const Text('request'),
+                  dataCell: (value, key) => DataCell(Text('$value')),
+                  //sortable: false,
+                ),
+                WebDataColumn(
+                  name: 'requestedTime',
+                  label: const Text('requestedTime'),
+                  dataCell: _dateToDataCell,
+                  filterText: _dynamicDateToString,
+                ),
+              ],
+            ),
+            onPageChanged: (offset) {
+              //print('onPageChanged(): offset = $offset');
+            },
+            onSort: (columnName, ascending) {
+              //print('onSort(): columnName = $columnName, ascending = $ascending');
+              setState(() {
+                _sortColumnName = columnName;
+                _sortAscending = ascending;
+              });
+            },
+            onRowsPerPageChanged: (rowsPerPage) {
+              //print('onRowsPerPageChanged(): rowsPerPage = $rowsPerPage');
+              setState(() {
+                if (rowsPerPage != null) {
+                  _rowsPerPage = rowsPerPage;
+                }
+              });
+            },
+            rowsPerPage: _rowsPerPage,
             // header: Container(
             //   height: 25,
             //   color: Colors.amberAccent,
@@ -526,118 +789,6 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
             //     ),
             //   ),
             // ],
-            source: WebDataTableSource(
-              sortColumnName: _sortColumnName,
-              sortAscending: _sortAscending,
-              filterTexts: _filterTexts,
-              primaryKeyName: 'mid',
-              columns: [
-                WebDataColumn(
-                  name: 'updateTime',
-                  label: const Text('updateTime'),
-                  dataCell: _dateToDataCell,
-                  filterText: _dynamicDateToString,
-                ),
-                WebDataColumn(
-                  name: 'hostId',
-                  label: const Text('ID'),
-                  dataCell: (value) => DataCell(Text('$value')),
-                ),
-                WebDataColumn(
-                  name: 'hostName',
-                  label: const Text('hostName'),
-                  dataCell: (value) => DataCell(Text('$value')),
-                ),
-                WebDataColumn(
-                  name: 'creator',
-                  label: const Text('creator'),
-                  dataCell: (value) => DataCell(Text('$value')),
-                ),
-                WebDataColumn(
-                  name: 'location',
-                  label: const Text('location'),
-                  dataCell: (value) => DataCell(Text('$value')),
-                ),
-                WebDataColumn(
-                  name: 'description',
-                  label: const Text('description'),
-                  dataCell: (value) => DataCell(Text('$value')),
-                ),
-                WebDataColumn(
-                  name: 'requestedBook1',
-                  label: const Text('requestedBook1'),
-                  dataCell: (value) => DataCell(Text('$value')),
-                ),
-                WebDataColumn(
-                  name: 'playingBook1',
-                  label: const Text('playingBook1'),
-                  dataCell: (value) => DataCell(Text('$value')),
-                ),
-                WebDataColumn(
-                  name: 'requestedBook2',
-                  label: const Text('requestedBook2'),
-                  dataCell: (value) => DataCell(Text('$value')),
-                ),
-                WebDataColumn(
-                  name: 'playingBook2',
-                  label: const Text('playingBook2'),
-                  dataCell: (value) => DataCell(Text('$value')),
-                ),
-                WebDataColumn(
-                  name: 'request',
-                  label: const Text('request'),
-                  dataCell: (value) => DataCell(Text('$value')),
-                  //sortable: false,
-                ),
-                WebDataColumn(
-                  name: 'requestedTime',
-                  label: const Text('requestedTime'),
-                  dataCell: _dateToDataCell,
-                  filterText: _dynamicDateToString,
-                ),
-              ],
-              rows: hostManager.modelList.map((e) => e.toMap()).toList(),
-              //rows: hostManager.getOrdered().map((e) => e.toMap()).toList(),
-              selectedRowKeys: _selectedRowKeys,
-              onTapRow: (rows, index) {
-                Map<String, dynamic> row = rows[index];
-                String mid = row['mid'] ?? '';
-                //print('model=$mid, selectNotifierHolder.length = ${selectNotifierHolder.length}');
-                selectNotifierHolder.toggleSelect(mid);
-              },
-              onSelectRows: (keys) {
-                //print('onSelectRows(): count = ${keys.length} keys = $keys}');
-
-                for (var mid in keys) {
-                  selectNotifierHolder.selected(mid, true);
-                }
-                //print(
-                //    '3. selectNotifierHolder.hasSelected() = ${selectNotifierHolder.hasSelected()}');
-
-                setState(() {
-                  _selectedRowKeys = keys;
-                });
-              },
-            ),
-            onPageChanged: (offset) {
-              //print('onPageChanged(): offset = $offset');
-            },
-            onSort: (columnName, ascending) {
-              //print('onSort(): columnName = $columnName, ascending = $ascending');
-              setState(() {
-                _sortColumnName = columnName;
-                _sortAscending = ascending;
-              });
-            },
-            onRowsPerPageChanged: (rowsPerPage) {
-              //print('onRowsPerPageChanged(): rowsPerPage = $rowsPerPage');
-              setState(() {
-                if (rowsPerPage != null) {
-                  _rowsPerPage = rowsPerPage;
-                }
-              });
-            },
-            rowsPerPage: _rowsPerPage,
           );
         });
 
@@ -703,10 +854,11 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
     return value.toString();
   }
 
-  DataCell _dateToDataCell(dynamic value) {
+  DataCell _dateToDataCell(dynamic value, String key) {
     if (value is DateTime) {
       return DataCell(Text(_dateToString(value)));
     }
+
     return DataCell(Text(value.toString()));
   }
 
@@ -796,29 +948,24 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         fit: StackFit.expand,
         children: [
           HostGridItem(
-            hostManager: hostManager,
-            index: index - 1,
-            itemKey: selectNotifierHolder.getKey(itemModel?.mid ?? ''),
-            // key: isValidIndex(index)
-            //     ? (bookManager.findByIndex(index - 1) as CretaModel).key
-            //     : GlobalKey(),
-            hostModel: itemModel,
-            width: itemWidth,
-            height: itemHeight,
-            selectedPage: widget.selectedPage,
-            onEdit: (hostModel) async {
-              //setState(() {
-              //_openDetail = true;
-              selectedHost = hostModel;
-              //});
-              await _showDetailView();
-            },
-            onInsert: (hostModel) {
-              //setState(() {
-              //_openDetail = true;
-              selectNotifierHolder.add(hostModel.mid, false);
-            },
-          ),
+              hostManager: hostManager,
+              index: index - 1,
+              itemKey: selectNotifierHolder.getKey(itemModel?.mid ?? ''),
+              // key: isValidIndex(index)
+              //     ? (bookManager.findByIndex(index - 1) as CretaModel).key
+              //     : GlobalKey(),
+              hostModel: itemModel,
+              width: itemWidth,
+              height: itemHeight,
+              selectedPage: widget.selectedPage,
+              onEdit: (hostModel) async {
+                //setState(() {
+                //_openDetail = true;
+                selectedHost = hostModel;
+                //});
+                await _showDetailView();
+              },
+              onInsert: insertItem),
           // if (_isSelected(index))
           //   Positioned(
           //     top: 4,
@@ -859,7 +1006,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       CretaMenuItem(
           caption: CretaLang['basicBookSortFilter']![0],
           onPressed: () {
-            hostManagerHolder?.toSorted('updateTime',
+            hostManagerHolder?.toSorted('lastUpdateTime',
                 descending: true, onModelSorted: onModelSorted);
           },
           selected: true),
@@ -1097,6 +1244,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
             // Handle menu button press
           },
         ),
+
         BTN.fill_gray_it_l(
           width: 106 + 31,
           text: CretaDeviceLang['delete'] ?? "삭제",
@@ -1127,9 +1275,64 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         padding: EdgeInsets.symmetric(vertical: 20.0),
         //height: LayoutConst.deviceToolbarHeight,
         //color: Colors.amberAccent,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          runAlignment: WrapAlignment.spaceBetween,
+          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            SizedBox(
+              width: 120,
+              child: Row(children: [
+                _isGridView
+                    ? BTN.fill_gray_i_l(
+                        tooltip: ' list style ',
+                        tooltipBg: Colors.black12,
+                        icon: Icons.list,
+                        iconSize: 24,
+                        onPressed: () {
+                          setState(() {
+                            _isGridView = false;
+                            for (var key in selectNotifierHolder._selectedItems.keys) {
+                              if (selectNotifierHolder.isSelected(key)) {
+                                _selectedRowKeys.add(key);
+                              }
+                            }
+                          });
+                        },
+                      )
+                    : BTN.fill_gray_i_l(
+                        tooltip: ' grid style ',
+                        tooltipBg: Colors.black12,
+                        icon: Icons.grid_view_outlined,
+                        onPressed: () {
+                          setState(() {
+                            _isGridView = true;
+                          });
+                        },
+                      ),
+                BTN.fill_gray_i_l(
+                  tooltip: ' refresh ',
+                  tooltipBg: Colors.black12,
+                  // refresh
+                  icon: Icons.refresh,
+                  iconSize: 20,
+                  onPressed: () {
+                    setState(() {
+                      _onceDBGetComplete = false;
+                      _initData();
+                    });
+                  },
+                ),
+                BTN.fill_gray_i_l(
+                  tooltip: ' add new device ',
+                  tooltipBg: Colors.black12,
+                  // refresh
+                  icon: Icons.add_outlined,
+                  iconSize: 24,
+                  onPressed: insertItem,
+                ),
+              ]),
+            ),
             selectNotifierHolder.hasSelected() == false
                 ? Stack(
                     //fit: StackFit.expand,
@@ -1143,28 +1346,6 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
                     ],
                   )
                 : buttons,
-            _isGridView
-                ? BTN.fill_gray_i_l(
-                    icon: Icons.list,
-                    onPressed: () {
-                      setState(() {
-                        _isGridView = false;
-                        for (var key in selectNotifierHolder._selectedItems.keys) {
-                          if (selectNotifierHolder.isSelected(key)) {
-                            _selectedRowKeys.add(key);
-                          }
-                        }
-                      });
-                    },
-                  )
-                : BTN.fill_gray_i_l(
-                    icon: Icons.grid_view_outlined,
-                    onPressed: () {
-                      setState(() {
-                        _isGridView = true;
-                      });
-                    },
-                  ),
           ],
         ),
       );
@@ -1229,10 +1410,9 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
                           }
                         }
                       }
-                      for (int i = 0; i < selectNotifierHolder.length; i++) {}
-                      Navigator.of(context).pop();
                     }
                   }
+                  Navigator.of(context).pop();
                 }),
             TextButton(
               child: Text('Cancel'),
@@ -1289,5 +1469,108 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         }
       },
     );
+  }
+
+  void insertItem() async {
+    // int randomNumber = random.nextInt(1000);
+    // int modelIdx = randomNumber % 10;
+    // HostModel host = HostModel.withName(
+    //   '${CretaStudioLang['newhost']!}_$randomNumber',
+    //   creator: AccountManager.currentLoginUser.email,
+    //   creatorName: AccountManager.currentLoginUser.name,
+    //   imageUrl: 'https://picsum.photos/200/?random=$modelIdx',
+    //   viewCount: randomNumber,
+    //   likeCount: 1000 - randomNumber,
+    //   hostTypeVal: hostType.fromInt(randomNumber % 4 + 1),
+    //   ownerList: const [],
+    //   readerList: const [],
+    //   writerList: const [],
+    //   desc: SampleData.sampleDesc[randomNumber % SampleData.sampleDesc.length],
+    // );
+
+    // host.hashTag.set('#${randomNumber}tag');
+
+    // await widget.hostManager.createToDB(host);
+    // widget.hostManager.insert(host);
+
+    String hostId = '';
+    String hostName = '';
+    final formKey = GlobalKey<FormState>();
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(CretaDeviceLang['inputHostInfo']!),
+          content: SizedBox(
+            height: 200,
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      onChanged: (value) => hostId = value,
+                      decoration: InputDecoration(hintText: CretaDeviceLang['deviceId']!),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return CretaDeviceLang['shouldInputDeviceId']!;
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      onChanged: (value) => hostName = value,
+                      decoration: InputDecoration(hintText: CretaDeviceLang['deviceName']!),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return CretaDeviceLang['shouldInputDeviceName']!;
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                hostId = '';
+                hostName = '';
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    if (hostId.isEmpty || hostName.isEmpty) {
+      return;
+    }
+
+    HostModel host = hostManagerHolder!.createSample(hostId, hostName);
+    await hostManagerHolder!.createNewHost(host);
+    //StudioVariables.selectedhostMid = host.mid;
+    // ignore: use_build_context_synchronously
+    //Routemaster.of(context).push('${AppRoutes.deviceDetailPage}?${host.mid}');
+    selectNotifierHolder.add(host.mid, false);
+    hostManagerHolder!.notify();
   }
 }

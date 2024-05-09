@@ -45,10 +45,12 @@ class HostModel extends CretaModel {
   bool isInitialized = false; // read only
   bool isValidLicense = false; // read only
   bool isUsed = true;
+  bool isVNC = true;
   bool isOperational = true; // read only
 
   DateTime licenseTime = DateTime(1970, 1, 1); // read only
   DateTime initializeTime = DateTime(1970, 1, 1); // read only
+  DateTime lastUpdateTime = DateTime(1970, 1, 1); // read only
 
   String thumbnailUrl = ''; // read only
 
@@ -154,9 +156,11 @@ class HostModel extends CretaModel {
         isInitialized,
         isValidLicense,
         isUsed,
+        isVNC,
         isOperational,
         licenseTime,
         initializeTime,
+        lastUpdateTime,
       ];
 
   @override
@@ -212,9 +216,11 @@ class HostModel extends CretaModel {
     isInitialized = srcHost.isInitialized;
     isValidLicense = srcHost.isValidLicense;
     isUsed = srcHost.isUsed;
+    isVNC = srcHost.isVNC;
     isOperational = srcHost.isOperational;
     licenseTime = srcHost.licenseTime;
     initializeTime = srcHost.initializeTime;
+    lastUpdateTime = srcHost.lastUpdateTime;
   }
 
   @override
@@ -269,9 +275,11 @@ class HostModel extends CretaModel {
     isInitialized = srcHost.isInitialized;
     isValidLicense = srcHost.isValidLicense;
     isUsed = srcHost.isUsed;
+    isVNC = srcHost.isVNC;
     isOperational = srcHost.isOperational;
     licenseTime = srcHost.licenseTime;
     initializeTime = srcHost.initializeTime;
+    lastUpdateTime = srcHost.lastUpdateTime;
   }
 
   void modifiedFrom(HostModel srcHost, String request) {
@@ -375,9 +383,11 @@ class HostModel extends CretaModel {
     isInitialized = map["isInitialized"] ?? false;
     isValidLicense = map["isValidLicense"] ?? false;
     isUsed = map["isUsed"] ?? false;
+    isVNC = map["isVNC"] ?? false;
     isOperational = map["isOperational"] ?? true;
     licenseTime = _stringToDate(map["licenseTime"]);
     initializeTime = _stringToDate(map["initializeTime"]);
+    lastUpdateTime = _stringToDate(map["lastUpdateTime"]);
   }
 
   @override
@@ -428,9 +438,11 @@ class HostModel extends CretaModel {
         "isInitialized": isInitialized,
         "isValidLicense": isValidLicense,
         "isUsed": isUsed,
+        "isVNC": isVNC,
         "isOperational": isOperational,
         "licenseTime": HycopUtils.dateTimeToDB(licenseTime),
         "initializeTime": HycopUtils.dateTimeToDB(initializeTime),
+        "lastUpdateTime": HycopUtils.dateTimeToDB(lastUpdateTime),
       }.entries);
   }
 }

@@ -39,6 +39,12 @@ class HostManager extends CretaManager {
     return -1;
   }
 
+  HostModel? getModelByHostId(String hostId) {
+    return modelList.where((element) {
+      return hostId == (element as HostModel).hostId;
+    }).first as HostModel?;
+  }
+
   @override
   Future<List<AbsExModel>> myDataOnly(String userId, {int? limit}) async {
     logger.finest('myDataOnly');

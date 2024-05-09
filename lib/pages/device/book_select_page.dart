@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 
-import '../../data_io/book_manager.dart';
+import '../../data_io/book_published_manager.dart';
 import '../studio/book_grid_page.dart';
 
 class BookSelectPage extends StatefulWidget {
@@ -29,7 +29,7 @@ class BookSelectPage extends StatefulWidget {
 }
 
 class _BookSelectPageState extends State<BookSelectPage> {
-  BookManager? bookManagerHolder;
+  BookPublishedManager? bookManagerHolder;
   bool _onceDBGetComplete = false;
 
   @override
@@ -41,7 +41,7 @@ class _BookSelectPageState extends State<BookSelectPage> {
     //_controller = ScrollController();
     //_controller.addListener(_scrollListener);
 
-    bookManagerHolder = BookManager();
+    bookManagerHolder = BookPublishedManager();
     bookManagerHolder!.configEvent(notifyModify: false);
     bookManagerHolder!.clearAll();
 
@@ -95,7 +95,7 @@ class _BookSelectPageState extends State<BookSelectPage> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<BookManager>.value(
+        ChangeNotifierProvider<BookPublishedManager>.value(
           value: bookManagerHolder!,
         ),
       ],
@@ -123,7 +123,7 @@ class _BookSelectPageState extends State<BookSelectPage> {
       /*List<AbsExModel>? data*/
       ) {
     logger.finest('consumerFunc');
-    return Consumer<BookManager>(builder: (context, bookManager, child) {
+    return Consumer<BookPublishedManager>(builder: (context, bookManager, child) {
       logger.fine('Consumer  ${bookManager.getLength() + 1}');
       return _listView(bookManager.modelList);
     });
