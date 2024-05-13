@@ -19,8 +19,18 @@ import 'web_data_column.dart';
 //         );
 // }
 
+class ConditionColor {
+  final Color bgColor;
+  final bool condition;
+
+  ConditionColor(this.bgColor, this.condition);
+}
+
 ///
 /// WebDataTableSource
+///
+///
+///
 ///
 class WebDataTableSource extends DataTableSource {
   WebDataTableSource({
@@ -34,7 +44,6 @@ class WebDataTableSource extends DataTableSource {
     this.filterTexts,
     this.selectedRowKeys = const [],
     this.conditionalRowColor,
-    this.conditionalRowColorIndicator,
     this.keyName = 'mid',
   }) {
     if (onSelectRows != null) {
@@ -55,8 +64,7 @@ class WebDataTableSource extends DataTableSource {
   final String? primaryKeyName;
   final List<String>? filterTexts;
   final List<String> selectedRowKeys;
-  final Color? conditionalRowColor;
-  final String? conditionalRowColorIndicator;
+  final Map<String, ConditionColor>? conditionalRowColor;
   final String keyName;
 
   @override
@@ -74,9 +82,11 @@ class WebDataTableSource extends DataTableSource {
           if (states.contains(MaterialState.selected)) {
             return CretaColor.primary.withOpacity(0.2);
           }
-          if (conditionalRowColor != null && conditionalRowColorIndicator != null) {
-            if (_rows[index][conditionalRowColorIndicator] as bool == true) {
-              return conditionalRowColor;
+          if (conditionalRowColor != null) {
+            for (var key in conditionalRowColor!.keys) {
+              if (_rows[index][key] as bool == conditionalRowColor![key]!.condition) {
+                return conditionalRowColor![key]!.bgColor;
+              }
             }
           }
           return null; // Use the default value.

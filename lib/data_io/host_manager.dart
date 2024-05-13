@@ -57,6 +57,18 @@ class HostManager extends CretaManager {
     return retval;
   }
 
+  @override
+  Future<bool> isNameExist(String value) async {
+    logger.finest('myDataOnly');
+    Map<String, QueryValue> query = {};
+    query['hostName'] = QueryValue(value: value);
+    query['isRemoved'] = QueryValue(value: false);
+    //print('myDataOnly start');
+    final retval = await queryFromDB(query);
+    //print('myDataOnly end ${retval.length}');
+    return retval.isEmpty ? false : true;
+  }
+
   HostModel createSample(
     String hostId,
     String hostName,

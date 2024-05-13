@@ -12,13 +12,11 @@ import 'package:creta_common/lang/creta_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_user_io/data_io/user_property_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:hycop/hycop.dart';
 import 'package:provider/provider.dart';
 import 'package:routemaster/routemaster.dart';
 
 //import '../../common/window_resize_lisnter.dart';
-import 'package:hycop/common/util/logger.dart';
-import 'package:hycop/hycop/account/account_manager.dart';
-
 import '../../data_io/host_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/component/creta_basic_layout_mixin.dart';
@@ -35,6 +33,7 @@ import '../login/creta_account_manager.dart';
 import '../studio/studio_constant.dart';
 import 'device_detail_page.dart';
 import 'host_grid_item.dart';
+import 'new_deivce_input.dart';
 //import '../login_page.dart';
 
 SelectNotifier selectNotifierHolder = SelectNotifier();
@@ -508,8 +507,10 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
               sortAscending: _sortAscending,
               filterTexts: _filterTexts,
               primaryKeyName: 'mid',
-              conditionalRowColor: Colors.yellow,
-              conditionalRowColorIndicator: 'isConnected',
+              conditionalRowColor: {
+                'isConnected': ConditionColor(Colors.yellow, true),
+                'isInitialized': ConditionColor(Colors.grey, false),
+              },
               rows: hostManager.modelList.map((e) => e.toMap()).toList(),
               //rows: hostManager.getOrdered().map((e) => e.toMap()).toList(),
               selectedRowKeys: _selectedRowKeys,
@@ -1471,79 +1472,21 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
     );
   }
 
-  void insertItem() async {
-    // int randomNumber = random.nextInt(1000);
-    // int modelIdx = randomNumber % 10;
-    // HostModel host = HostModel.withName(
-    //   '${CretaStudioLang['newhost']!}_$randomNumber',
-    //   creator: AccountManager.currentLoginUser.email,
-    //   creatorName: AccountManager.currentLoginUser.name,
-    //   imageUrl: 'https://picsum.photos/200/?random=$modelIdx',
-    //   viewCount: randomNumber,
-    //   likeCount: 1000 - randomNumber,
-    //   hostTypeVal: hostType.fromInt(randomNumber % 4 + 1),
-    //   ownerList: const [],
-    //   readerList: const [],
-    //   writerList: const [],
-    //   desc: SampleData.sampleDesc[randomNumber % SampleData.sampleDesc.length],
-    // );
-
-    // host.hashTag.set('#${randomNumber}tag');
-
-    // await widget.hostManager.createToDB(host);
-    // widget.hostManager.insert(host);
-
-    String hostId = '';
-    String hostName = '';
-    final formKey = GlobalKey<FormState>();
-
+  Future<void> _showAddNewDialog(DeviceData input, String formKeyStr) async {
     await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Text(CretaDeviceLang['inputHostInfo']!),
-          content: SizedBox(
-            height: 200,
-            child: Form(
-              key: formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      onChanged: (value) => hostId = value,
-                      decoration: InputDecoration(hintText: CretaDeviceLang['deviceId']!),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return CretaDeviceLang['shouldInputDeviceId']!;
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      onChanged: (value) => hostName = value,
-                      decoration: InputDecoration(hintText: CretaDeviceLang['deviceName']!),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return CretaDeviceLang['shouldInputDeviceName']!;
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          content: NewDeviceInput(
+            data: input,
+            formKeyStr: formKeyStr,
           ),
           actions: <Widget>[
             TextButton(
               child: Text('OK'),
               onPressed: () {
-                if (formKey.currentState!.validate()) {
+                if (input.formKey!.currentState!.validate()) {
                   Navigator.of(context).pop();
                 }
               },
@@ -1551,8 +1494,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
             TextButton(
               child: Text('Cancel'),
               onPressed: () {
-                hostId = '';
-                hostName = '';
+                input.hostId = '';
+                input.hostName = '';
                 Navigator.of(context).pop();
               },
             ),
@@ -1560,12 +1503,23 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         );
       },
     );
+  }
 
-    if (hostId.isEmpty || hostName.isEmpty) {
+  void insertItem() async {
+    DeviceData input = DeviceData();
+
+    await _showAddNewDialog(input, 'firstTry');
+
+    if (input.message != CretaDeviceLang['availiableID']!) {
+      input.message = CretaDeviceLang['needToDupCheck']!;
+      await _showAddNewDialog(input, 'secondTry');
+    }
+
+    if (input.hostId.isEmpty || input.hostName.isEmpty) {
       return;
     }
 
-    HostModel host = hostManagerHolder!.createSample(hostId, hostName);
+    HostModel host = hostManagerHolder!.createSample(input.hostId, input.hostName);
     await hostManagerHolder!.createNewHost(host);
     //StudioVariables.selectedhostMid = host.mid;
     // ignore: use_build_context_synchronously

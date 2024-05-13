@@ -51,6 +51,10 @@
     "deleteConfirm" : "Are you sure you want to delete the device?",
     "deleteRequested" : "The device is being deleted.",
 
+    "dupCheck":    "Duplicate Check",
+    "alreadyExist":    "The ID already exists.",
+    "availiableID":    "The ID is available.",
+    "needToDupCheck":    "Please check the ID duplication.",
 
   
      "end"  : "End"

@@ -50,6 +50,11 @@
     "delete" : "삭제",
     "deleteConfirm" : "정말로 삭제하시겠습니까 ?",
     "deleteRequested" : "삭제되었습니다.",
+
+    "dupCheck":    "중복체크",
+    "alreadyExist":    "같은 ID 가 이미 존재합니다",
+    "availiableID":    "사용할 수 있는 ID 입니다.",
+    "needToDupCheck":    "중복체크를 먼저 하시기 바랍니다",
     
     
     "END" : ""

@@ -51,6 +51,10 @@
     "deleteConfirm" : "削除しますか？",
     "deleteRequested" : "削除要求が完了しました。",
 
+    "dupCheck":    "ID重複チェック",
+    "alreadyExist":    "既に存在するIDです。",
+    "availiableID":    "使用可能なIDです。",
+    "needToDupCheck":    "ID重複チェックを行ってください。",
 
 
    "end"  : "End"
