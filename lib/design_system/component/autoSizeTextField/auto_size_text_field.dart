@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 
 import 'package:creta_common/common/creta_const.dart';
 
-
 /// Flutter widget that automatically resizes text field to fit perfectly within its bounds.
 ///
 /// All size constraints as well as maxLines are taken into account. If the text
@@ -672,14 +671,15 @@ class AutoSizeTextFieldState extends State<AutoSizeTextField> {
       recognizer: widget.textSpan?.recognizer,
     );
 
-    var userScale = MediaQuery.textScaleFactorOf(context);
+    var userScale =
+        MediaQuery.textScalerOf(context).scale(style!.fontSize ?? CretaConst.defaultFontSize);
 
     int left;
     int right;
 
     var presetFontSizes = widget.presetFontSizes?.reversed.toList();
     if (presetFontSizes == null) {
-      num defaultFontSize = style!.fontSize!.clamp(widget.minFontSize, widget.maxFontSize);
+      num defaultFontSize = style.fontSize!.clamp(widget.minFontSize, widget.maxFontSize);
       var defaultScale = defaultFontSize * userScale / style.fontSize!;
       if (_checkTextFits(span, defaultScale, maxLines, size)) {
         return [defaultFontSize * userScale, true];
@@ -702,9 +702,9 @@ class AutoSizeTextFieldState extends State<AutoSizeTextField> {
       var mid = (left + (right - left) / 2).toInt();
       double scale;
       if (presetFontSizes == null) {
-        scale = mid * userScale * widget.stepGranularity / style!.fontSize!;
+        scale = mid * userScale * widget.stepGranularity / style.fontSize!;
       } else {
-        scale = presetFontSizes[mid] * userScale / style!.fontSize!;
+        scale = presetFontSizes[mid] * userScale / style.fontSize!;
       }
 
       if (_checkTextFits(span, scale, maxLines, size)) {
@@ -731,6 +731,13 @@ class AutoSizeTextFieldState extends State<AutoSizeTextField> {
   }
 
   bool _checkTextFits(TextSpan text, double scale, int? maxLines, BoxConstraints constraints) {
+    
+    double? newFontSize;
+    if (text.style != null && text.style!.fontSize != null) {
+      newFontSize = text.style!.fontSize! * scale;
+    }
+
+    
     double constraintWidth = constraints.maxWidth;
     double constraintHeight = constraints.maxHeight;
     if (widget.decoration.contentPadding != null) {
@@ -746,13 +753,13 @@ class AutoSizeTextFieldState extends State<AutoSizeTextField> {
       if (widget.decoration.suffixText != null) words.add(widget.decoration.suffixText);
 
       var wordWrapTp = TextPainter(
-        text: TextSpan(
-          style: text.style,
+         text: TextSpan(
+          style: newFontSize != null ? text.style?.copyWith(fontSize: newFontSize) : text.style,
           text: words.join('\n'),
         ),
         textAlign: widget.textAlign,
         textDirection: widget.textDirection ?? TextDirection.ltr,
-        textScaleFactor: scale,
+        //textScaleFactor: scale,
         maxLines: words.length,
         locale: widget.locale,
         strutStyle: widget.strutStyle,
@@ -792,11 +799,11 @@ class AutoSizeTextFieldState extends State<AutoSizeTextField> {
         recognizer: text.recognizer,
         children: text.children,
         semanticsLabel: text.semanticsLabel,
-        style: text.style,
+        style : newFontSize != null ? text.style?.copyWith(fontSize: newFontSize) : text.style,
       ),
       textAlign: widget.textAlign,
       textDirection: widget.textDirection ?? TextDirection.ltr,
-      textScaleFactor: scale,
+      //textScaleFactor: scale,
       maxLines: maxLines,
       locale: widget.locale,
       strutStyle: widget.strutStyle,

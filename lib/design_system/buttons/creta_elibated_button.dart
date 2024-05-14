@@ -55,31 +55,31 @@ class _CretaElevatedButtonState extends State<CretaElevatedButton> {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ButtonStyle(
-        elevation: MaterialStateProperty.all<double>(0.0),
-        shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
-        overlayColor: MaterialStateProperty.resolveWith<Color?>(
-          (Set<MaterialState> states) {
+        elevation: WidgetStateProperty.all<double>(0.0),
+        shadowColor: WidgetStateProperty.all<Color>(Colors.transparent),
+        overlayColor: WidgetStateProperty.resolveWith<Color?>(
+          (Set<WidgetState> states) {
             if (selected) {
-              if (states.contains(MaterialState.hovered)) {
+              if (states.contains(WidgetState.hovered)) {
                 return widget.bgHoverSelectedColor;
               }
               return widget.bgSelectedColor;
             }
-            if (states.contains(MaterialState.hovered)) {
+            if (states.contains(WidgetState.hovered)) {
               return widget.bgHoverColor;
             }
             return widget.bgColor;
           },
         ),
         backgroundColor:
-            MaterialStateProperty.all<Color>(selected ? widget.bgSelectedColor : widget.bgColor),
-        // foregroundColor: MaterialStateProperty.resolveWith<Color?>(
-        //   (Set<MaterialState> states) {
-        //     //if (states.contains(MaterialState.hovered)) return widget.fgColor;
+            WidgetStateProperty.all<Color>(selected ? widget.bgSelectedColor : widget.bgColor),
+        // foregroundColor: WidgetStateProperty.resolveWith<Color?>(
+        //   (Set<WidgetState> states) {
+        //     //if (states.contains(WidgetState.hovered)) return widget.fgColor;
         //     return (selected ? widget.fgSelectedColor : widget.fgColor);
         //   },
         // ),
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+        shape: WidgetStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(widget.radius),
             side: BorderSide(color: selected ? widget.borderSelectedColor : widget.borderColor))),
       ),

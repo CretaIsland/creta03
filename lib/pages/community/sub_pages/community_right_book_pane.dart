@@ -1182,9 +1182,9 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
             ),
           ),
           SizedBox(height: 4),
-          RawKeyboardListener(
+          KeyboardListener(
             focusNode: FocusNode(),
-            onKey: (RawKeyEvent event) {
+            onKeyEvent: (KeyEvent event) {
               if (event.logicalKey == LogicalKeyboardKey.escape) {
                 // Do something when ESC key is pressed
                 setState(() {

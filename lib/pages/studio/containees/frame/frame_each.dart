@@ -249,25 +249,25 @@ class FrameEachState extends CretaState<FrameEach> with ContaineeMixin, FramePla
                   frameManager!.invalidateContentsMain(widget.pageModel.mid, widget.model.mid);
                 }
               },
-              onAccept: (data) async {
-                if (data is DepotModel) {
+              onAcceptWithDetails: (details) async {
+                if (details.data is DepotModel) {
                   //print('drop depotModel =${data.contentsMid}');
                   DepotManager? depotManager = DepotDisplay.getMyTeamManager(null);
                   if (depotManager != null) {
-                    ContentsModel? newModel =
-                        await depotManager.copyContents(data, frameId: widget.model.mid);
+                    ContentsModel? newModel = await depotManager
+                        .copyContents(details.data as DepotModel, frameId: widget.model.mid);
                     if (newModel != null) {
                       _onDropFrame(widget.model.mid, [newModel]);
                     }
                   }
                   widget.model.dragOnMove = false;
                   frameManager!.invalidateContentsMain(widget.pageModel.mid, widget.model.mid);
-                } else if (data is ContentsModel) {
+                } else if (details.data is ContentsModel) {
                   //print('drop gifModel =${data}');
-                  _onDropFrame(widget.model.mid, [data]);
+                  _onDropFrame(widget.model.mid, [details.data as ContentsModel]);
                 }
               },
-              onWillAccept: (data) {
+              onWillAcceptWithDetails: (data) {
                 return widget.model.frameType == FrameType.none;
               },
             )

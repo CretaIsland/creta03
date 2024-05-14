@@ -114,8 +114,8 @@ class _LeftWordPadTemplate extends State<LeftWordPadTemplate>
 
     String initialText = '';
 
-    // ignore: use_build_context_synchronously
     CretaDocWidget.showHtmlEditor(
+      // ignore: use_build_context_synchronously
       context,
       model,
       realSize,

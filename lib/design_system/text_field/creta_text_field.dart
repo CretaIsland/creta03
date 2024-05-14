@@ -417,33 +417,33 @@ class CretaTextFieldState extends State<CretaTextField> {
     }
 
     _focusNode = FocusNode(
-      onKey: (node, event) {
-        if (node.hasFocus == false) {
-          // 자기가 focus 가 없으면, 굳이 뭘 할 필요가 없기 때문에 이코드를 넣어준다.
-          return KeyEventResult.ignored;
-        }
-        logger.info(
-            '(${widget.isSpecialKeyHandle}):CretaTextField onKey : ${event.logicalKey.debugName}');
-        // key 가 main 의 Raw RawKeyboardListener 에 도착하지 않도록 하기 위해 skipRemainingHandlers 를 쓴다.
-        return KeyEventResult.skipRemainingHandlers;
+      // onKey: (node, event) {
+      //   if (node.hasFocus == false) {
+      //     // 자기가 focus 가 없으면, 굳이 뭘 할 필요가 없기 때문에 이코드를 넣어준다.
+      //     return KeyEventResult.ignored;
+      //   }
+      //   logger.info(
+      //       '(${widget.isSpecialKeyHandle}):CretaTextField onKey : ${event.logicalKey.debugName}');
+      //   // key 가 main 의 Raw RawKeyboardListener 에 도착하지 않도록 하기 위해 skipRemainingHandlers 를 쓴다.
+      //   return KeyEventResult.skipRemainingHandlers;
 
-        // // Delete key 가 main 의 Raw RawKeyboardListener 에 도착하지 않도록 하기 위해
-        // switch (event.logicalKey) {
-        //   case LogicalKeyboardKey.delete:
-        //   case LogicalKeyboardKey.arrowRight:
-        //   case LogicalKeyboardKey.arrowLeft:
-        //   case LogicalKeyboardKey.pageDown:
-        //   case LogicalKeyboardKey.pageUp:
-        //   case LogicalKeyboardKey.insert:
-        //   case LogicalKeyboardKey.controlLeft:
-        //   case LogicalKeyboardKey.controlRight:
-        //   case LogicalKeyboardKey.shiftLeft:
-        //   case LogicalKeyboardKey.shiftRight:
-        //     return KeyEventResult.skipRemainingHandlers;
-        // }
-        //return KeyEventResult.skipRemainingHandlers;
-        //return KeyEventResult.ignored;
-      },
+      //   // // Delete key 가 main 의 Raw RawKeyboardListener 에 도착하지 않도록 하기 위해
+      //   // switch (event.logicalKey) {
+      //   //   case LogicalKeyboardKey.delete:
+      //   //   case LogicalKeyboardKey.arrowRight:
+      //   //   case LogicalKeyboardKey.arrowLeft:
+      //   //   case LogicalKeyboardKey.pageDown:
+      //   //   case LogicalKeyboardKey.pageUp:
+      //   //   case LogicalKeyboardKey.insert:
+      //   //   case LogicalKeyboardKey.controlLeft:
+      //   //   case LogicalKeyboardKey.controlRight:
+      //   //   case LogicalKeyboardKey.shiftLeft:
+      //   //   case LogicalKeyboardKey.shiftRight:
+      //   //     return KeyEventResult.skipRemainingHandlers;
+      //   // }
+      //   //return KeyEventResult.skipRemainingHandlers;
+      //   //return KeyEventResult.ignored;
+      // },
       onKeyEvent: (node, event) {
         if (node.hasFocus == false) {
           // 자기가 focus 가 없으면, 굳이 뭘 할 필요가 없기 때문에 이코드를 넣어준다.

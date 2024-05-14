@@ -78,8 +78,8 @@ class WebDataTableSource extends DataTableSource {
 
     final key = primaryKeyName != null ? _rows[index][primaryKeyName].toString() : null;
     return DataRow.byIndex(
-        color: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.selected)) {
+        color: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+          if (states.contains(WidgetState.selected)) {
             return CretaColor.primary.withOpacity(0.2);
           }
           if (conditionalRowColor != null) {

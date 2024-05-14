@@ -855,7 +855,7 @@ class _BookMainPageState extends State<BookMainPage> {
     }
   }
 
-  void _keyEventHandler(RawKeyEvent event) {
+  void _keyEventHandler(KeyEvent event) {
     // 그리고 포커스 이벤트는 기본적으로  여기에 가장 먼저 도착한다.
     // 이후 focusNode 의 onKeyEvent, onKey 순서로 도착한다.
     // 이 말인 즉슨, 포커스를 가지고 있던, 없던, 모든 키보드 이벤트가 다 도착한다는 뜻이다.
@@ -876,13 +876,13 @@ class _BookMainPageState extends State<BookMainPage> {
     _combiButtonEvent(event);
   }
 
-  void _combiButtonEvent(RawKeyEvent event) {
+  void _combiButtonEvent(KeyEvent event) {
     final key = event.logicalKey;
     bool? isPressed;
-    if (event is RawKeyDownEvent) {
+    if (event is KeyDownEvent) {
       logger.info('combination Key Pressed  ${key.debugName}');
       isPressed = true;
-    } else if (event is RawKeyUpEvent) {
+    } else if (event is KeyUpEvent) {
       logger.info('combination Key Released  ${key.debugName}');
       isPressed = false;
     }
@@ -1666,10 +1666,10 @@ class _BookMainPageState extends State<BookMainPage> {
 
     //print('margin=$marginX, $marginY');
 
-    return RawKeyboardListener(
+    return KeyboardListener(
       autofocus: true,
       focusNode: CretaTextField.mainFocusNode!, // _focusNodeEventHandler 가 호출됨.
-      onKey: _keyEventHandler,
+      onKeyEvent: _keyEventHandler,
       child: Center(
           child: StudioVariables.isPreview
               ? noneScrollBox(isPageExist)

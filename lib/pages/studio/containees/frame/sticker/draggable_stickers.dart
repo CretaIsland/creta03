@@ -1105,7 +1105,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
           pageBottomLayerKey.currentState?.invalidate();
         }
       },
-      onAccept: (data) async {
+      onAcceptWithDetails: (data) async {
         //print('drop depotModel =${data.contentsMid}');
         // DepotManager? depotManager = DepotDisplay.getMyTeamManager(null);
         // if (depotManager != null) {
@@ -1116,23 +1116,23 @@ class _DraggableStickersState extends State<DraggableStickers> {
         // }
         // widget.page.dragOnMove = false;
         // pageBottomLayerKey.currentState?.invalidate();
-        if (data is DepotModel) {
+        if (data.data is DepotModel) {
           //print('drop depotModel =${data.contentsMid}');
           DepotManager? depotManager = DepotDisplay.getMyTeamManager(null);
           if (depotManager != null) {
-            ContentsModel? newModel = await depotManager.copyContents(data);
+            ContentsModel? newModel = await depotManager.copyContents(data.data as DepotModel);
             if (newModel != null) {
               widget.onDropPage?.call([newModel]);
             }
           }
           widget.page.dragOnMove = false;
           pageBottomLayerKey.currentState?.invalidate();
-        } else if (data is ContentsModel) {
+        } else if (data.data is ContentsModel) {
           //print('drop gifModel =${data}');
-          widget.onDropPage?.call([data]);
+          widget.onDropPage?.call([data.data as ContentsModel]);
         }
       },
-      onWillAccept: (data) {
+      onWillAcceptWithDetails: (data) {
         return true;
       },
     );

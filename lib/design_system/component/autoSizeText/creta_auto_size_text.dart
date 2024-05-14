@@ -198,6 +198,7 @@ class CretaAutoSizeText extends StatefulWidget {
   /// This property also affects [minFontSize], [maxFontSize] and [presetFontSizes].
   ///
   /// The value given to the constructor as textScaleFactor. If null, will
+  // ignore: deprecated_member_use
   /// use the [MediaQueryData.textScaleFactor] obtained from the ambient
   /// [MediaQuery], or 1.0 if there is no [MediaQuery] in scope.
   final double? textScaleFactor;
@@ -344,7 +345,7 @@ class CretaAutoSizeTextState extends State<CretaAutoSizeText> {
       recognizer: widget.textSpan?.recognizer,
     );
 
-    final userScale = widget.textScaleFactor ?? MediaQuery.textScaleFactorOf(context);
+    final userScale = widget.textScaleFactor ?? 1;
 
     int left;
     int right;
@@ -396,17 +397,24 @@ class CretaAutoSizeTextState extends State<CretaAutoSizeText> {
   }
 
   bool _checkTextFits(TextSpan text, double scale, int? maxLines, BoxConstraints constraints) {
+    double? newFontSize;
+    if (text.style != null && text.style!.fontSize != null) {
+      newFontSize = text.style!.fontSize! * scale;
+    }
+
+    
+
     if (!widget.wrapWords) {
       final words = text.toPlainText().split(RegExp('\\s+'));
 
       final wordWrapTextPainter = TextPainter(
         text: TextSpan(
-          style: text.style,
+          style: newFontSize != null ? text.style?.copyWith(fontSize: newFontSize) : text.style,
           text: words.join('\n'),
         ),
         textAlign: widget.textAlign ?? TextAlign.left,
         textDirection: widget.textDirection ?? TextDirection.ltr,
-        textScaleFactor: scale,
+        //textScaleFactor: scale,
         maxLines: words.length,
         locale: widget.locale,
         strutStyle: widget.strutStyle,
@@ -421,10 +429,14 @@ class CretaAutoSizeTextState extends State<CretaAutoSizeText> {
     }
 
     final textPainter = TextPainter(
-      text: text,
+      text: //text,
+          TextSpan(
+        style: newFontSize != null ? text.style?.copyWith(fontSize: newFontSize) : text.style,
+        text: text.text,
+      ),
       textAlign: widget.textAlign ?? TextAlign.left,
       textDirection: widget.textDirection ?? TextDirection.ltr,
-      textScaleFactor: scale,
+      //textScaleFactor: scale,
       maxLines: maxLines,
       locale: widget.locale,
       strutStyle: widget.strutStyle,
@@ -457,7 +469,7 @@ class CretaAutoSizeTextState extends State<CretaAutoSizeText> {
         locale: widget.locale,
         softWrap: widget.softWrap,
         overflow: widget.overflow,
-        textScaleFactor: 1,
+        //textScaleFactor: 1,
         maxLines: maxLines,
         semanticsLabel: widget.semanticsLabel,
       );
@@ -465,14 +477,14 @@ class CretaAutoSizeTextState extends State<CretaAutoSizeText> {
       return Text.rich(
         widget.textSpan!,
         key: widget.textKey,
-        style: style,
+        style: style.copyWith(fontSize: fontSize * fontSize / style.fontSize!),
         strutStyle: widget.strutStyle,
         textAlign: widget.textAlign,
         textDirection: widget.textDirection,
         locale: widget.locale,
         softWrap: widget.softWrap,
         overflow: widget.overflow,
-        textScaleFactor: fontSize / style.fontSize!,
+        //textScaleFactor: fontSize / style.fontSize!,
         maxLines: maxLines,
         semanticsLabel: widget.semanticsLabel,
       );

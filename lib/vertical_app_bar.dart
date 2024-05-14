@@ -411,19 +411,18 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
         child: TextButton(
           key: langSettingKey,
           style: ButtonStyle(
-            overlayColor: MaterialStateProperty.resolveWith<Color?>(
-              (Set<MaterialState> states) {
-                if (states.contains(MaterialState.hovered)) {
+            overlayColor: WidgetStateProperty.resolveWith<Color?>(
+              (Set<WidgetState> states) {
+                if (states.contains(WidgetState.hovered)) {
                   return Colors.white.withOpacity(0.3);
                 }
-                if (states.contains(MaterialState.focused) ||
-                    states.contains(MaterialState.pressed)) {
+                if (states.contains(WidgetState.focused) || states.contains(WidgetState.pressed)) {
                   return Colors.white.withOpacity(0.5);
                 }
                 return null; // Defer to the widget's default.
               },
             ),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16.0),
               ),

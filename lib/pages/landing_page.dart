@@ -416,7 +416,7 @@ class _LandingPageState extends State<LandingPage> {
               height: 40,
             ),
             SizedBox(
-              width: 329,
+              width: 337,
               height: 48,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -432,7 +432,7 @@ class _LandingPageState extends State<LandingPage> {
                             });
                           })
                       : customButton(
-                          width: 40,
+                          width: 48,
                           height: 19,
                           child: Text("Login", style: appBarBTNStyle),
                           onTap: () => LoginDialog.popupDialog(
@@ -1156,7 +1156,7 @@ class _LandingPageState extends State<LandingPage> {
   // ************************************ creta guide section ************************************
   Widget guideSection() {
     return SizedBox(
-      width: 1360 + 66,
+      width: 1360 + 66 + 8,
       height: 792,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

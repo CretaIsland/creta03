@@ -113,8 +113,6 @@ class _MainRouteAppState extends ConsumerState<MainRouteApp> {
         onSecondary: CretaColor.text[100]!,
         error: CretaColor.stateCritical,
         onError: CretaColor.text,
-        background: Colors.white,
-        onBackground: CretaColor.text,
         surface: Colors.yellow,
         onSurface: CretaColor.text,
       ),
@@ -123,7 +121,7 @@ class _MainRouteAppState extends ConsumerState<MainRouteApp> {
       //   showValueIndicator: ShowValueIndicator.never,
       // ),
       scrollbarTheme: ScrollbarThemeData(
-        thumbColor: MaterialStateProperty.all(CretaColor.primary),
+        thumbColor: WidgetStateProperty.all(CretaColor.primary),
       ),
     );
 
@@ -172,6 +170,10 @@ class InitBinding extends Bindings {
   }
 }
 
+
+class MyTextTheme extends TextTheme {
+  // Add your custom styles here
+}
 
 
 

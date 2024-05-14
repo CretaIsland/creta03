@@ -138,22 +138,22 @@ class CretaPopupMenu {
       height: 32,
       child: ElevatedButton(
         style: ButtonStyle(
-          overlayColor: MaterialStateProperty.resolveWith<Color?>(
-            (Set<MaterialState> states) {
-              if (states.contains(MaterialState.hovered)) {
+          overlayColor: WidgetStateProperty.resolveWith<Color?>(
+            (Set<WidgetState> states) {
+              if (states.contains(WidgetState.hovered)) {
                 return Color.fromARGB(255, 242, 242, 242);
               }
               return Colors.white;
             },
           ),
           alignment: textAlign,
-          elevation: MaterialStateProperty.all<double>(0.0),
-          shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
+          elevation: WidgetStateProperty.all<double>(0.0),
+          shadowColor: WidgetStateProperty.all<Color>(Colors.transparent),
           foregroundColor: item.disabled
-              ? MaterialStateProperty.all<Color>(CretaColor.text[300]!)
-              : MaterialStateProperty.all<Color>(CretaColor.text[700]!),
-          backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+              ? WidgetStateProperty.all<Color>(CretaColor.text[300]!)
+              : WidgetStateProperty.all<Color>(CretaColor.text[700]!),
+          backgroundColor: WidgetStateProperty.all<Color>(Colors.white),
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(18.0), side: BorderSide(color: Colors.white))),
         ),
         onPressed: () {

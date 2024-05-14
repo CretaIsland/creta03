@@ -308,29 +308,29 @@ class CretaRightMouseMenuWidgetState extends State<CretaRightMouseMenuWidget> {
   ButtonStyle _buttonStyle(bool isSelected, bool disabled, bool isPopup, bool isSubMenu) {
     return ButtonStyle(
       padding: widget.padding != null
-          ? MaterialStateProperty.all<EdgeInsetsGeometry>(widget.padding!)
+          ? WidgetStateProperty.all<EdgeInsetsGeometry>(widget.padding!)
           : null,
-      textStyle: MaterialStateProperty.all<TextStyle>(
+      textStyle: WidgetStateProperty.all<TextStyle>(
           CretaFont.buttonLarge.copyWith(fontWeight: CretaFont.medium)),
-      overlayColor: MaterialStateProperty.resolveWith<Color?>(
-        (Set<MaterialState> states) {
-          if (states.contains(MaterialState.hovered)) {
+      overlayColor: WidgetStateProperty.resolveWith<Color?>(
+        (Set<WidgetState> states) {
+          if (states.contains(WidgetState.hovered)) {
             return disabled ? Colors.white : CretaColor.text[100]!;
           }
           return Colors.white;
         },
       ),
-      elevation: MaterialStateProperty.all<double>(0.0),
-      shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
-      foregroundColor: MaterialStateProperty.resolveWith<Color?>(
-        (Set<MaterialState> states) {
+      elevation: WidgetStateProperty.all<double>(0.0),
+      shadowColor: WidgetStateProperty.all<Color>(Colors.transparent),
+      foregroundColor: WidgetStateProperty.resolveWith<Color?>(
+        (Set<WidgetState> states) {
           if (widget.allTextColor != null) {
             return widget.allTextColor;
           }
           if (isSelected) {
             return CretaColor.primary;
           }
-          if (states.contains(MaterialState.hovered)) {
+          if (states.contains(WidgetState.hovered)) {
             return disabled
                 ? CretaColor.text[200]!
                 : isSubMenu
@@ -344,10 +344,10 @@ class CretaRightMouseMenuWidgetState extends State<CretaRightMouseMenuWidget> {
                   : CretaColor.text[600]!;
         },
       ),
-      backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+      backgroundColor: WidgetStateProperty.all<Color>(Colors.white),
       shape: disabled
-          ? MaterialStateProperty.resolveWith<OutlinedBorder?>(
-              (Set<MaterialState> states) {
+          ? WidgetStateProperty.resolveWith<OutlinedBorder?>(
+              (Set<WidgetState> states) {
                 return RoundedRectangleBorder(
                   side: (!isPopup && widget.alwaysShowBorder)
                       ? const BorderSide(width: 0.5, color: Colors.grey)
