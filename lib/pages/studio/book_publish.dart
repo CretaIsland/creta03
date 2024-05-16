@@ -683,7 +683,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
         children: [
           CretaTextField(
               height: 32,
-              width: 244,
+              width: 238,
               textFieldKey: GlobalKey(),
               value: '',
               hintText: '',

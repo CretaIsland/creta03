@@ -1703,7 +1703,7 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget scrollBox(double totalWidth, double marginX, double marginY) {
-    print('----------scrollbaox---------------');
+    //print('----------scrollbaox---------------');
 
     double initialOffsetX = (StudioVariables.virtualWidth - StudioVariables.workWidth) / 2;
     if (initialOffsetX < 0) {
@@ -1745,8 +1745,6 @@ class _BookMainPageState extends State<BookMainPage> {
             child: Center(child: Consumer<PageManager>(builder: (context, pageManager, child) {
               pageManager.reOrdering();
               PageModel? pageModel = pageManager.getSelected() as PageModel?;
-              print(
-                  '----------pageModel--------------- ${pageModel == null ? 'pageModel is null' : pageModel.mid}');
               return _drawPage(context, pageModel);
             })),
           ),
