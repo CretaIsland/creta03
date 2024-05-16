@@ -25,8 +25,8 @@ flutter run -d chrome --web-renderer html
 
 ## login_page.dart 에서 version 번호를 바꾸는 것을 잊지말자.  ver 0.01
 
-#flutter build web --web-renderer html --release --base-href="/creta03_v10/" --no-tree-shake-icons    
-flutter build web --web-renderer html --release  --no-tree-shake-icons    
+flutter build web --web-renderer html --release --base-href="/creta03_v10/" --no-tree-shake-icons    
+#flutter build web --web-renderer html --release  --no-tree-shake-icons    
 # or
 #flutter build web --web-renderer canvaskit --release --base-href="/creta03_v10/"  
 flutter build web --web-renderer canvaskit --release 
@@ -244,4 +244,7 @@ W:  Windows. L : Linux 를 각각 지원함을 의미함.
 flutter pub upgrade creta_common
 flutter pub upgrade creta_user_model
 flutter pub upgrade creta_studio_model
+flutter pub upgrade creta_user_io
+flutter pub upgrade creta_studio_io
+
 

@@ -35,7 +35,8 @@ import 'package:creta_studio_model/model/frame_model.dart';
 import 'package:creta_studio_model/model/page_model.dart';
 import '../../book_main_page.dart';
 import '../../left_menu/clock/stop_watch.dart';
-import '../../left_menu/google_map/creta_map_widget.dart';
+// 구글맵 임시로 사용안함.
+//import '../../left_menu/google_map/creta_map_widget.dart';
 import '../../left_menu/news/article_view.dart';
 import '../../left_menu/timeline/horizontal_timeline.dart';
 import '../../left_menu/timeline/showcase_timeline.dart';
@@ -449,10 +450,10 @@ mixin FramePlayMixin {
     }
     return const SizedBox.shrink();
   }
-
-  Widget mapFrame(FrameModel model) {
-    return const CretaMapWidget();
-  }
+//구글맵 임시로 사용안함.
+  // Widget mapFrame(FrameModel model) {
+  //   return const CretaMapWidget();
+  // }
 
   Future<ContentsModel> _defaultTextModel(
     String frameMid,

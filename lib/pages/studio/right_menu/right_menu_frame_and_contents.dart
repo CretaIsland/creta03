@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
 
-import 'package:creta03/pages/studio/left_menu/google_map/google_map_contents.dart';
+// 구글맵 임시로 사용안함.
+//import 'package:creta03/pages/studio/left_menu/google_map/google_map_contents.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -197,9 +198,9 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
     if (contentsManager == null || contentsManager.getAvailLength() == 0) {
       if (frame.isWeatherTYpe()) {
         return WeatherProperty(frameModel: frame, frameManager: frameManager);
-      } else if (frame.isMapType()) {
-        // return GoogleMapSavedList();
-        return GoogleMapContents();
+        // 구글맵 임시로 사용안함.
+        // } else if (frame.isMapType()) {
+        //   return GoogleMapContents();
       }
       return SizedBox.shrink();
     }

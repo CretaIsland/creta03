@@ -1,3 +1,5 @@
+//구글맵 임시로 사용안함.
+/*
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -197,3 +199,4 @@ class _GoogleMapClassState extends State<GoogleMapClass> {
     );
   }
 }
+*/

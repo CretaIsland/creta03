@@ -58,7 +58,7 @@ dependencies:
   flutter_riverpod: ^1.0.4
   flutter_speed_dial: ^6.1.0+1
   routemaster: ^1.0.1
-  hycop: ^0.4.23
+  hycop: ^0.4.24
   outline_search_bar: ^2.3.0
   custom_radio_grouped_button: 2.2.1
   # elegant_radio_button_group: ^0.0.1
@@ -152,8 +152,9 @@ dependencies:
   marquee: ^2.2.3
   flutter_media_metadata: ^1.0.0+1
   geolocator: ^10.0.0
-  google_maps_flutter_web: ^0.5.7
-  google_maps_flutter: ^2.4.0
+  # //구글맵 임시로 사용안함.
+  # google_maps_flutter_web: ^0.5.7
+  # google_maps_flutter: ^2.4.0
   html_editor_enhanced: 2.5.1
   flutter_html: ^3.0.0-beta.2
   stop_watch_timer: ^3.0.1

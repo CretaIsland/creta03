@@ -589,9 +589,10 @@ class FrameEachState extends CretaState<FrameEach> with ContaineeMixin, FramePla
     if (model.isCameraType()) {
       return CameraFrame(model: model);
     }
-    if (model.isMapType()) {
-      return mapFrame(model);
-    }
+    //구글맵 임시로 사용안함.
+    // if (model.isMapType()) {
+    //   return mapFrame(model);
+    // }
     if (model.isDateTimeType()) {
       return dateTimeFrame(
         frameModel: model,

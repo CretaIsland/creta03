@@ -1,3 +1,5 @@
+//구글맵 임시로 사용안함.
+/*
 import 'package:flutter/material.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'google_map.dart';
@@ -46,3 +48,4 @@ class _MyWidgetState extends State<CretaMapWidget> {
     );
   }
 }
+*/

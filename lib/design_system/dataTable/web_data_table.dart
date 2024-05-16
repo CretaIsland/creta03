@@ -14,7 +14,7 @@ class WebDataTable extends StatelessWidget {
     Key? key,
     this.header,
     this.actions,
-    this.dataRowHeight = kMinInteractiveDimension,
+    this.dataRowHeight = kMinInteractiveDimension / 2,
     this.headingRowHeight = 56.0,
     this.horizontalMargin = 24.0,
     this.columnSpacing = 56.0,
