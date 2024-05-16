@@ -56,7 +56,7 @@ class HashTagWrapper {
         // enabled: enabled,
         //readOnly: !enabled,
         focusNode: focusNode,
-        textFieldHeight: 36,
+        textFieldHeight: 30,
         minTextFieldWidth: minTextFieldWidth,
         tagSpacing: 0,
         textStyle: CretaFont.buttonMedium,

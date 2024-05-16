@@ -278,7 +278,9 @@ class _TagsEditorState extends State<TagEditor> {
           padding: EdgeInsets.only(top: 4), //skpark
           height: widget.textFieldHeight, //skppark control size
           child: TextField(
-            textAlignVertical: TextAlignVertical.bottom, //skpark
+            // minLines: 1, //skpark
+            // maxLines: 1, //skpark
+            textAlignVertical: TextAlignVertical.center, //skpark
             style: widget.textStyle,
             focusNode: _focusNode,
             enabled: widget.enabled,

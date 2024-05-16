@@ -123,6 +123,12 @@ class _MainRouteAppState extends ConsumerState<MainRouteApp> {
       scrollbarTheme: ScrollbarThemeData(
         thumbColor: WidgetStateProperty.all(CretaColor.primary),
       ),
+      dividerColor: CretaColor.text[200],
+      dialogTheme: DialogTheme(
+        backgroundColor: Colors.white,
+        titleTextStyle: TextStyle(color: CretaColor.text),
+        contentTextStyle: TextStyle(color: CretaColor.text),
+      ),
     );
 
     return FutureBuilder<bool>(

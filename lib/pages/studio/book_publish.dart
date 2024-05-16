@@ -338,7 +338,11 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                         indent: 0,
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                        padding: EdgeInsets.only(
+                          left: horizontalPadding,
+                          right: horizontalPadding,
+                          top: 10,
+                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
