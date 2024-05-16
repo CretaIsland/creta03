@@ -89,6 +89,7 @@ class WebDataTable extends StatelessWidget {
               if (selected != null) source.selectAll(selected);
             },
             dataRowMinHeight: dataRowHeight,
+            dataRowMaxHeight: dataRowHeight,
             headingRowHeight: headingRowHeight,
             horizontalMargin: horizontalMargin,
             columnSpacing: columnSpacing,

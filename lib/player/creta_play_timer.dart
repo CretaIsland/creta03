@@ -470,7 +470,7 @@ class CretaPlayTimer extends ChangeNotifier {
         }
 
         if (contentsManager.isEmpty()) {
-          logger.info('contentsManager is empty');
+          //logger.info('contentsManager is empty');
           return;
         }
         if (contentsManager.iamBusy) {

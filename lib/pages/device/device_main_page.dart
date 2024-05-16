@@ -500,6 +500,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
             maxViewWidth: 1600.0,
             horizontalMargin: 6,
             columnSpacing: 10,
+            dataRowHeight: 28,
             controller: _horizontalController,
 
             source: WebDataTableSource(

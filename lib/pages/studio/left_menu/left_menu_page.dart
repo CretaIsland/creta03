@@ -1157,21 +1157,26 @@ class LeftMenuPageState extends State<LeftMenuPage> {
   }
 
   void _startScreenshotTimer() {
-    logger.finer('_startScreenshotTimer----------------------------------');
+    print('_startScreenshotTimer----------------------------------');
     _screenshotTimer ??= Timer.periodic(Duration(seconds: 60), (t) {
+      print('0. _startScreenshotTimer--${widget.isFolded}--------------------------------');
       if (widget.isFolded) {
         return;
       }
+      print('1. _startScreenshotTimer----------------------------------');
       if (saveManagerHolder!.isSomethingSaved() == false) {
         return;
       }
+      print('2. _startScreenshotTimer----------------------------------');
       if (BookMainPage.thumbnailChanged == false) {
         return;
       }
+      print('3. _startScreenshotTimer----------------------------------');
       Rect? pageViewArea = CretaCommonUtils.getArea(_pageViewKey);
       if (pageViewArea == null) {
         return;
       }
+      print('4. _startScreenshotTimer----------------------------------');
 
       // 제일 첫번째를 가져온다.
 
@@ -1180,11 +1185,13 @@ class LeftMenuPageState extends State<LeftMenuPage> {
         if (CretaCommonUtils.isRectContained(pageViewArea, _thumbArea!)) {
           // 이미 화면에 완전히 보인다.
           logger.fine('start first _takeAScreenShot()');
+          print('5. _startScreenshotTimer----------------------------------');
           _takeAScreenShot(_thumbArea!);
           //BookMainPage.bookManagerHolder!.notify();
           return;
         }
       }
+      print('6. _startScreenshotTimer----------------------------------');
 
       // 이때는 selecte 된 Page thumbnail 을 찍는 다.
       _thumbArea = BookMainPage.pageManagerHolder!.getThumbImageArea();
@@ -1192,6 +1199,8 @@ class LeftMenuPageState extends State<LeftMenuPage> {
         if (CretaCommonUtils.isRectContained(pageViewArea, _thumbArea!)) {
           // 이미 화면에 완전히 보인다.
           logger.fine('start selected _takeAScreenShot()');
+          print('7. _startScreenshotTimer----------------------------------');
+
           _takeAScreenShot(_thumbArea!);
           //BookMainPage.bookManagerHolder!.notify();
           return;
@@ -1206,8 +1215,8 @@ class LeftMenuPageState extends State<LeftMenuPage> {
 
   void _takeAScreenShot(Rect area) {
     BookMainPage.thumbnailChanged = false;
-    // print(
-    //     'start _takeAScreenShot(${area.left.round()},${area.top.round()},${area.width.round()},${area.height.round()} )');
+    print(
+        'start _takeAScreenShot(${area.left.round()},${area.top.round()},${area.width.round()},${area.height.round()} )');
     BookModel? bookModel = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
     if (bookModel == null) {
       logger.warning('book model is null');
@@ -1222,11 +1231,12 @@ class LeftMenuPageState extends State<LeftMenuPage> {
       offset: area.topLeft,
       size: area.size,
     ).then((value) {
+      print('+++++++++++++++++++++++++++');
       BookModel? bookModel = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
       if (value.isNotEmpty && bookModel != null) {
         bookModel.thumbnailUrl.set(value, noUndo: true, save: false);
         bookModel.thumbnailType.set(ContentsType.image, noUndo: true, save: false);
-        logger.fine('book Thumbnail saved !!! ${bookModel.mid}, $value');
+        logger.info('book Thumbnail saved !!! ${bookModel.mid}, $value');
         // 재귀적으로 계속 변경이 일어난 것으로 보고 계속 호출되는 것을 막기 위해, DB 에 직접 쓴다.
         BookMainPage.bookManagerHolder?.setToDB(bookModel);
       }

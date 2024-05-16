@@ -331,8 +331,8 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
 
         if (model.mid == mid) {
           //print('2FrameMain onComplete----------------------------------------------');
-          frameManager?.setToDB(model); // save()로 저장하게되면, 나중에 백그라운드 저장되면서 느려진다.
-          //model.save();
+          //frameManager?.setToDB(model); // save()로 저장하게되면, 나중에 백그라운드 저장되면서 느려진다.
+          model.save(); // 그러나 만약 save 를 하지 않으면... undo redo 가 안된다.
           _sendEvent?.sendEvent(model);
           if (false == BookMainPage.pageManagerHolder?.invalidateThumbnail(widget.pageModel.mid)) {
             logger.severe('notify to thumbnail failed');

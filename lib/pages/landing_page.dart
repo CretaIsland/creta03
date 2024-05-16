@@ -46,15 +46,15 @@ class _LandingPageState extends State<LandingPage> {
   // dropdown menu item
   List<Text> languageItemList = [];
   //late List<DropdownMenuItem> languageItems;
-  late List<DropdownMenuItem> purposeItems;
-  late List<DropdownMenuItem> sortItems;
+  List<DropdownMenuItem> purposeItems = [];
+  List<DropdownMenuItem> sortItems = [];
   // selected value of dropdown menu
   //late String selectedLanguage;
-  late BookType selectedPurpose;
-  late BookSort selectedSort;
+  BookType selectedPurpose = BookType.presentaion;
+  BookSort selectedSort = BookSort.updateTime;
 
-  late List<String> topBannerImgPaths;
-  late List<String> bottomBannerImgPaths;
+  List<String> topBannerImgPaths = [];
+  List<String> bottomBannerImgPaths = [];
 
   // search result creta book
   List<BookModel> searchCretaBooks = [];

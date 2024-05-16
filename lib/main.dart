@@ -27,7 +27,7 @@ void main() async {
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
   setupLogger();
-  Logger.root.level = Level.SEVERE;
+  Logger.root.level = Level.INFO;
   HycopFactory.serverType = ServerType.appwrite;
   await HycopFactory.initAll();
   await CretaAccountManager.initUserProperty();
@@ -113,7 +113,7 @@ class _MainRouteAppState extends ConsumerState<MainRouteApp> {
         onSecondary: CretaColor.text[100]!,
         error: CretaColor.stateCritical,
         onError: CretaColor.text,
-        surface: Colors.yellow,
+        surface: Colors.white,
         onSurface: CretaColor.text,
       ),
       // sliderTheme: SliderThemeData(
@@ -169,7 +169,6 @@ class InitBinding extends Bindings {
     //Get.put(FrameEventController());
   }
 }
-
 
 class MyTextTheme extends TextTheme {
   // Add your custom styles here
