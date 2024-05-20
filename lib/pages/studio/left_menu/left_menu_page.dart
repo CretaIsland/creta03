@@ -1222,11 +1222,14 @@ class LeftMenuPageState extends State<LeftMenuPage> {
     ).then((value) {
       BookModel? bookModel = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
       if (value.isNotEmpty && bookModel != null) {
-        bookModel.thumbnailUrl.set(value, noUndo: true, save: false);
-        bookModel.thumbnailType.set(ContentsType.image, noUndo: true, save: false);
-        logger.info('book Thumbnail saved !!! ${bookModel.mid}, $value');
-        // 재귀적으로 계속 변경이 일어난 것으로 보고 계속 호출되는 것을 막기 위해, DB 에 직접 쓴다.
-        BookMainPage.bookManagerHolder?.setToDB(bookModel);
+        // 기존에 있던 썸네일 파일은 제거 (Hycop 0.4.25)
+        HycopFactory.storage!.deleteFileFromUrl(bookModel.thumbnailUrl).then(() {
+          bookModel.thumbnailUrl.set(value, noUndo: true, save: false);
+          bookModel.thumbnailType.set(ContentsType.image, noUndo: true, save: false);
+          logger.info('book Thumbnail saved !!! ${bookModel.mid}, $value');
+          // 재귀적으로 계속 변경이 일어난 것으로 보고 계속 호출되는 것을 막기 위해, DB 에 직접 쓴다.
+          BookMainPage.bookManagerHolder?.setToDB(bookModel);
+        });
       }
       return null;
     });
@@ -1251,10 +1254,13 @@ class LeftMenuPageState extends State<LeftMenuPage> {
       size: thumbArea.size,
     );
     if (url.isNotEmpty) {
-      pageModel.thumbnailUrl.set(url, noUndo: true, save: false);
-      //print('page Thumbnail saved !!! ${pageModel.mid}, $url');
-      // 재귀적으로 계속 변경이 일어난 것으로 보고 계속 호출되는 것을 막기 위해, DB 에 직접 쓴다.
-      BookMainPage.pageManagerHolder?.setToDB(pageModel);
+      // 기존에 있던 썸네일 파일은 제거 (Hycop 0.4.25)
+      HycopFactory.storage!.deleteFileFromUrl(pageModel.thumbnailUrl).then((value) {
+        pageModel.thumbnailUrl.set(url, noUndo: true, save: false);
+        //print('page Thumbnail saved !!! ${pageModel.mid}, $url');
+        // 재귀적으로 계속 변경이 일어난 것으로 보고 계속 호출되는 것을 막기 위해, DB 에 직접 쓴다.
+        BookMainPage.pageManagerHolder?.setToDB(pageModel);
+      });
     }
 
     return;
