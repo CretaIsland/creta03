@@ -1223,7 +1223,7 @@ class LeftMenuPageState extends State<LeftMenuPage> {
       BookModel? bookModel = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
       if (value.isNotEmpty && bookModel != null) {
         // 기존에 있던 썸네일 파일은 제거 (Hycop 0.4.25)
-        HycopFactory.storage!.deleteFileFromUrl(bookModel.thumbnailUrl).then(() {
+        HycopFactory.storage!.deleteFileFromUrl(bookModel.thumbnailUrl.value).then((_) {
           bookModel.thumbnailUrl.set(value, noUndo: true, save: false);
           bookModel.thumbnailType.set(ContentsType.image, noUndo: true, save: false);
           logger.info('book Thumbnail saved !!! ${bookModel.mid}, $value');
@@ -1255,7 +1255,7 @@ class LeftMenuPageState extends State<LeftMenuPage> {
     );
     if (url.isNotEmpty) {
       // 기존에 있던 썸네일 파일은 제거 (Hycop 0.4.25)
-      HycopFactory.storage!.deleteFileFromUrl(pageModel.thumbnailUrl).then((value) {
+      HycopFactory.storage!.deleteFileFromUrl(pageModel.thumbnailUrl.value).then((value) {
         pageModel.thumbnailUrl.set(url, noUndo: true, save: false);
         //print('page Thumbnail saved !!! ${pageModel.mid}, $url');
         // 재귀적으로 계속 변경이 일어난 것으로 보고 계속 호출되는 것을 막기 위해, DB 에 직접 쓴다.
