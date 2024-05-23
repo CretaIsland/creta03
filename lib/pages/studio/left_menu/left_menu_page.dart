@@ -726,11 +726,11 @@ class LeftMenuPageState extends State<LeftMenuPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              model.startTime.value,
+              '${model.startDate.value} ${model.startTime.value}',
               style: CretaFont.titleMedium.copyWith(color: CretaColor.primary),
             ),
             Text(
-              model.endTime.value,
+              '${model.endDate.value} ${model.endTime.value}',
               style: CretaFont.titleMedium.copyWith(color: CretaColor.primary),
             ),
           ],

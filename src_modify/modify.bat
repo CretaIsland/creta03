@@ -5,7 +5,7 @@ REM cp   C:/Users/dseon/AppData/Local\Pub\Cache\hosted\pub.dev\hycop-0.0.6\lib\h
 
 REM copy $env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\custom_radio_grouped_button-2.2.0\lib\CustomButtons\CustomRadioButton.dart src_modify\CustomRadioButton.daxt
 REM copy $env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\r_dotted_line_border-0.1.1\lib\r_dotted_line_border.dart  src_modify\r_dotted_line_border.daxt
-REM copy  C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\video_player-2.6.1\lib\video_player.dart src_modify\video_player.daxt
+copy src_modify\video_player_2.8.6.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\video_player-2.8.6\lib\video_player.dart" 
 
 REM REM REM REM REM REM  skpark modify REM REM REM REM REM REM REM REM 
 

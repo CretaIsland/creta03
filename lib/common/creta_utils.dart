@@ -351,10 +351,35 @@ class CretaUtils {
     return false;
   }
 
-  static bool isCurrentTimeBetween(String startTime, String endTime) {
+  static bool isCurrentDateTimeBetween(
+      String startDate, String endDate, String startTime, String endTime) {
+    return isCurrentDateBetween(startDate, endDate) && isCurrentTimeBetween(startTime, endTime);
+  }
+
+  static bool isCurrentDateBetween(String startDate, String endDate) {
     DateTime now = DateTime.now();
-    DateTime start = DateTime.parse(startTime);
-    DateTime end = DateTime.parse(endTime);
-    return now.isAfter(start) && now.isBefore(end);
+    DateTime start = DateTime.parse(startDate);
+    DateTime end = DateTime.parse(endDate);
+    return (now.isAfter(start) || now.isAtSameMomentAs(start)) &&
+        (now.isBefore(end) || now.isAtSameMomentAs(start));
+  }
+
+  static bool isCurrentTimeBetween(String startTime, String endTime) {
+    final now = TimeOfDay.fromDateTime(DateTime.now());
+
+    final startParts = startTime.split(':');
+    final endParts = endTime.split(':');
+
+    final start = TimeOfDay(hour: int.parse(startParts[0]), minute: int.parse(startParts[1]));
+    final end = TimeOfDay(hour: int.parse(endParts[0]), minute: int.parse(endParts[1]));
+
+    // Check if current time is after start time
+    final afterStart =
+        now.hour > start.hour || (now.hour == start.hour && now.minute >= start.minute);
+
+    // Check if current time is before end time
+    final beforeEnd = now.hour < end.hour || (now.hour == end.hour && now.minute <= end.minute);
+
+    return afterStart && beforeEnd;
   }
 }

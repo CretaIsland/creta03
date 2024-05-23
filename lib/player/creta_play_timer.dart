@@ -462,10 +462,19 @@ class CretaPlayTimer extends ChangeNotifier {
     await _lock.synchronized(
       () async {
         if (StudioVariables.isPreview == true) {
+          // 현재 유효한 TimeBase Page 가 있다면, 거기까지  Page 를 넘겨서, 해당 TimeBase page 가 나오도록 하기 위한 부분이다.
           if (BookMainPage.pageManagerHolder!.checkTimeBasePage()) {
-// todo : 여기 하다가 말았음.
             frameManager.nextPageListener(contentsManager.frameModel);
             return;
+          }
+
+          //반면에 현재 page 가 timeBase 스케쥴이지만, 현재 시간에 해당하지 않는다면 다음페이지로 넘겨야 한다.
+          if (BookMainPage.pageManagerHolder!.isTimeBasePage() == true) {
+            if (BookMainPage.pageManagerHolder!.isTimeBasePageTime() == false) {
+              BookMainPage.pageManagerHolder!.gotoNext();
+              frameManager.nextPageListener(contentsManager.frameModel);
+              return;
+            }
           }
         }
 

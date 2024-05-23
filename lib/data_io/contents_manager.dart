@@ -664,7 +664,6 @@ class ContentsManager extends BaseContentsManager {
               video.isInit() &&
               playTimer != null &&
               playTimer!.isCurrentModel(player.model!.mid)) {
-            logger.fine('contents.pause');
             await video.wcontroller!.pause();
             logger.fine('contents.pause end');
           }

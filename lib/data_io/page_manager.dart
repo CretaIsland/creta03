@@ -579,7 +579,12 @@ class PageManager extends BasePageManager {
         }
         // timeBase 처리
         if (pageModel.isTimeBase()) {
-          if (CretaUtils.isCurrentTimeBetween(pageModel.startTime.value, pageModel.endTime.value) ==
+          if (CretaUtils.isCurrentDateTimeBetween(
+                pageModel.startDate.value,
+                pageModel.endDate.value,
+                pageModel.startTime.value,
+                pageModel.endTime.value,
+              ) ==
               true) {
             return pageModel;
           }
@@ -717,7 +722,12 @@ class PageManager extends BasePageManager {
 
         // timeBase 처리
         if (pageModel.isTimeBase()) {
-          if (CretaUtils.isCurrentTimeBetween(pageModel.startTime.value, pageModel.endTime.value) ==
+          if (CretaUtils.isCurrentDateTimeBetween(
+                pageModel.startDate.value,
+                pageModel.endDate.value,
+                pageModel.startTime.value,
+                pageModel.endTime.value,
+              ) ==
               false) {
             continue;
           }
@@ -1138,7 +1148,7 @@ class PageManager extends BasePageManager {
       // 현재 시간에 걸린 타임베이스 페이지 중 가장 order  가 높은 timebase page 를 리턴한다.
       PageModel page = val as PageModel;
       if (page.isTimeBase()) {
-        if (CretaUtils.isCurrentTimeBetween(page.startTime.value, page.endTime.value)) {
+        if (page.isCurrentDateTimeBetween()) {
           retval = page;
         }
       }
@@ -1150,7 +1160,6 @@ class PageManager extends BasePageManager {
   bool checkTimeBasePage() {
     PageModel? pageModel = hasTimeBaseNow();
     if (pageModel != null) {
-      //print('before selectedMid=$selectedMid pageModel.mid=${pageModel.mid}');
       if (selectedMid != pageModel.mid) {
         //if (StudioVariables.isPreview == true) {
         //print('******************************** timebase start !!!!!!!!');
@@ -1164,6 +1173,22 @@ class PageManager extends BasePageManager {
       }
     }
     return false;
+  }
+
+  bool isTimeBasePage() {
+    PageModel? currentModel = getSelected() as PageModel?;
+    if (currentModel != null && currentModel.isTimeBase()) {
+      return true;
+    }
+    return false;
+  }
+
+  bool isTimeBasePageTime() {
+    PageModel? currentModel = getSelected() as PageModel?;
+    if (currentModel != null && currentModel.isTimeBase()) {
+      return currentModel.isCurrentDateTimeBetween();
+    }
+    return true;
   }
 
   // void printSelectedMid(int index) {

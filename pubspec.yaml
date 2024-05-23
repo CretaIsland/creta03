@@ -98,7 +98,7 @@ dependencies:
   starsview: ^0.0.2
   flutter_dropzone: ^3.0.5
   blobs: ^2.0.0
-  video_player: 2.7.2
+  video_player: 2.8.6
   # youtube_player_iframe: ^3.1.0
   youtube_player_iframe: ^4.0.4
   animated_text_kit: ^4.2.2

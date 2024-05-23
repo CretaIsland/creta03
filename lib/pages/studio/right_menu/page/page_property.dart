@@ -70,14 +70,18 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         page != null && page.startTime.value.isNotEmpty && page.endTime.value.isNotEmpty;
 
     if (page != null && page.startTime.value.isNotEmpty) {
-      DateTime dateTime = DateTime.parse(page.startTime.value);
-      _startDate = DateTime(dateTime.year, dateTime.month, dateTime.day);
-      _startTime = TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
+      _startTime = stringToTimeOfDay(page.startTime.value);
     }
     if (page != null && page.endTime.value.isNotEmpty) {
-      DateTime dateTime = DateTime.parse(page.endTime.value);
+      _endTime = stringToTimeOfDay(page.endTime.value);
+    }
+    if (page != null && page.startDate.value.isNotEmpty) {
+      DateTime dateTime = DateTime.parse(page.startDate.value);
+      _startDate = DateTime(dateTime.year, dateTime.month, dateTime.day);
+    }
+    if (page != null && page.endDate.value.isNotEmpty) {
+      DateTime dateTime = DateTime.parse(page.endDate.value);
       _endDate = DateTime(dateTime.year, dateTime.month, dateTime.day);
-      _endTime = TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
     }
   }
 
@@ -538,6 +542,8 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         hasRemoveButton: _model!.startTime.value.isNotEmpty && _model!.endTime.value.isNotEmpty,
         onDelete: () {
           setState(() {
+            _model!.startDate.set('');
+            _model!.endDate.set('');
             _model!.startTime.set('');
             _model!.endTime.set('');
             _isTimeSettingEnabled = false;
@@ -568,9 +574,13 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
                     setState(() {
                       _isTimeSettingEnabled = value;
                       if (value == true) {
-                        _model!.startTime.set(formatDateTime(_startDate, _startTime));
-                        _model!.endTime.set(formatDateTime(_endDate, _endTime));
+                        _model!.startDate.set(formatDate(_startDate));
+                        _model!.endDate.set(formatDate(_endDate));
+                        _model!.startTime.set(formatTime(_startTime));
+                        _model!.endTime.set(formatTime(_endTime));
                       } else {
+                        _model!.startDate.set('');
+                        _model!.endDate.set('');
                         _model!.startTime.set('');
                         _model!.endTime.set('');
                       }
@@ -603,7 +613,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
                       if (date != null) {
                         setState(() {
                           _startDate = date;
-                          _model!.startTime.set(formatDateTime(_startDate, _startTime));
+                          _model!.startDate.set(formatDate(_startDate));
                         });
                         BookMainPage.pageManagerHolder?.notify();
                       }
@@ -623,7 +633,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
                       if (time != null) {
                         setState(() {
                           _startTime = time;
-                          _model!.startTime.set(formatDateTime(_startDate, _startTime));
+                          _model!.startTime.set(formatTime(_startTime));
                         });
                         BookMainPage.pageManagerHolder?.notify();
                       }
@@ -655,7 +665,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
                       if (date != null) {
                         setState(() {
                           _endDate = date;
-                          _model!.endTime.set(formatDateTime(_endDate, _endTime));
+                          _model!.endDate.set(formatDate(_endDate));
                         });
                         BookMainPage.pageManagerHolder?.notify();
                       }
@@ -675,7 +685,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
                       if (time != null) {
                         setState(() {
                           _endTime = time;
-                          _model!.endTime.set(formatDateTime(_endDate, _endTime));
+                          _model!.endTime.set(formatTime(_endTime));
                         });
                         BookMainPage.pageManagerHolder?.notify();
                       }
@@ -690,10 +700,34 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
     );
   }
 
-  String formatDateTime(DateTime date, TimeOfDay time) {
-    final dateTime = DateTime(date.year, date.month, date.day, time.hour, time.minute);
-    return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
+  // String formatDateTime(DateTime date, TimeOfDay time) {
+  //   final dateTime = DateTime(date.year, date.month, date.day, time.hour, time.minute);
+  //   return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
+  //   //return DateFormat.EEEE('ko').format(dateTime);
+  // }
+
+  String formatDate(DateTime date) {
+    return DateFormat('yyyy-MM-dd').format(date);
     //return DateFormat.EEEE('ko').format(dateTime);
+  }
+
+  String formatTime(TimeOfDay time) {
+    final hours = time.hour.toString().padLeft(2, '0');
+    final minutes = time.minute.toString().padLeft(2, '0');
+    return '$hours:$minutes:00';
+    //return DateFormat.EEEE('ko').format(dateTime);
+  }
+
+  TimeOfDay stringToTimeOfDay(String time) {
+    // time에  날자 포맷으로 들어있을 수도 있다. 날짜 포맷이 있다면 없애야 한다.
+    if (time.length > 11) {
+      time = time.substring(11);
+    }
+    final timeParts = time.split(':');
+    if (timeParts.length < 2) return TimeOfDay.now();
+    final hour = int.parse(timeParts[0]);
+    final minute = int.parse(timeParts[1]);
+    return TimeOfDay(hour: hour, minute: minute);
   }
 
   // Widget _durationTypeWidget() {
