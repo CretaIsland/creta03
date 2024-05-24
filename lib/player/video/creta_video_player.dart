@@ -18,7 +18,7 @@ class CretaVideoPlayer extends CretaAbsPlayer {
     required super.model,
     required super.acc,
   }) {
-    //logger.fine("CretaVideoPlayer(isAutoPlay=${StudioVariables.isAutoPlay})");
+    //logger.info("CretaVideoPlayer(isAutoPlay=${StudioVariables.isAutoPlay})");
   }
 
   VideoPlayerController? wcontroller;
@@ -36,13 +36,13 @@ class CretaVideoPlayer extends CretaAbsPlayer {
     if (uri.isEmpty) {
       logger.severe(errMsg);
     }
-    logger.fine('initVideo(${model!.name},$uri)');
+    logger.info('initVideo(${model!.name},$uri)');
 
     //wcontroller = VideoPlayerController.network(uri,
     wcontroller = VideoPlayerController.networkUrl(Uri.parse(uri),
         videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true))
       ..initialize().then((_) {
-        logger.fine('initialize complete(${model!.name}, ${acc.getAvailLength()})');
+        logger.info('initialize complete(${model!.name}, ${acc.getAvailLength()})');
         if (StudioVariables.isMute == false && model!.mute.value == false) {
           wcontroller!.setVolume(model!.volume.value);
         } else {
@@ -68,7 +68,7 @@ class CretaVideoPlayer extends CretaAbsPlayer {
           }
           prevEvent = event.eventType;
         };
-        logger.fine('initialize complete(${wcontroller!.value.duration.inMilliseconds})');
+        logger.info('initialize complete(${wcontroller!.value.duration.inMilliseconds})');
 
         //wcontroller!.play();
       });
@@ -81,7 +81,8 @@ class CretaVideoPlayer extends CretaAbsPlayer {
 
   @override
   void stop() {
-    logger.fine("video player stop,${model!.name}");
+    //print("video player stop,${model!.name}-------------------------------------------");
+    logger.info("video player stop,${model!.name}");
     //widget.wcontroller!.dispose();
     super.stop();
     model!.setPlayState(PlayState.stop);
@@ -93,7 +94,7 @@ class CretaVideoPlayer extends CretaAbsPlayer {
     // while (wcontroller!.value.isInitialized == false) {
     //   await Future.delayed(const Duration(milliseconds: 100));
     // }
-    logger.fine('play  ${model!.name}');
+    logger.info('play  ${model!.name}');
     model!.setPlayState(PlayState.start);
     await wcontroller!.play();
   }
@@ -103,7 +104,7 @@ class CretaVideoPlayer extends CretaAbsPlayer {
     // while (model!.state == PlayState.disposed) {
     //   await Future.delayed(const Duration(milliseconds: 100));
     // }
-    logger.fine('pause ${model!.name}');
+    logger.info('pause ${model!.name}');
     model!.setPlayState(PlayState.pause);
     await wcontroller!.pause();
   }
@@ -113,7 +114,7 @@ class CretaVideoPlayer extends CretaAbsPlayer {
     // while (model!.state == PlayState.disposed) {
     //   await Future.delayed(const Duration(milliseconds: 100));
     // }
-    logger.fine('globalPause');
+    logger.info('globalPause');
     model!.setPlayState(PlayState.globalPause);
     await wcontroller!.pause();
   }
@@ -125,7 +126,7 @@ class CretaVideoPlayer extends CretaAbsPlayer {
     // }
     PlayState prevState = model!.playState;
     if (prevState == PlayState.globalPause) {
-      logger.fine('globalResume');
+      logger.info('globalResume');
       model!.resumeState();
       if (model!.playState == PlayState.start) {
         await wcontroller!.play();
@@ -138,7 +139,7 @@ class CretaVideoPlayer extends CretaAbsPlayer {
     // while (model!.state == PlayState.disposed) {
     //   await Future.delayed(const Duration(milliseconds: 100));
     // }
-    logger.fine('resume');
+    logger.info('resume');
     PlayState prevState = model!.playState;
     model!.resumeState();
     if (prevState == PlayState.pause && model!.playState == PlayState.start) {
@@ -149,7 +150,7 @@ class CretaVideoPlayer extends CretaAbsPlayer {
   // @override
   // Future<void> close() async {
   //   model?.setPlayState(PlayState.none);
-  //   logger.fine("videoController close()");
+  //   logger.info("videoController close()");
   //   await wcontroller?.dispose();
   //   wcontroller = null;
   // }
@@ -166,6 +167,7 @@ class CretaVideoPlayer extends CretaAbsPlayer {
 
   @override
   Future<void> rewind() async {
+    //print('rewind');
     await wcontroller!.seekTo(Duration.zero);
   }
 
@@ -188,13 +190,13 @@ class CretaVideoPlayer extends CretaAbsPlayer {
   // @override
   // Future<void> afterBuild() async {
   //   WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-  //     logger.fine('afterBuild video');
+  //     logger.info('afterBuild video');
   //     // if (wcontroller != null && model != null) {
-  //     //   logger.fine('video : ${model!.name}');
+  //     //   logger.info('video : ${model!.name}');
   //     //   model!.aspectRatio.set(wcontroller!.value.aspectRatio, noUndo: true, save: false);
   //     // }
   //     // super.afterBuild();
-  //     logger.fine('afterBuild video end');
+  //     logger.info('afterBuild video end');
   //   });
   // }
 
@@ -211,13 +213,13 @@ class CretaVideoPlayer extends CretaAbsPlayer {
         return true;
       }
     }
-    logger.fine('waitInit........ ${model!.name}');
+    logger.info('waitInit........ ${model!.name}');
     //int waitCount = 0;
     while (!wcontroller!.value.isInitialized) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
     _isInitAlreadyDone = true;
-    logger.fine('waitInit end .........  ${model!.name}');
+    logger.info('waitInit end .........  ${model!.name}');
     //await wcontroller!.setLooping(acc.getShowLength() == 1 && model!.isShow.value == true);
     if (_outSize == null) {
       _outSize = getOuterSize(wcontroller!.value.aspectRatio);

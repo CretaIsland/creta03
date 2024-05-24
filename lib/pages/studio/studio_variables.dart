@@ -64,6 +64,7 @@ class StudioVariables {
   static bool useMagnet = true;
   static double magnetMargin = 3;
 
+  static bool isSizeChanging = false;
   static bool isPreview = false;
   static bool hideMouse = false;
 

@@ -219,6 +219,8 @@ class _BookMainPageState extends State<BookMainPage> {
 
   bool _fromPriviewToMain = false; // 돌아가기 버튼을 누르면 True  가 됨.
 
+  Size? _previousSize; // 현재 사이즈 보관
+
   //Timer? _connectedUserTimer;
 
   //OffsetEventController? _linkSendEvent;
@@ -1754,104 +1756,112 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget noneScrollBox(bool isPageExist) {
-    return
+    // WillPopScope(
+    //   onWillPop: () async {
+    //     //showSnackBar(context, CretaLang['cantGoBack']!);
+    //     return false; // 뒤로가기 금지
+    //   },
+    //   child:
 
-        // WillPopScope(
-        //   onWillPop: () async {
-        //     //showSnackBar(context, CretaLang['cantGoBack']!);
-        //     return false; // 뒤로가기 금지
-        //   },
-        //   child:
-
-        Container(
-      width: StudioVariables.workWidth, //scrollWidth,
-      height: StudioVariables.workHeight,
-      color: LayoutConst.studioBGColor,
-      //color: Colors.green,
-      child: Consumer<PageManager>(builder: (context, pageManager, child) {
-        pageManager.reOrdering();
-        if (BookPreviewMenu.previewMenuPressed == false) {
-          isPageExist = pageManager.gotoFirst();
-        }
-        int? pageNo = pageManager.getSelectedNumber();
-        if (pageNo == null) {
-          return SizedBox.shrink();
-        }
-        PageModel? pageModel = pageManager.getSelected() as PageModel?;
-        int totalPage = pageManager.getAvailLength();
-        return Stack(
-          children: [
-            Center(
-              child: _drawPrevPage(context, pageManager),
-            ),
-            Center(
-              child: isPageExist
-                  ? _drawPage(context, pageModel)
-                  : Text(
-                      CretaStudioLang['noUnshowPage']!,
-                      style: CretaFont.headlineLarge,
-                    ),
-            ),
-            if (StudioVariables.hideMouse == false)
-              BookPreviewMenu(
-                goBackProcess: () {
-                  //setState(() {
-                  StudioVariables.isPreview = false;
-                  //});
-                  // 돌아기기
-                  _fromPriviewToMain = true;
-                  StudioVariables.stopPaging = false;
-                  StudioVariables.stopNextContents = false;
-
-                  if (kReleaseMode) {
-                    // String url = '${AppRoutes.studioBookPreviewPage}?${StudioVariables.selectedBookMid}';
-                    // AppRoutes.launchTab(url);
-                    Routemaster.of(context)
-                        .push('${AppRoutes.studioBookMainPage}?${StudioVariables.selectedBookMid}');
-                  } else {
-                    Routemaster.of(context)
-                        .push('${AppRoutes.studioBookMainPage}?${StudioVariables.selectedBookMid}');
-                  }
-                },
-                muteFunction: () {
-                  MouseHider.lastMouseMoveTime = DateTime.now();
-                  StudioVariables.globalToggleMute(save: false);
-                },
-                playFunction: () {
-                  MouseHider.lastMouseMoveTime = DateTime.now();
-                  //StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent,
-                  setState(() {
-                    StudioVariables.stopPaging = !StudioVariables.stopPaging;
-                  });
-                  //StudioVariables.globalToggleAutoPlay(save: false);
-                  // if (StudioVariables.isAutoPlay && StudioVariables.isPreview) {
-                  //   _startConnectedUserTimer();
-                  // }
-                },
-                gotoNext: () {
-                  MouseHider.lastMouseMoveTime = DateTime.now();
-                  BookPreviewMenu.previewMenuPressed = true;
-                  StudioVariables.stopPaging = false;
-                  StudioVariables.stopNextContents = false;
-                  pageManager.gotoNext();
-                },
-                gotoPrev: () {
-                  MouseHider.lastMouseMoveTime = DateTime.now();
-                  BookPreviewMenu.previewMenuPressed = true;
-                  StudioVariables.stopPaging = false;
-                  StudioVariables.stopNextContents = false;
-                  pageManager.gotoPrev();
-                },
-                pageNo: pageNo,
-                totalPage: totalPage,
-                isPublishedMode: widget.isPublishedMode,
-                toggleFullscreen: widget.toggleFullscreen,
+    return LayoutBuilder(builder: (context, constraints) {
+      // 사이즉 변하는 중인지 알아낸다.
+      final currentSize = Size(constraints.maxWidth, constraints.maxHeight);
+      if (_previousSize != null && _previousSize != currentSize) {
+        StudioVariables.isSizeChanging = true;
+      } else {
+        StudioVariables.isSizeChanging = false;
+      }
+      _previousSize = currentSize;
+      return Container(
+        width: StudioVariables.workWidth, //scrollWidth,
+        height: StudioVariables.workHeight,
+        color: LayoutConst.studioBGColor,
+        //color: Colors.green,
+        child: Consumer<PageManager>(builder: (context, pageManager, child) {
+          pageManager.reOrdering();
+          if (BookPreviewMenu.previewMenuPressed == false) {
+            isPageExist = pageManager.gotoFirst();
+          }
+          int? pageNo = pageManager.getSelectedNumber();
+          if (pageNo == null) {
+            return SizedBox.shrink();
+          }
+          PageModel? pageModel = pageManager.getSelected() as PageModel?;
+          int totalPage = pageManager.getAvailLength();
+          return Stack(
+            children: [
+              Center(
+                child: _drawPrevPage(context, pageManager),
               ),
-          ],
-        );
-      }),
-      //),
-    );
+              Center(
+                child: isPageExist
+                    ? _drawPage(context, pageModel)
+                    : Text(
+                        CretaStudioLang['noUnshowPage']!,
+                        style: CretaFont.headlineLarge,
+                      ),
+              ),
+              if (StudioVariables.hideMouse == false)
+                BookPreviewMenu(
+                  goBackProcess: () {
+                    //setState(() {
+                    StudioVariables.isPreview = false;
+                    //});
+                    // 돌아기기
+                    _fromPriviewToMain = true;
+                    StudioVariables.stopPaging = false;
+                    StudioVariables.stopNextContents = false;
+
+                    if (kReleaseMode) {
+                      // String url = '${AppRoutes.studioBookPreviewPage}?${StudioVariables.selectedBookMid}';
+                      // AppRoutes.launchTab(url);
+                      Routemaster.of(context).push(
+                          '${AppRoutes.studioBookMainPage}?${StudioVariables.selectedBookMid}');
+                    } else {
+                      Routemaster.of(context).push(
+                          '${AppRoutes.studioBookMainPage}?${StudioVariables.selectedBookMid}');
+                    }
+                  },
+                  muteFunction: () {
+                    MouseHider.lastMouseMoveTime = DateTime.now();
+                    StudioVariables.globalToggleMute(save: false);
+                  },
+                  playFunction: () {
+                    MouseHider.lastMouseMoveTime = DateTime.now();
+                    //StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent,
+                    setState(() {
+                      StudioVariables.stopPaging = !StudioVariables.stopPaging;
+                    });
+                    //StudioVariables.globalToggleAutoPlay(save: false);
+                    // if (StudioVariables.isAutoPlay && StudioVariables.isPreview) {
+                    //   _startConnectedUserTimer();
+                    // }
+                  },
+                  gotoNext: () {
+                    MouseHider.lastMouseMoveTime = DateTime.now();
+                    BookPreviewMenu.previewMenuPressed = true;
+                    StudioVariables.stopPaging = false;
+                    StudioVariables.stopNextContents = false;
+                    pageManager.gotoNext();
+                  },
+                  gotoPrev: () {
+                    MouseHider.lastMouseMoveTime = DateTime.now();
+                    BookPreviewMenu.previewMenuPressed = true;
+                    StudioVariables.stopPaging = false;
+                    StudioVariables.stopNextContents = false;
+                    pageManager.gotoPrev();
+                  },
+                  pageNo: pageNo,
+                  totalPage: totalPage,
+                  isPublishedMode: widget.isPublishedMode,
+                  toggleFullscreen: widget.toggleFullscreen,
+                ),
+            ],
+          );
+        }),
+        //),
+      );
+    });
   }
 
   // ignore: unused_element

@@ -90,6 +90,9 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
     _showOrderSendEvent = showOrderSendEvent;
 
     if (StudioVariables.isPreview) {
+      // 사이즈가 변하고 있을 때는 사용사가 사용한다는 뜻이며,
+      // 사이즈가 변하지 않는 다는 것은 DID 등에서 방송하고 있다는 뜻이다.
+      // 사이즈가 변할때는  _updatePage 를 하게 되면, frameSize 나 위치가 적절히 조정이 되지 않기 때문에,
       _updatePage();
     }
 
@@ -165,7 +168,9 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
       //     : null,
       book: widget.bookModel,
       page: widget.pageModel,
-      allPageInfos: (StudioVariables.isPreview) ? BookMainPage.allPageInfos : null,
+      allPageInfos: (StudioVariables.isPreview && StudioVariables.isSizeChanging == false)
+          ? BookMainPage.allPageInfos
+          : null,
       width: widget.pageWidth,
       height: widget.pageHeight,
       frameManager: frameManager,

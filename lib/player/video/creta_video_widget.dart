@@ -3,6 +3,7 @@
 
 import 'dart:math';
 
+import 'package:creta_common/model/app_enums.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
@@ -38,20 +39,39 @@ class CretaVideoPlayerWidgetState extends CretaState<CretaVideoWidget> {
     //widget.player.afterBuild();
     final CretaVideoPlayer player = widget.player as CretaVideoPlayer;
     _isInitialized = player.waitInitVideo();
+
+    afterBuild();
+  }
+
+  // build 후 호출되는 함수
+  Future<void> afterBuild() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final CretaVideoPlayer player = widget.player as CretaVideoPlayer;
+      if (player.isInitAlreadyDone) {
+        if (player.getPlayState() == PlayState.start) {
+          //print('player isInitAlreadyDonw start !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+          // 두번째 바퀴에서 플레이할때, 강제로 플레이를 해주지 않으면 플레이가 되지를 않고 있다.
+          //player.pause();
+          // delay 0.2초 후에 play
+          await Future.delayed(const Duration(milliseconds: 200));
+          player.play();
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
-    widget.player.stop();
+    // print(
+    //     'CretaVideoWidget dispose ------------------------------VideoPlayer${widget.player.keyString}');
+    //widget.player.stop();
   }
 
   @override
   Widget build(BuildContext context) {
-    //print('build');
     final CretaVideoPlayer player = widget.player as CretaVideoPlayer;
     if (player.isInitAlreadyDone) {
-      //print('player isInitAlreadyDonw !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
       return IgnorePointer(
         child: getClipRect(
           player.getSize()!,
