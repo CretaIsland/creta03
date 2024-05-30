@@ -1,12 +1,14 @@
 import 'package:creta_common/common/creta_color.dart';
 import 'package:flutter/material.dart';
 
+import 'my_data_source.dart';
+import 'my_data_table.dart';
 import 'web_data_column.dart';
 
-// class MyDataCell extends DataCell {
+// class MyDataCell extends MyDataCell {
 //   final String keyValue;
 
-//   MyDataCell(DataCell dataCell, this.keyValue)
+//   MyDataCell(MyDataCell dataCell, this.keyValue)
 //       : super(
 //           dataCell.child,
 //           placeholder: dataCell.placeholder,
@@ -32,7 +34,7 @@ class ConditionColor {
 ///
 ///
 ///
-class WebDataTableSource extends DataTableSource {
+class WebDataTableSource extends MyDataTableSource {
   WebDataTableSource({
     required this.columns,
     required this.rows,
@@ -45,6 +47,7 @@ class WebDataTableSource extends DataTableSource {
     this.selectedRowKeys = const [],
     this.conditionalRowColor,
     this.keyName = 'mid',
+    this.isSingleSelection = false,
   }) {
     if (onSelectRows != null) {
       assert(primaryKeyName != null);
@@ -54,6 +57,7 @@ class WebDataTableSource extends DataTableSource {
     _executeSort();
   }
 
+  final bool isSingleSelection;
   final List<WebDataColumn> columns;
   final List<Map<String, dynamic>> rows;
   late List<Map<String, dynamic>> _rows;
@@ -68,8 +72,8 @@ class WebDataTableSource extends DataTableSource {
   final String keyName;
 
   @override
-  DataRow getRow(int index) {
-    List<DataCell> cells = [];
+  MyDataRow getRow(int index) {
+    List<MyDataCell> cells = [];
     for (final column in columns) {
       cells.add(
         column.dataCell(_rows[index][column.name], _rows[index][keyName]),
@@ -77,7 +81,7 @@ class WebDataTableSource extends DataTableSource {
     }
 
     final key = primaryKeyName != null ? _rows[index][primaryKeyName].toString() : null;
-    return DataRow.byIndex(
+    return MyDataRow.byIndex(
         color: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
           if (states.contains(WidgetState.selected)) {
             return CretaColor.primary.withOpacity(0.2);
@@ -103,13 +107,23 @@ class WebDataTableSource extends DataTableSource {
           if (onSelectRows != null && key != null) {
             final keys = [...selectedRowKeys];
             if (selected != null && selected) {
+              if (isSingleSelection) {
+                selectedRowKeys.clear();
+                keys.clear();
+              }
+              //print('key selected $key');
               keys.add(key);
             } else {
-              keys.remove(key);
+              if (isSingleSelection) {
+                selectedRowKeys.clear();
+                keys.clear();
+              } else {
+                keys.remove(key);
+              }
+              //print('key un-selected $key');
             }
             onSelectRows!(keys);
           }
-          //print('3.onSelectChanged: $selected');
         });
   }
 

@@ -129,6 +129,15 @@ class _MainRouteAppState extends ConsumerState<MainRouteApp> {
         titleTextStyle: TextStyle(color: CretaColor.text),
         contentTextStyle: TextStyle(color: CretaColor.text),
       ),
+      dataTableTheme: DataTableThemeData(
+        dividerThickness: 0.2,
+        dataTextStyle: TextStyle(color: CretaColor.text),
+        headingTextStyle: TextStyle(color: Colors.white),
+        headingRowColor: WidgetStateProperty.all(CretaColor.primary),
+        // decoration: BoxDecoration(
+        //   border: Border.all(color: CretaColor.secondary),
+        // ),
+      ),
     );
 
     return FutureBuilder<bool>(
