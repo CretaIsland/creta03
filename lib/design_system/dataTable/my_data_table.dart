@@ -12,13 +12,13 @@ class MyColumnInfo {
   String name;
   String label;
   double width;
-  MyDataCell Function(dynamic, String) dataCell;
+  MyDataCell Function(dynamic, String)? dataCell;
   String Function(dynamic)? filterText;
   MyColumnInfo({
     required this.name,
     required this.width,
     required this.label,
-    required this.dataCell,
+    this.dataCell,
     this.filterText,
   });
 
@@ -28,6 +28,14 @@ class MyColumnInfo {
       total += item.width;
     }
     return total;
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'label': label,
+      'width': width,
+    };
   }
 }
 

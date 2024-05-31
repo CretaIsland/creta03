@@ -184,12 +184,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
 
     isLangInit = initLang();
 
-    columnInfoList = [
-      MyColumnInfo(
-        name: 'isVNC',
-        label: 'vnc',
-        width: 30,
-        dataCell: (value, key) => MyDataCell(
+    MyDataCell Function(dynamic, String)? isVNCCell;
+    isVNCCell = (value, key) => MyDataCell(
           Icon(
             value ? Icons.visibility_outlined : Icons.visibility_off_outlined,
             color: value ? Colors.green : Colors.grey,
@@ -200,42 +196,25 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
               showSnackBar(context, 'VNC is not yet supported ${itemModel.mid}');
             }
           },
-        ),
-      ),
-      MyColumnInfo(
-        name: 'isUsed',
-        label: 'usage',
-        width: 30,
-        dataCell: (value, key) => MyDataCell(
+        );
+
+    MyDataCell Function(dynamic, String)? isUsedCell;
+    isUsedCell = (value, key) => MyDataCell(
           Icon(
-            value ? Icons.check_circle_outline : Icons.cancel,
+            value ? Icons.check_circle_outline : Icons.warning,
             color: value ? Colors.green : Colors.grey,
           ),
-        ),
-      ),
-      MyColumnInfo(
-        name: 'isOperational',
-        label: 'fault',
-        width: 30,
-        dataCell: (value, key) => MyDataCell(
+        );
+    MyDataCell Function(dynamic, String)? isOperationalCell;
+    isOperationalCell = (value, key) => MyDataCell(
           Icon(
             value ? Icons.check_circle_outline : Icons.warning,
             color: value ? Colors.green : Colors.red,
           ),
-        ),
-      ),
-      MyColumnInfo(
-        name: 'lastUpdateTime',
-        label: 'lastUpdateTime',
-        width: 180,
-        dataCell: _dateToDataCell,
-        filterText: _dynamicDateToString,
-      ),
-      MyColumnInfo(
-        name: 'hostId',
-        label: 'ID',
-        width: 100,
-        dataCell: (value, key) => MyDataCell(
+        );
+
+    MyDataCell Function(dynamic, String)? hostIdCell;
+    hostIdCell = (value, key) => MyDataCell(
           Text(
             '$value',
             style: TextStyle(
@@ -253,71 +232,203 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
               await _showDetailView();
             }
           },
-        ),
-      ),
-      MyColumnInfo(
-          name: 'hostName',
-          label: 'hostName',
-          width: 120,
-          dataCell: (value, key) => MyDataCell(Text('$value')),
-          filterText: null),
-      MyColumnInfo(
-          name: 'creator',
-          label: 'creator',
-          width: 120,
-          dataCell: (value, key) => MyDataCell(Text('$value')),
-          filterText: null),
-      MyColumnInfo(
-          name: 'location',
-          label: 'location',
-          width: 100,
-          dataCell: (value, key) => MyDataCell(Text('$value')),
-          filterText: null),
-      MyColumnInfo(
-          name: 'description',
-          label: 'description',
-          width: 100,
-          dataCell: (value, key) => MyDataCell(Text('$value')),
-          filterText: null),
-      MyColumnInfo(
-        name: 'requestedBook1',
-        label: 'requestedBook1',
-        width: 100,
-        dataCell: (value, key) => MyDataCell(Text('$value')),
-      ),
-      MyColumnInfo(
-        name: 'playingBook1',
-        label: 'playingBook1',
-        width: 100,
-        dataCell: (value, key) => MyDataCell(Text('$value')),
-      ),
-      MyColumnInfo(
-        name: 'requestedBook2',
-        label: 'requestedBook2',
-        width: 100,
-        dataCell: (value, key) => MyDataCell(Text('$value')),
-      ),
-      MyColumnInfo(
-        name: 'playingBook2',
-        label: 'playingBook2',
-        width: 100,
-        dataCell: (value, key) => MyDataCell(Text('$value')),
-      ),
-      MyColumnInfo(
-        name: 'request',
-        label: 'request',
-        width: 100,
-        dataCell: (value, key) => MyDataCell(Text('$value')),
-        //sortable: false,
-      ),
-      MyColumnInfo(
-        name: 'requestedTime',
-        label: 'requestedTime',
-        width: 200,
-        dataCell: _dateToDataCell,
-        filterText: _dynamicDateToString,
-      ),
-    ];
+        );
+
+    String jsonStr = CretaAccountManager.getDeviceColumnInfo();
+    //print('jsonStr = $jsonStr');
+    if (jsonStr.isEmpty) {
+      jsonStr = '''{
+          "columnInfoList": [
+              {
+                  "name": "isVNC",
+                  "label": "vnc",
+                  "width": 30
+              },
+              {
+                  "name": "isUsed",
+                  "label": "usage",
+                  "width": 30
+              },
+              {
+                  "name": "isOperational",
+                  "label": "fault",
+                  "width": 30
+              },
+              {
+                  "name": "lastUpdateTime",
+                  "label": "lastUpdateTime",
+                  "width": 100
+              },
+              {
+                  "name": "hostId",
+                  "label": "ID",
+                  "width": 100
+              },
+              {
+                  "name": "hostName",
+                  "label": "hostName",
+                  "width": 120
+              },
+              {
+                  "name": "creator",
+                  "label": "creator",
+                  "width": 120
+              },
+              {
+                  "name": "location",
+                  "label": "location",
+                  "width": 100
+              },
+              {
+                  "name": "description",
+                  "label": "description",
+                  "width": 100
+              },
+              {
+                  "name": "requestedBook1",
+                  "label": "requestedBook1",
+                  "width": 100
+              },
+              {
+                  "name": "playingBook1",
+                  "label": "playingBook1",
+                  "width": 100
+              },
+              {
+                  "name": "requestedBook2",
+                  "label": "requestedBook2",
+                  "width": 100
+              },
+              {
+                  "name": "playingBook2",
+                  "label": "playingBook2",
+                  "width": 100
+              },
+              {
+                  "name": "request",
+                  "label": "request",
+                  "width": 100
+              },
+              {
+                  "name": "requestedTime",
+                  "label": "requestedTime",
+                  "width": 200
+              }
+          ]
+      }''';
+    }
+    columnInfoFromJson(jsonStr);
+
+    for (var ele in columnInfoList) {
+      if (ele.name == 'lastUpdateTime' || ele.name == 'requestedTime') {
+        ele.dataCell = _dateToDataCell;
+        ele.filterText = _dynamicDateToString;
+      } else if (ele.name == 'isVNC') {
+        ele.dataCell = isVNCCell;
+      } else if (ele.name == 'isUsed') {
+        ele.dataCell = isUsedCell;
+      } else if (ele.name == 'isOperational') {
+        ele.dataCell = isOperationalCell;
+      } else if (ele.name == 'hostId') {
+        ele.dataCell = hostIdCell;
+      }
+    }
+
+    // columnInfoList = [
+    //   MyColumnInfo(
+    //     name: 'isVNC',
+    //     label: 'vnc',
+    //     width: 30,
+    //     dataCell: isVNCCell,
+    //   ),
+    //   MyColumnInfo(
+    //     name: 'isUsed',
+    //     label: 'usage',
+    //     width: 30,
+    //     dataCell: isUsedCell,
+    //   ),
+    //   MyColumnInfo(
+    //     name: 'isOperational',
+    //     label: 'fault',
+    //     width: 30,
+    //     dataCell: isOperationalCell,
+    //   ),
+    //   MyColumnInfo(
+    //     name: 'lastUpdateTime',
+    //     label: 'lastUpdateTime',
+    //     width: 180,
+    //     dataCell: _dateToDataCell,
+    //     filterText: _dynamicDateToString,
+    //   ),
+    //   MyColumnInfo(
+    //     name: 'hostId',
+    //     label: 'ID',
+    //     width: 100,
+    //     dataCell: hostIdCell,
+    //   ),
+    //   MyColumnInfo(
+    //       name: 'hostName',
+    //       label: 'hostName',
+    //       width: 120,
+    //       dataCell: (value, key) => MyDataCell(Text('$value')),
+    //       filterText: null),
+    //   MyColumnInfo(
+    //       name: 'creator',
+    //       label: 'creator',
+    //       width: 120,
+    //       dataCell: (value, key) => MyDataCell(Text('$value')),
+    //       filterText: null),
+    //   MyColumnInfo(
+    //       name: 'location',
+    //       label: 'location',
+    //       width: 100,
+    //       dataCell: (value, key) => MyDataCell(Text('$value')),
+    //       filterText: null),
+    //   MyColumnInfo(
+    //       name: 'description',
+    //       label: 'description',
+    //       width: 100,
+    //       dataCell: (value, key) => MyDataCell(Text('$value')),
+    //       filterText: null),
+    //   MyColumnInfo(
+    //     name: 'requestedBook1',
+    //     label: 'requestedBook1',
+    //     width: 100,
+    //     dataCell: (value, key) => MyDataCell(Text('$value')),
+    //   ),
+    //   MyColumnInfo(
+    //     name: 'playingBook1',
+    //     label: 'playingBook1',
+    //     width: 100,
+    //     dataCell: (value, key) => MyDataCell(Text('$value')),
+    //   ),
+    //   MyColumnInfo(
+    //     name: 'requestedBook2',
+    //     label: 'requestedBook2',
+    //     width: 100,
+    //     dataCell: (value, key) => MyDataCell(Text('$value')),
+    //   ),
+    //   MyColumnInfo(
+    //     name: 'playingBook2',
+    //     label: 'playingBook2',
+    //     width: 100,
+    //     dataCell: (value, key) => MyDataCell(Text('$value')),
+    //   ),
+    //   MyColumnInfo(
+    //     name: 'request',
+    //     label: 'request',
+    //     width: 100,
+    //     dataCell: (value, key) => MyDataCell(Text('$value')),
+    //     //sortable: false,
+    //   ),
+    //   MyColumnInfo(
+    //     name: 'requestedTime',
+    //     label: 'requestedTime',
+    //     width: 200,
+    //     dataCell: _dateToDataCell,
+    //     filterText: _dynamicDateToString,
+    //   ),
+    // ];
   }
 
   void _initData() {
@@ -360,9 +471,9 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       CretaMenuItem(
         caption: CretaDeviceLang['sharedCretaDevice']!,
         onPressed: () {
-          Routemaster.of(context).pop();
-          Routemaster.of(context).push(AppRoutes.studioBookSharedPage);
-          DeviceMainPage.lastGridMenu = AppRoutes.studioBookSharedPage;
+          // Routemaster.of(context).pop();
+          // Routemaster.of(context).push(AppRoutes.studioBookSharedPage);
+          // DeviceMainPage.lastGridMenu = AppRoutes.studioBookSharedPage;
         },
         selected: widget.selectedPage == DeviceSelectedPage.sharedPage,
         iconData: Icons.share_outlined,
@@ -372,8 +483,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       CretaMenuItem(
         caption: CretaDeviceLang['teamCretaDevice']!,
         onPressed: () {
-          Routemaster.of(context).push(AppRoutes.studioBookTeamPage);
-          DeviceMainPage.lastGridMenu = AppRoutes.studioBookSharedPage;
+          // Routemaster.of(context).push(AppRoutes.studioBookTeamPage);
+          // DeviceMainPage.lastGridMenu = AppRoutes.studioBookSharedPage;
         },
         selected: widget.selectedPage == DeviceSelectedPage.teamPage,
         iconData: Icons.group_outlined,
@@ -627,9 +738,10 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
           return WebDataTable(
             onDragComplete: () {
               //print('onDragComplete');
+              CretaAccountManager.setDeviceColumnInfo(columnInfoToJson());
             },
             onPanEnd: () {
-              //print('onPanEnd');
+              CretaAccountManager.setDeviceColumnInfo(columnInfoToJson());
             },
             columnInfo: columnInfoList,
             horizontalMargin: 6,
@@ -676,7 +788,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
                         width: columnInfo.width,
                         name: columnInfo.name,
                         label: Text(columnInfo.label),
-                        dataCell: columnInfo.dataCell,
+                        dataCell: columnInfo.dataCell ?? (value, key) => MyDataCell(Text('$value')),
                         filterText: columnInfo.filterText,
                       ))
                   .toList(),

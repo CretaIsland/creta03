@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import 'my_data_table.dart';
@@ -54,5 +56,25 @@ mixin MyDataMixin {
       return dataListHeight ~/ (rowHeight * 2);
     }
     return MyDataMixin.defaultRowPerPage;
+  }
+
+  String columnInfoToJson() {
+    Map<String, dynamic> map = {
+      'columnInfoList': columnInfoList.map((item) => item.toJson()).toList(),
+    };
+
+    return jsonEncode(map);
+  }
+
+  void columnInfoFromJson(String jsonString) {
+    final parsedJson = jsonDecode(jsonString);
+    columnInfoList = (parsedJson['columnInfoList'] as List)
+        .map((item) => MyColumnInfo(
+              name: item['name'],
+              label: item['label'],
+              width: item['width'],
+              dataCell: (value, key) => MyDataCell(Text('$value')),
+            ))
+        .toList();
   }
 }

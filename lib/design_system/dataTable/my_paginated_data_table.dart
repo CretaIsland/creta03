@@ -582,7 +582,8 @@ class MyPaginatedDataTableState extends State<MyPaginatedDataTable> {
     ]);
 
     double maxViewWidth = MyColumnInfo.totalWidth(widget.columnInfo) +
-        (widget.horizontalMargin * widget.columnInfo.length); //
+        (widget.horizontalMargin * widget.columnInfo.length) +
+        40; //
     // CARD
     return SizedBox(
       width: maxViewWidth,
@@ -642,10 +643,12 @@ class MyPaginatedDataTableState extends State<MyPaginatedDataTable> {
                           //print('onPanUpdate');
                         });
                       },
-                         onPanEnd: () {
+                      onPanEnd: () {
                         widget.onPanEnd?.call();
                       },
-                      onDragComplete: () {widget.onDragComplete?.call();},
+                      onDragComplete: () {
+                        widget.onDragComplete?.call();
+                      },
                       sortColumnIndex: widget.sortColumnIndex,
                       sortAscending: widget.sortAscending,
                       onSelectAll: widget.onSelectAll,

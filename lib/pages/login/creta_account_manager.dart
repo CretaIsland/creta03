@@ -247,6 +247,20 @@ class CretaAccountManager {
     return getUserProperty!.mute;
   }
 
+  static String getDeviceColumnInfo() {
+    if (getUserProperty == null) {
+      return '';
+    }
+    return getUserProperty!.deviceColumnInfo;
+  }
+
+  static void setDeviceColumnInfo(String val) {
+    if (getUserProperty != null) {
+      getUserProperty!.deviceColumnInfo = val;
+      userPropertyManagerHolder.setToDB(getUserProperty!);
+    }
+  }
+
   static void setAutoPlay(bool val) {
     if (getUserProperty != null) {
       getUserProperty!.autoPlay = val;
