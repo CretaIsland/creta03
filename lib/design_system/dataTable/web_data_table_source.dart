@@ -38,6 +38,7 @@ class WebDataTableSource extends MyDataTableSource {
   WebDataTableSource({
     required this.columns,
     required this.rows,
+    this.preProcessRow,
     this.onTapRow,
     this.onSelectRows,
     this.sortColumnName,
@@ -70,6 +71,7 @@ class WebDataTableSource extends MyDataTableSource {
   final List<String> selectedRowKeys;
   final Map<String, ConditionColor>? conditionalRowColor;
   final String keyName;
+  final void Function(Map<String, dynamic> row, int index, String? key)? preProcessRow;
 
   @override
   MyDataRow getRow(int index) {
@@ -81,6 +83,9 @@ class WebDataTableSource extends MyDataTableSource {
     }
 
     final key = primaryKeyName != null ? _rows[index][primaryKeyName].toString() : null;
+
+    preProcessRow?.call(_rows[index], index, key);
+
     return MyDataRow.byIndex(
         color: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
           if (states.contains(WidgetState.selected)) {

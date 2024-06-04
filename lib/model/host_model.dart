@@ -41,14 +41,23 @@ class HostModel extends CretaModel {
   String description = '';
   String os = '';
 
+  String agentVersion = ''; // read only
+  String playerVersion = ''; // read only
+  String weekTime = '';
+  String scrshotFile = ''; // read only
+  String rebootTime = '';
+  DateTime scrshotTime = DateTime(1970, 1, 1); //read only
+  int managePeriod = 60;
+  int scrshotPeriod = 360;
+
   bool isConnected = false; // read only
-  bool isInitialized = false; // read only
+  //bool isInitialized = false; // read only
   bool isValidLicense = false; // read only
   bool isUsed = true;
   bool isVNC = true;
   bool isOperational = true; // read only
 
-  DateTime licenseTime = DateTime(1970, 1, 1); // read only
+  //DateTime licenseTime = DateTime(1970, 1, 1); // read only
   DateTime initializeTime = DateTime(1970, 1, 1); // read only
   DateTime lastUpdateTime = DateTime(1970, 1, 1); // read only
 
@@ -56,8 +65,8 @@ class HostModel extends CretaModel {
 
   String weekend = '';
   String holiday = '';
-  String powerOnTime = '';
-  String powerOffTime = '';
+  String bootTime = '';
+  String shutdownTime = '';
   String requestedBook1 = '';
   String requestedBook1Id = '';
   String requestedBook2 = '';
@@ -86,8 +95,8 @@ class HostModel extends CretaModel {
   String memInfo = ''; // read only
 
   String stateMsg = ''; // read only
-  DateTime bootTime = DateTime(1970, 1, 1); // read only
-  DateTime shutdownTime = DateTime(1970, 1, 1); // read only
+  DateTime powerOnTime = DateTime(1970, 1, 1); // read only
+  DateTime powerOffTime = DateTime(1970, 1, 1); // read only
 
   double monthlyUseTime = 0.0; // read only
 
@@ -120,11 +129,15 @@ class HostModel extends CretaModel {
         creator,
         location,
         description,
+        agentVersion,
+        playerVersion,
+        weekTime,
+        scrshotFile,
         thumbnailUrl,
         weekend,
         holiday,
-        powerOnTime,
-        powerOffTime,
+        bootTime,
+        shutdownTime,
         requestedBook1,
         requestedBook2,
         requestedBook1Id,
@@ -148,19 +161,23 @@ class HostModel extends CretaModel {
         cpuInfo,
         memInfo,
         stateMsg,
-        bootTime,
-        shutdownTime,
+        powerOnTime,
+        powerOffTime,
         monthlyUseTime,
         hostType,
         os,
-        isInitialized,
+        //isInitialized,
         isValidLicense,
         isUsed,
         isVNC,
         isOperational,
-        licenseTime,
+        managePeriod,
+        scrshotPeriod,
+        //licenseTime,
         initializeTime,
         lastUpdateTime,
+        rebootTime,
+        scrshotTime,
       ];
 
   @override
@@ -176,12 +193,16 @@ class HostModel extends CretaModel {
     creator = srcHost.creator;
     location = srcHost.location;
     description = srcHost.description;
+    agentVersion = srcHost.agentVersion;
+    playerVersion = srcHost.playerVersion;
+    weekTime = srcHost.weekTime;
+    scrshotFile = srcHost.scrshotFile;
     thumbnailUrl = srcHost.thumbnailUrl;
 
     weekend = srcHost.weekend;
     holiday = srcHost.holiday;
-    powerOnTime = srcHost.powerOnTime;
-    powerOffTime = srcHost.powerOffTime;
+    bootTime = srcHost.bootTime;
+    shutdownTime = srcHost.shutdownTime;
     requestedBook1 = srcHost.requestedBook1;
     requestedBook2 = srcHost.requestedBook2;
     requestedBook1Id = srcHost.requestedBook1Id;
@@ -207,20 +228,24 @@ class HostModel extends CretaModel {
     cpuInfo = srcHost.cpuInfo;
     memInfo = srcHost.memInfo;
     stateMsg = srcHost.stateMsg;
-    bootTime = srcHost.bootTime;
-    shutdownTime = srcHost.shutdownTime;
+    powerOnTime = srcHost.powerOnTime;
+    powerOffTime = srcHost.powerOffTime;
     monthlyUseTime = srcHost.monthlyUseTime;
 
     hostType = srcHost.hostType;
     os = srcHost.os;
-    isInitialized = srcHost.isInitialized;
+    //isInitialized = srcHost.isInitialized;
     isValidLicense = srcHost.isValidLicense;
     isUsed = srcHost.isUsed;
     isVNC = srcHost.isVNC;
     isOperational = srcHost.isOperational;
-    licenseTime = srcHost.licenseTime;
+    managePeriod = srcHost.managePeriod;
+    scrshotPeriod = srcHost.scrshotPeriod;
+    //licenseTime = srcHost.licenseTime;
     initializeTime = srcHost.initializeTime;
     lastUpdateTime = srcHost.lastUpdateTime;
+    rebootTime = srcHost.rebootTime;
+    scrshotTime = srcHost.scrshotTime;
   }
 
   @override
@@ -235,12 +260,16 @@ class HostModel extends CretaModel {
     creator = srcHost.creator;
     location = srcHost.location;
     description = srcHost.description;
+    agentVersion = srcHost.agentVersion;
+    playerVersion = srcHost.playerVersion;
+    weekTime = srcHost.weekTime;
+    scrshotFile = srcHost.scrshotFile;
     thumbnailUrl = srcHost.thumbnailUrl;
 
     weekend = srcHost.weekend;
     holiday = srcHost.holiday;
-    powerOnTime = srcHost.powerOnTime;
-    powerOffTime = srcHost.powerOffTime;
+    bootTime = srcHost.bootTime;
+    shutdownTime = srcHost.shutdownTime;
     requestedBook1 = srcHost.requestedBook1;
     requestedBook2 = srcHost.requestedBook2;
     requestedBook1Id = srcHost.requestedBook1Id;
@@ -266,23 +295,27 @@ class HostModel extends CretaModel {
     cpuInfo = srcHost.cpuInfo;
     memInfo = srcHost.memInfo;
     stateMsg = srcHost.stateMsg;
-    bootTime = srcHost.bootTime;
-    shutdownTime = srcHost.shutdownTime;
+    powerOnTime = srcHost.powerOnTime;
+    powerOffTime = srcHost.powerOffTime;
     monthlyUseTime = srcHost.monthlyUseTime;
 
     hostType = srcHost.hostType;
     os = srcHost.os;
-    isInitialized = srcHost.isInitialized;
+    //isInitialized = srcHost.isInitialized;
     isValidLicense = srcHost.isValidLicense;
     isUsed = srcHost.isUsed;
     isVNC = srcHost.isVNC;
     isOperational = srcHost.isOperational;
-    licenseTime = srcHost.licenseTime;
+    managePeriod = srcHost.managePeriod;
+    scrshotPeriod = srcHost.scrshotPeriod;
+    //licenseTime = srcHost.licenseTime;
     initializeTime = srcHost.initializeTime;
     lastUpdateTime = srcHost.lastUpdateTime;
+    rebootTime = srcHost.rebootTime;
+    scrshotTime = srcHost.scrshotTime;
   }
 
-  void modifiedFrom(HostModel srcHost, String request) {
+  void modifiedFrom(HostModel srcHost, String req) {
     if (srcHost.hostName.isNotEmpty && srcHost.hostName != hostName) {
       hostName = srcHost.hostName;
     }
@@ -292,6 +325,18 @@ class HostModel extends CretaModel {
     if (srcHost.description.isNotEmpty && srcHost.description != description) {
       description = srcHost.description;
     }
+    if (srcHost.agentVersion.isNotEmpty && srcHost.agentVersion != agentVersion) {
+      agentVersion = srcHost.agentVersion;
+    }
+    if (srcHost.playerVersion.isNotEmpty && srcHost.playerVersion != playerVersion) {
+      playerVersion = srcHost.playerVersion;
+    }
+    if (srcHost.weekTime.isNotEmpty && srcHost.weekTime != weekTime) {
+      weekTime = srcHost.weekTime;
+    }
+    if (srcHost.scrshotFile.isNotEmpty && srcHost.scrshotFile != scrshotFile) {
+      scrshotFile = srcHost.scrshotFile;
+    }
 
     if (srcHost.weekend.isNotEmpty && srcHost.weekend != weekend) {
       weekend = srcHost.weekend;
@@ -299,11 +344,11 @@ class HostModel extends CretaModel {
     if (srcHost.holiday.isNotEmpty && srcHost.holiday != holiday) {
       holiday = srcHost.holiday;
     }
-    if (srcHost.powerOnTime.isNotEmpty && srcHost.powerOnTime != powerOnTime) {
-      powerOnTime = srcHost.powerOnTime;
+    if (srcHost.bootTime.isNotEmpty && srcHost.bootTime != bootTime) {
+      bootTime = srcHost.bootTime;
     }
-    if (srcHost.powerOffTime.isNotEmpty && srcHost.powerOffTime != powerOffTime) {
-      powerOffTime = srcHost.powerOffTime;
+    if (srcHost.shutdownTime.isNotEmpty && srcHost.shutdownTime != shutdownTime) {
+      shutdownTime = srcHost.shutdownTime;
     }
     if (srcHost.requestedBook1.isNotEmpty && srcHost.requestedBook1 != requestedBook1) {
       requestedBook1 = srcHost.requestedBook1;
@@ -319,7 +364,7 @@ class HostModel extends CretaModel {
       requestedBook2Id = srcHost.requestedBook2Id;
       requestedBook2Time = srcHost.requestedBook2Time;
     }
-    request = request;
+    request = req;
     requestedTime = DateTime.now();
   }
 
@@ -333,7 +378,7 @@ class HostModel extends CretaModel {
 
   @override
   void fromMap(Map<String, dynamic> map) {
-    //super.fromMap(map);
+    super.fromMap(map);
     hostId = map["hostId"] ?? '';
     hostName = map["hostName"] ?? '';
     interfaceName = map["interfaceName"] ?? '';
@@ -341,13 +386,17 @@ class HostModel extends CretaModel {
     isConnected = map["isConnected"] ?? false;
     creator = map["creator"] ?? '';
     location = map["location"] ?? '';
+    weekTime = map["weekTime"] ?? '';
+    agentVersion = map["agentVersion"] ?? '';
+    playerVersion = map["playerVersion"] ?? '';
+    scrshotFile = map["scrshotFile"] ?? '';
     description = map["description"] ?? '';
     thumbnailUrl = map["thumbnailUrl"] ?? '';
 
     weekend = map["weekend"] ?? '';
     holiday = map["holiday"] ?? '';
-    powerOnTime = map["powerOnTime"] ?? '';
-    powerOffTime = map["powerOffTime"] ?? '';
+    bootTime = map["bootTime"] ?? '';
+    shutdownTime = map["shutdownTime"] ?? '';
     requestedBook1 = map["requestedBook1"] ?? '';
     requestedBook2 = map["requestedBook2"] ?? '';
     requestedBook1Id = map["requestedBook1Id"] ?? '';
@@ -374,20 +423,24 @@ class HostModel extends CretaModel {
     cpuInfo = map["cpuInfo"] ?? '';
     memInfo = map["memInfo"] ?? '';
     stateMsg = map["stateMsg"] ?? '';
-    bootTime = _stringToDate(map["bootTime"]);
-    shutdownTime = _stringToDate(map["shutdownTime"]);
+    powerOnTime = _stringToDate(map["powerOnTime"]);
+    powerOffTime = _stringToDate(map["powerOffTime"]);
     monthlyUseTime = map["monthlyUseTime"] ?? 0.0;
 
     hostType = ServiceType.fromInt(map["hostType"] ?? ServiceType.signage.index);
     os = map["os"] ?? '';
-    isInitialized = map["isInitialized"] ?? false;
+    //isInitialized = map["isInitialized"] ?? false;
     isValidLicense = map["isValidLicense"] ?? false;
     isUsed = map["isUsed"] ?? false;
     isVNC = map["isVNC"] ?? false;
     isOperational = map["isOperational"] ?? true;
-    licenseTime = _stringToDate(map["licenseTime"]);
+    managePeriod = map["managePeriod"] ?? 60;
+    scrshotPeriod = map["scrshotPeriod"] ?? 360;
+    //licenseTime = _stringToDate(map["licenseTime"]);
     initializeTime = _stringToDate(map["initializeTime"]);
     lastUpdateTime = _stringToDate(map["lastUpdateTime"]);
+    rebootTime = map["rebootTime"] ?? '';
+    scrshotTime = _stringToDate(map["scrshotTime"]);
   }
 
   @override
@@ -402,11 +455,15 @@ class HostModel extends CretaModel {
         "creator": creator,
         "location": location,
         "description": description,
+        "agentVersion": agentVersion,
+        "playerVersion": playerVersion,
+        "weekTime": weekTime,
+        "scrshotFile": scrshotFile,
         "thumbnailUrl": thumbnailUrl,
         "weekend": weekend,
         "holiday": holiday,
-        "powerOnTime": powerOnTime,
-        "powerOffTime": powerOffTime,
+        "bootTime": bootTime,
+        "shutdownTime": shutdownTime,
         "requestedBook1": requestedBook1,
         "requestedBook2": requestedBook2,
         "requestedBook1Id": requestedBook1Id,
@@ -430,19 +487,23 @@ class HostModel extends CretaModel {
         "cpuInfo": cpuInfo,
         "memInfo": memInfo,
         "stateMsg": stateMsg,
-        "bootTime": HycopUtils.dateTimeToDB(bootTime),
-        "shutdownTime": HycopUtils.dateTimeToDB(shutdownTime),
+        "powerOnTime": HycopUtils.dateTimeToDB(powerOnTime),
+        "powerOffTime": HycopUtils.dateTimeToDB(powerOffTime),
         "monthlyUseTime": monthlyUseTime,
         "hostType": hostType.index,
         "os": os,
-        "isInitialized": isInitialized,
+        //"isInitialized": isInitialized,
         "isValidLicense": isValidLicense,
         "isUsed": isUsed,
         "isVNC": isVNC,
         "isOperational": isOperational,
-        "licenseTime": HycopUtils.dateTimeToDB(licenseTime),
+        "managePeriod": managePeriod,
+        "scrshotPeriod": scrshotPeriod,
+        //"licenseTime": HycopUtils.dateTimeToDB(licenseTime),
         "initializeTime": HycopUtils.dateTimeToDB(initializeTime),
         "lastUpdateTime": HycopUtils.dateTimeToDB(lastUpdateTime),
+        "rebootTime": rebootTime,
+        "scrshotTime": HycopUtils.dateTimeToDB(scrshotTime),
       }.entries);
   }
 }

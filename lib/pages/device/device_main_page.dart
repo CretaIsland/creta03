@@ -313,14 +313,28 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
                   "name": "requestedTime",
                   "label": "requestedTime",
                   "width": 200
+              },
+              {
+                  "name": "updateTime",
+                  "label": "updateTime",
+                  "width": 200
+              },
+              {
+                  "name": "createTime",
+                  "label": "createTime",
+                  "width": 200
               }
+              
           ]
       }''';
     }
     columnInfoFromJson(jsonStr);
 
     for (var ele in columnInfoList) {
-      if (ele.name == 'lastUpdateTime' || ele.name == 'requestedTime') {
+      if (ele.name == 'lastUpdateTime' ||
+          ele.name == 'requestedTime' ||
+          ele.name == 'updateTime' ||
+          ele.name == 'createTime') {
         ele.dataCell = _dateToDataCell;
         ele.filterText = _dynamicDateToString;
       } else if (ele.name == 'isVNC') {
@@ -617,7 +631,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
                         _dropDownMenuItemList3,
                         _dropDownMenuItemList4
                       ],
-                      //mainWidget: sizeListener.isResizing() ? Container() : _bookGrid(context))),
+                      //mainWidget: sizeListener.isResizing() ? Container() : _deviceMain(context))),
                       onSearch: (value) {
                         if (_isGridView) {
                           hostManagerHolder!.onSearch(value, () => setState(() {}));
@@ -628,7 +642,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
                           });
                         }
                       },
-                      mainWidget: _bookGrid, //_bookGrid(context),
+                      mainWidget: _deviceMain, //_deviceMain(context),
                       onFoldButtonPressed: () {
                         setState(() {});
                       },
@@ -666,7 +680,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
     }
   }
 
-  Widget _bookGrid(BuildContext context) {
+  Widget _deviceMain(BuildContext context) {
     // if (sizeListener.isResizing()) {
     //   return consumerFunc(context, null);
     // }
@@ -752,13 +766,27 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
             controller: horizontalController,
             availableRowsPerPage: availableRowPerPage,
             source: WebDataTableSource(
+              preProcessRow: (row, index, key) {
+                // Row 를 그리기 전에 할일이 있으면 이곳에 적어야 한다.
+                // row['lastUpdateTime'] 이 현재 시간보다 90초 이상 과거라면, row['isConnected'] = false 로 놓고 그렇지 않다면 true 로 해야 한다.;
+                //print('${row['lastUpdateTime']}-------------------------------------------');
+                DateTime now = DateTime.now();
+                DateTime lastUpdateTime = DateTime.parse(row['lastUpdateTime']);
+
+                if (now.difference(lastUpdateTime).inSeconds >= 90) {
+                  row['isConnected'] = false;
+                } else {
+                  row['isConnected'] = true;
+                }
+                return;
+              },
               sortColumnName: sortColumnName,
               sortAscending: sortAscending,
               filterTexts: filterTexts,
               primaryKeyName: 'mid',
               conditionalRowColor: {
                 'isConnected': ConditionColor(Colors.yellow, true),
-                'isInitialized': ConditionColor(Colors.grey, false),
+                'isValidLicense': ConditionColor(Colors.redAccent, false),
               },
               rows: hostManager.modelList.map((e) => e.toMap()).toList(),
               //rows: hostManager.getOrdered().map((e) => e.toMap()).toList(),
@@ -924,7 +952,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
   }
 
   String _dateToString(DateTime value) {
-    return '${value.year}/${value.month}/${value.day} ${value.hour}:${value.minute}:${value.second}';
+    DateTime local = value.toLocal();
+    return local.toString();
   }
 
   String _dynamicDateToString(dynamic value) {
@@ -938,8 +967,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
     if (value is DateTime) {
       return MyDataCell(Text(_dateToString(value)));
     }
-
-    return MyDataCell(Text(value.toString()));
+    DateTime dateType = DateTime.parse(value.toString());
+    return MyDataCell(Text(_dateToString(dateType)));
   }
 
   bool isValidIndex(int index, HostManager hostManager) {
@@ -1479,6 +1508,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
                     //print('formKey.currentState!.validate()====================');
                     formKey.currentState?.save();
                     if (isMultiSelected == false) {
+                      newOne.setUpdateTime();
                       hostManagerHolder?.setToDB(newOne);
                     } else {
                       for (var key in selectNotifierHolder._selectedItems.keys) {
@@ -1486,6 +1516,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
                           HostModel? model = hostManagerHolder!.getModel(key) as HostModel?;
                           if (model != null) {
                             model.modifiedFrom(newOne, "set");
+                            model.setUpdateTime();
                             hostManagerHolder?.setToDB(model);
                           }
                         }

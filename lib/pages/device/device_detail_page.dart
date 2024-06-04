@@ -63,6 +63,9 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     // double width = screenSize.width * 0.5;
     // double height = screenSize.height * 0.5;
 
+    String scrTime = widget.hostModel.scrshotTime.toIso8601String();
+    scrTime = scrTime.substring(0, scrTime.length - 4);
+
     return
         // Container(
         //   width: width,
@@ -86,16 +89,16 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                   _nvRow('OS', widget.hostModel.os),
                   _boolRow('Is Connected', widget.hostModel.isConnected, false),
                   _boolRow('Is Operational', widget.hostModel.isOperational, false),
-                  _boolRow('Is Initialized', widget.hostModel.isInitialized, false),
-                  //_boolRow('Is Licensed', widget.hostModel.isValidLicense, false),
-                  _nvRow('License Time', HycopUtils.dateTimeToDB(widget.hostModel.licenseTime)),
+                  _boolRow('Has License', widget.hostModel.isValidLicense, false),
+                  //_nvRow('License Time', HycopUtils.dateTimeToDB(widget.hostModel.licenseTime)),
                   _nvRow(
                       'Initialize Time', HycopUtils.dateTimeToDB(widget.hostModel.initializeTime)),
+                  _nvRow('Last Connected Time',
+                      HycopUtils.dateTimeToDB(widget.hostModel.lastUpdateTime)),
                   _nvRow(
-                      'Last Connected Time', HycopUtils.dateTimeToDB(widget.hostModel.lastUpdateTime)),
-                  _nvRow('Last Boot Time', HycopUtils.dateTimeToDB(widget.hostModel.bootTime)),
-                  _nvRow(
-                      'Last Shutdown Time', HycopUtils.dateTimeToDB(widget.hostModel.shutdownTime)),
+                      'Last Power ON Time', HycopUtils.dateTimeToDB(widget.hostModel.powerOnTime)),
+                  _nvRow('Last Power OFF Time',
+                      HycopUtils.dateTimeToDB(widget.hostModel.powerOffTime)),
 
                   _nvRow('HDD Info', widget.hostModel.hddInfo),
                   _nvRow('CPU Info', widget.hostModel.cpuInfo),
@@ -106,6 +109,10 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                   _nvRow('Response', widget.hostModel.response),
                   _nvRow('Download Result', widget.hostModel.downloadResult.name.split('.').last),
                   _nvRow('Download Message', widget.hostModel.downloadMsg),
+                  _nvRow('Agent Version', widget.hostModel.agentVersion),
+                  _nvRow('playerVersion', widget.hostModel.playerVersion),
+                  // _nvRow('scrshotFile', widget.hostModel.scrshotFile), // 그림으로 표시해야함.
+                  // _nvRow('scrshotTime', widget.hostModel.scrshotTime.toIso8601String()),
 
                   //Text('Thumbnail URL: ${widget.hostModel.thumbnailUrl}'),
                 ],
@@ -130,6 +137,21 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                     ),
                   ),
                 if (widget.isChangeBook == false)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4, bottom: 8.0, right: 2),
+                    child: _buttonRow(
+                      'View Screenshot',
+                      widget.hostModel.scrshotFile,
+                      scrTime,
+                      onChanged: (bool value) {
+                        setState(() {
+                          widget.hostModel.isUsed = value;
+                        });
+                      },
+                    ),
+                  ),
+
+                if (widget.isChangeBook == false)
                   Card(
                     elevation: 0,
                     color: Colors.grey[200],
@@ -145,7 +167,8 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                           ),
                           TextFormField(
                             initialValue: widget.hostModel.hostName,
-                            decoration: const InputDecoration(labelText: 'Host Name'),
+                            decoration:
+                                InputDecoration(labelText: 'Host Name', labelStyle: titleStyle),
                             onSaved: (value) {
                               widget.hostModel.hostName = value ?? '';
                               //print('Saved : ${widget.hostModel.hostName}');
@@ -153,13 +176,33 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                           ),
                           TextFormField(
                             initialValue: widget.hostModel.description,
-                            decoration: const InputDecoration(labelText: 'Description'),
+                            decoration:
+                                InputDecoration(labelText: 'Description', labelStyle: titleStyle),
                             onSaved: (value) => widget.hostModel.description = value ?? '',
                           ),
                           TextFormField(
                             initialValue: widget.hostModel.location,
-                            decoration: const InputDecoration(labelText: 'Location'),
+                            decoration:
+                                InputDecoration(labelText: 'Location', labelStyle: titleStyle),
                             onSaved: (value) => widget.hostModel.location = value ?? '',
+                          ),
+                          TextFormField(
+                            initialValue: widget.hostModel.managePeriod.toString(),
+                            decoration: InputDecoration(
+                                labelText: 'Collection Period', labelStyle: titleStyle),
+                            onSaved: (value) {
+                              widget.hostModel.managePeriod = int.parse(value ?? '0');
+                              //print('Saved : ${widget.hostModel.hostName}');
+                            },
+                          ),
+                          TextFormField(
+                            initialValue: widget.hostModel.scrshotPeriod.toString(),
+                            decoration: InputDecoration(
+                                labelText: 'ScreenShot Period', labelStyle: titleStyle),
+                            onSaved: (value) {
+                              widget.hostModel.scrshotPeriod = int.parse(value ?? '0');
+                              //print('Saved : ${widget.hostModel.hostName}');
+                            },
                           ),
                         ],
                       ),
@@ -181,8 +224,8 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                           ),
                           //const Divider(color: Colors.grey),
                           _nvChanged(
-                            'Power On Time',
-                            widget.hostModel.powerOnTime,
+                            'Auto Power On Time',
+                            widget.hostModel.bootTime,
                             onPressed: () async {
                               TimeOfDay? selectedTime = await showTimePicker(
                                 initialTime: TimeOfDay.now(),
@@ -191,20 +234,20 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                               if (selectedTime != null) {
                                 // ignore: use_build_context_synchronously
                                 setState(() {
-                                  widget.hostModel.powerOnTime = selectedTime.format(context);
+                                  widget.hostModel.bootTime = selectedTime.format(context);
                                 });
                               }
                             },
                             onCanceled: () {
                               setState(() {
-                                widget.hostModel.powerOnTime = '';
+                                widget.hostModel.bootTime = '';
                               });
                             },
                             padding: 4,
                           ),
                           _nvChanged(
-                            'Power Off Time',
-                            widget.hostModel.powerOffTime,
+                            'Auto Reboot Time',
+                            widget.hostModel.rebootTime,
                             onPressed: () async {
                               TimeOfDay? selectedTime = await showTimePicker(
                                 initialTime: TimeOfDay.now(),
@@ -213,13 +256,35 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                               if (selectedTime != null) {
                                 // ignore: use_build_context_synchronously
                                 setState(() {
-                                  widget.hostModel.powerOffTime = selectedTime.format(context);
+                                  widget.hostModel.rebootTime = selectedTime.format(context);
                                 });
                               }
                             },
                             onCanceled: () {
                               setState(() {
-                                widget.hostModel.powerOffTime = '';
+                                widget.hostModel.rebootTime = '';
+                              });
+                            },
+                            padding: 4,
+                          ),
+                          _nvChanged(
+                            'Auto Power Off Time',
+                            widget.hostModel.shutdownTime,
+                            onPressed: () async {
+                              TimeOfDay? selectedTime = await showTimePicker(
+                                initialTime: TimeOfDay.now(),
+                                context: context,
+                              );
+                              if (selectedTime != null) {
+                                // ignore: use_build_context_synchronously
+                                setState(() {
+                                  widget.hostModel.shutdownTime = selectedTime.format(context);
+                                });
+                              }
+                            },
+                            onCanceled: () {
+                              setState(() {
+                                widget.hostModel.shutdownTime = '';
                               });
                             },
                             padding: 4,
@@ -228,13 +293,25 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                             padding: const EdgeInsets.only(bottom: 10.0),
                             child: TextFormField(
                               initialValue: widget.hostModel.holiday,
-                              decoration: const InputDecoration(
-                                labelText: 'holiday',
-                                hintText: 'ex) 12-25,1-1,7-4',
-                              ),
+                              decoration: InputDecoration(
+                                  labelText: 'Power off by WeeK Day',
+                                  hintText: 'ex) SAT:20:30,SUN:18:30',
+                                  labelStyle: titleStyle),
                               onSaved: (value) => widget.hostModel.holiday = value ?? '',
                             ),
                           ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 10.0),
+                            child: TextFormField(
+                              initialValue: widget.hostModel.holiday,
+                              decoration: InputDecoration(
+                                  labelText: 'holiday',
+                                  hintText: 'ex) 12-25,1-1,7-4',
+                                  labelStyle: titleStyle),
+                              onSaved: (value) => widget.hostModel.holiday = value ?? '',
+                            ),
+                          ),
+
                           _nvChangedColumn(
                             'Weekend',
                             widget.hostModel.weekend,
@@ -247,7 +324,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 4.0, horizontal: 10.0),
                                     child: SizedBox(
-                                      width: 50,
+                                      width: 61,
                                       child: Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
@@ -400,7 +477,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       //       onSaved: (value) => widget.hostModel.os = value ?? '',
       //     ),
       //     Text('Is Connected: ${widget.hostModel.isConnected}'),
-      //     Text('Is Initialized: ${widget.hostModel.isInitialized}'),
+      //     Text('Is Initialized: ${widget.hostModel.isValidLicense}'),
       //     Text('Is Valid License: ${widget.hostModel.isValidLicense}'),
       //     CheckboxListTile(
       //       title: const Text('Is Used'),
@@ -592,6 +669,35 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
             },
             isActive: isActive,
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buttonRow(String name, String url, String buttonName, {void Function(bool)? onChanged}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(name, style: titleStyle),
+          TextButton(
+              onPressed: () {},
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: CretaColor.primary.withOpacity(0.7), // Text color
+                shadowColor: Colors.grey, // Shadow color
+                elevation: 5, // Shadow elevation
+                padding: const EdgeInsets.all(10), // Padding
+                shape: RoundedRectangleBorder(
+                  // Button shape
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+              child: SizedBox(
+                width: 140,
+                child: Text(buttonName, textAlign: TextAlign.right, style: dataStyle),
+              )),
         ],
       ),
     );
