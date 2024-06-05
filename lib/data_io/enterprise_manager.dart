@@ -10,6 +10,18 @@ class EnterpriseManager extends CretaManager {
   EnterpriseManager() : super('creta_enterprise', null);
 
   @override
+  Future<List<AbsExModel>> myDataOnly(String userId, {int? limit}) async {
+    logger.finest('myDataOnly');
+    Map<String, QueryValue> query = {};
+    //query['creator'] = QueryValue(value: userId);
+    query['isRemoved'] = QueryValue(value: false);
+    //print('myDataOnly start');
+    final retval = await queryFromDB(query, limit: limit);
+    //print('myDataOnly end ${retval.length}');
+    return retval;
+  }
+
+  @override
   CretaModel cloneModel(CretaModel src) {
     EnterpriseModel retval = newModel(src.mid) as EnterpriseModel;
     src.copyTo(retval);

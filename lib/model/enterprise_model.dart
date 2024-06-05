@@ -1,5 +1,7 @@
+import 'package:creta_common/common/creta_common_utils.dart';
 import 'package:creta_common/model/creta_model.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
+import 'package:hycop/hycop/utils/hycop_utils.dart';
 
 // ignore: must_be_immutable
 class EnterpriseModel extends CretaModel {
@@ -14,6 +16,7 @@ class EnterpriseModel extends CretaModel {
   late String socketUrl;
   late String mediaApiUrl;
   late String webrtcUrl;
+  List<String> admins = [];
 
   EnterpriseModel(String pmid) : super(pmid: pmid, type: ExModelType.enterprise, parent: '') {
     name = '';
@@ -29,6 +32,12 @@ class EnterpriseModel extends CretaModel {
     webrtcUrl = '';
   }
 
+  EnterpriseModel.dummy()
+      : super(
+            pmid: HycopUtils.genMid(ExModelType.enterprise),
+            type: ExModelType.enterprise,
+            parent: '');
+
   @override
   List<Object?> get props => [
         ...super.props,
@@ -42,7 +51,8 @@ class EnterpriseModel extends CretaModel {
         currencyXchangeApi,
         socketUrl,
         mediaApiUrl,
-        webrtcUrl
+        webrtcUrl,
+        admins
       ];
 
   EnterpriseModel.withName(
@@ -75,6 +85,7 @@ class EnterpriseModel extends CretaModel {
     socketUrl = map['socketUrl'] ?? '';
     mediaApiUrl = map['mediaApiUrl'] ?? '';
     webrtcUrl = map['webrtcUrl'] ?? '';
+    admins = CretaCommonUtils.jsonStringToList((map["admins"] ?? ''));
   }
 
   @override
@@ -91,7 +102,8 @@ class EnterpriseModel extends CretaModel {
         'currencyXchangeApi': currencyXchangeApi,
         'socketUrl': socketUrl,
         'mediaApiUrl': mediaApiUrl,
-        'webrtcUrl': webrtcUrl
+        'webrtcUrl': webrtcUrl,
+        "admins": CretaCommonUtils.listToString(admins),
       }.entries);
   }
 }

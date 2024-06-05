@@ -7,6 +7,7 @@ import 'package:creta_studio_model/model/book_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 import 'package:intl/intl.dart';
+import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_toggle_button.dart';
 import '../../lang/creta_device_lang.dart';
 import '../../model/host_model.dart';
@@ -34,6 +35,9 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   TextStyle titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);
   TextStyle dataStyle = CretaFont.bodySmall;
   List<bool> weekend = List.filled(7, false);
+  bool _isShowScreenShot = false;
+  // ignore: unused_field
+  bool _isShowScreenShotHistory = false;
 
   List<BookModel> books = [
     BookModel.withName('Book 1', creator: 'abc@sqisoft.com', creatorName: 'Kim abc', imageUrl: ''),
@@ -59,10 +63,63 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    // var screenSize = MediaQuery.of(context).size;
-    // double width = screenSize.width * 0.5;
-    // double height = screenSize.height * 0.5;
+    return _isShowScreenShot ? _screenshotView() : _detailView();
+  }
 
+  Widget _screenshotView() {
+    return Card(
+      elevation: 10.0, // 카드의 입체감을 조절합니다.
+      shadowColor: Colors.black38, // 그림자의 색상을 설정합니다.
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0), // 카드의 모서리를 둥글게 만듭니다.
+      ),
+      child: Column(
+        children: [
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10.0), // 이미지의 모서리를 둥글게 만듭니다.
+              child: Image.network('https://picsum.photos/200/?random=200'), //   ;
+              //child: Image.network(widget.hostModel.scrshotFile),  //   'https://picsum.photos/200/?random=$defaultThumbnailNumber';
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    _isShowScreenShot = false;
+                  });
+                },
+                child: const Icon(Icons.arrow_back, color: Colors.black),
+              ),
+              Tooltip(
+                message: 'ScreenShot History',
+                child: TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _isShowScreenShotHistory = true;
+                    });
+                  },
+                  child: const Icon(Icons.calendar_month, color: Colors.black),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    _isShowScreenShot = false;
+                  });
+                },
+                child: const Icon(Icons.close, color: Colors.black),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _detailView() {
     String scrTime = widget.hostModel.scrshotTime.toIso8601String();
     scrTime = scrTime.substring(0, scrTime.length - 4);
 
@@ -81,9 +138,12 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
             Expanded(
               child: ListView(
                 children: <Widget>[
+                  _nvRow('Enterprise', widget.hostModel.enterprise, onPressed: () {
+                    widget.hostModel.enterprise = '';
+                  }),
                   _nvRow('Device ID', widget.hostModel.hostId),
                   _nvRow('Device Type', widget.hostModel.hostType.name.split(".").last),
-                  _nvRow('Owner', widget.hostModel.creator),
+                  _nvRow('Mac Address', widget.hostModel.macAddress),
                   _nvRow('Interface Name', widget.hostModel.interfaceName),
                   _nvRow('IP', widget.hostModel.ip),
                   _nvRow('OS', widget.hostModel.os),
@@ -111,6 +171,21 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                   _nvRow('Download Message', widget.hostModel.downloadMsg),
                   _nvRow('Agent Version', widget.hostModel.agentVersion),
                   _nvRow('playerVersion', widget.hostModel.playerVersion),
+                  if (widget.isChangeBook == false)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4, bottom: 8.0, right: 2),
+                      child: _buttonRow(
+                        'View Screenshot',
+                        widget.hostModel.scrshotFile,
+                        scrTime,
+                        onPressed: () {
+                          setState(() {
+                            _isShowScreenShot = true;
+                          });
+                        },
+                      ),
+                    ),
+
                   // _nvRow('scrshotFile', widget.hostModel.scrshotFile), // 그림으로 표시해야함.
                   // _nvRow('scrshotTime', widget.hostModel.scrshotTime.toIso8601String()),
 
@@ -136,20 +211,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                       },
                     ),
                   ),
-                if (widget.isChangeBook == false)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 4, bottom: 8.0, right: 2),
-                    child: _buttonRow(
-                      'View Screenshot',
-                      widget.hostModel.scrshotFile,
-                      scrTime,
-                      onChanged: (bool value) {
-                        setState(() {
-                          widget.hostModel.isUsed = value;
-                        });
-                      },
-                    ),
-                  ),
 
                 if (widget.isChangeBook == false)
                   Card(
@@ -165,6 +226,20 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                             child: Text(CretaDeviceLang["generalSetting"], //"일반 정보 설정",
                                 style: dataStyle),
                           ),
+                          widget.hostModel.creator.isEmpty ||
+                                  widget.hostModel.creator ==
+                                      AccountManager.currentLoginUser.email ||
+                                  AccountManager.currentLoginUser.isSuperUser() == true
+                              ? TextFormField(
+                                  initialValue: widget.hostModel.creator,
+                                  decoration:
+                                      InputDecoration(labelText: 'Owner', labelStyle: titleStyle),
+                                  onSaved: (value) {
+                                    widget.hostModel.creator = value ?? '';
+                                    //print('Saved : ${widget.hostModel.creator}');
+                                  },
+                                )
+                              : _nvRow('Owner', widget.hostModel.creator),
                           TextFormField(
                             initialValue: widget.hostModel.hostName,
                             decoration:
@@ -558,7 +633,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
 
 // Usage
 
-  Widget _nvRow(String name, String value) {
+  Widget _nvRow(String name, String value, {void Function()? onPressed}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
@@ -566,6 +641,12 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         children: [
           Text(name, style: titleStyle),
           Text(value.isEmpty ? '-' : value, textAlign: TextAlign.right, style: dataStyle),
+          if (onPressed != null) const SizedBox(width: 15),
+          if (onPressed != null)
+            BTN.fill_gray_100_i_s(
+              onPressed: onPressed,
+              icon: Icons.close,
+            ),
         ],
       ),
     );
@@ -674,7 +755,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     );
   }
 
-  Widget _buttonRow(String name, String url, String buttonName, {void Function(bool)? onChanged}) {
+  Widget _buttonRow(String name, String url, String buttonName, {void Function()? onPressed}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: Row(
@@ -682,7 +763,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         children: [
           Text(name, style: titleStyle),
           TextButton(
-              onPressed: () {},
+              onPressed: onPressed,
               style: TextButton.styleFrom(
                 foregroundColor: Colors.white,
                 backgroundColor: CretaColor.primary.withOpacity(0.7), // Text color

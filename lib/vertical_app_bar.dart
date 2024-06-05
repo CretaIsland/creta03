@@ -176,7 +176,8 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
                       if (displaySize.height > 350) const SizedBox(height: 12),
                       if (displaySize.height > 350) myPageLogo(context),
                       if (displaySize.height > 400) const SizedBox(height: 12),
-                      if (displaySize.height > 400) adminLogo(context),
+                      if (displaySize.height > 450 && AccountManager.currentLoginUser.isSuperUser())
+                        adminLogo(context),
                     ],
                   ),
                   if (displaySize.height > 450) _userInfoList(displaySize),

@@ -535,11 +535,13 @@ class LoginDialog extends StatefulWidget {
     required this.size,
     required this.getBuildContext,
     this.loginPageState = LoginPageState.login,
+    this.title,
   });
   final BuildContext context;
   final Size size;
   final Function getBuildContext;
   final LoginPageState loginPageState;
+  final String? title;
 
   @override
   State<LoginDialog> createState() => _LoginDialogState();
@@ -560,6 +562,7 @@ class LoginDialog extends StatefulWidget {
     LoginPageState loginPageState = LoginPageState.login,
     String? nextPageAfterLoginSuccess, //AppRoutes.communityHome,
     Function? onAfterLogin, //skpark add
+    String? title, //skpark add
   }) {
     _showExtraInfoDialog = false;
     _nextPageAfterLoginSuccess = nextPageAfterLoginSuccess ?? Uri.base.path;
@@ -577,6 +580,7 @@ class LoginDialog extends StatefulWidget {
           size: Size(717, 568),
           getBuildContext: getBuildContext,
           loginPageState: loginPageState,
+          title: title,
         ),
       ),
     ).then((value) {
@@ -1199,7 +1203,7 @@ class _LoginDialogState extends State<LoginDialog> {
           Padding(
             padding: EdgeInsets.fromLTRB(40, 40, 0, 0),
             child: Text(
-              CretaCommuLang["signUpEmail"]!, //'이메일로 회원가입',
+              widget.title == null ? CretaCommuLang["signUpEmail"]! : widget.title!, //'이메일로 회원가입',
               style: CretaFont.titleLarge.copyWith(color: CretaColor.text[700]),
             ),
           ),
@@ -1901,7 +1905,7 @@ class _LoginDialogState extends State<LoginDialog> {
         height: widget.size.height,
         child: Row(
           children: [
-            _getLeftPane(),
+            if (widget.title == null) _getLeftPane(),
             _getRightPane(),
           ],
         ),

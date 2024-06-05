@@ -515,7 +515,7 @@ class HostGridItemState extends State<HostGridItem> {
                                 ? Colors.yellow
                                 : Colors.white,
                         child: Text(
-                          widget.hostModel!.hostId,
+                          widget.hostModel!.creator,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.right,
                           style: CretaFont.buttonMedium,

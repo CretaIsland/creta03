@@ -38,9 +38,9 @@ import 'new_deivce_input.dart';
 import '../../design_system/dataTable/my_data_mixin.dart';
 //import '../login_page.dart';
 
-SelectNotifier selectNotifierHolder = SelectNotifier();
+DeviceSelectNotifier selectNotifierHolder = DeviceSelectNotifier();
 
-class SelectNotifier extends ChangeNotifier {
+class DeviceSelectNotifier extends ChangeNotifier {
   Map<String, bool> _selectedItems = {};
   Map<String, GlobalKey<HostGridItemState>> _selectedKey = {};
 
@@ -236,7 +236,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
 
     String jsonStr = CretaAccountManager.getDeviceColumnInfo();
     //print('jsonStr = $jsonStr');
-    if (jsonStr.isEmpty) {
+    if (jsonStr.isNotEmpty) {
       jsonStr = '''{
           "columnInfoList": [
               {
@@ -269,6 +269,11 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
                   "label": "hostName",
                   "width": 120
               },
+               {
+                  "name": "enterprise",
+                  "label": "enterprise",
+                  "width": 120
+              },
               {
                   "name": "creator",
                   "label": "creator",
@@ -282,6 +287,11 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
               {
                   "name": "description",
                   "label": "description",
+                  "width": 100
+              },
+              {
+                  "name": "macAddress",
+                  "label": "macAddress",
                   "width": 100
               },
               {
@@ -324,6 +334,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
                   "label": "createTime",
                   "width": 200
               }
+              
               
           ]
       }''';
@@ -457,6 +468,17 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         }
       });
     }
+    if (widget.selectedPage == DeviceSelectedPage.sharedPage) {
+      hostManagerHolder!
+          .sharedData(
+        CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.enterprise,
+      )
+          .then((value) {
+        if (value.isNotEmpty) {
+          hostManagerHolder!.addRealTimeListen(value.first.mid);
+        }
+      });
+    }
   }
 
   static Future<bool>? isLangInit;
@@ -474,8 +496,9 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       CretaMenuItem(
         caption: CretaDeviceLang['myCretaDevice']!,
         onPressed: () {
-          //Routemaster.of(context).push(AppRoutes.studioDeviceMainPage);
-          //DeviceMainPage.lastGridMenu = AppRoutes.studioBookSharedPage;
+          Routemaster.of(context).pop();
+          Routemaster.of(context).push(AppRoutes.deviceMainPage);
+          DeviceMainPage.lastGridMenu = AppRoutes.deviceMainPage;
         },
         selected: widget.selectedPage == DeviceSelectedPage.myPage,
         iconData: Icons.import_contacts_outlined,
@@ -485,9 +508,9 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       CretaMenuItem(
         caption: CretaDeviceLang['sharedCretaDevice']!,
         onPressed: () {
-          // Routemaster.of(context).pop();
-          // Routemaster.of(context).push(AppRoutes.studioBookSharedPage);
-          // DeviceMainPage.lastGridMenu = AppRoutes.studioBookSharedPage;
+          Routemaster.of(context).pop();
+          Routemaster.of(context).push(AppRoutes.deviceSharedPage);
+          DeviceMainPage.lastGridMenu = AppRoutes.deviceSharedPage;
         },
         selected: widget.selectedPage == DeviceSelectedPage.sharedPage,
         iconData: Icons.share_outlined,
@@ -565,7 +588,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         ChangeNotifierProvider<HostManager>.value(
           value: hostManagerHolder!,
         ),
-        ChangeNotifierProvider<SelectNotifier>.value(
+        ChangeNotifierProvider<DeviceSelectNotifier>.value(
           value: selectNotifierHolder,
         ),
       ],
@@ -1378,7 +1401,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         ),
       ],
     );
-    return Consumer<SelectNotifier>(builder: (context, selectedNotifier, child) {
+    return Consumer<DeviceSelectNotifier>(builder: (context, selectedNotifier, child) {
       //print('selectNotifierHolder.hasSelected() = ${selectNotifierHolder.hasSelected()}');
       return Container(
         padding: EdgeInsets.symmetric(vertical: 20.0),
@@ -1606,6 +1629,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
               onPressed: () {
                 input.hostId = '';
                 input.hostName = '';
+                input.enterprise = '';
+                input.message = CretaDeviceLang['availiableID']!;
                 Navigator.of(context).pop();
               },
             ),
@@ -1617,6 +1642,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
 
   void insertItem() async {
     DeviceData input = DeviceData();
+    input.enterprise = CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.enterprise;
 
     await _showAddNewDialog(input, 'firstTry');
 

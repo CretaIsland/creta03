@@ -56,6 +56,17 @@
     "availiableID":    "使用可能なIDです。",
     "needToDupCheck":    "ID重複チェックを行ってください。",
 
+    "newEnterprise": "新しいエンタープライズの登録",
+    "shouldInputEntterpriseName": "エンタープライズ名を入力してください",
+    "enterpriseName": "エンタープライズ名",
+    "description": "説明",  
+    "enterpriseDetail": "エンタープライズ詳細画面",
+    "adminEmail": "管理者 email",
+    "inputEnterpriseInfo": "作成するエンタープライズ情報を入力してください",
+    "inputEnterpriseAdmin" : "エンタープライズの管理者情報を入力してください",
+    "Invalidemail": "無効なメールアドレスです。",
+
+
 
    "end"  : "End"
 

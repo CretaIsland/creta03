@@ -2,8 +2,11 @@
 
 import 'dart:math';
 
+import 'package:creta_common/common/creta_const.dart';
+import 'package:creta_common/common/creta_font.dart';
 import 'package:creta_common/common/creta_snippet.dart';
 import 'package:creta_common/model/app_enums.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'package:creta_user_io/data_io/user_property_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
@@ -11,79 +14,85 @@ import 'package:provider/provider.dart';
 
 //import '../../common/window_resize_lisnter.dart';
 import 'package:hycop/common/util/logger.dart';
-import 'package:hycop/hycop/account/account_manager.dart';
 
-import '../../data_io/host_manager.dart';
+import '../../data_io/enterprise_manager.dart';
 import '../../design_system/component/creta_basic_layout_mixin.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_device_lang.dart';
 import '../../lang/creta_studio_lang.dart';
-import '../../model/host_model.dart';
+import '../../model/enterprise_model.dart';
 import '../../routes.dart';
 import '../login/creta_account_manager.dart';
+import '../studio/studio_constant.dart';
+import 'enterprise_grid_item.dart';
+import 'enterprsie_detail_page.dart';
+import 'new_enterprise_input.dart';
 //import '../login_page.dart';
 
-// SelectNotifier selectNotifierHolder = SelectNotifier();
+// EnterpriseSelectNotifier selectNotifierHolder = EnterpriseSelectNotifier();
 
-// class SelectNotifier extends ChangeNotifier {
-//   List<bool> _selectedItems = [];
-//   Map<int, GlobalKey<HostGridItemState>> _selectedKey = {};
+// class EnterpriseSelectNotifier extends ChangeNotifier {
+//   Map<String, bool> _selectedItems = {};
+//   Map<String, GlobalKey<EnterpriseGridItemState>> _selectedKey = {};
 
-//   GlobalKey<HostGridItemState> getKey(int index) {
-//     if (_selectedKey[index] == null) {
-//       _selectedKey[index] = GlobalKey<HostGridItemState>();
+//   GlobalKey<EnterpriseGridItemState> getKey(String mid) {
+//     if (_selectedKey[mid] == null) {
+//       _selectedKey[mid] = GlobalKey<EnterpriseGridItemState>();
 //     }
-//     return _selectedKey[index]!;
+//     return _selectedKey[mid]!;
 //   }
 
-//   void selected(int index, bool value) {
-//     _selectedItems[index] = value;
-//     notify(index);
+//   void selected(String mid, bool value) {
+//     _selectedItems[mid] = value;
+//     notify(mid);
 //   }
 
-//   void toggleSelect(int index) {
-//     _selectedItems[index] = !_selectedItems[index];
-//     notify(index);
+//   void toggleSelect(String mid) {
+//     _selectedItems[mid] = !(_selectedItems[mid] ?? true);
+//     notify(mid);
 //   }
 
-//   bool isSelected(int index) {
-//     if (index < _selectedItems.length && index >= 0) {
-//       return _selectedItems[index];
-//     }
-//     return false;
+//   bool isSelected(String mid) {
+//     return _selectedItems[mid] ?? false;
 //   }
 
 //   bool hasSelected() {
-//     return _selectedItems.contains(true);
+//     return _selectedItems.values.contains(true);
 //   }
 
-//   void notify(int index) {
-//     if (index < _selectedKey.length && index >= 0) {
-//       notifyListeners();
-//       _selectedKey[index]!.currentState!.notify(index);
+//   void notify(String mid) {
+//     notifyListeners();
+//     _selectedKey[mid]?.currentState?.notify(mid);
+//   }
+
+//   void delete(String mid) {
+//     _selectedItems.remove(mid);
+//   }
+
+//   void init(EnterpriseManager enterpriseMangaer) {
+//     for (var model in enterpriseMangaer.modelList) {
+//       _selectedItems[model.mid] = false;
 //     }
+//     //_selectedItems = List.generate(length, (index) => false);
 //   }
 
-//   void clear() {
-//     _selectedItems.clear();
+//   void add(String mid, bool value) {
+//     _selectedItems[mid] = value;
 //   }
 
-//   void init(int length) {
-//     _selectedItems = List.generate(length, (index) => false);
-//   }
+//   int get length => _selectedItems.length;
 // }
 
 enum AdminSelectedPage {
   none,
-  license,
   enterprise,
   end;
 }
 
 // ignore: must_be_immutable
 class AdminMainPage extends StatefulWidget {
-  static String? lastGridMenu;
+  //static String? lastGridMenu;
 
   final VoidCallback? openDrawer;
   final AdminSelectedPage selectedPage;
@@ -98,11 +107,11 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   int counter = 0;
   final Random random = Random();
   //late WindowResizeListner sizeListener;
-  HostManager? hostManagerHolder;
-  //bool _onceDBGetComplete = false;
+  EnterpriseManager? enterpriseManagerHolder;
+  bool _onceDBGetComplete = false;
 
   //bool _openDetail = false;
-  HostModel? selectedHost;
+  EnterpriseModel? selectedEnterprise;
 
   //bool _isGridView = true;
 
@@ -117,10 +126,21 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   bool dropDownButtonOpened = false;
   GlobalKey dropDownButtonKey = GlobalKey();
 
-  late ScrollController _controller;
+  late ScrollController scrollContoller;
   LanguageType oldLanguage = LanguageType.none;
 
   static Future<bool>? isLangInit;
+
+  void _initData() {
+    //print('--------------->>> widget.selectedPage = ${widget.selectedPage}');
+    if (widget.selectedPage == AdminSelectedPage.enterprise) {
+      enterpriseManagerHolder!.myDataOnly('').then((value) {
+        if (value.isNotEmpty) {
+          enterpriseManagerHolder!.addRealTimeListen(value.first.mid);
+        }
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -128,48 +148,38 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
 
     super.initState();
 
-    //_controller = ScrollController();
-    //_controller.addListener(_scrollListener);
-    _controller = getBannerScrollController;
+    //scrollContoller = ScrollController();
+    //scrollContoller.addListener(_scrollListener);
+    scrollContoller = getBannerScrollController;
     setUsingBannerScrollBar(
       scrollChangedCallback: _scrollListener,
       // bannerMaxHeight: 196 + 200,
       // bannerMinHeight: 196,
     );
 
-    hostManagerHolder = HostManager();
-    hostManagerHolder!.configEvent(notifyModify: false);
-    hostManagerHolder!.clearAll();
+    enterpriseManagerHolder = EnterpriseManager();
+    enterpriseManagerHolder!.configEvent(notifyModify: false);
+    enterpriseManagerHolder!.clearAll();
 
-    //print('--------------->>> widget.selectedPage = ${widget.selectedPage}');
-    if (widget.selectedPage == AdminSelectedPage.license) {
-      hostManagerHolder!
-          .myDataOnly(
-        AccountManager.currentLoginUser.email,
-      )
-          .then((value) {
-        if (value.isNotEmpty) {
-          hostManagerHolder!.addRealTimeListen(value.first.mid);
-        }
-      });
-    }
+    _initData();
+
     isLangInit = initLang();
     logger.fine('initState end');
   }
 
   void _initMenu() {
     _leftMenuItemList = [
-      CretaMenuItem(
-        caption: CretaDeviceLang['license']!,
-        onPressed: () {
-          //Routemaster.of(context).push(AppRoutes.studioAdminMainPage);
-          //AdminMainPage.lastGridMenu = AppRoutes.studioBookSharedPage;
-        },
-        selected: widget.selectedPage == AdminSelectedPage.license,
-        iconData: Icons.admin_panel_settings_outlined,
-        iconSize: 20,
-        isIconText: true,
-      ),
+      // CretaMenuItem(
+      //   caption: CretaDeviceLang['license']!,
+      //   onPressed: () {
+      //     //Routemaster.of(context).push(AppRoutes.studioAdminMainPage);
+      //     //AdminMainPage.lastGridMenu = AppRoutes.studioBookSharedPage;
+      //   },
+      //   selected: widget.selectedPage == AdminSelectedPage.license,
+      //   iconData: Icons.admin_panel_settings_outlined,
+      //   iconSize: 20,
+      //   isIconText: true,
+      // ),
       CretaMenuItem(
         caption: CretaDeviceLang['enterprise']!,
         onPressed: () {
@@ -191,7 +201,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   }
 
   void _scrollListener(bool bannerSizeChanged) {
-    hostManagerHolder!.showNext(_controller).then((needUpdate) {
+    enterpriseManagerHolder!.showNext(scrollContoller).then((needUpdate) {
       if (needUpdate || bannerSizeChanged) {
         setState(() {});
       }
@@ -208,8 +218,8 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
     super.dispose();
     //WidgetsBinding.instance.removeObserver(sizeListener);
     //HycopFactory.realtime!.removeListener('creta_book');
-    hostManagerHolder?.removeRealTimeListen();
-    _controller.dispose();
+    enterpriseManagerHolder?.removeRealTimeListen();
+    scrollContoller.dispose();
     //HycopFactory.myRealtime!.stop();
   }
 
@@ -233,6 +243,12 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
       providers: [
         ChangeNotifierProvider<UserPropertyManager>.value(
             value: CretaAccountManager.userPropertyManagerHolder),
+        ChangeNotifierProvider<EnterpriseManager>.value(
+          value: enterpriseManagerHolder!,
+        ),
+        // ChangeNotifierProvider<EnterpriseSelectNotifier>.value(
+        //   value: selectNotifierHolder,
+        //),
       ],
       child: FutureBuilder<bool>(
           future: isLangInit,
@@ -295,9 +311,9 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
                       ],
                       //mainWidget: sizeListener.isResizing() ? Container() : _bookGrid(context))),
                       onSearch: (value) {
-                        hostManagerHolder!.onSearch(value, () => setState(() {}));
+                        enterpriseManagerHolder!.onSearch(value, () => setState(() {}));
                       },
-                      mainWidget: _licenceGrid, // _bookGrid, //_bookGrid(context),
+                      mainWidget: _enterpriseMain, // _bookGrid, //_bookGrid(context),
                       onFoldButtonPressed: () {
                         setState(() {});
                       },
@@ -311,8 +327,8 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
 
   String getAdminTitle() {
     switch (widget.selectedPage) {
-      case AdminSelectedPage.license:
-        return CretaDeviceLang['license']!;
+      // case AdminSelectedPage.license:
+      //   return CretaDeviceLang['license']!;
       case AdminSelectedPage.enterprise:
         return CretaDeviceLang['enterprise']!;
       default:
@@ -322,8 +338,8 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
 
   String getAdminDesc() {
     switch (widget.selectedPage) {
-      case AdminSelectedPage.license:
-        return CretaDeviceLang['myCretaAdminDesc']!;
+      // case AdminSelectedPage.license:
+      //   return CretaDeviceLang['myCretaAdminDesc']!;
       case AdminSelectedPage.enterprise:
         return CretaDeviceLang['enterpriseDesc']!;
       default:
@@ -331,504 +347,367 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
     }
   }
 
-  Widget _licenceGrid(BuildContext context) {
-    return SizedBox.shrink();
+  Widget _enterpriseMain(BuildContext context) {
+    // if (sizeListener.isResizing()) {
+    //   return consumerFunc(context, null);
+    // }
+    if (_onceDBGetComplete) {
+      return consumerFunc();
+    }
+    var retval = CretaManager.waitData(
+      manager: enterpriseManagerHolder!,
+      //userId: AccountManager.currentLoginUser.email,
+      consumerFunc: consumerFunc,
+      completeFunc: () {
+        _onceDBGetComplete = true;
+        //selectNotifierHolder.init(enterpriseManagerHolder!);
+      },
+    );
+
+    return retval;
   }
 
-  // Widget _bookGrid(BuildContext context) {
-  //   // if (sizeListener.isResizing()) {
-  //   //   return consumerFunc(context, null);
-  //   // }
-  //   if (_onceDBGetComplete) {
-  //     return consumerFunc();
-  //   }
-  //   var retval = CretaManager.waitData(
-  //     manager: hostManagerHolder!,
-  //     //userId: AccountManager.currentLoginUser.email,
-  //     consumerFunc: consumerFunc,
-  //     completeFunc: () {
-  //       _onceDBGetComplete = true;
-  //       selectNotifierHolder.init(hostManagerHolder!.getLength());
-  //     },
-  //   );
+  Widget consumerFunc(
+      /*List<AbsExModel>? data*/
+      ) {
+    logger.finest('consumerFunc');
+    // _onceDBGetComplete = true;
+    // selectedItems = List.generate(enterpriseManagerHolder!.getAvailLength() + 2, (index) => false);
 
-  //   return retval;
-  // }
+    return Consumer<EnterpriseManager>(builder: (context, enterpriseManager, child) {
+      logger.fine('Consumer  ${enterpriseManager.getLength() + 1}');
+      return _enterpriseList(enterpriseManager);
+    });
+  }
 
-  // Widget consumerFunc(
-  //     /*List<AbsExModel>? data*/
-  //     ) {
-  //   logger.finest('consumerFunc');
+  Widget _enterpriseList(EnterpriseManager enterpriseManager) {
+    double itemWidth = -1;
+    double itemHeight = -1;
 
-  //   // _onceDBGetComplete = true;
-  //   // selectedItems = List.generate(hostManagerHolder!.getAvailLength() + 2, (index) => false);
+    // print('rightPaneRect.childWidth=${rightPaneRect.childWidth}');
+    // print('CretaConst.cretaPaddingPixel=${CretaConst.cretaPaddingPixel}');
+    // print('CretaConst.bookThumbSize.width=${CretaConst.bookThumbSize.width}');
+    // int columnCount = (rightPaneRect.childWidth - CretaConst.cretaPaddingPixel * 2) ~/
+    //     CretaConst.bookThumbSize.width;
 
-  //   return Consumer<HostManager>(builder: (context, hostManager, child) {
-  //     logger.fine('Consumer  ${hostManager.getLength() + 1}');
-  //     return _gridViewer(hostManager);
-  //   });
-  // }
+    int columnCount = ((rightPaneRect.childWidth - CretaConst.cretaPaddingPixel * 2) /
+            (itemWidth > 0
+                ? min(itemWidth, CretaConst.bookThumbSize.width)
+                : CretaConst.bookThumbSize.width))
+        .ceil();
 
-  // Widget _gridViewer(HostManager hostManager) {
-  //   double itemWidth = -1;
-  //   double itemHeight = -1;
+    //print('columnCount=$columnCount');
 
-  //   // print('rightPaneRect.childWidth=${rightPaneRect.childWidth}');
-  //   // print('CretaConst.cretaPaddingPixel=${CretaConst.cretaPaddingPixel}');
-  //   // print('CretaConst.bookThumbSize.width=${CretaConst.bookThumbSize.width}');
-  //   // int columnCount = (rightPaneRect.childWidth - CretaConst.cretaPaddingPixel * 2) ~/
-  //   //     CretaConst.bookThumbSize.width;
+    if (columnCount <= 1) {
+      if (rightPaneRect.childWidth > 280) {
+        columnCount = 2;
+      } else if (rightPaneRect.childWidth > 154) {
+        columnCount = 1;
+      } else {
+        return SizedBox.shrink();
+      }
+    }
 
-  //   int columnCount = ((rightPaneRect.childWidth - CretaConst.cretaPaddingPixel * 2) /
-  //           (itemWidth > 0
-  //               ? min(itemWidth, CretaConst.bookThumbSize.width)
-  //               : CretaConst.bookThumbSize.width))
-  //       .ceil();
+    Widget gridView = GridView.builder(
+      controller: scrollContoller,
+      //padding: LayoutConst.cretaPadding,
+      itemCount: enterpriseManager.getLength() + 2, //item 개수
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
+        childAspectRatio:
+            CretaConst.bookThumbSize.width / CretaConst.bookThumbSize.height, // 가로÷세로 비율
+        mainAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수평 Padding
+        crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
+      ),
+      itemBuilder: (BuildContext context, int index) {
+        //if (isValidIndex(index)) {
+        return (itemWidth >= 0 && itemHeight >= 0)
+            ? enterpriseGridItem(index, itemWidth, itemHeight, enterpriseManager)
+            : LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  itemWidth = constraints.maxWidth;
+                  itemHeight = constraints.maxHeight;
+                  // double ratio = itemWidth / 267; //CretaConst.bookThumbSize.width;
+                  // // 너무 커지는 것을 막기위해.
+                  // if (ratio > 1) {
+                  //   itemWidth = 267; //CretaConst.bookThumbSize.width;
+                  //   itemHeight = itemHeight / ratio;
+                  // }
 
-  //   //print('columnCount=$columnCount');
+                  //print('first data, $itemWidth, $itemHeight');
+                  return enterpriseGridItem(index, itemWidth, itemHeight, enterpriseManager);
+                },
+              );
+        //}
+        //return SizedBox.shrink();
+      },
+    );
 
-  //   if (columnCount <= 1) {
-  //     if (rightPaneRect.childWidth > 280) {
-  //       columnCount = 2;
-  //     } else if (rightPaneRect.childWidth > 154) {
-  //       columnCount = 1;
-  //     } else {
-  //       return SizedBox.shrink();
-  //     }
-  //   }
+    return Scrollbar(
+      thumbVisibility: true,
+      controller: scrollContoller,
+      child: Padding(
+        padding: LayoutConst.cretaPadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            //_toolbar(),
+            Expanded(child: gridView),
+          ],
+        ),
+      ),
+    );
+  }
 
-  //   Widget listView = Scrollbar(
-  //     thumbVisibility: true,
-  //     controller: _controller,
-  //     child: Padding(
-  //       padding: LayoutConst.cretaPadding,
-  //       child: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           _toolbar(),
-  //           Expanded(
-  //             child: GridView.builder(
-  //               controller: _controller,
-  //               //padding: LayoutConst.cretaPadding,
-  //               itemCount: hostManager.getLength() + 2, //item 개수
-  //               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-  //                 crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
-  //                 childAspectRatio:
-  //                     CretaConst.bookThumbSize.width / CretaConst.bookThumbSize.height, // 가로÷세로 비율
-  //                 mainAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수평 Padding
-  //                 crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
-  //               ),
-  //               itemBuilder: (BuildContext context, int index) {
-  //                 //if (isValidIndex(index)) {
-  //                 return (itemWidth >= 0 && itemHeight >= 0)
-  //                     ? hostGridItem(index, itemWidth, itemHeight, hostManager)
-  //                     : LayoutBuilder(
-  //                         builder: (BuildContext context, BoxConstraints constraints) {
-  //                           itemWidth = constraints.maxWidth;
-  //                           itemHeight = constraints.maxHeight;
-  //                           // double ratio = itemWidth / 267; //CretaConst.bookThumbSize.width;
-  //                           // // 너무 커지는 것을 막기위해.
-  //                           // if (ratio > 1) {
-  //                           //   itemWidth = 267; //CretaConst.bookThumbSize.width;
-  //                           //   itemHeight = itemHeight / ratio;
-  //                           // }
+  bool isValidIndex(int index, EnterpriseManager enterpriseManager) {
+    return index > 0 && index - 1 < enterpriseManager.getLength();
+  }
 
-  //                           //print('first data, $itemWidth, $itemHeight');
-  //                           return hostGridItem(index, itemWidth, itemHeight, hostManager);
-  //                         },
-  //                       );
-  //                 //}
-  //                 //return SizedBox.shrink();
-  //               },
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
+  Widget enterpriseGridItem(
+      int index, double itemWidth, double itemHeight, EnterpriseManager enterpriseManager) {
+    //print('enterpriseGridItem($index),  ${enterpriseManager.getLength()}');
+    if (index > enterpriseManager.getLength()) {
+      if (enterpriseManager.isShort()) {
+        //print('enterpriseManager.isShort');
+        return SizedBox(
+          width: itemWidth,
+          height: itemHeight,
+          child: Center(
+            child: TextButton(
+              onPressed: () {
+                enterpriseManager.next().then((value) => setState(() {}));
+              },
+              child: Text(
+                "more...",
+                style: CretaFont.displaySmall,
+              ),
+            ),
+          ),
+        );
+      }
+      return Container();
+    }
 
-  //   Widget detailView = selectedHost != null
-  //       ? Center(
-  //           child: AdminDetailPage(
-  //           hostModel: selectedHost!,
-  //           onExit: () {
-  //             setState(() {
-  //               _openDetail = false;
-  //               selectedHost = null;
-  //             });
-  //           },
-  //         ))
-  //       : SizedBox.shrink();
+    EnterpriseModel? itemModel;
+    if (isValidIndex(index, enterpriseManager)) {
+      itemModel = enterpriseManager.findByIndex(index - 1) as EnterpriseModel?;
+      if (itemModel == null) {
+        logger.warning("$index th model not founded");
+        return Container();
+      }
 
-  //   if (selectedHost != null && _openDetail) {
-  //     return detailView;
-  //   }
+      if (itemModel.isRemoved.value == true) {
+        logger.warning('removed EnterpriseModel.name = ${itemModel.name}');
+        return Container();
+      }
+      //logger.fine('EnterpriseModel.name = ${model.name.value}');
+    }
+    //print('----------------------');
+    //if (isValidIndex(index)) {
+    return GestureDetector(
+      onDoubleTap: () async {
+        if (itemModel != null) {
+          setState(() {
+            //_openDetail = true;
+            selectedEnterprise = itemModel;
+          });
+          await _showDetailView();
+        }
+      },
+      onTap: () {
+        if (itemModel != null) {
+          //selectNotifierHolder.toggleSelect(itemModel.mid);
+        }
+      },
+      child:
 
-  //   return listView;
-  // }
+          // EnterpriseGridItem(
+          //   enterpriseManager: enterpriseManager,
+          //   index: index - 1,
+          //   itemKey: GlobalKey<EnterpriseGridItemState>(),
+          //   // key: isValidIndex(index)
+          //   //     ? (bookManager.findByIndex(index - 1) as CretaModel).key
+          //   //     : GlobalKey(),
+          //   enterpriseModel: isValidIndex(index, enterpriseManager)
+          //       ? enterpriseManager.findByIndex(index - 1) as EnterpriseModel
+          //       : null,
+          //   width: itemWidth,
+          //   height: itemHeight,
+          //   selectedPage: widget.selectedPage,
+          //   onEdit: (enterpriseModel) {
+          //     setState(() {
+          //       _openDetail = true;
+          //       selectedEnterprise = enterpriseModel;
+          //     });
+          //   },
+          // ),
 
-  // bool isValidIndex(int index, HostManager hostManager) {
-  //   return index > 0 && index - 1 < hostManager.getLength();
-  // }
+          Stack(
+        fit: StackFit.expand,
+        children: [
+          EnterpriseGridItem(
+              enterpriseManager: enterpriseManager,
+              index: index - 1,
+              //itemKey: selectNotifierHolder.getKey(itemModel?.mid ?? ''),
+              // key: isValidIndex(index)
+              //     ? (bookManager.findByIndex(index - 1) as CretaModel).key
+              //     : GlobalKey(),
+              enterpriseModel: itemModel,
+              width: itemWidth,
+              height: itemHeight,
+              selectedPage: widget.selectedPage,
+              onEdit: (enterpriseModel) async {
+                //setState(() {
+                //_openDetail = true;
+                selectedEnterprise = enterpriseModel;
+                //});
+                await _showDetailView();
+              },
+              onInsert: insertItem),
+          // if (_isSelected(index))
+          //   Positioned(
+          //     top: 4,
+          //     left: 4,
+          //     child: Container(
+          //       //padding: EdgeInsets.all(2), // Adjust padding as needed
+          //       decoration: BoxDecoration(
+          //         // border: Border.all(
+          //         //   color: Colors.white, // Change border color as needed
+          //         //   width: 2, // Change border width as needed
+          //         // ),
+          //         shape: BoxShape.circle,
+          //         color: Colors.white.withOpacity(0.5),
+          //       ),
+          //       child: Icon(
+          //         Icons.check_circle_outline,
+          //         size: 42,
+          //         color: CretaColor.primary,
+          //       ),
+          //     ),
+          //   ),
+        ],
+      ),
+    );
+  }
 
-  // Widget hostGridItem(int index, double itemWidth, double itemHeight, HostManager hostManager) {
-  //   //print('hostGridItem($index),  ${hostManager.getLength()}');
-  //   if (index > hostManager.getLength()) {
-  //     if (hostManager.isShort()) {
-  //       //print('hostManager.isShort');
-  //       return SizedBox(
-  //         width: itemWidth,
-  //         height: itemHeight,
-  //         child: Center(
-  //           child: TextButton(
-  //             onPressed: () {
-  //               hostManager.next().then((value) => setState(() {}));
-  //             },
-  //             child: Text(
-  //               "more...",
-  //               style: CretaFont.displaySmall,
-  //             ),
-  //           ),
-  //         ),
-  //       );
-  //     }
-  //     return Container();
-  //   }
+  Future<void> _showDetailView() async {
+    var screenSize = MediaQuery.of(context).size;
 
-  //   if (isValidIndex(index, hostManager)) {
-  //     HostModel? model = hostManager.findByIndex(index - 1) as HostModel?;
-  //     if (model == null) {
-  //       logger.warning("$index th model not founded");
-  //       return Container();
-  //     }
+    double width = screenSize.width * 0.5;
+    double height = screenSize.height * 0.7;
+    final formKey = GlobalKey<FormState>();
 
-  //     if (model.isRemoved.value == true) {
-  //       logger.warning('removed HostModel.name = ${model.hostName}');
-  //       return Container();
-  //     }
-  //     //logger.fine('HostModel.name = ${model.name.value}');
-  //   }
-  //   //print('----------------------');
-  //   //if (isValidIndex(index)) {
-  //   return GestureDetector(
-  //     onTap: () {
-  //       selectNotifierHolder.toggleSelect(index - 1);
-  //     },
-  //     child:
+    //print('selectEnterprise.mid=${selectedEnterprise!.mid}');
+    EnterpriseModel newOne = selectedEnterprise ?? EnterpriseModel.dummy();
 
-  //         // HostGridItem(
-  //         //   hostManager: hostManager,
-  //         //   index: index - 1,
-  //         //   itemKey: GlobalKey<HostGridItemState>(),
-  //         //   // key: isValidIndex(index)
-  //         //   //     ? (bookManager.findByIndex(index - 1) as CretaModel).key
-  //         //   //     : GlobalKey(),
-  //         //   hostModel: isValidIndex(index, hostManager)
-  //         //       ? hostManager.findByIndex(index - 1) as HostModel
-  //         //       : null,
-  //         //   width: itemWidth,
-  //         //   height: itemHeight,
-  //         //   selectedPage: widget.selectedPage,
-  //         //   onEdit: (hostModel) {
-  //         //     setState(() {
-  //         //       _openDetail = true;
-  //         //       selectedHost = hostModel;
-  //         //     });
-  //         //   },
-  //         // ),
+    String title = '${CretaDeviceLang['enterpriseDetail']!}  ${newOne.name}';
 
-  //         Stack(
-  //       fit: StackFit.expand,
-  //       children: [
-  //         HostGridItem(
-  //           hostManager: hostManager,
-  //           index: index - 1,
-  //           itemKey: selectNotifierHolder.getKey(index - 1),
-  //           // key: isValidIndex(index)
-  //           //     ? (bookManager.findByIndex(index - 1) as CretaModel).key
-  //           //     : GlobalKey(),
-  //           hostModel: isValidIndex(index, hostManager)
-  //               ? hostManager.findByIndex(index - 1) as HostModel
-  //               : null,
-  //           width: itemWidth,
-  //           height: itemHeight,
-  //           selectedPage: widget.selectedPage,
-  //           onEdit: (hostModel) {
-  //             setState(() {
-  //               _openDetail = true;
-  //               selectedHost = hostModel;
-  //             });
-  //           },
-  //         ),
-  //         // if (_isSelected(index))
-  //         //   Positioned(
-  //         //     top: 4,
-  //         //     left: 4,
-  //         //     child: Container(
-  //         //       //padding: EdgeInsets.all(2), // Adjust padding as needed
-  //         //       decoration: BoxDecoration(
-  //         //         // border: Border.all(
-  //         //         //   color: Colors.white, // Change border color as needed
-  //         //         //   width: 2, // Change border width as needed
-  //         //         // ),
-  //         //         shape: BoxShape.circle,
-  //         //         color: Colors.white.withOpacity(0.5),
-  //         //       ),
-  //         //       child: Icon(
-  //         //         Icons.check_circle_outline,
-  //         //         size: 42,
-  //         //         color: CretaColor.primary,
-  //         //       ),
-  //         //     ),
-  //         //   ),
-  //       ],
-  //     ),
-  //   );
-  // }
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Container(
+            width: width,
+            height: height,
+            margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+            color: Colors.white,
+            child: EnterpriseDetailPage(
+              formKey: formKey,
+              enterpriseModel: newOne,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    //print('formKey.currentState!.validate()====================');
+                    formKey.currentState?.save();
+                    newOne.setUpdateTime();
+                    enterpriseManagerHolder?.setToDB(newOne);
+                    //admins 에 등록된 user 들에 대해서, user_property model 의 enterprise 정보를 갱신해야 한다.
+                    CretaAccountManager.userPropertyManagerHolder
+                        .updateEnterprise(newOne.admins, newOne.name);
+                  }
+                  Navigator.of(context).pop();
+                }),
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+    setState(() {});
+  }
 
-  // // bool _isSelected(int index) {
-  // //   return index < selectedItems.length ? selectedItems[index] : false;
-  // // }
+  Future<void> _showAddNewDialog(EnterpriseData input, String formKeyStr) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(CretaDeviceLang['inputEnterpriseInfo']!),
+          content: NewEnterpriseInput(
+            data: input,
+            formKeyStr: formKeyStr,
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                if (input.formKey!.currentState!.validate()) {
+                  Navigator.of(context).pop();
+                  // LoginDialog.popupDialog(
+                  //   context: context,
+                  //   // doAfterLogin: doAfterLogin,
+                  //   // onErrorReport: onErrorReport,
+                  //   getBuildContext: () {},
+                  //   loginPageState: LoginPageState.singup,
+                  //   title: CretaDeviceLang["inputEnterpriseAdmin"]!,
+                  // );
+                }
+              },
+            ),
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                input.name = '';
+                input.description = '';
+                input.message = CretaDeviceLang['availiableID']!;
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-  // void saveItem(HostManager hostManager, int index) async {
-  //   HostModel savedItem = hostManager.findByIndex(index) as HostModel;
-  //   await hostManager.setToDB(savedItem);
-  // }
+  void insertItem() async {
+    EnterpriseData input = EnterpriseData();
 
-  // List<CretaMenuItem> getSortMenu(Function? onModelSorted) {
-  //   return [
-  //     CretaMenuItem(
-  //         caption: CretaLang['basicBookSortFilter']![0],
-  //         onPressed: () {
-  //           hostManagerHolder?.toSorted('updateTime',
-  //               descending: true, onModelSorted: onModelSorted);
-  //         },
-  //         selected: true),
-  //     CretaMenuItem(
-  //         caption: CretaLang['basicBookSortFilter']![1],
-  //         onPressed: () {
-  //           hostManagerHolder?.toSorted('name', onModelSorted: onModelSorted);
-  //         },
-  //         selected: false),
-  //   ];
-  // }
+    await _showAddNewDialog(input, 'firstTry');
 
-  // List<CretaMenuItem> getFilterMenu(Function? onModelFiltered) {
-  //   return [
-  //     CretaMenuItem(
-  //       caption: CretaDeviceLang['basicHostFilter']![0],
-  //       onPressed: () {
-  //         hostManagerHolder?.toFiltered(null, null, AccountManager.currentLoginUser.email,
-  //             onModelFiltered: onModelFiltered);
-  //       },
-  //       selected: CretaVars.serviceType == ServiceType.none,
-  //       disabled: CretaVars.serviceType != ServiceType.none,
-  //     ),
-  //     CretaMenuItem(
-  //       caption: CretaDeviceLang['basicHostFilter']![1], //
-  //       onPressed: () {
-  //         hostManagerHolder?.toFiltered(
-  //             'hostType', HostType.signage.index, AccountManager.currentLoginUser.email,
-  //             onModelFiltered: onModelFiltered);
-  //       },
-  //       selected: CretaVars.serviceType == ServiceType.signage,
-  //       disabled: CretaVars.serviceType != ServiceType.signage,
-  //     ),
-  //     CretaMenuItem(
-  //       caption: CretaDeviceLang['basicHostFilter']![2], //
-  //       onPressed: () {
-  //         hostManagerHolder?.toFiltered(
-  //             'hostType', HostType.barricade.index, AccountManager.currentLoginUser.email,
-  //             onModelFiltered: onModelFiltered);
-  //       },
-  //       selected: CretaVars.serviceType == ServiceType.barricade,
-  //       disabled: CretaVars.serviceType != ServiceType.barricade,
-  //     ),
-  //     CretaMenuItem(
-  //       caption: CretaDeviceLang['basicHostFilter']![3], //
-  //       onPressed: () {
-  //         hostManagerHolder?.toFiltered(
-  //             'hostType', HostType.escalator.index, AccountManager.currentLoginUser.email,
-  //             onModelFiltered: onModelFiltered);
-  //       },
-  //       selected: CretaVars.serviceType == ServiceType.escalator,
-  //       disabled: CretaVars.serviceType != ServiceType.escalator,
-  //     ),
-  //     CretaMenuItem(
-  //       caption: CretaDeviceLang['basicHostFilter']![4], //
-  //       onPressed: () {
-  //         hostManagerHolder?.toFiltered(
-  //             'hostType', HostType.board.index, AccountManager.currentLoginUser.email,
-  //             onModelFiltered: onModelFiltered);
-  //       },
-  //       selected: CretaVars.serviceType == ServiceType.board,
-  //       disabled: CretaVars.serviceType != ServiceType.board,
-  //     ),
-  //     CretaMenuItem(
-  //       caption: CretaDeviceLang['basicHostFilter']![5],
-  //       onPressed: () {
-  //         hostManagerHolder?.toFiltered(
-  //             'hostType', HostType.cdu.index, AccountManager.currentLoginUser.email,
-  //             onModelFiltered: onModelFiltered);
-  //       },
-  //       selected: CretaVars.serviceType == ServiceType.cdu,
-  //       disabled: CretaVars.serviceType != ServiceType.cdu,
-  //     ),
-  //     CretaMenuItem(
-  //       caption: CretaDeviceLang['basicHostFilter']![6],
-  //       onPressed: () {
-  //         hostManagerHolder?.toFiltered(
-  //             'hostType', HostType.etc.index, AccountManager.currentLoginUser.email,
-  //             onModelFiltered: onModelFiltered);
-  //       },
-  //       selected: CretaVars.serviceType == ServiceType.etc,
-  //       disabled: CretaVars.serviceType != ServiceType.etc,
-  //     ),
-  //   ];
-  // }
+    if (input.message != CretaDeviceLang['availiableID']!) {
+      input.message = CretaDeviceLang['needToDupCheck']!;
+      await _showAddNewDialog(input, 'secondTry');
+    }
 
-  // List<CretaMenuItem> getUsageFilterMenu(Function? onModelFiltered) {
-  //   return [
-  //     CretaMenuItem(
-  //       caption: CretaDeviceLang['usageHostFilter']![0],
-  //       onPressed: () {
-  //         hostManagerHolder?.toFiltered(null, null, AccountManager.currentLoginUser.email,
-  //             onModelFiltered: onModelFiltered);
-  //       },
-  //     ),
-  //     CretaMenuItem(
-  //       caption: CretaDeviceLang['usageHostFilter']![1],
-  //       onPressed: () {
-  //         hostManagerHolder?.toFiltered('isUsed', true, AccountManager.currentLoginUser.email,
-  //             onModelFiltered: onModelFiltered);
-  //       },
-  //     ),
-  //     CretaMenuItem(
-  //       caption: CretaDeviceLang['usageHostFilter']![2], //
-  //       onPressed: () {
-  //         hostManagerHolder?.toFiltered('isUsed', false, AccountManager.currentLoginUser.email,
-  //             onModelFiltered: onModelFiltered);
-  //       },
-  //     ),
-  //   ];
-  // }
+    if (input.name.isEmpty || input.name.isEmpty) {
+      return;
+    }
 
-  // List<CretaMenuItem> getConnectedFilterMenu(Function? onModelFiltered) {
-  //   return [
-  //     CretaMenuItem(
-  //       caption: CretaDeviceLang['connectedHostFilter']![0],
-  //       onPressed: () {
-  //         hostManagerHolder?.toFiltered(null, null, AccountManager.currentLoginUser.email,
-  //             onModelFiltered: onModelFiltered);
-  //       },
-  //     ),
-  //     CretaMenuItem(
-  //       caption: CretaDeviceLang['connectedHostFilter']![1],
-  //       onPressed: () {
-  //         hostManagerHolder?.toFiltered('isConnected', true, AccountManager.currentLoginUser.email,
-  //             onModelFiltered: onModelFiltered);
-  //       },
-  //     ),
-  //     CretaMenuItem(
-  //       caption: CretaDeviceLang['connectedHostFilter']![2], //
-  //       onPressed: () {
-  //         hostManagerHolder?.toFiltered('isConnected', false, AccountManager.currentLoginUser.email,
-  //             onModelFiltered: onModelFiltered);
-  //       },
-  //     ),
-  //   ];
-  // }
-
-  // Widget _toolbar() {
-  //   Widget buttons = Wrap(
-  //     //mainAxisAlignment: MainAxisAlignment.start,
-  //     children: <Widget>[
-  //       BTN.fill_gray_it_l(
-  //         text: CretaDeviceLang['editHost']!,
-  //         icon: Icons.edit_outlined,
-  //         onPressed: () {
-  //           // Handle menu button press
-  //         },
-  //       ),
-  //       BTN.fill_gray_it_l(
-  //         text: CretaDeviceLang['setBook']!,
-  //         icon: Icons.play_circle_outline,
-  //         onPressed: () {
-  //           // Handle menu button press
-  //         },
-  //       ),
-  //       BTN.fill_gray_it_l(
-  //         text: CretaDeviceLang['powerOff']!,
-  //         icon: Icons.power_off_outlined,
-  //         onPressed: () {
-  //           // Handle menu button press
-  //         },
-  //       ),
-  //       BTN.fill_gray_it_l(
-  //         text: CretaDeviceLang['reboot']!,
-  //         icon: Icons.power_outlined,
-  //         onPressed: () {
-  //           // Handle menu button press
-  //         },
-  //       ),
-  //       BTN.fill_gray_it_l(
-  //         width: 130,
-  //         text: CretaDeviceLang['setPower']!,
-  //         icon: Icons.power_settings_new_outlined,
-  //         onPressed: () {
-  //           // Handle menu button press
-  //         },
-  //       ),
-  //       BTN.fill_gray_it_l(
-  //         text: CretaDeviceLang['notice']!,
-  //         icon: Icons.notifications_outlined,
-  //         onPressed: () {
-  //           // Handle menu button press
-  //         },
-  //       ),
-  //     ],
-  //   );
-  //   return Consumer<SelectNotifier>(builder: (context, selectedNotifier, child) {
-  //     return Container(
-  //       padding: EdgeInsets.symmetric(vertical: 20.0),
-  //       //height: LayoutConst.deviceToolbarHeight,
-  //       //color: Colors.amberAccent,
-  //       child: Row(
-  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //         children: [
-  //           selectNotifierHolder.hasSelected() == false
-  //               ? Stack(
-  //                   //fit: StackFit.expand,
-  //                   alignment: Alignment.topLeft,
-  //                   children: [
-  //                     buttons,
-  //                     Positioned.fill(
-  //                         child: Container(
-  //                             //padding: EdgeInsets.symmetric(horizontal: 10.0),
-  //                             color: Colors.white.withOpacity(0.5))),
-  //                   ],
-  //                 )
-  //               : buttons,
-  //           _isGridView
-  //               ? BTN.fill_gray_i_l(
-  //                   icon: Icons.list,
-  //                   onPressed: () {
-  //                     setState(() {
-  //                       _isGridView = false;
-  //                     });
-  //                   },
-  //                 )
-  //               : BTN.fill_gray_i_l(
-  //                   icon: Icons.grid_view_outlined,
-  //                   onPressed: () {
-  //                     setState(() {
-  //                       _isGridView = true;
-  //                     });
-  //                   },
-  //                 ),
-  //         ],
-  //       ),
-  //     );
-  //   });
-  // }
+    //EnterpriseModel model =
+    await enterpriseManagerHolder!
+        .createEnterprise(name: input.name, description: input.description);
+    //StudioVariables.selectedenterpriseMid = enterprise.mid;
+    // ignore: use_build_context_synchronously
+    //Routemaster.of(context).push('${AppRoutes.deviceDetailPage}?${enterprise.mid}');
+    //selectNotifierHolder.add(model.mid, false);
+    enterpriseManagerHolder!.notify();
+  }
 }

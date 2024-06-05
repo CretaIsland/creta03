@@ -1,39 +1,38 @@
 import 'package:flutter/material.dart';
 
-import '../../data_io/host_manager.dart';
+import '../../data_io/enterprise_manager.dart';
 import '../../lang/creta_device_lang.dart';
 
-class DeviceData {
+class EnterpriseData {
   GlobalObjectKey<FormState>? formKey;
-  String hostId = '';
-  String hostName = '';
-  String enterprise = '';
+  String description = '';
+  String name = '';
   String message = '';
 }
 
-class NewDeviceInput extends StatefulWidget {
-  final DeviceData data;
+class NewEnterpriseInput extends StatefulWidget {
+  final EnterpriseData data;
   final String formKeyStr;
-  const NewDeviceInput({super.key, required this.data, required this.formKeyStr});
+  const NewEnterpriseInput({super.key, required this.data, required this.formKeyStr});
 
   @override
-  NewDeviceInputState createState() => NewDeviceInputState();
+  NewEnterpriseInputState createState() => NewEnterpriseInputState();
 }
 
-class NewDeviceInputState extends State<NewDeviceInput> {
-  late HostManager dummyHostManager;
+class NewEnterpriseInputState extends State<NewEnterpriseInput> {
+  late EnterpriseManager dummyEnterpriseManager;
 
   @override
   void initState() {
     super.initState();
-    dummyHostManager = HostManager();
+    dummyEnterpriseManager = EnterpriseManager();
     widget.data.formKey = GlobalObjectKey<FormState>(widget.formKeyStr);
   }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 300,
+      height: 200,
       width: 400,
       child: Form(
         key: widget.data.formKey,
@@ -43,31 +42,17 @@ class NewDeviceInputState extends State<NewDeviceInput> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    initialValue: widget.data.enterprise,
-                    onChanged: (value) => widget.data.enterprise = value,
-                    decoration: InputDecoration(hintText: CretaDeviceLang['enterpriseName']!),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return CretaDeviceLang['shouldInputEntterpriseName']!;
-                      }
-                      return null;
-                    },
-                  ),
-                ),
                 SizedBox(
                   width: 240,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
-                      initialValue: widget.data.hostId,
-                      onChanged: (value) => widget.data.hostId = value,
-                      decoration: InputDecoration(hintText: CretaDeviceLang['deviceId']!),
+                      initialValue: widget.data.name,
+                      onChanged: (value) => widget.data.name = value,
+                      decoration: InputDecoration(hintText: CretaDeviceLang['enterpriseName']!),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return CretaDeviceLang['shouldInputDeviceId']!;
+                          return CretaDeviceLang['shouldInputEntterpriseName']!;
                         }
                         return null;
                       },
@@ -78,7 +63,7 @@ class NewDeviceInputState extends State<NewDeviceInput> {
                   child: Text(CretaDeviceLang['dupCheck']!),
                   onPressed: () async {
                     if (widget.data.formKey!.currentState!.validate()) {
-                      bool isExist = await dummyHostManager.isNameExist(widget.data.hostId);
+                      bool isExist = await dummyEnterpriseManager.isNameExist(widget.data.name);
                       setState(() {
                         if (isExist) {
                           widget.data.message = CretaDeviceLang['alreadyExist']!;
@@ -99,16 +84,11 @@ class NewDeviceInputState extends State<NewDeviceInput> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
-                onChanged: (value) => widget.data.hostName = value,
-                decoration: InputDecoration(hintText: CretaDeviceLang['deviceName']!),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    widget.data.hostName = widget.data.hostId;
-                  }
-                  return null;
-                },
+                onChanged: (value) => widget.data.description = value,
+                decoration: InputDecoration(hintText: CretaDeviceLang['description']!),
               ),
             ),
+           
           ],
         ),
       ),

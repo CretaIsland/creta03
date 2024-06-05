@@ -34,6 +34,8 @@ class HostModel extends CretaModel {
   ServiceType hostType = ServiceType.signage; // read only
   String hostId = ''; // read only
   String hostName = '';
+  String enterprise = '';
+  String macAddress = '';
   String ip = '';
   String interfaceName = ''; // read only
   String creator = ''; // read only
@@ -108,6 +110,8 @@ class HostModel extends CretaModel {
     super.type = ExModelType.host,
     required this.hostId,
     this.hostName = '',
+    this.enterprise = '',
+    this.macAddress = '',
     super.parent = '',
     this.interfaceName = '',
     this.ip = '',
@@ -123,6 +127,8 @@ class HostModel extends CretaModel {
         ...super.props,
         hostId,
         hostName,
+        enterprise,
+        macAddress,
         interfaceName,
         ip,
         isConnected,
@@ -187,6 +193,8 @@ class HostModel extends CretaModel {
 
     hostId = srcHost.hostId;
     hostName = srcHost.hostName;
+    enterprise = srcHost.enterprise;
+    macAddress = srcHost.macAddress;
     interfaceName = srcHost.interfaceName;
     ip = srcHost.ip;
     isConnected = srcHost.isConnected;
@@ -254,6 +262,8 @@ class HostModel extends CretaModel {
     HostModel srcHost = src as HostModel;
     hostId = srcHost.hostId;
     hostName = srcHost.hostName;
+    enterprise = srcHost.enterprise;
+    macAddress = srcHost.macAddress;
     interfaceName = srcHost.interfaceName;
     ip = srcHost.ip;
     isConnected = srcHost.isConnected;
@@ -319,6 +329,12 @@ class HostModel extends CretaModel {
     if (srcHost.hostName.isNotEmpty && srcHost.hostName != hostName) {
       hostName = srcHost.hostName;
     }
+    if (srcHost.enterprise.isNotEmpty && srcHost.enterprise != enterprise) {
+      enterprise = srcHost.enterprise;
+    }
+     if (srcHost.macAddress.isNotEmpty && srcHost.macAddress != macAddress) {
+      macAddress = srcHost.macAddress;
+    }
     if (srcHost.location.isNotEmpty && srcHost.location != location) {
       location = srcHost.location;
     }
@@ -381,6 +397,8 @@ class HostModel extends CretaModel {
     super.fromMap(map);
     hostId = map["hostId"] ?? '';
     hostName = map["hostName"] ?? '';
+    enterprise = map["enterprise"] ?? '';
+    macAddress = map["macAddress"] ?? '';
     interfaceName = map["interfaceName"] ?? '';
     ip = map["ip"] ?? '';
     isConnected = map["isConnected"] ?? false;
@@ -449,6 +467,8 @@ class HostModel extends CretaModel {
       ..addEntries({
         "hostId": hostId,
         "hostName": hostName,
+        "enterprise": enterprise,
+        "macAddress": macAddress,
         "interfaceName": interfaceName,
         "ip": ip,
         "isConnected": isConnected,

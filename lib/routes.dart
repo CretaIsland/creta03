@@ -69,9 +69,9 @@ abstract class AppRoutes {
   }
 
   static String _getMiddlePath(String inputString) {
-    if (!inputString.contains('creta')) {
-      return '';
-    }
+    // if (!inputString.contains('creta')) {
+    //   return '';
+    // }
 
     // Find the index of the second occurrence of '/'
     int firstSlashIndex = inputString.indexOf('/');
@@ -99,6 +99,7 @@ abstract class AppRoutes {
   static const String textFieldDemoPage = '/textFieldDemoPage';
   static const String studioBookMainPage = '/studio/bookMainPage';
   static const String deviceMainPage = '/device/deviceMainPage';
+  static const String deviceSharedPage = '/device/deviceSharedPage';
   static const String adminMainPage = '/device/adminMainPage';
   //static const String deviceDetailPage = '/device/deviceDetailPage';
   static const String studioBookPreviewPage = '/studio/studioBookMainPreviewPage';
@@ -172,10 +173,14 @@ final routesLoggedOut = RouteMap(
     //     child:
     //     QuillFloatingToolBarWidget(document: ContentsModel.withFrame(parent: '', bookMid: ''))),
     AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
-    AppRoutes.deviceMainPage: (_) =>
-        TransitionPage(child: DeviceMainPage(selectedPage: DeviceSelectedPage.myPage)),
+    AppRoutes.deviceMainPage: (_) => TransitionPage(
+        child: DeviceMainPage(
+            key: GlobalObjectKey('deviceMyPage'), selectedPage: DeviceSelectedPage.myPage)),
+    AppRoutes.deviceSharedPage: (_) => TransitionPage(
+        child: DeviceMainPage(
+            key: GlobalObjectKey('deviceSharedPage'), selectedPage: DeviceSelectedPage.sharedPage)),
     AppRoutes.adminMainPage: (_) =>
-        TransitionPage(child: AdminMainPage(selectedPage: AdminSelectedPage.license)),
+        TransitionPage(child: AdminMainPage(selectedPage: AdminSelectedPage.enterprise)),
 
     //AppRoutes.deviceDetailPage: (_) => TransitionPage(child: DeviceDetailPage()),
     AppRoutes.studioBookMainPage: (routeData) {

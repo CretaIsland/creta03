@@ -56,6 +56,16 @@
     "availiableID":    "The ID is available.",
     "needToDupCheck":    "Please check the ID duplication.",
 
+    "newEnterprise": "Register new enterprise",
+    "shouldInputEntterpriseName": "Please enter the enterprise name",
+    "enterpriseName": "Enterprise name",
+    "description": "Description",
+    "enterpriseDetail": "Enterprise detail",
+    "adminEmail": "Admin email",
+    "inputEnterpriseInfo": "Enter the enterprise information to create",
+    "inputEnterpriseAdmin" : "Enter the enterprise admin information to create",
+    "Invalidemail": "Invalid email address",
+
   
      "end"  : "End"
 

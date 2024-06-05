@@ -57,6 +57,17 @@ class HostManager extends CretaManager {
     return retval;
   }
 
+  Future<List<AbsExModel>> sharedData(String enterprise, {int? limit}) async {
+    logger.finest('sharedData');
+    Map<String, QueryValue> query = {};
+    query['enterprise'] = QueryValue(value: enterprise);
+    query['isRemoved'] = QueryValue(value: false);
+    //print('myDataOnly start');
+    final retval = await queryFromDB(query, limit: limit);
+    //print('myDataOnly end ${retval.length}');
+    return retval;
+  }
+
   @override
   Future<bool> isNameExist(String value) async {
     logger.finest('myDataOnly');
