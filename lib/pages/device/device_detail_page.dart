@@ -9,8 +9,11 @@ import 'package:hycop/hycop.dart';
 import 'package:intl/intl.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_toggle_button.dart';
+import '../../design_system/component/snippet.dart';
 import '../../lang/creta_device_lang.dart';
+import '../../model/enterprise_model.dart';
 import '../../model/host_model.dart';
+import '../login/creta_account_manager.dart';
 import 'book_select_filter.dart';
 
 class DeviceDetailPage extends StatefulWidget {
@@ -46,6 +49,8 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     BookModel.withName('Book 4', creator: '456@sqisoft.com', creatorName: 'Park 456', imageUrl: ''),
   ];
 
+  String enterpriseUrl = '';
+
   @override
   void initState() {
     super.initState();
@@ -58,6 +63,11 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       } catch (e) {
         logger.warning('Error in parsing weekend: $e');
       }
+    }
+    EnterpriseModel? enterpriseModel =
+        CretaAccountManager.enterpriseManagerHolder.onlyOne() as EnterpriseModel?;
+    if (enterpriseModel != null) {
+      enterpriseUrl = enterpriseModel.enterpriseUrl;
     }
   }
 
@@ -76,11 +86,13 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       child: Column(
         children: [
           Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10.0), // 이미지의 모서리를 둥글게 만듭니다.
-              child: Image.network('https://picsum.photos/200/?random=200'), //   ;
-              //child: Image.network(widget.hostModel.scrshotFile),  //   'https://picsum.photos/200/?random=$defaultThumbnailNumber';
-            ),
+            child: enterpriseUrl.isEmpty
+                ? Snippet.notFound()
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0), // 이미지의 모서리를 둥글게 만듭니다.
+                    //child: Image.network('https://picsum.photos/200/?random=200'),
+                    child: Image.network('$enterpriseUrl/${widget.hostModel.scrshotFile}'),
+                  ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

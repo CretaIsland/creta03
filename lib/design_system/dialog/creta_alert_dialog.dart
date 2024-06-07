@@ -131,11 +131,12 @@ class CretaAlertDialog extends StatelessWidget {
                   //   ),
                   // ),
                   Padding(
-                      padding: width > 150
-                          ? EdgeInsets.only(left: width * .97 - (63 + okButtonWidth))
-                          : EdgeInsets.only(left: width - 120),
+                      padding: const EdgeInsets.only(right: 10),
+                      // padding: width > 150
+                      //     ? EdgeInsets.only(left: width * .97 - (63 + okButtonWidth))
+                      //     : EdgeInsets.only(left: width - 120),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           BTN.line_red_t_m(
                               text: cancelButtonText!,

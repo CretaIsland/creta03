@@ -110,7 +110,7 @@ class _TemplateListClassState extends State<TemplateList> {
               padding: EdgeInsets.symmetric(vertical: verticalPadding),
               height: 332.0,
               alignment: Alignment.center,
-              child: CretaLang['nodatafounded']!,
+              child: Text(CretaLang['nodatafounded']!),
             );
           }
           return SingleChildScrollView(

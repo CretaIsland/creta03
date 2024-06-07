@@ -28,6 +28,7 @@ import '../../design_system/menu/creta_popup_menu.dart';
 import '../../design_system/dataTable/web_data_table.dart';
 import '../../lang/creta_device_lang.dart';
 import '../../lang/creta_studio_lang.dart';
+import '../../model/enterprise_model.dart';
 import '../../model/host_model.dart';
 import '../../routes.dart';
 import '../login/creta_account_manager.dart';
@@ -710,14 +711,17 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
     if (_onceDBGetComplete) {
       return consumerFunc();
     }
-    var retval = CretaManager.waitData(
-      manager: hostManagerHolder!,
+    var retval = CretaManager.waitDatum(
+      managerList: [
+        hostManagerHolder!,
+        CretaAccountManager.enterpriseManagerHolder,
+      ],
       //userId: AccountManager.currentLoginUser.email,
       consumerFunc: consumerFunc,
-      completeFunc: () {
-        _onceDBGetComplete = true;
-        selectNotifierHolder.init(hostManagerHolder!);
-      },
+      // completeFunc: () {
+      //   _onceDBGetComplete = true;
+      //   selectNotifierHolder.init(hostManagerHolder!);
+      // },
     );
 
     return retval;
@@ -727,6 +731,9 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       /*List<AbsExModel>? data*/
       ) {
     logger.finest('consumerFunc');
+
+    _onceDBGetComplete = true;
+    selectNotifierHolder.init(hostManagerHolder!);
     // _onceDBGetComplete = true;
     // selectedItems = List.generate(hostManagerHolder!.getAvailLength() + 2, (index) => false);
 
@@ -923,6 +930,13 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
           );
         });
 
+    String enterpriseUrl = '';
+    EnterpriseModel? enterpriseModel =
+        CretaAccountManager.enterpriseManagerHolder.onlyOne() as EnterpriseModel?;
+    if (enterpriseModel != null) {
+      enterpriseUrl = enterpriseModel.enterpriseUrl;
+    }
+
     Widget gridView = GridView.builder(
       controller: scrollContoller,
       //padding: LayoutConst.cretaPadding,
@@ -937,7 +951,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       itemBuilder: (BuildContext context, int index) {
         //if (isValidIndex(index)) {
         return (itemWidth >= 0 && itemHeight >= 0)
-            ? hostGridItem(index, itemWidth, itemHeight, hostManager)
+            ? hostGridItem(index, itemWidth, itemHeight, hostManager, enterpriseUrl)
             : LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
                   itemWidth = constraints.maxWidth;
@@ -950,7 +964,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
                   // }
 
                   //print('first data, $itemWidth, $itemHeight');
-                  return hostGridItem(index, itemWidth, itemHeight, hostManager);
+                  return hostGridItem(index, itemWidth, itemHeight, hostManager, enterpriseUrl);
                 },
               );
         //}
@@ -998,7 +1012,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
     return index > 0 && index - 1 < hostManager.getLength();
   }
 
-  Widget hostGridItem(int index, double itemWidth, double itemHeight, HostManager hostManager) {
+  Widget hostGridItem(int index, double itemWidth, double itemHeight, HostManager hostManager,
+      String enterpriseUrl) {
     //print('hostGridItem($index),  ${hostManager.getLength()}');
     if (index > hostManager.getLength()) {
       if (hostManager.isShort()) {
@@ -1080,6 +1095,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         fit: StackFit.expand,
         children: [
           HostGridItem(
+              enterpriseUrl: enterpriseUrl,
               hostManager: hostManager,
               index: index - 1,
               itemKey: selectNotifierHolder.getKey(itemModel?.mid ?? ''),

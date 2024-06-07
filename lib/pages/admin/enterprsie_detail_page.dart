@@ -67,6 +67,11 @@ class _EnterpriseDetailPageState extends State<EnterpriseDetailPage> {
             onSaved: (value) => widget.enterpriseModel.description = value ?? '',
           ),
           TextFormField(
+            initialValue: widget.enterpriseModel.enterpriseUrl,
+            decoration: InputDecoration(labelText: 'Enterprise Url', labelStyle: titleStyle),
+            onSaved: (value) => widget.enterpriseModel.enterpriseUrl = value ?? '',
+          ),
+          TextFormField(
             initialValue: widget.enterpriseModel.openAiKey,
             decoration: InputDecoration(labelText: 'openAiKey', labelStyle: titleStyle),
             onSaved: (value) => widget.enterpriseModel.openAiKey = value ?? '',

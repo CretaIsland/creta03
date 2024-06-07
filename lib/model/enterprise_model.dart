@@ -6,6 +6,7 @@ import 'package:hycop/hycop/utils/hycop_utils.dart';
 // ignore: must_be_immutable
 class EnterpriseModel extends CretaModel {
   late String name;
+  late String enterpriseUrl;
   late String description;
   late String openAiKey;
   late String openWeatherApiKey;
@@ -20,6 +21,7 @@ class EnterpriseModel extends CretaModel {
 
   EnterpriseModel(String pmid) : super(pmid: pmid, type: ExModelType.enterprise, parent: '') {
     name = '';
+    enterpriseUrl = '';
     description = '';
     openAiKey = '';
     openWeatherApiKey = '';
@@ -42,6 +44,7 @@ class EnterpriseModel extends CretaModel {
   List<Object?> get props => [
         ...super.props,
         name,
+        enterpriseUrl,
         description,
         openAiKey,
         openWeatherApiKey,
@@ -58,6 +61,7 @@ class EnterpriseModel extends CretaModel {
   EnterpriseModel.withName(
       {required this.name,
       required String pparentMid,
+      this.enterpriseUrl = '',
       this.description = '',
       this.openAiKey = '',
       this.openWeatherApiKey = '',
@@ -75,6 +79,7 @@ class EnterpriseModel extends CretaModel {
     super.fromMap(map);
 
     name = map['name'] ?? '';
+    enterpriseUrl = map['enterpriseUrl'] ?? '';
     description = map['description'] ?? '';
     openAiKey = map['openAiKey'] ?? '';
     openWeatherApiKey = map['openWeatherApiKey'] ?? '';
@@ -93,6 +98,7 @@ class EnterpriseModel extends CretaModel {
     return super.toMap()
       ..addEntries({
         'name': name,
+        'enterpriseUrl': enterpriseUrl,
         'description': description,
         'openAiKey': openAiKey,
         'openWeatherApiKey': openWeatherApiKey,

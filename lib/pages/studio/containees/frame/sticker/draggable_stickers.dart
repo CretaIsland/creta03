@@ -579,7 +579,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
     bool isFullScreen = frameModel.isFullScreenTest(widget.book);
 
-    double menuWidth = 291;
+    double menuWidth = 320;
 
     ContentsModel? contentsModel = widget.frameManager!.getFirstContents(frameModel.mid);
     ContentsManager? contentsManager = widget.frameManager!.getContentsManager(frameModel.mid);

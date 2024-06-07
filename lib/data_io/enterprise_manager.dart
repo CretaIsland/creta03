@@ -70,6 +70,7 @@ class EnterpriseManager extends CretaManager {
   Future<EnterpriseModel> createEnterprise(
       {required String name,
       required String description,
+      required String enterpriseUrl,
       String openAiKey = '',
       String openWeatherApiKey = '',
       String giphyApiKey = '',
@@ -82,6 +83,7 @@ class EnterpriseManager extends CretaManager {
     EnterpriseModel enterpriseModel = EnterpriseModel.withName(
         pparentMid: '',
         name: name,
+        enterpriseUrl: enterpriseUrl,
         description: description,
         openAiKey: openAiKey,
         openWeatherApiKey: openWeatherApiKey,

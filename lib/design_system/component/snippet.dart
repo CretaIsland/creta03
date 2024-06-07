@@ -1182,6 +1182,18 @@ class Snippet {
     //return false;
   }
 
+  static Widget notFound() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        const Icon(Icons.error, size: 48), // 적절한 아이콘
+        Text('Not found',
+            textAlign: TextAlign.center,
+            style: CretaFont.displayLarge.copyWith(color: CretaColor.text[400])), // "Not found" 문자열
+      ],
+    );
+  }
+
   // static bool langChanged(LanguageType language) {
   //   if (oldLanguage != language) {
   //     oldLanguage = language;

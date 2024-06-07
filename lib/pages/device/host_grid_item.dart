@@ -26,6 +26,7 @@ import '../studio/studio_constant.dart';
 import 'device_main_page.dart';
 
 class HostGridItem extends StatefulWidget {
+  final String enterpriseUrl;
   final int index;
   final HostModel? hostModel;
   final double width;
@@ -38,6 +39,7 @@ class HostGridItem extends StatefulWidget {
 
   const HostGridItem({
     required this.itemKey,
+    required this.enterpriseUrl,
     required this.hostManager,
     required this.index,
     this.hostModel,
@@ -439,22 +441,22 @@ class HostGridItemState extends State<HostGridItem> {
   Widget _thumnailArea() {
     int randomNumber = random.nextInt(1000);
     int duration = widget.index == 0 ? 500 : 500 + randomNumber;
-    String url = widget.hostModel!.thumbnailUrl;
-    if (url.isEmpty) {
-      url = 'https://picsum.photos/200/?random=$defaultThumbnailNumber';
-    }
-    logger.fine('_thumnailArea ${widget.hostModel!.hostName} = <$url>');
+    // if (widget.enterpriseUrl.isEmpty) {
+    //   url = 'https://picsum.photos/200/?random=$defaultThumbnailNumber';
+    // }
     try {
       return SizedBox(
           width: aWidth,
           height: aHeight - LayoutConst.bookDescriptionHeight,
-          child: CustomImage(
-              key: UniqueKey(),
-              hasMouseOverEffect: true,
-              duration: duration,
-              width: aWidth,
-              height: aHeight,
-              image: url));
+          child: widget.enterpriseUrl.isEmpty
+              ? Center(child: Snippet.notFound())
+              : CustomImage(
+                  key: UniqueKey(),
+                  hasMouseOverEffect: true,
+                  duration: duration,
+                  width: aWidth,
+                  height: aHeight,
+                  image: '${widget.enterpriseUrl}/${widget.hostModel!.scrshotFile}'));
     } catch (err) {
       logger.warning('CustomeImage failed $err');
       return SizedBox.shrink();

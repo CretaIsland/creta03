@@ -677,6 +677,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
               onPressed: () {
                 input.name = '';
                 input.description = '';
+                input.enterpriseUrl = '';
                 input.message = CretaDeviceLang['availiableID']!;
                 Navigator.of(context).pop();
               },
@@ -702,8 +703,8 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
     }
 
     //EnterpriseModel model =
-    await enterpriseManagerHolder!
-        .createEnterprise(name: input.name, description: input.description);
+    await enterpriseManagerHolder!.createEnterprise(
+        name: input.name, description: input.description, enterpriseUrl: input.enterpriseUrl);
     //StudioVariables.selectedenterpriseMid = enterprise.mid;
     // ignore: use_build_context_synchronously
     //Routemaster.of(context).push('${AppRoutes.deviceDetailPage}?${enterprise.mid}');

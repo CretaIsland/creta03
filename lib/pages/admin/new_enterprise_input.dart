@@ -7,6 +7,7 @@ class EnterpriseData {
   GlobalObjectKey<FormState>? formKey;
   String description = '';
   String name = '';
+  String enterpriseUrl = '';
   String message = '';
 }
 
@@ -32,7 +33,7 @@ class NewEnterpriseInputState extends State<NewEnterpriseInput> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 200,
+      height: 300,
       width: 400,
       child: Form(
         key: widget.data.formKey,
@@ -88,7 +89,13 @@ class NewEnterpriseInputState extends State<NewEnterpriseInput> {
                 decoration: InputDecoration(hintText: CretaDeviceLang['description']!),
               ),
             ),
-           
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                onChanged: (value) => widget.data.enterpriseUrl = value,
+                decoration: InputDecoration(hintText: CretaDeviceLang['enterpriseUrl']!),
+              ),
+            ),
           ],
         ),
       ),
