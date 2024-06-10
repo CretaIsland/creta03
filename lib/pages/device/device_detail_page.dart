@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_font.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 import 'package:creta_studio_model/model/book_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
@@ -50,6 +51,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   ];
 
   String enterpriseUrl = '';
+  Future<String>? scrshotUrl;
 
   @override
   void initState() {
@@ -69,6 +71,12 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     if (enterpriseModel != null) {
       enterpriseUrl = enterpriseModel.enterpriseUrl;
     }
+
+    if (widget.hostModel.scrshotFile.isNotEmpty) {
+      scrshotUrl = HycopFactory.storage!.getImageUrl(widget.hostModel.scrshotFile);
+    } else {
+      scrshotUrl = Future.value('');
+    }
   }
 
   @override
@@ -77,58 +85,94 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   }
 
   Widget _screenshotView() {
-    return Card(
-      elevation: 10.0, // 카드의 입체감을 조절합니다.
-      shadowColor: Colors.black38, // 그림자의 색상을 설정합니다.
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0), // 카드의 모서리를 둥글게 만듭니다.
-      ),
-      child: Column(
-        children: [
-          Expanded(
-            child: enterpriseUrl.isEmpty
-                ? Snippet.notFound()
-                : ClipRRect(
-                    borderRadius: BorderRadius.circular(10.0), // 이미지의 모서리를 둥글게 만듭니다.
-                    //child: Image.network('https://picsum.photos/200/?random=200'),
-                    child: Image.network('$enterpriseUrl/${widget.hostModel.scrshotFile}'),
-                  ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextButton(
+    Widget buttons = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const SizedBox(width: 50),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  _isShowScreenShot = true;
+                });
+              },
+              child: const Icon(Icons.arrow_back, color: Colors.black),
+            ),
+            Tooltip(
+              message: 'ScreenShot History',
+              child: TextButton(
                 onPressed: () {
                   setState(() {
-                    _isShowScreenShot = false;
+                    _isShowScreenShotHistory = true;
                   });
                 },
-                child: const Icon(Icons.arrow_back, color: Colors.black),
+                child: const Icon(Icons.calendar_month, color: Colors.black),
               ),
-              Tooltip(
-                message: 'ScreenShot History',
-                child: TextButton(
-                  onPressed: () {
-                    setState(() {
-                      _isShowScreenShotHistory = true;
-                    });
-                  },
-                  child: const Icon(Icons.calendar_month, color: Colors.black),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    _isShowScreenShot = false;
-                  });
-                },
-                child: const Icon(Icons.close, color: Colors.black),
-              ),
-            ],
-          ),
-        ],
-      ),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  _isShowScreenShot = true;
+                });
+              },
+              child: const Icon(Icons.arrow_forward, color: Colors.black),
+            ),
+          ],
+        ),
+        TextButton(
+          onPressed: () {
+            setState(() {
+              _isShowScreenShot = false;
+            });
+          },
+          child: const Icon(Icons.close, color: Colors.black),
+        ),
+      ],
     );
+
+    return FutureBuilder<String>(
+        future: scrshotUrl,
+        builder: (context, snapshot) {
+          Widget thumbnail = Expanded(
+            child: Card(
+              elevation: 16.0, // 카드의 입체감을 조절합니다.
+              shadowColor: Colors.black87, // 그림자의 색상을 설정합니다.
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0), // 카드의 모서리를 둥글게 만듭니다.
+              ),
+              color: CretaColor.text[200],
+              child: snapshot.hasError || snapshot.data == null || snapshot.data!.isEmpty
+                  ? Snippet.noImageAvailable()
+                  : ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0), // 이미지의 모서리를 둥글게 만듭니다.
+                      //child: Image.network('https://picsum.photos/200/?random=200'),
+                      child: Image.network(snapshot.data!),
+                    ),
+            ),
+          );
+          if (snapshot.hasError) {
+            //error가 발생하게 될 경우 반환하게 되는 부분
+            logger.severe("data fetch error(WaitDatum)");
+            return Column(
+              children: [thumbnail, const SizedBox(height: 10), buttons],
+            );
+          }
+          if (snapshot.hasData == false) {
+            //print('xxxxxxxxxxxxxxxxxxxxx');
+            logger.finest("wait data ...(WaitData)");
+            return Center(
+              child: CretaSnippet.showWaitSign(),
+            );
+          }
+          if (snapshot.connectionState == ConnectionState.done || snapshot.hasError) {
+            return Column(
+              children: [thumbnail, const SizedBox(height: 10), buttons],
+            );
+          }
+          return const SizedBox.shrink();
+        });
   }
 
   Widget _detailView() {
@@ -162,22 +206,23 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                   _boolRow('Is Connected', widget.hostModel.isConnected, false),
                   _boolRow('Is Operational', widget.hostModel.isOperational, false),
                   _boolRow('Has License', widget.hostModel.isValidLicense, false),
-                  //_nvRow('License Time', HycopUtils.dateTimeToDB(widget.hostModel.licenseTime)),
-                  _nvRow(
-                      'Initialize Time', HycopUtils.dateTimeToDB(widget.hostModel.initializeTime)),
+                  //_nvRow('License Time', HycopUtils.dateTimeToDisplay(widget.hostModel.licenseTime)),
+                  _nvRow('Initialize Time',
+                      HycopUtils.dateTimeToDisplay(widget.hostModel.initializeTime)),
                   _nvRow('Last Connected Time',
-                      HycopUtils.dateTimeToDB(widget.hostModel.lastUpdateTime)),
-                  _nvRow(
-                      'Last Power ON Time', HycopUtils.dateTimeToDB(widget.hostModel.powerOnTime)),
+                      HycopUtils.dateTimeToDisplay(widget.hostModel.lastUpdateTime)),
+                  _nvRow('Last Power ON Time',
+                      HycopUtils.dateTimeToDisplay(widget.hostModel.powerOnTime)),
                   _nvRow('Last Power OFF Time',
-                      HycopUtils.dateTimeToDB(widget.hostModel.powerOffTime)),
+                      HycopUtils.dateTimeToDisplay(widget.hostModel.powerOffTime)),
 
                   _nvRow('HDD Info', widget.hostModel.hddInfo),
                   _nvRow('CPU Info', widget.hostModel.cpuInfo),
                   _nvRow('Memory Info', widget.hostModel.memInfo),
                   _nvRow('State Message', widget.hostModel.stateMsg),
                   _nvRow('Request', widget.hostModel.request),
-                  _nvRow('RequestedTime', HycopUtils.dateTimeToDB(widget.hostModel.requestedTime)),
+                  _nvRow('RequestedTime',
+                      HycopUtils.dateTimeToDisplay(widget.hostModel.requestedTime)),
                   _nvRow('Response', widget.hostModel.response),
                   _nvRow('Download Result', widget.hostModel.downloadResult.name.split('.').last),
                   _nvRow('Download Message', widget.hostModel.downloadMsg),
@@ -189,7 +234,9 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                       child: _buttonRow(
                         'View Screenshot',
                         widget.hostModel.scrshotFile,
-                        scrTime,
+                        scrTime.length > 19
+                            ? scrTime.replaceFirst('T', ' ').substring(0, 19)
+                            : scrTime.replaceFirst('T', ' '),
                         onPressed: () {
                           setState(() {
                             _isShowScreenShot = true;
@@ -485,7 +532,8 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                               widget.hostModel.requestedBook1Time = DateTime.now();
                             });
                           },
-                          subInfo: HycopUtils.dateTimeToDB(widget.hostModel.requestedBook1Time),
+                          subInfo:
+                              HycopUtils.dateTimeToDisplay(widget.hostModel.requestedBook1Time),
                         ),
                         _nvChanged(
                           'Requested Book 2',
@@ -506,17 +554,18 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                               widget.hostModel.requestedBook2Time = DateTime.now();
                             });
                           },
-                          subInfo: HycopUtils.dateTimeToDB(widget.hostModel.requestedBook2Time),
+                          subInfo:
+                              HycopUtils.dateTimeToDisplay(widget.hostModel.requestedBook2Time),
                         ),
                         _nvRow(
                           'Playing Book 1',
                           widget.hostModel.playingBook1,
-                          //subInfo: HycopUtils.dateTimeToDB(widget.hostModel.playingBook1Time),
+                          //subInfo: HycopUtils.dateTimeToDisplay(widget.hostModel.playingBook1Time),
                         ),
                         _nvRow(
                           'Playing Book 2',
                           widget.hostModel.playingBook2,
-                          //subInfo: HycopUtils.dateTimeToDB(widget.hostModel.playingBook2Time),
+                          //subInfo: HycopUtils.dateTimeToDisplay(widget.hostModel.playingBook2Time),
                         )
                       ],
                     ),
@@ -788,7 +837,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 ),
               ),
               child: SizedBox(
-                width: 140,
+                width: 142,
                 child: Text(buttonName, textAlign: TextAlign.right, style: dataStyle),
               )),
         ],

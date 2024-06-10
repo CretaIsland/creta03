@@ -3,11 +3,13 @@
 import 'dart:math';
 
 import 'package:creta03/lang/creta_studio_lang.dart';
+import 'package:creta_common/common/creta_snippet.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
+import 'package:hycop/hycop/hycop_factory.dart';
 
 import '../../data_io/host_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
@@ -60,10 +62,12 @@ class HostGridItemState extends State<HostGridItem> {
   int counter = 0;
   final Random random = Random();
   bool dropDownButtonOpened = false;
-  int defaultThumbnailNumber = 100;
+  //int defaultThumbnailNumber = 100;
   double aWidth = 0;
   double aHeight = 0;
   final double borderWidth = 6.0;
+
+  Future<String>? scrshotUrl;
 
   void notify(String mid) {
     setState(() {});
@@ -73,7 +77,7 @@ class HostGridItemState extends State<HostGridItem> {
   void initState() {
     super.initState();
 
-    defaultThumbnailNumber = random.nextInt(1000);
+    //defaultThumbnailNumber = random.nextInt(1000);
 
     _popupMenuList = [
       CretaMenuItem(
@@ -87,6 +91,12 @@ class HostGridItemState extends State<HostGridItem> {
         },
       ),
     ];
+
+    if (widget.hostModel != null && widget.hostModel!.scrshotFile.isNotEmpty) {
+      scrshotUrl = HycopFactory.storage!.getImageUrl(widget.hostModel!.scrshotFile);
+    } else {
+      scrshotUrl = Future.value('');
+    }
   }
 
   @override
@@ -445,18 +455,43 @@ class HostGridItemState extends State<HostGridItem> {
     //   url = 'https://picsum.photos/200/?random=$defaultThumbnailNumber';
     // }
     try {
-      return SizedBox(
-          width: aWidth,
-          height: aHeight - LayoutConst.bookDescriptionHeight,
-          child: widget.enterpriseUrl.isEmpty
-              ? Center(child: Snippet.notFound())
-              : CustomImage(
-                  key: UniqueKey(),
-                  hasMouseOverEffect: true,
-                  duration: duration,
+      return FutureBuilder<String>(
+          future: scrshotUrl,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              //error가 발생하게 될 경우 반환하게 되는 부분
+              logger.severe("data fetch error(WaitDatum)");
+              return SizedBox(
                   width: aWidth,
-                  height: aHeight,
-                  image: '${widget.enterpriseUrl}/${widget.hostModel!.scrshotFile}'));
+                  height: aHeight - LayoutConst.bookDescriptionHeight,
+                  child: Snippet.noImageAvailable());
+            }
+            if (snapshot.hasData == false) {
+              logger.finest("wait data ...(WaitData)");
+              return SizedBox(
+                width: aWidth,
+                height: aHeight - LayoutConst.bookDescriptionHeight,
+                child: CretaSnippet.showWaitSign(),
+              );
+            }
+            if (snapshot.connectionState == ConnectionState.done) {
+              return SizedBox(
+                width: aWidth,
+                height: aHeight - LayoutConst.bookDescriptionHeight,
+                child: snapshot.data == null || snapshot.data!.isEmpty
+                    ? Snippet.noImageAvailable()
+                    : CustomImage(
+                        key: UniqueKey(),
+                        hasMouseOverEffect: true,
+                        duration: duration,
+                        width: aWidth,
+                        height: aHeight,
+                        image: snapshot.data!),
+              );
+            }
+            logger.warning('CustomeImage failed');
+            return SizedBox.shrink();
+          });
     } catch (err) {
       logger.warning('CustomeImage failed $err');
       return SizedBox.shrink();
@@ -476,7 +511,7 @@ class HostGridItemState extends State<HostGridItem> {
               : Colors.white,
       padding: const EdgeInsets.all(8),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(

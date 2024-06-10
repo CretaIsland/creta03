@@ -54,7 +54,7 @@ class HostModel extends CretaModel {
 
   bool isConnected = false; // read only
   //bool isInitialized = false; // read only
-  bool isValidLicense = false; // read only
+  bool isValidLicense = true; // read only
   bool isUsed = true;
   bool isVNC = true;
   bool isOperational = true; // read only
@@ -384,13 +384,13 @@ class HostModel extends CretaModel {
     requestedTime = DateTime.now();
   }
 
-  DateTime _stringToDate(String? val) {
-    try {
-      return DateTime.parse(val ?? '1970-01-01 09:00:00.000');
-    } catch (e) {
-      return DateTime(1970, 1, 1);
-    }
-  }
+  // DateTime HycopUtils.dateTimeFromDB(String? val) {
+  //   try {
+  //     return DateTime.parse(val ?? '1970-01-01 09:00:00.000');
+  //   } catch (e) {
+  //     return DateTime(1970, 1, 1);
+  //   }
+  // }
 
   @override
   void fromMap(Map<String, dynamic> map) {
@@ -419,21 +419,21 @@ class HostModel extends CretaModel {
     requestedBook2 = map["requestedBook2"] ?? '';
     requestedBook1Id = map["requestedBook1Id"] ?? '';
     requestedBook2Id = map["requestedBook2Id"] ?? '';
-    requestedBook1Time = _stringToDate(map["requestedBook1Time"]);
-    requestedBook2Time = _stringToDate(map["requestedBook2Time"]);
+    requestedBook1Time = HycopUtils.dateTimeFromDB(map["requestedBook1Time"] ?? '');
+    requestedBook2Time = HycopUtils.dateTimeFromDB(map["requestedBook2Time"] ?? '');
 
     playingBook1 = map["playingBook1"] ?? '';
     playingBook2 = map["playingBook2"] ?? '';
-    playingBook1Time = _stringToDate(map["playingBook1Time"]);
-    playingBook2Time = _stringToDate(map["playingBook2Time"]);
+    playingBook1Time = HycopUtils.dateTimeFromDB(map["playingBook1Time"] ?? '');
+    playingBook2Time = HycopUtils.dateTimeFromDB(map["playingBook2Time"] ?? '');
 
     notice1 = map["notice1"] ?? '';
     notice2 = map["notice2"] ?? '';
-    notice1Time = _stringToDate(map["notice1Time"]);
-    notice2Time = _stringToDate(map["notice2Time"]);
+    notice1Time = HycopUtils.dateTimeFromDB(map["notice1Time"] ?? '');
+    notice2Time = HycopUtils.dateTimeFromDB(map["notice2Time"] ?? '');
 
     request = map["request"] ?? '';
-    requestedTime = _stringToDate(map["requestedTime"]);
+    requestedTime = HycopUtils.dateTimeFromDB(map["requestedTime"] ?? '');
     response = map["response"] ?? '';
     downloadResult = DownloadResult.fromInt(map["downloadResult"] ?? DownloadResult.none.index);
     downloadMsg = map["downloadMsg"] ?? '';
@@ -441,24 +441,24 @@ class HostModel extends CretaModel {
     cpuInfo = map["cpuInfo"] ?? '';
     memInfo = map["memInfo"] ?? '';
     stateMsg = map["stateMsg"] ?? '';
-    powerOnTime = _stringToDate(map["powerOnTime"]);
-    powerOffTime = _stringToDate(map["powerOffTime"]);
+    powerOnTime = HycopUtils.dateTimeFromDB(map["powerOnTime"] ?? '');
+    powerOffTime = HycopUtils.dateTimeFromDB(map["powerOffTime"] ?? '');
     monthlyUseTime = map["monthlyUseTime"] ?? 0.0;
 
     hostType = ServiceType.fromInt(map["hostType"] ?? ServiceType.signage.index);
     os = map["os"] ?? '';
     //isInitialized = map["isInitialized"] ?? false;
-    isValidLicense = map["isValidLicense"] ?? false;
+    isValidLicense = map["isValidLicense"] ?? true;
     isUsed = map["isUsed"] ?? false;
     isVNC = map["isVNC"] ?? false;
     isOperational = map["isOperational"] ?? true;
     managePeriod = map["managePeriod"] ?? 60;
     scrshotPeriod = map["scrshotPeriod"] ?? 360;
-    //licenseTime = _stringToDate(map["licenseTime"]);
-    initializeTime = _stringToDate(map["initializeTime"]);
-    lastUpdateTime = _stringToDate(map["lastUpdateTime"]);
+    //licenseTime = HycopUtils.dateTimeFromDB(map["licenseTime"]);
+    initializeTime = HycopUtils.dateTimeFromDB(map["initializeTime"] ?? '');
+    lastUpdateTime = HycopUtils.dateTimeFromDB(map["lastUpdateTime"] ?? '');
     rebootTime = map["rebootTime"] ?? '';
-    scrshotTime = _stringToDate(map["scrshotTime"]);
+    scrshotTime = HycopUtils.dateTimeFromDB(map["scrshotTime"] ?? '');
   }
 
   @override

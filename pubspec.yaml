@@ -58,7 +58,7 @@ dependencies:
   flutter_riverpod: ^1.0.4
   flutter_speed_dial: ^6.1.0+1
   routemaster: ^1.0.1
-  hycop: ^0.4.28
+  hycop: ^0.4.30
   outline_search_bar: ^2.3.0
   custom_radio_grouped_button: 2.2.1
   # elegant_radio_button_group: ^0.0.1
@@ -221,6 +221,7 @@ flutter:
     - assets/lang/creta_lang_device_en.json
     - assets/lang/creta_lang_device_jp.json
 
+    - assets/no_image_available.png
     - assets/creta_logo_blue.png
     - assets/creta_logo_only_white.png
     - assets/creta_default.png

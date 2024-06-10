@@ -50,6 +50,9 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(CretaMyPageLang["enterprise"], //"소속회사",
+                      style: propertyFontStyle),
+                  const SizedBox(height: 28),
                   Text(CretaMyPageLang["grade"], //"등급",
                       style: propertyFontStyle),
                   const SizedBox(height: 28),
@@ -67,6 +70,11 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    userProperty.enterprise,
+                    style: CretaFont.bodyMedium,
+                  ),
+                  const SizedBox(height: 28),
                   Text(CretaMyPageLang['cretaGradeList']![userProperty.cretaGrade.index],
                       style: CretaFont.bodyMedium),
                   const SizedBox(height: 28),

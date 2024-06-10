@@ -560,7 +560,8 @@
         "Edit Information",
         "Publication Coverage",
         "Select Channel",
-        "Publish Complete"
+        "Publish Complete",
+        "Broadcast Begins"
       ],
 
     "publishTo" : "To whom to publish",

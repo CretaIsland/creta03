@@ -8,6 +8,7 @@
     "grade": "Grade",
     "bookCount": "Number of books",
     "ratePlan": "Rate plan",
+    "enterprise": "Enterprise",
     "freeSpace": "remaining space",
     "recentSummary": "Recent summary",
     "bookViewCount": "Book views",

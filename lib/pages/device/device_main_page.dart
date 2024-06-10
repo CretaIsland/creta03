@@ -237,7 +237,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
 
     String jsonStr = CretaAccountManager.getDeviceColumnInfo();
     //print('jsonStr = $jsonStr');
-    if (jsonStr.isNotEmpty) {
+    if (jsonStr.isEmpty) {
       jsonStr = '''{
           "columnInfoList": [
               {
@@ -277,7 +277,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
               },
               {
                   "name": "creator",
-                  "label": "creator",
+                  "label": "owner",
                   "width": 120
               },
               {
@@ -1504,7 +1504,9 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
     var screenSize = MediaQuery.of(context).size;
 
     double width = screenSize.width * (isMultiSelected ? 0.25 : 0.5);
+    if (width < 900) width = 900;
     double height = screenSize.height * (isChangeBook ? 0.25 : 0.8);
+    if (height < 500) height = 500;
     final formKey = GlobalKey<FormState>();
 
     //print('selectHost.mid=${selectedHost!.mid}');

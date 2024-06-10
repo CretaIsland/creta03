@@ -1182,16 +1182,22 @@ class Snippet {
     //return false;
   }
 
-  static Widget notFound() {
+  static Widget notFound({String message = 'Not Found', double fontSize = 60}) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         const Icon(Icons.error, size: 48), // 적절한 아이콘
-        Text('Not found',
+        const SizedBox(height: 20),
+        Text(message,
             textAlign: TextAlign.center,
-            style: CretaFont.displayLarge.copyWith(color: CretaColor.text[400])), // "Not found" 문자열
+            style: CretaFont.displayLarge
+                .copyWith(fontSize: fontSize, color: CretaColor.text[400])), // "Not found" 문자열
       ],
     );
+  }
+
+  static Widget noImageAvailable() {
+    return Image.asset('no_image_available.png', fit: BoxFit.fill);
   }
 
   // static bool langChanged(LanguageType language) {

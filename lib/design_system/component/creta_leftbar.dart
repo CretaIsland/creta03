@@ -122,6 +122,8 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
 
     //print('_leftBar: ============================');
 
+    String enterprise = CretaAccountManager.getUserProperty?.enterprise ?? '';
+
     return Container(
       width: CretaComponentLocation.TabBar.width,
       height: widget.height,
@@ -206,8 +208,9 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
                               return BTN.fill_gray_l_profile(
                                 width: 225,
                                 text: AccountManager.currentLoginUser.name,
-                                subText:
-                                    '${CretaCommuLang["subscriber"]!} ${CretaAccountManager.getChannel?.followerCount ?? 0}', //CretaLang['billInfo']!,
+                                subText: enterprise.isEmpty
+                                    ? '${CretaCommuLang["subscriber"]!} ${CretaAccountManager.getChannel?.followerCount ?? 0}'
+                                    : enterprise, //CretaLang['billInfo']!,
                                 image: const AssetImage('assets/creta_default.png'),
                                 onPressed: () {
                                   if (channelId.isNotEmpty) {

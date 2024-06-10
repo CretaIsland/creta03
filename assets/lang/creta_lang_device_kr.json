@@ -67,5 +67,7 @@
     "inputEnterpriseAdmin" : "엔터프라이즈 관리자 정보를 입력하세요",
     "Invalidemail": "유효하지 않은 email 형식입니다.",
 
+    "NoScreenshotFile" : "스크린샷 파일이 없습니다.",
+
     "END" : ""
 }

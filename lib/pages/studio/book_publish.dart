@@ -120,12 +120,16 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     horizontalPadding = 16;
     hashTagWrapper.hashTagList = CretaCommonUtils.jsonStringToList(widget.model!.hashTag.value);
     logger.fine('hashTagList=${hashTagWrapper.hashTagList}');
-    stepsData = [
-      StepperData(label: CretaStudioLang['publishSteps']![0]),
-      StepperData(label: CretaStudioLang['publishSteps']![1]),
-      StepperData(label: CretaStudioLang['publishSteps']![2]),
-      StepperData(label: CretaStudioLang['publishSteps']![3]),
-    ];
+
+    stepsData = List.generate(CretaStudioLang['publishSteps']!.length,
+        (index) => StepperData(label: CretaStudioLang['publishSteps']![index]));
+    // stepsData = [
+    //   StepperData(label: CretaStudioLang['publishSteps']![0]),
+    //   StepperData(label: CretaStudioLang['publishSteps']![1]),
+    //   StepperData(label: CretaStudioLang['publishSteps']![2]),
+    //   StepperData(label: CretaStudioLang['publishSteps']![3]),
+    //   StepperData(label: CretaStudioLang['publishSteps']![4]),
+    // ];
     totalSteps = stepsData.length;
 
     titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);
@@ -253,6 +257,8 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
         return step3();
       case 4:
         return step4();
+      case 5:
+        return step5();
       default:
         return const SizedBox.shrink();
     }
@@ -520,6 +526,24 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
             ),
           );
         });
+  }
+
+  Widget step5() {
+    return const SizedBox(
+      height: 365,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ..._channelScope(),
+            // ..._channelTo(),
+            // copyRight(widget.model!),
+            // _optionBody(),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _drawThumbnail() {
