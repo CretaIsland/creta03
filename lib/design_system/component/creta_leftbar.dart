@@ -206,7 +206,7 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
                             uri: Uri.parse(channelLinkUrl),
                             builder: (context, function) {
                               return BTN.fill_gray_l_profile(
-                                width: 225,
+                                width: 240,
                                 text: AccountManager.currentLoginUser.name,
                                 subText: enterprise.isEmpty
                                     ? '${CretaCommuLang["subscriber"]!} ${CretaAccountManager.getChannel?.followerCount ?? 0}'

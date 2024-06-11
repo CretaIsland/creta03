@@ -6,7 +6,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:hycop/common/util/logger.dart';
-import 'package:creta_common/common/creta_common_utils.dart';
 
 import '../../data_io/enterprise_manager.dart';
 //import '../../design_system/buttons/creta_button_wrapper.dart';
@@ -306,6 +305,8 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
   }
 
   Widget _bottomArea() {
+    String firstAdmin =
+        widget.enterpriseModel!.admins.isEmpty ? 'no admin' : widget.enterpriseModel!.admins.first;
     return Container(
       //width: aWidth,
       height: LayoutConst.bookDescriptionHeight,
@@ -316,7 +317,7 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
-            flex: 8,
+            flex: 6,
             child: Container(
                 color: Colors.white,
                 child: Snippet.TooltipWrapper(
@@ -332,14 +333,20 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
                 )),
           ),
           Expanded(
-            flex: 2,
+            flex: 4,
             child: Container(
               color: Colors.white,
-              child: Text(
-                CretaCommonUtils.dateToDurationString(widget.enterpriseModel!.updateTime),
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.left,
-                style: CretaFont.buttonMedium,
+              child: Snippet.TooltipWrapper(
+                tooltip: firstAdmin,
+                fgColor: Colors.black,
+                bgColor: CretaColor.text[200]!,
+                child: Text(
+                  //CretaCommonUtils.dateToDurationString(widget.enterpriseModel!.updateTime),
+                  firstAdmin,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.left,
+                  style: CretaFont.buttonMedium,
+                ),
               ),
             ),
           ),

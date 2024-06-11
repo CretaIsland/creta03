@@ -50,7 +50,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     BookModel.withName('Book 4', creator: '456@sqisoft.com', creatorName: 'Park 456', imageUrl: ''),
   ];
 
-  String enterpriseUrl = '';
+  List<String> admins = [];
   Future<String>? scrshotUrl;
 
   @override
@@ -69,7 +69,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     EnterpriseModel? enterpriseModel =
         CretaAccountManager.enterpriseManagerHolder.onlyOne() as EnterpriseModel?;
     if (enterpriseModel != null) {
-      enterpriseUrl = enterpriseModel.enterpriseUrl;
+      admins = enterpriseModel.admins;
     }
 
     if (widget.hostModel.scrshotFile.isNotEmpty) {
@@ -77,6 +77,13 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     } else {
       scrshotUrl = Future.value('');
     }
+  }
+
+  bool _hasAuth() {
+    return (widget.hostModel.creator.isEmpty ||
+        widget.hostModel.creator == AccountManager.currentLoginUser.email ||
+        AccountManager.currentLoginUser.isSuperUser() == true ||
+        admins.contains(AccountManager.currentLoginUser.email));
   }
 
   @override
@@ -285,10 +292,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                             child: Text(CretaDeviceLang["generalSetting"], //"일반 정보 설정",
                                 style: dataStyle),
                           ),
-                          widget.hostModel.creator.isEmpty ||
-                                  widget.hostModel.creator ==
-                                      AccountManager.currentLoginUser.email ||
-                                  AccountManager.currentLoginUser.isSuperUser() == true
+                          _hasAuth()
                               ? TextFormField(
                                   initialValue: widget.hostModel.creator,
                                   decoration:

@@ -61,6 +61,7 @@ class EnterpriseModel extends CretaModel {
   EnterpriseModel.withName(
       {required this.name,
       required String pparentMid,
+      required String adminEmail,
       this.enterpriseUrl = '',
       this.description = '',
       this.openAiKey = '',
@@ -72,7 +73,9 @@ class EnterpriseModel extends CretaModel {
       this.socketUrl = '',
       this.mediaApiUrl = '',
       this.webrtcUrl = ''})
-      : super(pmid: '', type: ExModelType.enterprise, parent: pparentMid);
+      : super(pmid: '', type: ExModelType.enterprise, parent: pparentMid) {
+    admins.add(adminEmail);
+  }
 
   @override
   void fromMap(Map<String, dynamic> map) {
@@ -112,4 +115,6 @@ class EnterpriseModel extends CretaModel {
         "admins": CretaCommonUtils.listToString(admins),
       }.entries);
   }
+
+  bool isAdmin(String email) => admins.contains(email);
 }

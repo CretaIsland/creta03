@@ -470,9 +470,13 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       });
     }
     if (widget.selectedPage == DeviceSelectedPage.sharedPage) {
+      String enterprise = '';
+      if (AccountManager.currentLoginUser.isSuperUser() == false) {
+        enterprise = CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.enterprise;
+      }
       hostManagerHolder!
           .sharedData(
-        CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.enterprise,
+        enterprise,
       )
           .then((value) {
         if (value.isNotEmpty) {

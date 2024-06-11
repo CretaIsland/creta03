@@ -8,7 +8,10 @@ import 'package:creta_common/common/creta_snippet.dart';
 import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'package:creta_user_io/data_io/user_property_manager.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
 import 'package:flutter/material.dart';
+import 'package:hycop/hycop/account/account_manager.dart';
+import 'package:hycop/hycop/model/user_model.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:provider/provider.dart';
 
@@ -701,10 +704,65 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
     if (input.name.isEmpty || input.name.isEmpty) {
       return;
     }
+    // 디폴트 admin user 를 하나 만들어 주어야 한다.
+    // crate account
 
-    //EnterpriseModel model =
+    UserModel userAccount =
+        await AccountManager.createDefaultAccount(input.name); //EnterpriseModel model =
     await enterpriseManagerHolder!.createEnterprise(
-        name: input.name, description: input.description, enterpriseUrl: input.enterpriseUrl);
+        name: input.name,
+        description: input.description,
+        enterpriseUrl: input.enterpriseUrl,
+        adminEmail: userAccount.email);
+
+    UserPropertyModel userPropertyModel =
+        CretaAccountManager.userPropertyManagerHolder.makeNewUserProperty(
+      parentMid: userAccount.mid,
+      email: userAccount.email,
+      nickname: userAccount.name,
+      enterprise: input.name,
+    );
+    await CretaAccountManager.userPropertyManagerHolder
+        .createUserProperty(createModel: userPropertyModel);
+
+    await showDialog(
+      // ignore: use_build_context_synchronously
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("New Enterprise Creadted", style: CretaFont.titleLarge),
+          content: Container(
+            width: 300,
+            height: 300,
+            margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+            color: Colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(CretaDeviceLang['NewEnterpriseCreated'] ?? "다음과 같이 새로운 엔터프라이즈가 생성되었습니다.",
+                    style: CretaFont.titleLarge.copyWith(height: 1.5)),
+                SizedBox(height: 20),
+                Text('Enterprise name      = ${input.name}'),
+                Text('Admin login id       = ${userAccount.email}'),
+                Text('Admin login password = ${input.name}Admin!!'),
+                SizedBox(height: 20),
+                Text(CretaDeviceLang['changePassword'] ?? "위 사용자로 다시 로그인 하여 비밀번호를 변경한 후 사용해 주세요",
+                    style: CretaFont.titleLarge.copyWith(height: 1.5)),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+
     //StudioVariables.selectedenterpriseMid = enterprise.mid;
     // ignore: use_build_context_synchronously
     //Routemaster.of(context).push('${AppRoutes.deviceDetailPage}?${enterprise.mid}');

@@ -62,12 +62,16 @@
     "enterpriseName": "엔터프라이즈 이름",
     "description": "설명",  
     "enterpriseDetail": "엔터프라이즈 상세화면",
+    "enterpriseUrl": "엔터프라이즈 URL",
+    
     "adminEmail": "관리자 email",
     "inputEnterpriseInfo": "생성할 엔터프라이즈 정보를 입력하세요",
     "inputEnterpriseAdmin" : "엔터프라이즈 관리자 정보를 입력하세요",
     "Invalidemail": "유효하지 않은 email 형식입니다.",
 
     "NoScreenshotFile" : "스크린샷 파일이 없습니다.",
-
+    "noUserExist" : "해당 이메일의 사용자가 존재하지 않습니다. 회원가입된 사용자만 어드민이 될 수 있습니다.",
+    "NewEnterpriseCreated" : "다음과 같이 새로운 엔터프라이즈가 생성되었습니다.",
+    "changePassword" : "위 사용자로 다시 로그인 하여 비밀번호를 변경한 후 사용해 주세요",
     "END" : ""
 }

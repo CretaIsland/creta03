@@ -508,4 +508,9 @@ class CretaAccountManager {
     });
     return (AccountManager.currentLoginUser.isGuestUser);
   }
+
+  static Future<bool> isUserExist(String email) async {
+    UserPropertyManager dummy = UserPropertyManager();
+    return (await dummy.emailToModel(email) != null);
+  } 
 }

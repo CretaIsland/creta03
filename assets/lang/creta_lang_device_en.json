@@ -61,14 +61,18 @@
     "enterpriseName": "Enterprise name",
     "description": "Description",
     "enterpriseDetail": "Enterprise detail",
+    "enterpriseUrl": "Enterprise URL",
+    
     "adminEmail": "Admin email",
     "inputEnterpriseInfo": "Enter the enterprise information to create",
     "inputEnterpriseAdmin" : "Enter the enterprise admin information to create",
     "Invalidemail": "Invalid email address",
 
     "NoScreenshotFile" : "No screenshot file",
+    "noUserExist" : "The user for that email does not exist. Only registered users can become administrators.",
+    "NewEnterpriseCreated" : "A new enterprise has been created as follows",
+    "changePassword" : "Please log in again as the above user and change your password before using.",
 
-  
      "end"  : "End"
 
 }

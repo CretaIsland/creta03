@@ -61,13 +61,17 @@
     "enterpriseName": "エンタープライズ名",
     "description": "説明",  
     "enterpriseDetail": "エンタープライズ詳細画面",
+    "enterpriseUrl": "エンタープライズURL",
+
     "adminEmail": "管理者 email",
     "inputEnterpriseInfo": "作成するエンタープライズ情報を入力してください",
     "inputEnterpriseAdmin" : "エンタープライズの管理者情報を入力してください",
     "Invalidemail": "無効なメールアドレスです。",
 
     "NoScreenshotFile" : "スクリーンショットファイルがありません。",
-
+    "noUserExist" : "そのメールのユーザーは存在しません。会員登録されたユーザーだけがアドミンになることができます。",
+    "NewEnterpriseCreated" : "次のように新しいエンタープライズが作成されました。",
+    "changePassword" : "次のように新しいエンタープライズが作成されました。",
 
    "end"  : "End"
 

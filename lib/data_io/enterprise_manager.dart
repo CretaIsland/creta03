@@ -28,6 +28,17 @@ class EnterpriseManager extends CretaManager {
     return retval;
   }
 
+  EnterpriseModel? getModelByName(String name) {
+    for (var model in modelList) {
+      if (model is EnterpriseModel) {
+        if (model.name == name) {
+          return model;
+        }
+      }
+    }
+    return null;
+  }
+
   @override
   AbsExModel newModel(String mid) => EnterpriseModel(mid);
   //
@@ -71,6 +82,7 @@ class EnterpriseManager extends CretaManager {
       {required String name,
       required String description,
       required String enterpriseUrl,
+      required String adminEmail,
       String openAiKey = '',
       String openWeatherApiKey = '',
       String giphyApiKey = '',
@@ -81,6 +93,7 @@ class EnterpriseManager extends CretaManager {
       String mediaApiUrl = '',
       String webrtcUrl = ''}) async {
     EnterpriseModel enterpriseModel = EnterpriseModel.withName(
+        adminEmail: adminEmail,
         pparentMid: '',
         name: name,
         enterpriseUrl: enterpriseUrl,

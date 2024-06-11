@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../lang/creta_device_lang.dart';
 import '../../model/enterprise_model.dart';
+import '../login/creta_account_manager.dart';
 //import 'book_select_filter.dart';
 
 class EnterpriseDetailPage extends StatefulWidget {
@@ -137,30 +138,35 @@ class _EnterpriseDetailPageState extends State<EnterpriseDetailPage> {
               //initialValue: '',
               decoration: InputDecoration(labelText: 'Add admin email', labelStyle: titleStyle),
               onSaved: (value) {
-                if (value != null && value.isNotEmpty) {
-                  if (!widget.enterpriseModel.admins.contains(value)) {
-                    widget.enterpriseModel.admins.add(value);
-                  }
-                }
+                // if (value != null && value.isNotEmpty) {
+                //   if (!widget.enterpriseModel.admins.contains(value)) {
+                //     widget.enterpriseModel.admins.add(value);
+                //   }
+                // }
               },
             ),
           ),
           IconButton(
             iconSize: 18,
-            onPressed: () {
+            onPressed: () async {
               String value = adminEmailTextController.text;
-              setState(() {
-                _message = '';
-                if (value.isNotEmpty) {
-                  if (CretaCommonUtils.isValidEmail(value)) {
-                    if (!widget.enterpriseModel.admins.contains(value)) {
+              _message = '';
+              if (value.isNotEmpty) {
+                if (CretaCommonUtils.isValidEmail(value)) {
+                  if (!widget.enterpriseModel.admins.contains(value)) {
+                    // 여기서 value 가  현재 user table  에 존재하는 email  인지 체크해야함.
+                    bool isExist = await CretaAccountManager.isUserExist(value);
+                    if (isExist) {
                       widget.enterpriseModel.admins.add(value);
+                    } else {
+                      _message = CretaDeviceLang['noUserExist'];
                     }
-                  } else {
-                    _message = CretaDeviceLang['Invalidemail'];
                   }
+                } else {
+                  _message = CretaDeviceLang['Invalidemail'];
                 }
-              });
+                setState(() {});
+              }
             },
             icon: const Icon(Icons.add),
           ),
