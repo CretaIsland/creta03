@@ -558,9 +558,7 @@
             "情報修正",
             "公開範囲",
             "チャンネル選択",
-            "発行完了",
-            "放送開始"
-
+            "発行完了"
          ],
         
         "publishTo" : "公開する人",
@@ -696,6 +694,13 @@
         "weatherSticker": "天気ステッカー",
         "mute": "ミュート",
         "unmute": "ミュート解除",
+
+        "noDevcieAvailable" : "放送するデバイスを持っていません。",
+        "broadcast" : "放送する",
+        "selectDevice" : "放送するデバイスを選択してください。",
+        "apply" : "適用",
+        "broadcastComplete" : "放送が適用されました。",
+        "moveToDevice" : "デバイス管理画面に移動しますか？",
           
         "end" : "End"
         

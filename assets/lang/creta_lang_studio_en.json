@@ -560,8 +560,7 @@
         "Edit Information",
         "Publication Coverage",
         "Select Channel",
-        "Publish Complete",
-        "Broadcast Begins"
+        "Publish Complete"        
       ],
 
     "publishTo" : "To whom to publish",
@@ -697,8 +696,15 @@
     "weatherSticker": "Weather Sticker",
     "mute": "Mute",
     "unmute": "Unmute",
-  
-      "end" : "End"
+
+    "noDevcieAvailable" : "No Device available",
+    "broadcast" : "Broadcast",
+    "selectDevice" : "Select the device you want to broadcast.",
+    "apply" : "Apply",
+    "broadcastComplete" : "The broadcast has been applied.",
+    "moveToDevice" : "Would you like to go to the device management page ?",
+
+    "end" : "End"
     }
      
      

@@ -22,6 +22,7 @@ class CretaAlertDialog extends StatelessWidget {
   final Color? backgroundColor;
   final String? title;
   final Widget? titleTrail;
+  final bool hasCancelButton;
 
   CretaAlertDialog(
       {super.key,
@@ -36,6 +37,7 @@ class CretaAlertDialog extends StatelessWidget {
       this.backgroundColor,
       this.title,
       this.titleTrail,
+      this.hasCancelButton = true,
       required this.onPressedOK,
       this.onPressedCancel}) {
     cancelButtonText ??= CretaLang['cancel']!;
@@ -138,15 +140,16 @@ class CretaAlertDialog extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          BTN.line_red_t_m(
-                              text: cancelButtonText!,
-                              onPressed: () {
-                                if (onPressedCancel != null) {
-                                  onPressedCancel!.call();
-                                } else {
-                                  Navigator.of(context).pop();
-                                }
-                              }),
+                          if (hasCancelButton == true)
+                            BTN.line_red_t_m(
+                                text: cancelButtonText!,
+                                onPressed: () {
+                                  if (onPressedCancel != null) {
+                                    onPressedCancel!.call();
+                                  } else {
+                                    Navigator.of(context).pop();
+                                  }
+                                }),
                           const SizedBox(width: 8.0),
                           BTN.fill_red_t_m(
                               text: okButtonText!, width: okButtonWidth, onPressed: onPressedOK)

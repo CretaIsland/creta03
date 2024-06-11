@@ -14,6 +14,7 @@ import 'package:routemaster/routemaster.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 
 //import 'package:url_strategy/url_strategy.dart';
+import '../../data_io/host_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/component/snippet.dart';
 //import '../../design_system/menu/creta_drop_down.dart';
@@ -52,6 +53,7 @@ import '../../../design_system/dialog/creta_dialog.dart';
 //import '../../design_system/component/snippet.dart';
 //import '../../data_io/page_manager.dart';
 import '../../data_io/book_manager.dart';
+import '../studio/host_select_page.dart';
 
 // const double _rightViewTopPane = 40;
 // const double _rightViewLeftPane = 40;
@@ -501,6 +503,8 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
   late String encodeTitle;
   late String encodeLinkUrl;
 
+  late HostManager hostManagerHolder;
+
   final ScrollController scrollController = ScrollController();
 
   void _openPopupMenu() {
@@ -736,6 +740,10 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
   void initState() {
     super.initState();
 
+    hostManagerHolder = HostManager();
+    hostManagerHolder.configEvent(notifyModify: false);
+    hostManagerHolder.clearAll();
+
     _popupMenuList = [
       // CretaMenuItem(
       //   caption: '재생하기',
@@ -747,6 +755,13 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
       //     onPressed: () {},//_doPopupMenuEdit,
       //     linkUrl: '${AppRoutes.studioBookMainPage}?${widget.bookModel.sourceMid}',
       //   ),
+      if (AccountManager.currentLoginUser.isLoginedUser)
+        CretaMenuItem(
+          caption: CretaCommuLang['broadcast'] ?? 'Broadcast',
+          onPressed: () {
+            HostUtil.broadCast(context, hostManagerHolder, widget.bookModel);
+          },
+        ),
       if (AccountManager.currentLoginUser.isLoginedUser)
         CretaMenuItem(
           caption: CretaCommuLang['addToPlaylist'],

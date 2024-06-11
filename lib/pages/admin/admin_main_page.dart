@@ -21,6 +21,7 @@ import 'package:hycop/common/util/logger.dart';
 import '../../data_io/enterprise_manager.dart';
 import '../../design_system/component/creta_basic_layout_mixin.dart';
 import '../../design_system/component/snippet.dart';
+import '../../design_system/dialog/creta_alert_dialog.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_device_lang.dart';
 import '../../lang/creta_studio_lang.dart';
@@ -717,51 +718,84 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
 
     UserPropertyModel userPropertyModel =
         CretaAccountManager.userPropertyManagerHolder.makeNewUserProperty(
-      parentMid: userAccount.mid,
+      parentMid: userAccount.userId,
       email: userAccount.email,
       nickname: userAccount.name,
       enterprise: input.name,
+      verified: true,
     );
     await CretaAccountManager.userPropertyManagerHolder
         .createUserProperty(createModel: userPropertyModel);
 
     await showDialog(
-      // ignore: use_build_context_synchronously
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("New Enterprise Creadted", style: CretaFont.titleLarge),
-          content: Container(
-            width: 300,
-            height: 300,
-            margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-            color: Colors.white,
-            child: Column(
+        // ignore: use_build_context_synchronously
+        context: context,
+        builder: (BuildContext context) {
+          return CretaAlertDialog(
+            hasCancelButton: false,
+            height: 400,
+            title: "New Enterprise Creadted",
+
+            padding: EdgeInsets.only(left: 20, right: 20),
+            //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+            //child: Container(
+            content: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(CretaDeviceLang['NewEnterpriseCreated'] ?? "다음과 같이 새로운 엔터프라이즈가 생성되었습니다.",
                     style: CretaFont.titleLarge.copyWith(height: 1.5)),
                 SizedBox(height: 20),
-                Text('Enterprise name      = ${input.name}'),
-                Text('Admin login id       = ${userAccount.email}'),
-                Text('Admin login password = ${input.name}Admin!!'),
+                Text('Enterprise name = ${input.name}'),
+                Text('Admin id        = ${userAccount.email}'),
+                Text('Admin password  = ${input.name}Admin!!'),
                 SizedBox(height: 20),
                 Text(CretaDeviceLang['changePassword'] ?? "위 사용자로 다시 로그인 하여 비밀번호를 변경한 후 사용해 주세요",
                     style: CretaFont.titleLarge.copyWith(height: 1.5)),
               ],
             ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+            onPressedOK: () {
+              Navigator.of(context).pop();
+            },
+          );
+        });
+
+    // await showDialog(
+    //   // ignore: use_build_context_synchronously
+    //   context: context,
+    //   builder: (context) {
+    //     return AlertDialog(
+    //       title: Text("New Enterprise Creadted", style: CretaFont.titleLarge),
+    //       content: Container(
+    //         width: 320,
+    //         height: 300,
+    //         margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+    //         color: Colors.white,
+    //         child: Column(
+    //           crossAxisAlignment: CrossAxisAlignment.start,
+    //           children: [
+    //             Text(CretaDeviceLang['NewEnterpriseCreated'] ?? "다음과 같이 새로운 엔터프라이즈가 생성되었습니다.",
+    //                 style: CretaFont.titleLarge.copyWith(height: 1.5)),
+    //             SizedBox(height: 20),
+    //             Text('Enterprise name = ${input.name}'),
+    //             Text('Admin id        = ${userAccount.email}'),
+    //             Text('Admin password  = ${input.name}Admin!!'),
+    //             SizedBox(height: 20),
+    //             Text(CretaDeviceLang['changePassword'] ?? "위 사용자로 다시 로그인 하여 비밀번호를 변경한 후 사용해 주세요",
+    //                 style: CretaFont.titleLarge.copyWith(height: 1.5)),
+    //           ],
+    //         ),
+    //       ),
+    //       actions: <Widget>[
+    //         TextButton(
+    //           child: Text('close'),
+    //           onPressed: () {
+    //             Navigator.of(context).pop();
+    //           },
+    //         ),
+    //       ],
+    //     );
+    //   },
+    // );
 
     //StudioVariables.selectedenterpriseMid = enterprise.mid;
     // ignore: use_build_context_synchronously

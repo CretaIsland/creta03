@@ -462,7 +462,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 4.0, horizontal: 10.0),
                                     child: SizedBox(
-                                      width: 61,
+                                      width: 62,
                                       child: Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [

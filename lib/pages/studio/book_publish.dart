@@ -14,6 +14,7 @@ import 'package:creta_common/common/creta_snippet.dart';
 import '../../common/creta_utils.dart';
 import '../../data_io/book_published_manager.dart';
 import '../../data_io/channel_manager.dart';
+import '../../data_io/host_manager.dart';
 import '../../design_system/animation/staggerd_animation.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_toggle_button.dart';
@@ -34,6 +35,7 @@ import '../../routes.dart';
 import '../login/creta_account_manager.dart';
 import 'book_info_mixin.dart';
 import 'book_main_page.dart';
+import 'host_select_page.dart';
 import 'studio_constant.dart';
 import 'studio_snippet.dart';
 
@@ -73,8 +75,11 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   late List<StepperData> stepsData;
   late List<Widget> stepsWidget;
 
-  final double width = 364;
-  final double height = 583;
+  final double width = 430;
+  final double height = 610;
+
+  late HostManager hostManagerHolder;
+  String message = '';
 
   HashTagWrapper hashTagWrapper = HashTagWrapper();
   List<String> emailList = [];
@@ -137,6 +142,10 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
 
     _onceDBGetComplete1 = _initData();
     currentStep = widget.currentStep;
+
+    hostManagerHolder = HostManager();
+    hostManagerHolder.configEvent(notifyModify: false);
+    hostManagerHolder.clearAll();
 
     // LoginPage.channelManagerHolder!
     //     .getChannelFromList(widget.model!.channels)
@@ -257,8 +266,8 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
         return step3();
       case 4:
         return step4();
-      case 5:
-        return step5();
+      // case 5:
+      //   return step5();
       default:
         return const SizedBox.shrink();
     }
@@ -376,33 +385,47 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                                     },
                               ),
                             if (currentStep == 4)
-                              SizedBox(
-                                width: 240,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  children: [
-                                    BTN.fill_blue_t_m(
-                                      width: 150,
-                                      text: CretaLang['gotoCommunity']!,
-                                      onPressed: () {
-                                        AppRoutes.launchTab(AppRoutes.communityHome);
-                                        setState(() {
-                                          _nextStep();
-                                        });
-                                      },
-                                    ),
-                                    BTN.fill_blue_t_m(
-                                      width: 55,
-                                      text: CretaLang['close']!,
-                                      onPressed: () {
-                                        setState(() {
-                                          _nextStep();
-                                        });
-                                      },
-                                    ),
-                                  ],
-                                ),
+                              //SizedBox(
+                              //width: 240,
+                              //child:
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  BTN.fill_blue_t_m(
+                                    width: 150,
+                                    text: CretaLang['gotoCommunity']!,
+                                    onPressed: () {
+                                      AppRoutes.launchTab(AppRoutes.communityHome);
+                                      setState(() {
+                                        _nextStep();
+                                      });
+                                    },
+                                  ),
+                                  const SizedBox(width: 10),
+                                  BTN.fill_blue_t_m(
+                                    width: 55,
+                                    text: CretaLang['close']!,
+                                    onPressed: () {
+                                      setState(() {
+                                        _nextStep();
+                                      });
+                                    },
+                                  ),
+                                  const SizedBox(width: 10),
+                                  BTN.fill_blue_t_m(
+                                    width: 110,
+                                    text: CretaStudioLang['broadcast'] ?? 'broadcast',
+                                    onPressed: () async {
+                                      //setState(() {
+                                      await HostUtil.broadCast(
+                                          context, hostManagerHolder, widget.model!);
+                                      Navigator.of(context).pop();
+                                      //});
+                                    },
+                                  ),
+                                ],
                               ),
+                            //),
                           ],
                         ),
                       ),
@@ -454,7 +477,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
 
   Widget step3() {
     return SizedBox(
-      height: 365,
+      height: 400,
       child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -528,23 +551,80 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
         });
   }
 
-  Widget step5() {
-    return const SizedBox(
-      height: 365,
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ..._channelScope(),
-            // ..._channelTo(),
-            // copyRight(widget.model!),
-            // _optionBody(),
-          ],
-        ),
-      ),
-    );
-  }
+  // Future<void> _broadCast() async {
+  //   List<HostModel> selectedHosts = [];
+
+  //   await showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return CretaAlertDialog(
+  //           width: 420,
+  //           height: 600,
+  //           title: CretaStudioLang['selectDevice'] ?? "Select the device you want to broadcast.",
+  //           padding: const EdgeInsets.only(left: 20, right: 20),
+  //           //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+  //           //child: Container(
+  //           content: Container(
+  //             width: 420,
+  //             height: 560,
+  //             margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+  //             child: HostSelectPage(
+  //               hostManager: hostManagerHolder,
+  //               selectedHosts: selectedHosts,
+  //               onSelected: (hostId, name) {
+  //                 logger.fine('onSelected $hostId, $name');
+  //               },
+  //               searchText: '',
+  //             ),
+  //           ),
+  //           okButtonText: CretaLang['apply'] ?? 'Apply',
+
+  //           okButtonWidth: 110,
+  //           onPressedOK: () async {
+  //             for (var host in selectedHosts) {
+  //               host.requestedBook1Id = widget.model!.mid;
+  //               host.requestedBook1 = widget.model!.name.value;
+  //               host.requestedBook1Time = DateTime.now().toUtc();
+  //               await hostManagerHolder.setToDB(host);
+  //             }
+  //             message = CretaStudioLang['broadcastComplete'] ?? 'Broadcast complete.';
+  //             Navigator.of(context).pop();
+  //           },
+  //           onPressedCancel: () {
+  //             message = '';
+  //             Navigator.of(context).pop();
+  //           },
+  //         );
+  //       });
+  //   if (message.isNotEmpty) {
+  //     await showDialog(
+  //         context: context,
+  //         builder: (BuildContext context) {
+  //           return CretaAlertDialog(
+  //             width: 420,
+  //             height: 300,
+  //             title: CretaStudioLang['broadcastComplete'] ?? "The broadcast has been applied.",
+  //             padding: const EdgeInsets.only(left: 20, right: 20),
+  //             //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+  //             //child: Container(
+  //             content: Center(
+  //                 child: Text(
+  //                     CretaLang['moveToDevice'] ??
+  //                         'Would you like to go to the device management page ?',
+  //                     style: CretaFont.bodyMedium)),
+  //             okButtonText: 'Yes',
+  //             okButtonWidth: 110,
+  //             onPressedOK: () async {
+  //               Navigator.of(context).pop();
+  //               Routemaster.of(context).push(AppRoutes.deviceSharedPage);
+  //             },
+  //             onPressedCancel: () {
+  //               Navigator.of(context).pop();
+  //             },
+  //           );
+  //         });
+  //   }
+  // }
 
   Widget _drawThumbnail() {
     final Random random = Random();
@@ -943,7 +1023,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
         child: Text(CretaStudioLang['publishTo']!, style: CretaFont.titleSmall),
       ),
       Container(
-        width: 333,
+        width: 393,
         height: 175,
         //padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -1188,7 +1268,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
         child: Text(CretaStudioLang['publishingChannelList']!, style: CretaFont.titleSmall),
       ),
       Container(
-        width: 333,
+        width: 393,
         height: 124,
         //padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(

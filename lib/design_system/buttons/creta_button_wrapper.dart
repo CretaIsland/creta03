@@ -652,11 +652,11 @@ class BTN {
     double width = 219,
     CretaButtonSidePadding? sidePadding,
   }) {
-    double textWidth = CretaCommonUtils.calculateTextSize(
+    Size textSize = CretaCommonUtils.calculateTextSize(
       text,
       CretaFont.titleLarge,
       width - 24 - 52 - 20,
-    ).width;
+    );
 
     return CretaButton(
       width: width,
@@ -678,9 +678,11 @@ class BTN {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
                 child: SizedBox(
-                  width: textWidth,
+                  //color: Colors.amberAccent,
+                  width: textSize.width + 4,
+                  height: textSize.height + 4,
                   child: Text(
                     text,
                     textAlign: TextAlign.center,
@@ -690,12 +692,12 @@ class BTN {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(9, 3, 0, 0),
+                padding: const EdgeInsets.fromLTRB(4, 4, 0, 0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(subText,
-                        style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[500]!)),
+                        style: CretaFont.titleMedium.copyWith(color: CretaColor.text[500]!)),
                   ],
                 ),
               ),

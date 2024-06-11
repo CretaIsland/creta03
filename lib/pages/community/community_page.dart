@@ -16,6 +16,7 @@ import 'package:hycop/hycop.dart';
 import 'package:routemaster/routemaster.dart';
 //import 'package:url_strategy/url_strategy.dart';
 import 'package:url_launcher/link.dart';
+import '../../data_io/host_manager.dart';
 import '../../lang/creta_commu_lang.dart';
 import '../../routes.dart';
 //import '../../pages/login_page.dart';
@@ -49,6 +50,7 @@ import '../../pages/studio/studio_snippet.dart';
 import '../../pages/studio/studio_variables.dart';
 import '../../model/playlist_model.dart';
 
+import '../studio/host_select_page.dart';
 import 'sub_pages/community_right_home_pane.dart';
 import 'sub_pages/community_right_channel_pane.dart';
 import 'sub_pages/community_right_channel_info_pane.dart';
@@ -103,6 +105,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
 
   LanguageType oldLanguage = LanguageType.none;
 
+  late HostManager hostManagerHolder;
+
   void _scrollChangedCallback(bool bannerSizeChanged) {
     setState(() {
       //
@@ -124,6 +128,10 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     favoritesManagerHolder = FavoritesManager();
     StudioVariables.isFullscreen = false;
     isLangInit = initLang();
+
+    hostManagerHolder = HostManager();
+    hostManagerHolder.configEvent(notifyModify: false);
+    hostManagerHolder.clearAll();
   }
 
   static Future<bool>? isLangInit;
@@ -1515,6 +1523,14 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                                         '${AppRoutes.studioBookMainPage}?${_currentBookModel?.sourceMid}';
                                     //Routemaster.of(context).push(url);
                                     AppRoutes.launchTab(url);
+                                  },
+                                ),
+                              if (AccountManager.currentLoginUser.isLoginedUser)
+                                CretaMenuItem(
+                                  caption: CretaCommuLang['broadcast'] ?? 'Broadcast',
+                                  onPressed: () {
+                                    HostUtil.broadCast(
+                                        context, hostManagerHolder, _currentBookModel!);
                                   },
                                 ),
                               if (AccountManager.currentLoginUser.isLoginedUser)

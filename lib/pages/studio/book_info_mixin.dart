@@ -51,6 +51,7 @@ mixin BookInfoMixin {
         child: Text(CretaStudioLang['description']!, style: CretaFont.titleSmall),
       ),
       CretaTextField.long(
+        width: 393,
         maxLines: 10,
         radius: 12,
         hintText: '',

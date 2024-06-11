@@ -186,6 +186,7 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
             Container(
               decoration: BoxDecoration(
                 color: Colors.grey[200],
+                //color: Colors.amberAccent,
                 // crop
                 borderRadius: BorderRadius.circular(19.2),
               ),
@@ -194,7 +195,8 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
               height: hasTwoButton
                   ? userMenuHeight + 76
                   : userMenuHeight, //CretaComponentLocation.UserMenuInTabBar.height,
-              padding: CretaComponentLocation.UserMenuInTabBar.padding,
+              padding: const EdgeInsets.fromLTRB(
+                  4, 20, 4, 20), //CretaComponentLocation.UserMenuInTabBar.padding,
               child: ListView.builder(
                   //padding: EdgeInsets.fromLTRB(leftMenuViewLeftPane, leftMenuViewTopPane, 0, 0),
                   itemCount: 1,
@@ -206,7 +208,7 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
                             uri: Uri.parse(channelLinkUrl),
                             builder: (context, function) {
                               return BTN.fill_gray_l_profile(
-                                width: 240,
+                                width: 195,
                                 text: AccountManager.currentLoginUser.name,
                                 subText: enterprise.isEmpty
                                     ? '${CretaCommuLang["subscriber"]!} ${CretaAccountManager.getChannel?.followerCount ?? 0}'
