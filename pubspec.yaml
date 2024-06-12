@@ -58,7 +58,7 @@ dependencies:
   flutter_riverpod: ^1.0.4
   flutter_speed_dial: ^6.1.0+1
   routemaster: ^1.0.1
-  hycop: ^0.4.32
+  hycop: ^0.4.39
   outline_search_bar: ^2.3.0
   custom_radio_grouped_button: 2.2.1
   # elegant_radio_button_group: ^0.0.1
@@ -76,7 +76,7 @@ dependencies:
   image_network: 2.5.4+1
   http: ^1.1.0
   universal_html: ^2.0.8
-  firebase_core_platform_interface: ^5.0.0
+  #firebase_core_platform_interface: ^5.0.0
   adaptive_scrollbar: 2.1.2
   mutex: ^3.0.1
   loading_animation_widget: ^1.2.0+4

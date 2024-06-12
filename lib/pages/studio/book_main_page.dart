@@ -595,9 +595,11 @@ class _BookMainPageState extends State<BookMainPage> {
   // }
 
   bool _useSocket() {
-    return ((widget.isPublishedMode ?? false) == false &&
-        StudioVariables.isPreview == false &&
-        AccountManager.currentLoginUser.isLoginedUser);
+    // 임시로 소켓을 사용하지 않음.
+    return false;
+    // return ((widget.isPublishedMode ?? false) == false &&
+    //     StudioVariables.isPreview == false &&
+    //     AccountManager.currentLoginUser.isLoginedUser);
   }
 
   @override
