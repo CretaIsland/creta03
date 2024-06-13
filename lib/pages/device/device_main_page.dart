@@ -458,31 +458,33 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
   }
 
   void _initData() {
-    if (widget.selectedPage == DeviceSelectedPage.myPage) {
-      hostManagerHolder!
-          .myDataOnly(
-        AccountManager.currentLoginUser.email,
-      )
-          .then((value) {
-        if (value.isNotEmpty) {
-          hostManagerHolder!.addRealTimeListen(value.first.mid);
-        }
-      });
-    }
-    if (widget.selectedPage == DeviceSelectedPage.sharedPage) {
-      String enterprise = '';
-      if (AccountManager.currentLoginUser.isSuperUser() == false) {
-        enterprise = CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.enterprise;
+    if (HycopFactory.serverType != ServerType.firebase) {
+      if (widget.selectedPage == DeviceSelectedPage.myPage) {
+        hostManagerHolder!
+            .myDataOnly(
+          AccountManager.currentLoginUser.email,
+        )
+            .then((value) {
+          if (value.isNotEmpty) {
+            hostManagerHolder!.addRealTimeListen(value.first.mid);
+          }
+        });
       }
-      hostManagerHolder!
-          .sharedData(
-        enterprise,
-      )
-          .then((value) {
-        if (value.isNotEmpty) {
-          hostManagerHolder!.addRealTimeListen(value.first.mid);
+      if (widget.selectedPage == DeviceSelectedPage.sharedPage) {
+        String enterprise = '';
+        if (AccountManager.currentLoginUser.isSuperUser() == false) {
+          enterprise = CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.enterprise;
         }
-      });
+        hostManagerHolder!
+            .sharedData(
+          enterprise,
+        )
+            .then((value) {
+          if (value.isNotEmpty) {
+            hostManagerHolder!.addRealTimeListen(value.first.mid);
+          }
+        });
+      }
     }
   }
 
@@ -712,6 +714,32 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
     // if (sizeListener.isResizing()) {
     //   return consumerFunc(context, null);
     // }
+    if (HycopFactory.serverType == ServerType.firebase) {
+      if (widget.selectedPage == DeviceSelectedPage.myPage) {
+        return hostManagerHolder!.myStreamDataOnly(
+          AccountManager.currentLoginUser.email,
+          consumerFunc: (resultList) {
+            return _hostList(hostManagerHolder!);
+          },
+        );
+      }
+      if (widget.selectedPage == DeviceSelectedPage.sharedPage) {
+        String enterprise = '';
+        if (AccountManager.currentLoginUser.isSuperUser() == false) {
+          enterprise = CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.enterprise;
+        }
+        return hostManagerHolder!.sharedStreamDataOnly(
+          enterprise,
+          consumerFunc: (resultList) {
+            return _hostList(hostManagerHolder!);
+          },
+        );
+      }
+      return Center(child: Text('wrong selectedPage ${widget.selectedPage}'));
+    }
+
+    // firebase 가 아닌 경우.
+
     if (_onceDBGetComplete) {
       return consumerFunc();
     }
@@ -806,8 +834,9 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
                 //print('${row['lastUpdateTime']}-------------------------------------------');
                 DateTime now = DateTime.now();
                 DateTime lastUpdateTime = DateTime.parse(row['lastUpdateTime']);
+                int period = row['managePeriod'] ?? 60;
 
-                if (now.difference(lastUpdateTime).inSeconds >= 90) {
+                if (now.difference(lastUpdateTime).inSeconds >= (period + 15)) {
                   row['isConnected'] = false;
                 } else {
                   row['isConnected'] = true;

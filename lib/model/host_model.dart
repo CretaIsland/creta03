@@ -101,6 +101,8 @@ class HostModel extends CretaModel {
   DateTime powerOffTime = DateTime(1970, 1, 1); // read only
 
   double monthlyUseTime = 0.0; // read only
+  double soundVolume = 50.0;
+  bool mute = false;
 
   HostModel(String pmid) : super(pmid: pmid, type: ExModelType.host, parent: '');
   HostModel.dummy()
@@ -170,6 +172,7 @@ class HostModel extends CretaModel {
         powerOnTime,
         powerOffTime,
         monthlyUseTime,
+        soundVolume,
         hostType,
         os,
         //isInitialized,
@@ -177,6 +180,7 @@ class HostModel extends CretaModel {
         isUsed,
         isVNC,
         isOperational,
+        mute,
         managePeriod,
         scrshotPeriod,
         //licenseTime,
@@ -239,6 +243,7 @@ class HostModel extends CretaModel {
     powerOnTime = srcHost.powerOnTime;
     powerOffTime = srcHost.powerOffTime;
     monthlyUseTime = srcHost.monthlyUseTime;
+    soundVolume = srcHost.soundVolume;
 
     hostType = srcHost.hostType;
     os = srcHost.os;
@@ -247,6 +252,7 @@ class HostModel extends CretaModel {
     isUsed = srcHost.isUsed;
     isVNC = srcHost.isVNC;
     isOperational = srcHost.isOperational;
+    mute = srcHost.mute;
     managePeriod = srcHost.managePeriod;
     scrshotPeriod = srcHost.scrshotPeriod;
     //licenseTime = srcHost.licenseTime;
@@ -308,6 +314,7 @@ class HostModel extends CretaModel {
     powerOnTime = srcHost.powerOnTime;
     powerOffTime = srcHost.powerOffTime;
     monthlyUseTime = srcHost.monthlyUseTime;
+    soundVolume = srcHost.soundVolume;
 
     hostType = srcHost.hostType;
     os = srcHost.os;
@@ -315,6 +322,7 @@ class HostModel extends CretaModel {
     isValidLicense = srcHost.isValidLicense;
     isUsed = srcHost.isUsed;
     isVNC = srcHost.isVNC;
+    mute = srcHost.mute;
     isOperational = srcHost.isOperational;
     managePeriod = srcHost.managePeriod;
     scrshotPeriod = srcHost.scrshotPeriod;
@@ -332,7 +340,7 @@ class HostModel extends CretaModel {
     if (srcHost.enterprise.isNotEmpty && srcHost.enterprise != enterprise) {
       enterprise = srcHost.enterprise;
     }
-     if (srcHost.macAddress.isNotEmpty && srcHost.macAddress != macAddress) {
+    if (srcHost.macAddress.isNotEmpty && srcHost.macAddress != macAddress) {
       macAddress = srcHost.macAddress;
     }
     if (srcHost.location.isNotEmpty && srcHost.location != location) {
@@ -444,6 +452,7 @@ class HostModel extends CretaModel {
     powerOnTime = HycopUtils.dateTimeFromDB(map["powerOnTime"] ?? '');
     powerOffTime = HycopUtils.dateTimeFromDB(map["powerOffTime"] ?? '');
     monthlyUseTime = map["monthlyUseTime"] ?? 0.0;
+    soundVolume = map["soundVolume"] ?? 50.0;
 
     hostType = ServiceType.fromInt(map["hostType"] ?? ServiceType.signage.index);
     os = map["os"] ?? '';
@@ -452,6 +461,7 @@ class HostModel extends CretaModel {
     isUsed = map["isUsed"] ?? false;
     isVNC = map["isVNC"] ?? false;
     isOperational = map["isOperational"] ?? true;
+    mute = map["mute"] ?? false;
     managePeriod = map["managePeriod"] ?? 60;
     scrshotPeriod = map["scrshotPeriod"] ?? 360;
     //licenseTime = HycopUtils.dateTimeFromDB(map["licenseTime"]);
@@ -510,6 +520,7 @@ class HostModel extends CretaModel {
         "powerOnTime": HycopUtils.dateTimeToDB(powerOnTime),
         "powerOffTime": HycopUtils.dateTimeToDB(powerOffTime),
         "monthlyUseTime": monthlyUseTime,
+        "soundVolume": soundVolume,
         "hostType": hostType.index,
         "os": os,
         //"isInitialized": isInitialized,
@@ -517,6 +528,7 @@ class HostModel extends CretaModel {
         "isUsed": isUsed,
         "isVNC": isVNC,
         "isOperational": isOperational,
+        "mute": mute,
         "managePeriod": managePeriod,
         "scrshotPeriod": scrshotPeriod,
         //"licenseTime": HycopUtils.dateTimeToDB(licenseTime),

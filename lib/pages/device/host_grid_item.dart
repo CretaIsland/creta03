@@ -108,6 +108,17 @@ class HostGridItemState extends State<HostGridItem> {
     aWidth = widget.width - (borderWidth * 2);
     aHeight = widget.height - (borderWidth * 2);
 
+    if (widget.hostModel != null) {
+      DateTime now = DateTime.now();
+      DateTime lastUpdateTime = widget.hostModel!.lastUpdateTime;
+      int period = widget.hostModel!.managePeriod;
+      if (now.difference(lastUpdateTime).inSeconds >= (period + 15)) {
+        widget.hostModel!.isConnected = false;
+      } else {
+        widget.hostModel!.isConnected = true;
+      }
+    }
+
     //double margin = mouseOver ? 0 : LayoutConst.hostThumbSpacing / 2;
     //double margin = 0;
 

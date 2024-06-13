@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:creta_common/common/creta_vars.dart';
 import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_user_io/data_io/team_manager.dart';
+import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 //import '../common/creta_utils.dart';
 //import '../design_system/menu/creta_popup_menu.dart';
@@ -111,5 +112,25 @@ class HostManager extends CretaManager {
     await createToDB(host);
     insert(host);
     return host;
+  }
+
+  Widget myStreamDataOnly(String userId,
+      {int? limit, required Widget Function(List<Map<String, dynamic>>) consumerFunc}) {
+    Map<String, QueryValue> query = {};
+    query['creator'] = QueryValue(value: userId);
+    query['isRemoved'] = QueryValue(value: false);
+
+    return streamData(consumerFunc: consumerFunc, where: query, orderBy: 'updateTime');
+  }
+
+  Widget sharedStreamDataOnly(String enterprise,
+      {int? limit, required Widget Function(List<Map<String, dynamic>>) consumerFunc}) {
+    Map<String, QueryValue> query = {};
+    if (enterprise.isNotEmpty) {
+      query['enterprise'] = QueryValue(value: enterprise);
+    }
+    query['isRemoved'] = QueryValue(value: false);
+
+    return streamData(consumerFunc: consumerFunc, where: query, orderBy: 'updateTime');
   }
 }

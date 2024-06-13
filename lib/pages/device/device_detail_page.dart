@@ -9,11 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 import 'package:intl/intl.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
+import '../../design_system/buttons/creta_ex_slider.dart';
 import '../../design_system/buttons/creta_toggle_button.dart';
+import '../../design_system/component/creta_proprty_slider.dart';
 import '../../design_system/component/snippet.dart';
 import '../../lang/creta_device_lang.dart';
 import '../../model/enterprise_model.dart';
 import '../../model/host_model.dart';
+import '../../common/creta_utils.dart';
 import '../login/creta_account_manager.dart';
 import 'book_select_filter.dart';
 
@@ -212,7 +215,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                   _nvRow('OS', widget.hostModel.os),
                   _boolRow('Is Connected', widget.hostModel.isConnected, false),
                   _boolRow('Is Operational', widget.hostModel.isOperational, false),
-                  _boolRow('Has License', widget.hostModel.isValidLicense, false),
+                  //_boolRow('Has License', widget.hostModel.isValidLicense, false),
                   //_nvRow('License Time', HycopUtils.dateTimeToDisplay(widget.hostModel.licenseTime)),
                   _nvRow('Initialize Time',
                       HycopUtils.dateTimeToDisplay(widget.hostModel.initializeTime)),
@@ -277,7 +280,47 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                       },
                     ),
                   ),
-
+                if (widget.isChangeBook == false)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4, bottom: 8.0, right: 2),
+                    child: _boolRow(
+                      CretaDeviceLang["licenseSetting"] ?? '라이센스 설정',
+                      widget.hostModel.isValidLicense,
+                      true,
+                      onChanged: (bool value) {
+                        setState(() {
+                          widget.hostModel.isValidLicense = value;
+                        });
+                      },
+                    ),
+                  ),
+                if (widget.isChangeBook == false)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4, bottom: 8.0, right: 2),
+                    child: _boolRow(
+                      CretaDeviceLang["mute"] ?? '뮤트',
+                      widget.hostModel.mute,
+                      true,
+                      onChanged: (bool value) {
+                        setState(() {
+                          widget.hostModel.mute = value;
+                        });
+                      },
+                    ),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 4, bottom: 8.0, right: 2),
+                  child: _slideRow(
+                    CretaDeviceLang["soundVolume"] ?? '소리 음량',
+                    widget.hostModel.soundVolume,
+                    true,
+                    onChanged: (double value) {
+                      setState(() {
+                        widget.hostModel.soundVolume = value;
+                      });
+                    },
+                  ),
+                ),
                 if (widget.isChangeBook == false)
                   Card(
                     elevation: 0,
@@ -370,9 +413,9 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                                 context: context,
                               );
                               if (selectedTime != null) {
-                                // ignore: use_build_context_synchronously
+                                String formattedTime = CretaUtils.get24HourFormat(selectedTime);
                                 setState(() {
-                                  widget.hostModel.bootTime = selectedTime.format(context);
+                                  widget.hostModel.bootTime = formattedTime;
                                 });
                               }
                             },
@@ -392,9 +435,10 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                                 context: context,
                               );
                               if (selectedTime != null) {
-                                // ignore: use_build_context_synchronously
+                                // 24시간제 포맷으로 시간 문자열 생성
+                                String formattedTime = CretaUtils.get24HourFormat(selectedTime);
                                 setState(() {
-                                  widget.hostModel.rebootTime = selectedTime.format(context);
+                                  widget.hostModel.rebootTime = formattedTime;
                                 });
                               }
                             },
@@ -414,9 +458,9 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                                 context: context,
                               );
                               if (selectedTime != null) {
-                                // ignore: use_build_context_synchronously
+                                String formattedTime = CretaUtils.get24HourFormat(selectedTime);
                                 setState(() {
-                                  widget.hostModel.shutdownTime = selectedTime.format(context);
+                                  widget.hostModel.shutdownTime = formattedTime;
                                 });
                               }
                             },
@@ -430,12 +474,12 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 10.0),
                             child: TextFormField(
-                              initialValue: widget.hostModel.holiday,
+                              initialValue: widget.hostModel.weekTime,
                               decoration: InputDecoration(
                                   labelText: 'Power off by WeeK Day',
                                   hintText: 'ex) SAT:20:30,SUN:18:30',
                                   labelStyle: titleStyle),
-                              onSaved: (value) => widget.hostModel.holiday = value ?? '',
+                              onSaved: (value) => widget.hostModel.weekTime = value ?? '',
                             ),
                           ),
                           Padding(
@@ -704,8 +748,15 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(name, style: titleStyle),
-          Text(value.isEmpty ? '-' : value, textAlign: TextAlign.right, style: dataStyle),
+          Expanded(flex: 4, child: Text(name, style: titleStyle)),
+          Expanded(
+              flex: 6,
+              child: Text(
+                value.isEmpty ? '-' : value,
+                textAlign: TextAlign.right,
+                style: dataStyle,
+                overflow: TextOverflow.ellipsis,
+              )),
           if (onPressed != null) const SizedBox(width: 15),
           if (onPressed != null)
             BTN.fill_gray_100_i_s(
@@ -814,6 +865,27 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
               onChanged?.call(v);
             },
             isActive: isActive,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _slideRow(String name, double value, bool isActive, {void Function(double)? onChanged}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(name, style: titleStyle),
+          CretaExSlider(
+            valueType: SliderValueType.normal,
+            value: value,
+            min: 0,
+            max: 100,
+            onChannged: (v) {
+              onChanged?.call(v);
+            },
           ),
         ],
       ),

@@ -248,3 +248,5 @@ flutter pub upgrade creta_user_io
 flutter pub upgrade creta_studio_io
 
 
+############################
+**** flutter pub outdated  를 이용해서 dependency 를 맞춰볼 수 있다.

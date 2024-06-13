@@ -73,6 +73,11 @@
     "NewEnterpriseCreated" : "次のように新しいエンタープライズが作成されました。",
     "changePassword" : "次のように新しいエンタープライズが作成されました。",
 
+    "licenseSetting" : "ライセンス設定",
+    "mute" : "ミュート",
+    "soundVolume" : "音量",
+
+
    "end"  : "End"
 
 

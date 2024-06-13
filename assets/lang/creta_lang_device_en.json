@@ -73,6 +73,11 @@
     "NewEnterpriseCreated" : "A new enterprise has been created as follows",
     "changePassword" : "Please log in again as the above user and change your password before using.",
 
+    "licenseSetting" : "License Setting",
+    "mute" : "Mute",
+    "soundVolume" : "Sound Volume",
+
+
      "end"  : "End"
 
 }

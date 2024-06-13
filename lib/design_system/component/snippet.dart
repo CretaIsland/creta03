@@ -155,25 +155,27 @@ class Snippet {
     );
 
     return Scaffold(
-        // no appBar any more
-        //appBar: Snippet.CretaAppBarOfStudio(context, title, additionals, invalidate: invalidate),
-        //appBar: Snippet.CretaAppBarOfMyPage(context, Text('title')),
-        floatingActionButton:
-            CretaVars.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        //body: child,
-        body: noVerticalVar
-            ? StudioVariables.isHandToolMode == false
-                ? handToolMode
-                : child
-            : Row(
-                children: [
-                  VerticalAppBar(
-                      key: GlobalObjectKey('VerticalAppBar'),
-                      onFoldButtonPressed: onFoldButtonPressed),
-                  StudioVariables.isHandToolMode == false ? handToolMode : child,
-                ],
-              ));
+      // no appBar any more
+      //appBar: Snippet.CretaAppBarOfStudio(context, title, additionals, invalidate: invalidate),
+      //appBar: Snippet.CretaAppBarOfMyPage(context, Text('title')),
+      floatingActionButton: CretaVars.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      //body: child,
+      //drawer: drawer(context),
+
+      body: noVerticalVar
+          ? StudioVariables.isHandToolMode == false
+              ? handToolMode
+              : child
+          : Row(
+              children: [
+                VerticalAppBar(
+                    key: GlobalObjectKey('VerticalAppBar'),
+                    onFoldButtonPressed: onFoldButtonPressed),
+                StudioVariables.isHandToolMode == false ? handToolMode : child,
+              ],
+            ),
+    );
   }
 
   static Widget CretaScaffoldOfCommunity({
@@ -197,6 +199,7 @@ class Snippet {
       //   getBuildContext: getBuildContext,
       // ),
       //appBar: Snippet.CretaAppBarOfMyPage(context, Text('title')),
+      //drawer: drawer(context),
       floatingActionButton: CretaVars.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
       body:
           // GestureDetector(
@@ -1200,6 +1203,54 @@ class Snippet {
     return Image.asset('no_image_available.png', fit: BoxFit.fill);
   }
 
+  static Widget drawer(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.blue,
+            ),
+            child: Text(
+              'Drawer Header',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+              ),
+            ),
+          ),
+          ExpansionTile(
+            leading: Icon(Icons.dashboard),
+            title: Text('Dashboard'),
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.horizontal_rule),
+                title: Text('Submenu 1'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.horizontal_rule),
+                title: Text('Submenu 2'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+          ListTile(
+            leading: Icon(Icons.settings),
+            title: Text('Settings'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
   // static bool langChanged(LanguageType language) {
   //   if (oldLanguage != language) {
   //     oldLanguage = language;
