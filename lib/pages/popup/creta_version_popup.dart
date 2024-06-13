@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:hycop/hycop.dart';
 
+import '../../design_system/component/snippet.dart';
+
 class CretaVersionPopUp extends StatefulWidget {
   const CretaVersionPopUp({super.key});
 
@@ -42,11 +44,12 @@ class _CretaVersionPopUpState extends State<CretaVersionPopUp> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "Version ${IntroPage.cretaVersionList.first} (hycop ${IntroPage.hycopVersion}) \nbuild ${IntroPage.buildNumber}",
-                    style: CretaFont.bodySmall
-                        .copyWith(fontWeight: FontWeight.w500, color: CretaColor.text.shade700),
-                  ),
+                  Snippet.versionInfo(),
+                  // Text(
+                  //   "Version ${IntroPage.cretaVersionList.first} (hycop ${IntroPage.hycopVersion}) \nbuild ${IntroPage.buildNumber}",
+                  //   style: CretaFont.bodySmall
+                  //       .copyWith(fontWeight: FontWeight.w500, color: CretaColor.text.shade700),
+                  // ),
                   IconButton(
                       iconSize: 16,
                       icon:

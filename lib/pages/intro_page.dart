@@ -34,7 +34,7 @@ class IntroPage extends StatefulWidget {
     "0.6.30",
   ];
   static const String hycopVersion = "0.4.43";
-  static final String buildNumber = "20240613-21(${HycopFactory.toServerTypeString()})";
+  static final String buildNumber = "20240613-23(${HycopFactory.toServerTypeString()})";
 
   @override
   State<IntroPage> createState() => _IntroPageState();

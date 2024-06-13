@@ -30,6 +30,7 @@ import '../../lang/creta_commu_lang.dart';
 import '../../lang/creta_device_lang.dart';
 import '../../lang/creta_mypage_lang.dart';
 import '../../lang/creta_studio_lang.dart';
+import '../../pages/intro_page.dart';
 import '../../pages/studio/book_main_page.dart';
 import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_variables.dart';
@@ -1258,4 +1259,12 @@ class Snippet {
   //   }
   //   return false;
   // }
+
+  static Widget versionInfo() {
+    return Text(
+      "Version ${IntroPage.cretaVersionList.first} (hycop ${IntroPage.hycopVersion}) \nbuild ${IntroPage.buildNumber}",
+      style: CretaFont.bodySmall
+          .copyWith(fontWeight: FontWeight.w500, color: CretaColor.text.shade700),
+    );
+  }
 }

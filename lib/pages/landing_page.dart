@@ -33,6 +33,7 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   // screen vertical scroll controller
   final ScrollController _verticalScroller = ScrollController();
+  final ScrollController _horizontalController = ScrollController();
 
   // screen width
   double? _screenWidth;
@@ -237,6 +238,7 @@ class _LandingPageState extends State<LandingPage> {
     super.dispose();
 
     _verticalScroller.dispose();
+    _horizontalController.dispose();
     presentationAnimationController.dispose();
     communityAnimationController.dispose();
     signageAnimationController.dispose();
@@ -247,10 +249,12 @@ class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     _screenWidth = _screenWidth == null
-        ? 1600
+        ? (275 + 10) * 5 + (60 + 40) * 2
         : _screenWidth! < MediaQuery.sizeOf(context).width
             ? MediaQuery.sizeOf(context).width
             : _screenWidth;
+
+    //_screenWidth = _screenWidth == null ? 1600 : MediaQuery.sizeOf(context).width;
 
     return FutureBuilder<bool>(
         future: isLangInit,
@@ -274,39 +278,48 @@ class _LandingPageState extends State<LandingPage> {
               backgroundColor: Colors.white,
               body: MediaQuery.sizeOf(context).height < 140
                   ? const SizedBox.shrink()
-                  : SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Column(
-                        children: [
-                          appBar(),
-                          SizedBox(
-                            width: _screenWidth,
-                            height: MediaQuery.sizeOf(context).height - 117,
-                            child: SingleChildScrollView(
-                              controller: _verticalScroller,
-                              child: Column(
-                                children: [
-                                  mainBanner(),
-                                  const SizedBox(height: 14),
-                                  exploreSection(),
-                                  const SizedBox(height: 238),
-                                  experienceSection(),
-                                  const SizedBox(height: 183),
-                                  promotionSection(),
-                                  const SizedBox(height: 195),
-                                  guideSection(),
-                                  const SizedBox(height: 217),
-                                  solutionSection(),
-                                  const SizedBox(height: 258),
-                                  quickStartSection(),
-                                  const SizedBox(height: 200),
-                                  footer()
-                                ],
-                              ),
-                            ),
-                          )
-                        ],
-                      )),
+                  : LayoutBuilder(builder: (context, constraints) {
+                      print('------------layoutBuilder ${MediaQuery.sizeOf(context).width}');
+                      return Scrollbar(
+                        thumbVisibility: true,
+                        controller: _horizontalController,
+                        child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            controller: _horizontalController,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                appBar(),
+                                SizedBox(
+                                  width: _screenWidth,
+                                  height: MediaQuery.sizeOf(context).height - 117,
+                                  child: SingleChildScrollView(
+                                    controller: _verticalScroller,
+                                    child: Column(
+                                      children: [
+                                        mainBanner(),
+                                        const SizedBox(height: 14),
+                                        exploreSection(),
+                                        const SizedBox(height: 238),
+                                        experienceSection(),
+                                        const SizedBox(height: 183),
+                                        promotionSection(),
+                                        const SizedBox(height: 195),
+                                        guideSection(),
+                                        const SizedBox(height: 217),
+                                        solutionSection(),
+                                        const SizedBox(height: 258),
+                                        quickStartSection(),
+                                        const SizedBox(height: 200),
+                                        footer()
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              ],
+                            )),
+                      );
+                    }),
             );
           }
           return const SizedBox.shrink();
@@ -571,9 +584,10 @@ class _LandingPageState extends State<LandingPage> {
     int currentPage = 0;
 
     return SizedBox(
-      width: 1715,
+      width: _screenWidth,
       height: 407,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
             width: 841,
@@ -641,7 +655,7 @@ class _LandingPageState extends State<LandingPage> {
           ),
           const SizedBox(height: 52),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               searchCretaBooks.isNotEmpty
                   ? customButton(
@@ -664,41 +678,53 @@ class _LandingPageState extends State<LandingPage> {
                         }
                       })
                   : const SizedBox.shrink(),
+              const SizedBox(width: 40),
               SizedBox(
-                width: 1530,
+                width: (275 + 10) * 5,
                 height: 231,
-                child: PageView.builder(
-                  key: _searchResultPageKey,
-                  controller: resultPageController,
-                  itemCount: (searchCretaBooks.length / 5).ceil(),
-                  itemBuilder: (context, index) {
-                    int endIndex = (index * 5) + 5 <= searchCretaBooks.length
-                        ? (index * 5) + 5
-                        : searchCretaBooks.length;
-                    List<Widget> searchResults = [];
-                    for (var cretaBook in searchCretaBooks.sublist(index * 5, endIndex)) {
-                      searchResults.add(InkWell(
-                        onTap: () => Routemaster.of(context)
-                            .push("${AppRoutes.communityBook}?${cretaBook.mid}"),
-                        child: Container(
-                            width: 290,
-                            height: 231,
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
-                            child: Image.network(
-                              cretaBook.thumbnailUrl.value,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Image.asset("assets/creta_logo_blue.png", fit: BoxFit.cover);
-                              },
-                            )),
-                      ));
-                      searchResults.add(const SizedBox(width: 20));
-                    }
-                    searchResults.removeLast();
+                child: Center(
+                  child: PageView.builder(
+                    key: _searchResultPageKey,
+                    controller: resultPageController,
+                    itemCount: (searchCretaBooks.length / 5).ceil(),
+                    itemBuilder: (context, index) {
+                      int endIndex = (index * 5) + 5 <= searchCretaBooks.length
+                          ? (index * 5) + 5
+                          : searchCretaBooks.length;
+                      List<Widget> searchResults = [];
+                      for (var cretaBook in searchCretaBooks.sublist(index * 5, endIndex)) {
+                        searchResults.add(InkWell(
+                          onTap: () => Routemaster.of(context)
+                              .push("${AppRoutes.communityBook}?${cretaBook.mid}"),
+                          child: Container(
+                              width: 275,
+                              height: 231,
+                              decoration: BoxDecoration(
+                                  color: Colors.yellow, borderRadius: BorderRadius.circular(20)),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.network(
+                                  cretaBook.thumbnailUrl.value,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset("assets/creta_logo_blue.png",
+                                        fit: BoxFit.cover);
+                                  },
+                                ),
+                              )),
+                        ));
+                        searchResults.add(const SizedBox(width: 10));
+                      }
+                      searchResults.removeLast();
 
-                    return Row(children: searchResults);
-                  },
+                      return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: searchResults);
+                    },
+                  ),
                 ),
               ),
+              const SizedBox(width: 40),
               searchCretaBooks.length > 5
                   ? customButton(
                       width: 60,
@@ -1432,100 +1458,115 @@ class _LandingPageState extends State<LandingPage> {
         .copyWith(fontWeight: FontWeight.w400, fontSize: 16, color: Colors.white);
     return Container(
         width: _screenWidth,
-        height: 280,
+        height: 290,
         color: Colors.black,
         child: Center(
           child: SizedBox(
               width: 1360,
               height: 127,
-              child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  const Padding(
-                    padding: EdgeInsets.only(left: 20.0),
-                    child: Image(
-                      image: AssetImage("assets/creta_logo_blue.png"),
-                      width: 136,
-                      height: 40,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 219,
-                    height: 48,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        AccountManager.currentLoginUser.isLoginedUser
-                            ? customButton(
-                                width: 52,
-                                height: 19,
-                                child: Text("Logout", style: footerBTNStyle),
-                                backgroundColor: Colors.black,
-                                onTap: () {
-                                  setState(() {
-                                    CretaAccountManager.logout();
-                                  });
-                                })
-                            : customButton(
-                                width: 40,
-                                height: 19,
-                                child: Text("Login", style: footerBTNStyle),
-                                backgroundColor: Colors.black,
-                                onTap: () => LoginDialog.popupDialog(
-                                    context: context, getBuildContext: getBuildContext)),
-                        customButton(
-                            width: 140,
-                            height: 48,
-                            child: Text("Sign up", style: footerBTNStyle),
-                            backgroundColor: Colors.black,
-                            onTap: () => LoginDialog.popupDialog(
-                                context: context,
-                                getBuildContext: getBuildContext,
-                                loginPageState: LoginPageState.singup),
-                            border: Border.all(color: Colors.white),
-                            borderRadius: BorderRadius.circular(6.6)),
-                      ],
-                    ),
-                  )
-                ]),
-                Padding(
-                  padding: const EdgeInsets.only(top: 24, bottom: 24),
-                  child: Container(width: 1360, height: 1, color: Colors.white),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                        width: 251,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(left: 20.0),
+                            child: Image(
+                              image: AssetImage("assets/creta_logo_blue.png"),
+                              width: 136,
+                              height: 40,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 30.0),
+                            child: Snippet.versionInfo(),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        width: 219,
+                        height: 48,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const SizedBox(width: 20),
+                            AccountManager.currentLoginUser.isLoginedUser
+                                ? customButton(
+                                    width: 52,
+                                    height: 19,
+                                    child: Text("Logout", style: footerBTNStyle),
+                                    backgroundColor: Colors.black,
+                                    onTap: () {
+                                      setState(() {
+                                        CretaAccountManager.logout();
+                                      });
+                                    })
+                                : customButton(
+                                    width: 52,
+                                    height: 19,
+                                    child: Text("Login", style: footerBTNStyle),
+                                    backgroundColor: Colors.black,
+                                    onTap: () => LoginDialog.popupDialog(
+                                        context: context, getBuildContext: getBuildContext)),
                             customButton(
-                                width: 56,
-                                height: 19,
-                                child: Text(CretaCommuLang['termsOfUse']!, //"이용약관",
-                                    style: CretaFont.bodyMedium.copyWith(color: Colors.white)),
+                                width: 140,
+                                height: 48,
+                                child: Text("Sign up", style: footerBTNStyle),
                                 backgroundColor: Colors.black,
-                                onTap: () {
-                                  Routemaster.of(context).push(AppRoutes.serviceTerms);
-                                }),
-                            customButton(
-                                width: 115,
-                                height: 19,
-                                child: Text(CretaCommuLang['privacyPolicy']!, // "개인정보처리방침",
-                                    style: CretaFont.bodyMedium.copyWith(color: Colors.white)),
-                                backgroundColor: Colors.black,
-                                onTap: () {
-                                  Routemaster.of(context).push(AppRoutes.privacyPolicy);
-                                })
+                                onTap: () => LoginDialog.popupDialog(
+                                    context: context,
+                                    getBuildContext: getBuildContext,
+                                    loginPageState: LoginPageState.singup),
+                                border: Border.all(color: Colors.white),
+                                borderRadius: BorderRadius.circular(6.6)),
                           ],
-                        )),
-                    Text("© 2024 SQISOFT All Rights Reserved",
-                        style: CretaFont.bodyESmall.copyWith(color: Colors.white.withOpacity(.2)))
-                  ],
-                )
-              ])),
+                        ),
+                      )
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24, bottom: 24),
+                    child: Container(width: 1360, height: 1, color: Colors.white),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                          width: 251,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const SizedBox(width: 20),
+                              customButton(
+                                  width: 66,
+                                  height: 19,
+                                  child: Text(CretaCommuLang['termsOfUse']!, //"이용약관",
+                                      style: CretaFont.bodyMedium.copyWith(color: Colors.white)),
+                                  backgroundColor: Colors.black,
+                                  onTap: () {
+                                    Routemaster.of(context).push(AppRoutes.serviceTerms);
+                                  }),
+                              customButton(
+                                  width: 115,
+                                  height: 19,
+                                  child: Text(CretaCommuLang['privacyPolicy']!, // "개인정보처리방침",
+                                      style: CretaFont.bodyMedium.copyWith(color: Colors.white)),
+                                  backgroundColor: Colors.black,
+                                  onTap: () {
+                                    Routemaster.of(context).push(AppRoutes.privacyPolicy);
+                                  })
+                            ],
+                          )),
+                      Text("© 2024 SQISOFT All Rights Reserved",
+                          style: CretaFont.bodyESmall.copyWith(color: Colors.white.withOpacity(.2)))
+                    ],
+                  )
+                ],
+              )),
         ));
   }
 }
