@@ -279,7 +279,7 @@ class _LandingPageState extends State<LandingPage> {
               body: MediaQuery.sizeOf(context).height < 140
                   ? const SizedBox.shrink()
                   : LayoutBuilder(builder: (context, constraints) {
-                      print('------------layoutBuilder ${MediaQuery.sizeOf(context).width}');
+                      //print('------------layoutBuilder ${MediaQuery.sizeOf(context).width}');
                       return Scrollbar(
                         thumbVisibility: true,
                         controller: _horizontalController,
