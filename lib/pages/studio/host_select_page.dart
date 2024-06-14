@@ -13,6 +13,7 @@ import 'package:routemaster/routemaster.dart';
 
 import '../../data_io/host_manager.dart';
 import '../../design_system/dialog/creta_alert_dialog.dart';
+import '../../design_system/text_field/creta_search_bar.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../model/enterprise_model.dart';
 import '../../model/host_model.dart';
@@ -27,6 +28,7 @@ class HostUtil {
   ) async {
     List<HostModel> selectedHosts = [];
     String message = '';
+    //String errMessage = '';
     await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -47,13 +49,19 @@ class HostUtil {
                 onSelected: (hostId, name) {
                   logger.fine('onSelected $hostId, $name');
                 },
-                searchText: '',
+                //searchText: '',
               ),
             ),
             okButtonText: CretaLang['apply'] ?? 'Apply',
 
             okButtonWidth: 110,
             onPressedOK: () async {
+              //errMessage = '';
+              if (selectedHosts.isEmpty) {
+                //errMessage = CretaStudioLang['selectDevice'] ?? 'Please select a device.';
+                return;
+              }
+
               for (var host in selectedHosts) {
                 host.requestedBook1Id = model.mid;
                 host.requestedBook1 = model.name.value;
@@ -65,11 +73,13 @@ class HostUtil {
               Navigator.of(context).pop();
             },
             onPressedCancel: () {
+              //errMessage = '';
               message = '';
               Navigator.of(context).pop();
             },
           );
         });
+
     if (message.isNotEmpty) {
       await showDialog(
           // ignore: use_build_context_synchronously
@@ -104,14 +114,14 @@ class HostUtil {
 
 class HostSelectPage extends StatefulWidget {
   final void Function(String hostId, String name)? onSelected;
-  final String searchText;
+  //final String searchText;
   final List<HostModel> selectedHosts;
   final HostManager hostManager;
 
   const HostSelectPage({
     super.key,
     this.onSelected,
-    required this.searchText,
+    //required this.searchText,
     required this.selectedHosts,
     required this.hostManager,
   });
@@ -123,7 +133,8 @@ class HostSelectPage extends StatefulWidget {
 class _HostSelectPageState extends State<HostSelectPage> {
   //HostManager? hostManagerHolder;
   bool _onceDBGetComplete = false;
-  //List<HostModel> selectedHosts = []; // List to keep track of selected hosts
+  List<AbsExModel> _filteredHosts = []; // List to keep track of selected hosts
+  bool isAllSelected = false;
 
   @override
   void initState() {
@@ -147,20 +158,22 @@ class _HostSelectPageState extends State<HostSelectPage> {
       String enterpriseName = enterpriseModel.name;
       widget.hostManager.sharedData(enterpriseName).then((value) {
         if (value.isNotEmpty) {
+          _filteredHosts = [...value];
           widget.hostManager.addRealTimeListen(value.first.mid);
         }
       });
     } else {
       widget.hostManager.myDataOnly(email).then((value) {
         if (value.isNotEmpty) {
+          _filteredHosts = [...value];
           widget.hostManager.addRealTimeListen(value.first.mid);
         }
       });
     }
 
-    if (widget.searchText.isNotEmpty) {
-      widget.hostManager.onSearch(widget.searchText, () {});
-    }
+    // if (widget.searchText.isNotEmpty) {
+    //   widget.hostManager.onSearch(widget.searchText, () {});
+    // }
 
     logger.fine('initState end');
   }
@@ -196,6 +209,7 @@ class _HostSelectPageState extends State<HostSelectPage> {
       //userId: AccountManager.currentLoginUser.email,
       consumerFunc: consumerFunc,
     );
+
     _onceDBGetComplete = true;
     return retval;
   }
@@ -206,50 +220,117 @@ class _HostSelectPageState extends State<HostSelectPage> {
     logger.finest('consumerFunc');
     return Consumer<HostManager>(builder: (context, hostManager, child) {
       logger.fine('Consumer  ${hostManager.getLength() + 1}');
-      return _listView(hostManager.modelList);
+      return _listView(_filteredHosts);
     });
   }
 
   Widget _listView(List<AbsExModel> hosts) {
-    if (hosts.isEmpty) {
-      return Center(
-        child: Text(CretaStudioLang['noDevcieAvailable']),
-      );
-    }
-    return ListView.builder(
-      itemCount: hosts.length,
-      itemBuilder: (context, index) {
-        HostModel host = hosts[index] as HostModel;
-        return ListTile(
-          title: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(host.hostId),
-              Text(host.description.isEmpty ? host.hostName : host.description),
-            ],
-          ),
-          subtitle: Text(host.creator),
-          trailing: Checkbox(
-            value: widget.selectedHosts.contains(host),
-            onChanged: (bool? value) {
-              setState(() {
-                if (value == true) {
-                  widget.selectedHosts.add(host);
-                } else {
-                  widget.selectedHosts.remove(host);
-                }
-              });
-            },
-          ),
-          onTap: () {
-            // Do something with the selected host
-            // For example, you might want to navigate to a detail page for the selected host
-            //widget.onSelected?.call(host.mid, host.hostId);
-            //Navigator.of(context).pop();
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        CretaSearchBar(
+          hintText: CretaLang['searchBar']!,
+          onSearch: (value) {
+            //print('widget.onSearch($value)');
+            setState(() {
+              _filteredHosts.clear();
+              _filteredHosts = widget.hostManager.modelList.where((ele) {
+                // 각 호스트의 attribute를 확인하여 "star" 문자열이 포함되어 있는지 검사
+                HostModel host = ele as HostModel;
+                return host.hostId.contains(value) ||
+                    host.description.contains(value) ||
+                    host.hostName.contains(value);
+              }).toList();
+            });
           },
-        );
-      },
+          width: 246,
+          height: 32,
+        ),
+        const Divider(),
+        CheckboxListTile(
+          title: const Text("Select All"),
+          value: isAllSelected,
+          onChanged: (bool? value) {
+            setState(() {
+              isAllSelected = value!;
+              if (isAllSelected) {
+                for (var host in hosts) {
+                  widget.selectedHosts.add(host as HostModel);
+                }
+              } else {
+                widget.selectedHosts.clear();
+              }
+            });
+          },
+        ),
+        SizedBox(
+          height: 344,
+          child: hosts.isEmpty
+              ? Center(
+                  child: Text(CretaStudioLang['noDevcieAvailable']),
+                )
+              : ListView.builder(
+                  itemCount: hosts.length, // + 1, // 헤더를 위해 +1
+                  itemBuilder: (context, index) {
+                    // if (index == 0) {
+                    //   // 헤더
+                    //   return CheckboxListTile(
+                    //     title: const Text("Select All"),
+                    //     value: isAllSelected,
+                    //     onChanged: (bool? value) {
+                    //       setState(() {
+                    //         isAllSelected = value!;
+                    //         if (isAllSelected) {
+                    //           for (var host in hosts) {
+                    //             widget.selectedHosts.add(host as HostModel);
+                    //           }
+                    //         } else {
+                    //           widget.selectedHosts.clear();
+                    //         }
+                    //       });
+                    //     },
+                    //   );
+                    // }
+                    // index -= 1; // 헤더를 고려하여 인덱스 조정
+
+                    HostModel host = hosts[index] as HostModel;
+                    return ListTile(
+                      title: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(host.hostId),
+                          Text(host.description.isEmpty ? host.hostName : host.description),
+                        ],
+                      ),
+                      subtitle: Text(host.creator),
+                      trailing: Checkbox(
+                        value: widget.selectedHosts.contains(host),
+                        onChanged: (bool? value) {
+                          setState(() {
+                            if (value == true) {
+                              widget.selectedHosts.add(host);
+                            } else {
+                              widget.selectedHosts.remove(host);
+                            }
+                          });
+                        },
+                      ),
+                      onTap: () {
+                        setState(() {
+                          if (widget.selectedHosts.contains(host) == true) {
+                            widget.selectedHosts.remove(host);
+                          } else {
+                            widget.selectedHosts.add(host);
+                          }
+                        });
+                      },
+                    );
+                  },
+                ),
+        ),
+      ],
     );
   }
 }

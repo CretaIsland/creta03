@@ -77,6 +77,8 @@
     "mute" : "ミュート",
     "soundVolume" : "音量",
 
+    "moveToDevice" : "デバイス管理ページに移動しますか?",
+    "selectDevice" : "デバイスを選択してください",
 
    "end"  : "End"
 

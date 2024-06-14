@@ -1,5 +1,6 @@
 import 'package:creta03/pages/studio/containees/page/top_menu_notifier.dart';
 import 'package:creta_common/common/creta_vars.dart';
+import 'package:creta_studio_model/model/frame_model.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
@@ -13,9 +14,7 @@ import '../../book_main_page.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../../studio_variables.dart';
-import '../containee_nofifier.dart';
 import '../frame/frame_play_mixin.dart';
-import 'package:creta_user_io/data_io/creta_manager.dart';
 
 class TopMenuTracer extends StatefulWidget {
   final FrameManager frameManager;
@@ -132,51 +131,30 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
     }
     _isBusy = true;
 
+    Offset center = Offset(
+      (CretaVars.defaultFrameSize().width / 2) * StudioVariables.applyScale,
+      (CretaVars.defaultFrameSize().height / 2) * StudioVariables.applyScale,
+    );
+    Offset pos = BookMainPage.bookManagerHolder!.positionInPage(
+      details.localPosition - center,
+      null,
+      applyStickerOffset: false,
+    );
+
     if (BookMainPage.topMenuNotifier!.isTextCreate()) {
-      // create text box here
-      //print('createTextBox');
       StudioVariables.isHandToolMode = false;
-      await createTextByClick(context, details.localPosition);
-      //await createTextByClick(context, _hoverPos!);
+      await frameManager!.createTextAndFrame(context, pos: pos);
+
       BookMainPage.topMenuNotifier?.clear(); // 커서의 모양을 되돌린다.
       BookMainPage.containeeNotifier!.setFrameClick(true); //  바탕페이지가 눌리는 것을 막기위해
-      _isBusy = false;
-      return;
     } else if (BookMainPage.topMenuNotifier!.isFrameCreate()) {
-      // create frame box here
-      //print('createFrame');
-      Offset center = Offset(
-        (CretaVars.defaultFrameSize().width / 2) * StudioVariables.applyScale,
-        (CretaVars.defaultFrameSize().height / 2) * StudioVariables.applyScale,
-      );
-      Offset pos = BookMainPage.bookManagerHolder!.positionInPage(
-        details.localPosition - center,
-        null,
-        applyStickerOffset: false,
-      );
-      //Offset pos = Offset(details.localPosition.dx - center.dx, details.localPosition.dy - center.dy);
-      frameManager!.createNextFrame(pos: pos, size: CretaVars.defaultFrameSize()).then((value) {
-        //print('start ==================================================');
+      StudioVariables.isHandToolMode = false;
 
-        frameManager?.setSelectedMid(value.mid, doNotify: true);
-        BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true);
-        CretaManager.frameSelectNotifier?.set(value.mid);
-
-        _sendEvent?.sendEvent(value);
-        BookMainPage.pageManagerHolder!.invalidateThumbnail(frameManager!.pageModel.mid);
-        //Future.delayed(const Duration(milliseconds: 200), () {
-        //print('miniMenu show');
-        BookMainPage.miniMenuNotifier?.set(true, doNoti: true);
-        //});
-
-        //print('end ==================================================');
-        _isBusy = false;
-        return null;
-      });
+      FrameModel frameModel =
+          await frameManager!.createNextFrame(pos: pos, size: CretaVars.defaultFrameSize());
+      frameManager!.afterCreateFrame(frameModel, sendEvent: _sendEvent);
 
       BookMainPage.topMenuNotifier?.clear();
-      _isBusy = false;
-      return; // 커서의 모양을 되돌린다.
     }
     _isBusy = false;
     return;

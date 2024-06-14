@@ -76,8 +76,9 @@
     "licenseSetting" : "License Setting",
     "mute" : "Mute",
     "soundVolume" : "Sound Volume",
-
-
-     "end"  : "End"
+    "moveToDevice" : "Would you like to go to the device management page ?",
+    "selectDevice" : "Please select a device.",
+    
+    "end"  : "End"
 
 }

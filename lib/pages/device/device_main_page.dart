@@ -1706,7 +1706,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       return;
     }
 
-    HostModel host = hostManagerHolder!.createSample(input.hostId, input.hostName);
+    HostModel host =
+        hostManagerHolder!.createSample(input.hostId, input.hostName, input.enterprise);
     await hostManagerHolder!.createNewHost(host);
     //StudioVariables.selectedhostMid = host.mid;
     // ignore: use_build_context_synchronously

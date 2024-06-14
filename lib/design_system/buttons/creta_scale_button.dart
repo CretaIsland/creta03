@@ -29,7 +29,23 @@ class CretaScaleButton extends StatefulWidget {
   final String? tooltip;
   final Widget? extended;
 
-  static List<double> scalePlot = [20, 40, 60, 80, 100, 125, 150, 200, 250, 300];
+  static List<double> scalePlot = [
+    20,
+    40,
+    60,
+    80,
+    100,
+    125,
+    150,
+    200,
+    250,
+    300,
+    400,
+    500,
+    600,
+    800,
+    1000
+  ];
 
   CretaScaleButton({
     super.key,

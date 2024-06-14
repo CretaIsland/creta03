@@ -77,6 +77,8 @@
     "licenseSetting" : "라이센스 설정",
     "mute" : "뮤트",
     "soundVolume" : "소리 음량",
+    "moveToDevice" : "디바이스 관리 페이지로 이동하시겠습니까?",
+    "selectDevice" : "먼저 디바이스를 선택하세요",
 
     "END" : ""
 }

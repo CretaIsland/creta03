@@ -44,8 +44,8 @@ class TreeNode extends StatefulWidget {
   /// The node object used to display the widget state
   final Node node;
   final int index;
-  final Widget Function(CretaModel model, int index) button1;
-  final Widget Function(CretaModel model) button2;
+  final Widget Function(CretaModel model, int index, String key) button1;
+  final Widget Function(CretaModel model, String key) button2;
 
   const TreeNode(
       {Key? key,
@@ -307,8 +307,8 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     final Widget buttons = Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        widget.button1(widget.node.data!, widget.index),
-        widget.button2(widget.node.data!),
+        widget.button1(widget.node.data!, widget.index, widget.node.key),
+        widget.button2(widget.node.data!, widget.node.key),
       ],
     );
 

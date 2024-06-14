@@ -108,6 +108,9 @@ mixin CretaTextMixin {
     // }
 
     double padding = StudioConst.defaultTextPadding * applyScale;
+    
+    // print(
+    //     '-----applyScale=$applyScale, padding=$padding, realSize=$realSize, isThumbnail=$isThumbnail');
 
     //print('playText ${model.autoSizeType.value}');
 
@@ -142,7 +145,8 @@ mixin CretaTextMixin {
         }
       }
     }
-    //print('AutoSizeType.autoFrameSize after isThumbnail=$isThumbnail, ${realSize.height}');
+    // print(
+    //     'AutoSizeType.autoFrameSize after isThumbnail=$isThumbnail, ${realSize.width},${realSize.height} ');
 
     return Container(
       color: Colors.transparent,

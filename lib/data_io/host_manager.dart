@@ -86,6 +86,7 @@ class HostManager extends CretaManager {
   HostModel createSample(
     String hostId,
     String hostName,
+    String enterprise,
   ) {
     final Random random = Random();
     int randomNumber = random.nextInt(100);
@@ -99,6 +100,7 @@ class HostManager extends CretaManager {
         pmid: '',
         hostId: hostId,
         hostName: hostName,
+        enterprise: enterprise,
         parent: TeamManager.getCurrentTeam!.name,
         hostType: ServiceType.fromInt(CretaVars.serviceType.index),
         creator: AccountManager.currentLoginUser.email,

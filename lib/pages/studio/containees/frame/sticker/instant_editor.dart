@@ -136,7 +136,7 @@ class InstantEditorState extends CretaState<InstantEditor> {
 
     //_padding = StudioConst.defaultTextPadding * StudioVariables.applyScale - (borderWidth * 2);
     _padding = StudioConst.defaultTextPadding * StudioVariables.applyScale;
-
+    
     _focusNode = FocusNode(
       onKeyEvent: (node, event) {
         //logger.severe('autoText focusNode ${event.logicalKey.debugName} pressed');

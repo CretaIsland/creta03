@@ -87,11 +87,14 @@ class TreeView extends InheritedWidget {
   /// a single or double tap._
   final bool supportParentDoubleTap;
 
-  final Widget Function(CretaModel model, int index) button1;
-  final Widget Function(CretaModel model) button2;
+  final Widget Function(CretaModel model, int index, String key) button1;
+  final Widget Function(CretaModel model, String key) button2;
+
+  final String selectedNode;
 
   TreeView({
     Key? key,
+    required this.selectedNode,
     required this.controller,
     this.onNodeTap,
     this.onNodeShiftTap,
@@ -111,6 +114,7 @@ class TreeView extends InheritedWidget {
         super(
           key: key,
           child: _TreeViewData(
+            selectedNode,
             controller,
             shrinkWrap: shrinkWrap,
             primary: primary,
@@ -310,14 +314,16 @@ class TreeView extends InheritedWidget {
 }
 
 class _TreeViewData extends StatefulWidget {
+  final String selectedNode;
   final TreeViewController _controller;
   final bool? shrinkWrap;
   final bool? primary;
   final ScrollPhysics? physics;
-  final Widget Function(CretaModel model, int index) button1;
-  final Widget Function(CretaModel model) button2;
+  final Widget Function(CretaModel model, int index, String key) button1;
+  final Widget Function(CretaModel model, String key) button2;
 
   const _TreeViewData(
+    this.selectedNode,
     this._controller, {
     this.shrinkWrap,
     this.primary,

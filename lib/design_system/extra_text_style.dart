@@ -79,6 +79,11 @@ class ExtraTextStyle {
     ExtraTextStyle._lastTextStyle ??= DefaultTextStyle.of(context)
         .style
         .copyWith(fontSize: CretaConst.defaultFontSize * StudioVariables.applyScale);
+
+    if (_lastTextStyle!.fontSize == null) {
+      _lastTextStyle = _lastTextStyle!
+          .copyWith(fontSize: CretaConst.defaultFontSize * StudioVariables.applyScale);
+    }
     return (_lastTextStyle!, _lastExtraTextStyle);
   }
 

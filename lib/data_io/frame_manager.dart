@@ -20,12 +20,16 @@ import 'package:creta_studio_model/model/contents_model.dart';
 import 'package:creta_common/model/creta_model.dart';
 import 'package:creta_studio_model/model/frame_model.dart';
 import 'package:creta_studio_model/model/page_model.dart';
+import '../design_system/extra_text_style.dart';
+import '../lang/creta_studio_lang.dart';
 import '../pages/studio/book_preview_menu.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
 //import '../pages/studio/containees/frame/sticker/stickerview.dart';
+import '../pages/studio/containees/frame/sticker/mini_menu.dart';
 import '../pages/studio/left_menu/left_menu_page.dart';
 import '../pages/studio/left_menu/music/music_player_frame.dart';
 import '../pages/studio/studio_constant.dart';
+import '../pages/studio/studio_getx_controller.dart';
 import '../pages/studio/studio_variables.dart';
 import '../player/creta_play_timer.dart';
 import 'book_manager.dart';
@@ -1277,5 +1281,70 @@ class FrameManager extends BaseFrameManager {
       ContentsManager contentsManager = ContentsManager(pageModel: page, frameModel: model);
       await contentsManager.updateParent(newModel, page, bookMid);
     }
+  }
+
+  void afterCreateFrame(FrameModel model, {FrameEventController? sendEvent}) {
+    setSelectedMid(model.mid, doNotify: true);
+    BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true);
+    CretaManager.frameSelectNotifier?.set(model.mid);
+
+    sendEvent?.sendEvent(model);
+    BookMainPage.pageManagerHolder!.invalidateThumbnail(pageModel.mid);
+    //Future.delayed(const Duration(milliseconds: 200), () {
+    //print('miniMenu show');
+    BookMainPage.miniMenuNotifier?.set(true, doNoti: true);
+  }
+
+  Future<void> createTextAndFrame(BuildContext context,
+      {Offset pos = Offset.zero, Size? size}) async {
+    //print('0------------------------------------------');
+
+    late TextStyle style;
+    ExtraTextStyle? extraStyle;
+    // ignore: use_build_context_synchronously
+    (style, extraStyle) = ExtraTextStyle.getLastTextStyle(context);
+
+    if (size == null) {
+      double height = (style.fontSize! / StudioVariables.applyScale) +
+          (StudioConst.defaultTextPadding * 2); // 모델상의 크기다. 실제 크기가 아니다.
+      double width = height * 7;
+      size = Size(width, height);
+    }
+    //Offset pos = CretaCommonUtils.positionInPage(details /*.localPosition*/, null);
+    // 커서의 크기가 있어서, 조금 빼주어야 텍스트 박스가 커서 위치에 맞게 나온다.
+    double posOffset = LayoutConst.topMenuCursorSize / StudioVariables.applyScale;
+    pos = Offset((pos.dx - posOffset > 0 ? pos.dx - posOffset : 0),
+        (pos.dy - posOffset > 0 ? pos.dy - posOffset : 0));
+
+    mychangeStack.startTrans();
+    //print('1------pos($pos), size($size)------------------------------------');
+    FrameModel frameModel = await createNextFrame(
+      pos: pos,
+      size: size,
+      bgColor1: Colors.transparent,
+      type: FrameType.text,
+    );
+    //print('2------------------------------------------');
+
+    afterCreateFrame(frameModel);
+    //print('3------------------------------------------');
+
+    ContentsModel model = ContentsModel.text(
+        frameModel.mid, frameModel.realTimeKey, CretaStudioLang['defaultText'] ?? 'Text',
+        remoteUrlVal: 'Sample Text',
+        applyScale: StudioVariables.applyScale,
+        style: style,
+        playTimeVal: -1,
+        autoSizeTypeVal: AutoSizeType.noAutoSize);
+    extraStyle?.setExtraTextStyle(model);
+    //print('4------------------------------------------');
+
+    // print(
+    //     'before createContents : frameModel.mid=${frameModel.mid}, ContentsModel.mid=${model.mid}, fontSize=${style.fontSize}');
+
+    ContentsManager.createContents(this, [model], frameModel, pageModel);
+    mychangeStack.endTrans();
+
+    MiniMenu.setShowFrame(false); //  프레임이 아닌 콘텐츠가 선택되도록 하기 위해.
   }
 }

@@ -242,6 +242,7 @@ class MyTreeViewState extends State<MyTreeView> {
     //print('build');
     return tree.TreeView(
       key: GlobalObjectKey('TreeView'),
+      selectedNode: _selectedNode,
       button1: _button1,
       button2: _button2,
       controller: _treeViewController,
@@ -539,8 +540,11 @@ class MyTreeViewState extends State<MyTreeView> {
   //   );
   // }
 
-  Widget _button1(CretaModel model, int index) {
+  Widget _button1(CretaModel model, int index, String key) {
     if (model is LinkModel) {
+      return SizedBox.shrink();
+    }
+    if (key != _selectedNode) {
       return SizedBox.shrink();
     }
     return BTN.fill_blue_i_m(
@@ -558,7 +562,11 @@ class MyTreeViewState extends State<MyTreeView> {
     );
   }
 
-  Widget _button2(CretaModel model) {
+  Widget _button2(CretaModel model, String key) {
+    if (key != _selectedNode) {
+      return SizedBox.shrink();
+    }
+
     return BTN.fill_blue_i_m(
       fgColor: CretaColor.text[700]!,
       buttonColor: CretaButtonColor.forTree,

@@ -9,25 +9,23 @@
 
 // import '../../../../data_io/contents_manager.dart';
 import 'package:creta_common/common/creta_const.dart';
-import 'package:creta03/pages/studio/containees/frame/sticker/mini_menu.dart';
 import 'package:creta03/pages/studio/left_menu/clock/count_down_timer.dart';
 import 'package:creta03/pages/studio/left_menu/currency_exchange/rate_result.dart';
 import 'package:creta03/pages/studio/left_menu/daily_english/daily_word/word_page.dart';
 import 'package:creta03/pages/studio/left_menu/daily_english/quote_page.dart';
 import 'package:creta03/pages/studio/left_menu/date_time/date_time_type.dart';
+import 'package:creta_common/common/creta_vars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_weather_bg_null_safety/bg/weather_bg.dart';
 import 'package:flutter_weather_bg_null_safety/utils/weather_type.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
-import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:weather_animation/weather_animation.dart';
 
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/component/clock/analog_clock.dart';
 import '../../../../design_system/component/clock/digital_clock.dart';
-import '../../../../design_system/extra_text_style.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_studio_model/model/contents_model.dart';
@@ -47,7 +45,6 @@ import '../../left_menu/timeline/delivery_timeline.dart';
 import '../../left_menu/timeline/weather_timeline.dart';
 import '../../left_menu/weather/weather_base.dart';
 import '../../left_menu/weather/weather_sticker_elements.dart';
-import '../../studio_constant.dart';
 import '../../studio_variables.dart';
 // import 'package:creta_studio_model/model/contents_model.dart';
 // import 'package:creta_studio_model/model/frame_model.dart';
@@ -270,7 +267,7 @@ mixin FramePlayMixin {
       return Container(
         width: width,
         height: height,
-        padding: EdgeInsets.all(isThumbnail ? 2 : StudioConst.defaultTextPadding),
+        padding: EdgeInsets.all(isThumbnail ? 2 : 4),
         alignment: contentsModel != null
             ? bothSideAlign(contentsModel.align.value, contentsModel.valign.value)
             : Alignment.center,
@@ -455,33 +452,43 @@ mixin FramePlayMixin {
   //   return const CretaMapWidget();
   // }
 
-  Future<ContentsModel> _defaultTextModel(
-    String frameMid,
-    String bookMid, {
-    FontSizeType fontSizeType = FontSizeType.userDefine,
-    String? remoteUrl,
-    String? name,
-  }) async {
-    remoteUrl ??= CretaStudioLang['defaultText']!;
-    name ??= CretaStudioLang['defaultText']!;
+  // Future<ContentsModel> _defaultTextModel(
+  //   String frameMid,
+  //   String bookMid, {
+  //   FontSizeType fontSizeType = FontSizeType.userDefine,
+  //   String? remoteUrl,
+  //   String? name,
+  // }) async {
+  //   remoteUrl ??= CretaStudioLang['defaultText']!;
+  //   name ??= CretaStudioLang['defaultText']!;
 
-    ContentsModel retval = ContentsModel.withFrame(parent: frameMid, bookMid: bookMid);
-    retval.contentsType = ContentsType.text;
-    retval.name = name!;
-    retval.remoteUrl = remoteUrl;
-    retval.fontSizeType.set(fontSizeType, noUndo: true, save: false);
-    return retval;
-  }
+  //   ContentsModel retval = ContentsModel.withFrame(parent: frameMid, bookMid: bookMid);
+  //   retval.contentsType = ContentsType.text;
+  //   retval.name = name!;
+  //   retval.remoteUrl = remoteUrl;
+  //   retval.fontSizeType.set(fontSizeType, noUndo: true, save: false);
+  //   return retval;
+  // }
 
   Future<void> createText(double widthRatio, double fontSize, FontSizeType fontSizeType) async {
     PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
     if (pageModel == null) return;
 
-    //페이지폭의 80% 로 만든다. 세로는 가로의 1/6 이다.
-    double width = pageModel.width.value * widthRatio;
-    double height = width / 6;
-    double x = (pageModel.width.value - width) / 2;
-    double y = (pageModel.height.value - height) / 2;
+    double width = 0;
+    double height = 0;
+    double x = 0;
+    double y = 0;
+    if (CretaVars.serviceType == ServiceType.barricade) {
+      Size size = CretaVars.defaultFrameSize();
+      width = size.width;
+      height = size.height;
+    } else {
+      //페이지폭의 80% 로 만든다. 세로는 가로의 1/6 이다.
+      width = pageModel.width.value * widthRatio;
+      height = width / 6;
+      x = (pageModel.width.value - width) / 2;
+      y = (pageModel.height.value - height) / 2;
+    }
 
     mychangeStack.startTrans();
     FrameModel frameModel = await _frameManager!.createNextFrame(
@@ -491,8 +498,13 @@ mixin FramePlayMixin {
       bgColor1: Colors.transparent,
       type: FrameType.text,
     );
-    ContentsModel model =
-        await _defaultTextModel(frameModel.mid, frameModel.realTimeKey, fontSizeType: fontSizeType);
+    ContentsModel model = ContentsModel.text(
+      frameModel.mid,
+      frameModel.realTimeKey,
+      CretaStudioLang['defaultText'] ?? 'Text',
+      fontSizeTypeVal: fontSizeType,
+    );
+    //await _defaultTextModel(frameModel.mid, frameModel.realTimeKey, fontSizeType: fontSizeType);
     model.setTextStyleProperty(
       applyScale: StudioVariables.applyScale,
       fontSize: fontSize,
@@ -508,65 +520,88 @@ mixin FramePlayMixin {
 
   //Future<void> createTextByClick(BuildContext context, LongPressDownDetails details) async {
   Future<void> createTextByClick(BuildContext context, Offset details) async {
-    PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
-    if (pageModel == null) return;
+    // PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+    // if (pageModel == null) return;
 
-    late TextStyle style;
-    ExtraTextStyle? extraStyle;
-    (style, extraStyle) = ExtraTextStyle.getLastTextStyle(context);
-    double fontSize = CretaConst.defaultFontSize * StudioVariables.applyScale;
-    if (style.fontSize != null) {
-      //print('use style.fontSize=${style.fontSize}');
-      fontSize = style.fontSize!;
-    } else {
-      style = style.copyWith(fontSize: fontSize);
-      ExtraTextStyle.setLastTextStyle(style, null);
-    }
-    double height = (fontSize / StudioVariables.applyScale) +
-        (StudioConst.defaultTextPadding * 2); // 모델상의 크기다. 실제 크기가 아니다.
-    double width = height * 7;
-    //print('localPostion= ${details.localPosition}, width= $width');
     Offset pos = BookMainPage.bookManagerHolder!.positionInPage(
       details,
       null,
     );
-    //Offset pos = CretaCommonUtils.positionInPage(details /*.localPosition*/, null);
-    // 커서의 크기가 있어서, 조금 빼주어야 텍스트 박스가 커서 위치에 맞게 나온다.
-    double posOffset = LayoutConst.topMenuCursorSize / StudioVariables.applyScale;
-    pos = Offset((pos.dx - posOffset > 0 ? pos.dx - posOffset : 0),
-        (pos.dy - posOffset > 0 ? pos.dy - posOffset : 0));
+
+    _frameManager!.createTextAndFrame(context, pos: pos);
+
+    // late TextStyle style;
+    // ExtraTextStyle? extraStyle;
+    // (style, extraStyle) = ExtraTextStyle.getLastTextStyle(context);
+    // //double fontSize = CretaConst.defaultFontSize * StudioVariables.applyScale;
+    // //double fontSize = CretaConst.defaultFontSize;
+
+    // // if (style.fontSize != null) {
+    // //   //print('use style.fontSize=${style.fontSize}');
+    // //   fontSize = style.fontSize!;
+    // // } else {
+    // //   style = style.copyWith(fontSize: fontSize);
+    // //   ExtraTextStyle.setLastTextStyle(style, null);
+    // // }
+    // double height = (style.fontSize! / StudioVariables.applyScale) +
+    //     (StudioConst.defaultTextPadding * 2); // 모델상의 크기다. 실제 크기가 아니다.
+    // double width = height * 7;
+    // //print('localPostion= ${details.localPosition}, width= $width');
+    // Offset pos = BookMainPage.bookManagerHolder!.positionInPage(
+    //   details,
+    //   null,
+    // );
+    // //Offset pos = CretaCommonUtils.positionInPage(details /*.localPosition*/, null);
+    // // 커서의 크기가 있어서, 조금 빼주어야 텍스트 박스가 커서 위치에 맞게 나온다.
+    // double posOffset = LayoutConst.topMenuCursorSize / StudioVariables.applyScale;
+    // pos = Offset((pos.dx - posOffset > 0 ? pos.dx - posOffset : 0),
+    //     (pos.dy - posOffset > 0 ? pos.dy - posOffset : 0));
+
+    //   await _frameManager!.createTextAndFrame(context, pos:pos, size: Size(width, height));
 
     //print('position in page= (${pos.dx}, ${pos.dy})');
 
-    mychangeStack.startTrans();
-    FrameModel frameModel = await _frameManager!.createNextFrame(
-      doNotify: false,
-      size: Size(width, height),
-      pos: pos,
-      bgColor1: Colors.transparent,
-      type: FrameType.text,
-    );
-    frameModel.setIsEditMode(true); // 바로 Editor 모드로 들어가도록 한다.
-    //print('style.fontSize = ${style.fontSize!}');
-    ContentsModel model = await _defaultTextModel(
-      frameModel.mid,
-      frameModel.realTimeKey,
-      name: 'Text',
-      remoteUrl: 'Sample Text',
-    );
-    model.setTextStyle(style, StudioVariables.applyScale);
-    extraStyle?.setExtraTextStyle(model);
+    // mychangeStack.startTrans();
+    // FrameModel frameModel = await _frameManager!.createNextFrame(
+    //   doNotify: false,
+    //   size: Size(width, height),
+    //   pos: pos,
+    //   bgColor1: Colors.transparent,
+    //   type: FrameType.text,
+    // );
+    // frameModel.setIsEditMode(true); // 바로 Editor 모드로 들어가도록 한다.
+    // //print('style.fontSize = ${style.fontSize!}');
+    // ContentsModel model = ContentsModel.text(
+    //   frameModel.mid,
+    //   frameModel.realTimeKey,
+    //   CretaStudioLang['defaultText'] ?? 'Text',
+    //   remoteUrlVal: 'Sample Text',
+    //   applyScale: StudioVariables.applyScale,
+    //   style: style,
+    //   playTimeVal: -1,
+    //   autoSizeTypeVal: AutoSizeType.noAutoSize
+    // );
+    // // await _defaultTextModel(
+    // //   frameModel.mid,
+    // //   frameModel.realTimeKey,
+    // //   name: 'Text',
+    // //   remoteUrl: 'Sample Text',
+    // // );
+    // //model.setTextStyle(style, StudioVariables.applyScale);
+    // extraStyle?.setExtraTextStyle(model);
 
-    model.autoSizeType.set(AutoSizeType.autoFrameSize); // 가로 세로 모두 늘어나는 모드
-    //print('createTextByClieck');
-    model.playTime.set(-1);
+    // //model.autoSizeType.set(AutoSizeType.noAutoSize); // 가로 세로 모두 늘어나는 모드
+    // //print('createTextByClieck');
+    // //model.playTime.set(-1);
 
-    await createNewFrameAndContents(
-      [model],
-      pageModel,
-      frameModel: frameModel,
-    );
-    MiniMenu.setShowFrame(false); //  프레임이 아닌 콘텐츠가 선택되도록 하기 위해.
+    //  await ContentsManager.createContents(_frameManager, [model], frameModel, pageModel);
+    // // mychangeStack.endTrans();
+    // // await createNewFrameAndContents(
+    // //   [model],
+    // //   pageModel,
+    // //   frameModel: frameModel,
+    // // );
+    // MiniMenu.setShowFrame(false); //  프레임이 아닌 콘텐츠가 선택되도록 하기 위해.
   }
 
   // Future<Widget> cameraFrame(FrameModel model) async {

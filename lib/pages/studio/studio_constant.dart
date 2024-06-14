@@ -119,7 +119,7 @@ class StudioConst {
   // static const double minFontSize = stepGranularity * 5;
   // static const double maxFontSize = 512;
   // static const double defaultFontSize = 64.0;
-  static const double defaultTextPadding = 14.0;
+  static const double defaultTextPadding = 0.0; // 패딩을 줄 필요가 없어서 0 수정함.
   static const double pageControlHeight = 32.0;
 
   static const Duration snackBarDuration = Duration(seconds: 3);

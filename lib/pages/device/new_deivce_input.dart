@@ -1,4 +1,7 @@
+import 'package:creta_common/common/creta_color.dart';
+import 'package:creta_common/common/creta_font.dart';
 import 'package:flutter/material.dart';
+import 'package:hycop/hycop/account/account_manager.dart';
 
 import '../../data_io/host_manager.dart';
 import '../../lang/creta_device_lang.dart';
@@ -22,6 +25,8 @@ class NewDeviceInput extends StatefulWidget {
 
 class NewDeviceInputState extends State<NewDeviceInput> {
   late HostManager dummyHostManager;
+  TextStyle titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);
+  TextStyle dataStyle = CretaFont.bodySmall;
 
   @override
   void initState() {
@@ -33,45 +38,53 @@ class NewDeviceInputState extends State<NewDeviceInput> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 300,
+      height: 340,
       width: 400,
       child: Form(
         key: widget.data.formKey,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
+                Text(CretaDeviceLang['enterpriseName']!),
+                Container(
+                  width: 240,
+                  padding: const EdgeInsets.all(8.0),
+                  child: AccountManager.currentLoginUser.isSuperUser()
+                      ? TextFormField(
+                          initialValue: widget.data.enterprise,
+                          onChanged: (value) => widget.data.enterprise = value,
+                          decoration: InputDecoration(hintText: CretaDeviceLang['enterpriseName']!),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return CretaDeviceLang['shouldInputEntterpriseName']!;
+                            }
+                            return null;
+                          },
+                        )
+                      : Text(widget.data.enterprise, style: dataStyle),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: 240,
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
-                    initialValue: widget.data.enterprise,
-                    onChanged: (value) => widget.data.enterprise = value,
-                    decoration: InputDecoration(hintText: CretaDeviceLang['enterpriseName']!),
+                    initialValue: widget.data.hostId,
+                    onChanged: (value) => widget.data.hostId = value,
+                    decoration: InputDecoration(hintText: CretaDeviceLang['deviceId']!),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return CretaDeviceLang['shouldInputEntterpriseName']!;
+                        return CretaDeviceLang['shouldInputDeviceId']!;
                       }
                       return null;
                     },
-                  ),
-                ),
-                SizedBox(
-                  width: 240,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      initialValue: widget.data.hostId,
-                      onChanged: (value) => widget.data.hostId = value,
-                      decoration: InputDecoration(hintText: CretaDeviceLang['deviceId']!),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return CretaDeviceLang['shouldInputDeviceId']!;
-                        }
-                        return null;
-                      },
-                    ),
                   ),
                 ),
                 TextButton(

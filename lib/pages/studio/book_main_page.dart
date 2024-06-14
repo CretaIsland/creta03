@@ -5,6 +5,8 @@
 import 'dart:async';
 
 import 'package:creta03/no_authority.dart';
+import 'package:creta_common/common/creta_vars.dart';
+import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_user_io/data_io/user_property_manager.dart';
 //import 'package:creta_common/common/creta_vars.dart';
 import 'package:flutter/foundation.dart';
@@ -1335,13 +1337,39 @@ class _BookMainPageState extends State<BookMainPage> {
       onTextCreate: () {
         setState(() {
           // Create Text Box
-          BookMainPage.topMenuNotifier?.set(ClickToCreateEnum.textCreate);
+          if (CretaVars.serviceType == ServiceType.barricade) {
+            // 바리케이트 타입의 경우, TextBox 을 막바로 생성한다.
+            FrameManager? frameManager = BookMainPage.pageManagerHolder?.getSelectedFrameManager();
+            if (frameManager == null) return;
+            frameManager.createTextAndFrame(context,
+                pos: Offset.zero, size: CretaVars.defaultFrameSize());
+          } else {
+            BookMainPage.topMenuNotifier?.set(ClickToCreateEnum.textCreate);
+          }
         });
       },
       onFrameCreate: () {
         setState(() {
           // Create Frame Box
-          BookMainPage.topMenuNotifier?.set(ClickToCreateEnum.frameCreate);
+          if (CretaVars.serviceType == ServiceType.barricade) {
+            // 바리케이트 타입의 경우, frame 을 막바로 생성한다.
+            FrameManager? frameManager = BookMainPage.pageManagerHolder?.getSelectedFrameManager();
+            if (frameManager != null) {
+              frameManager
+                  .createNextFrame(
+                pos: Offset.zero,
+                size: CretaVars.defaultFrameSize(),
+                bgColor1: Colors.amberAccent,
+              )
+                  .then((value) {
+                frameManager.afterCreateFrame(value);
+
+                return null;
+              });
+            }
+          } else {
+            BookMainPage.topMenuNotifier?.set(ClickToCreateEnum.frameCreate);
+          }
         });
       },
     );
