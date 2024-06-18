@@ -1568,6 +1568,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
             margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
             color: Colors.white,
             child: DeviceDetailPage(
+              dialogSize : Size(width, height), 
               formKey: formKey,
               hostModel: newOne,
               isMultiSelected: isMultiSelected,

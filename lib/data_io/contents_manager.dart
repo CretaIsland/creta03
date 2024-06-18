@@ -239,7 +239,6 @@ class ContentsManager extends BaseContentsManager {
   }
 
   Future<ContentsModel> _createNextContents(ContentsModel model, bool doNotify) async {
-    //print('_createNextContents(${model.mid})---------------------------');
 
     await createToDB(model);
     insert(model, postion: getLength(), doNotify: doNotify);

@@ -8,6 +8,9 @@ import 'package:creta_studio_model/model/book_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 import 'package:intl/intl.dart';
+import 'package:tcard/tcard.dart';
+
+import '../../data_io/scrshot_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_ex_slider.dart';
 import '../../design_system/buttons/creta_toggle_button.dart';
@@ -17,6 +20,7 @@ import '../../lang/creta_device_lang.dart';
 import '../../model/enterprise_model.dart';
 import '../../model/host_model.dart';
 import '../../common/creta_utils.dart';
+import '../../model/scrshot_model.dart';
 import '../login/creta_account_manager.dart';
 import 'book_select_filter.dart';
 
@@ -25,11 +29,13 @@ class DeviceDetailPage extends StatefulWidget {
   final GlobalKey<FormState> formKey;
   final bool isMultiSelected;
   final bool isChangeBook;
+  final Size dialogSize;
 
   const DeviceDetailPage({
     super.key,
     required this.hostModel,
     required this.formKey,
+    required this.dialogSize,
     this.isMultiSelected = false,
     this.isChangeBook = false,
   });
@@ -45,6 +51,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   bool _isShowScreenShot = false;
   // ignore: unused_field
   bool _isShowScreenShotHistory = false;
+  late TCardController _controller;
 
   List<BookModel> books = [
     BookModel.withName('Book 1', creator: 'abc@sqisoft.com', creatorName: 'Kim abc', imageUrl: ''),
@@ -55,10 +62,18 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
 
   List<String> admins = [];
   Future<String>? scrshotUrl;
+  Future<List<String>>? scrshotHistory;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
+    _controller = TCardController();
 
     if (widget.hostModel.weekend.isNotEmpty) {
       try {
@@ -77,9 +92,30 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
 
     if (widget.hostModel.scrshotFile.isNotEmpty) {
       scrshotUrl = HycopFactory.storage!.getImageUrl(widget.hostModel.scrshotFile);
+      scrshotHistory = _getScrshotHistory();
     } else {
       scrshotUrl = Future.value('');
     }
+  }
+
+  Future<List<String>> _getScrshotHistory() async {
+    ScrshotManager scrshotManager = ScrshotManager();
+    List<AbsExModel> modelList =
+        await scrshotManager.getScrshotHistory(widget.hostModel.hostId, limit: 30);
+    //print('scrshot history: ${value.length}');
+    // 여기서 URL 을 목록으로 가져오는 작업을 한다.
+    List<String> scrshotUrlHistory = [];
+
+    for (var ele in modelList) {
+      ScrshotModel model = ele as ScrshotModel;
+      if (model.scrshotFile.isNotEmpty) {
+        String url = await HycopFactory.storage!.getImageUrl(model.scrshotFile);
+        //print('scrshot url: $url');
+        scrshotUrlHistory.add(url);
+      }
+    }
+    //print('scrshot list: ${scrshotUrlHistory.length}');
+    return scrshotUrlHistory;
   }
 
   bool _hasAuth() {
@@ -102,33 +138,38 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  _isShowScreenShot = true;
-                });
-              },
-              child: const Icon(Icons.arrow_back, color: Colors.black),
-            ),
+            if (_isShowScreenShotHistory)
+              TextButton(
+                onPressed: () {
+                  // setState(() {
+                  //   _isShowScreenShot = true;
+                  // });
+                  _controller.back();
+                },
+                child: const Icon(Icons.arrow_back, color: Colors.black),
+              ),
             Tooltip(
-              message: 'ScreenShot History',
+              message: _isShowScreenShotHistory ? 'latest ScreenShot' : 'ScreenShot History',
               child: TextButton(
                 onPressed: () {
                   setState(() {
-                    _isShowScreenShotHistory = true;
+                    _isShowScreenShotHistory = !_isShowScreenShotHistory;
                   });
                 },
-                child: const Icon(Icons.calendar_month, color: Colors.black),
+                child: Icon(_isShowScreenShotHistory ? Icons.image : Icons.calendar_month,
+                    color: Colors.black),
               ),
             ),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  _isShowScreenShot = true;
-                });
-              },
-              child: const Icon(Icons.arrow_forward, color: Colors.black),
-            ),
+            if (_isShowScreenShotHistory)
+              TextButton(
+                onPressed: () {
+                  // setState(() {
+                  //   _isShowScreenShot = true;
+                  // });
+                  _controller.forward(direction: SwipDirection.Right);
+                },
+                child: const Icon(Icons.arrow_forward, color: Colors.black),
+              ),
           ],
         ),
         TextButton(
@@ -142,31 +183,89 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       ],
     );
 
+    if (_isShowScreenShotHistory == true) {
+      return FutureBuilder<List<String>?>(
+          future: scrshotHistory,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              //error가 발생하게 될 경우 반환하게 되는 부분
+              logger.severe("data fetch error(WaitDatum)");
+              return Column(
+                children: [
+                  Snippet.noImageAvailable(),
+                  const SizedBox(height: 10),
+                  buttons,
+                ],
+              );
+            }
+            if (snapshot.hasData == false) {
+              //print('xxxxxxxxxxxxxxxxxxxxx');
+              logger.finest("wait data ...(WaitData)");
+              return Center(
+                child: CretaSnippet.showWaitSign(),
+              );
+            }
+            if (snapshot.hasError || snapshot.data == null || snapshot.data!.isEmpty) {
+              return Snippet.noImageAvailable();
+            }
+
+            if (snapshot.connectionState == ConnectionState.done || snapshot.hasError) {
+              List<Widget> cards = List.generate(
+                snapshot.data!.length,
+                (int index) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16.0),
+                      boxShadow: const [
+                        BoxShadow(
+                          offset: Offset(0, 17),
+                          blurRadius: 23.0,
+                          spreadRadius: -13.0,
+                          color: Colors.black54,
+                        )
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16.0),
+                      child: Image.network(
+                        snapshot.data![index],
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  );
+                },
+              );
+
+              return Column(
+                children: [
+                  TCard(
+                    size: Size(widget.dialogSize.width - 100, widget.dialogSize.height - 100),
+                    cards: cards,
+                    controller: _controller,
+                    delaySlideFor: 500,
+                  ),
+                  const SizedBox(height: 10),
+                  buttons,
+                ],
+              );
+            }
+            return const SizedBox.shrink();
+          });
+    }
+
     return FutureBuilder<String>(
         future: scrshotUrl,
         builder: (context, snapshot) {
-          Widget thumbnail = Expanded(
-            child: Card(
-              elevation: 16.0, // 카드의 입체감을 조절합니다.
-              shadowColor: Colors.black87, // 그림자의 색상을 설정합니다.
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0), // 카드의 모서리를 둥글게 만듭니다.
-              ),
-              color: CretaColor.text[200],
-              child: snapshot.hasError || snapshot.data == null || snapshot.data!.isEmpty
-                  ? Snippet.noImageAvailable()
-                  : ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0), // 이미지의 모서리를 둥글게 만듭니다.
-                      //child: Image.network('https://picsum.photos/200/?random=200'),
-                      child: Image.network(snapshot.data!),
-                    ),
-            ),
-          );
           if (snapshot.hasError) {
             //error가 발생하게 될 경우 반환하게 되는 부분
             logger.severe("data fetch error(WaitDatum)");
             return Column(
-              children: [thumbnail, const SizedBox(height: 10), buttons],
+              children: [
+                Snippet.noImageAvailable(),
+                const SizedBox(height: 10),
+                buttons,
+              ],
             );
           }
           if (snapshot.hasData == false) {
@@ -176,9 +275,30 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
               child: CretaSnippet.showWaitSign(),
             );
           }
+
           if (snapshot.connectionState == ConnectionState.done || snapshot.hasError) {
             return Column(
-              children: [thumbnail, const SizedBox(height: 10), buttons],
+              children: [
+                Expanded(
+                  child: Card(
+                    elevation: 16.0, // 카드의 입체감을 조절합니다.
+                    shadowColor: Colors.black87, // 그림자의 색상을 설정합니다.
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0), // 카드의 모서리를 둥글게 만듭니다.
+                    ),
+                    color: CretaColor.text[200],
+                    child: snapshot.hasError || snapshot.data == null || snapshot.data!.isEmpty
+                        ? Snippet.noImageAvailable()
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(10.0), // 이미지의 모서리를 둥글게 만듭니다.
+                            //child: Image.network('https://picsum.photos/200/?random=200'),
+                            child: Image.network(snapshot.data!),
+                          ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                buttons,
+              ],
             );
           }
           return const SizedBox.shrink();
@@ -189,6 +309,25 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     String scrTime = widget.hostModel.scrshotTime.toIso8601String();
     scrTime = scrTime.substring(0, scrTime.length - 4);
 
+    // print('widget.hostModel.hddInfo: ${widget.hostModel.hddInfo}');
+    // print('widget.hostModel.cpuInfo: ${widget.hostModel.cpuInfo}');
+    // print('widget.hostModel.memInfo: ${widget.hostModel.memInfo}');
+    // hddInfo = '{"total":10578034688,"used":2768605184,"free":7809429504}';
+    // cpuInfo = '{"current":1296,"cores":4,"min":408,"max":1296,"temperature":72.083}';
+    // memInfo = '{"total":2054619136,"used":699301888,"free":1355317248,"usedByApp":2386568}';
+    double hddUsage = 0;
+    double memUsage = 0;
+    double cpuUsage = 0;
+    try {
+      final hdd = jsonDecode(widget.hostModel.hddInfo);
+      final cpu = jsonDecode(widget.hostModel.cpuInfo);
+      final mem = jsonDecode(widget.hostModel.memInfo);
+      hddUsage = hdd['used'] / hdd['total'] * 100;
+      memUsage = mem['used'] / mem['total'] * 100;
+      cpuUsage = cpu['current'] / cpu['max'] * 100;
+    } catch (e) {
+      logger.warning('Error in parsing hdd, cpu, mem: $e');
+    }
     return
         // Container(
         //   width: width,
@@ -226,9 +365,21 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                   _nvRow('Last Power OFF Time',
                       HycopUtils.dateTimeToDisplay(widget.hostModel.powerOffTime)),
 
-                  _nvRow('HDD Info', widget.hostModel.hddInfo),
-                  _nvRow('CPU Info', widget.hostModel.cpuInfo),
-                  _nvRow('Memory Info', widget.hostModel.memInfo),
+                  _nvWidget(
+                    'HDD Info',
+                    LinearProgressIndicator(value: hddUsage / 100),
+                    Text('${hddUsage.round()}%', textAlign: TextAlign.end),
+                  ),
+                  _nvWidget(
+                    'CPU Info',
+                    LinearProgressIndicator(value: cpuUsage / 100),
+                    Text('${cpuUsage.round()}%', textAlign: TextAlign.end),
+                  ),
+                  _nvWidget(
+                    'Memory Info',
+                    LinearProgressIndicator(value: memUsage / 100),
+                    Text('${memUsage.round()}%', textAlign: TextAlign.end),
+                  ),
                   _nvRow('State Message', widget.hostModel.stateMsg),
                   _nvRow('Request', widget.hostModel.request),
                   _nvRow('RequestedTime',
@@ -310,7 +461,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                   ),
                 Padding(
                   padding: const EdgeInsets.only(left: 4, bottom: 8.0, right: 2),
-                  child: _slideRow(
+                  child: _sliderRow(
                     CretaDeviceLang["soundVolume"] ?? '소리 음량',
                     widget.hostModel.soundVolume,
                     true,
@@ -741,6 +892,19 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   }
 
 // Usage
+  Widget _nvWidget(String name, Widget value, Widget? value2) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(flex: 4, child: Text(name, style: titleStyle)),
+          Expanded(flex: 6, child: value),
+          if (value2 != null) Expanded(flex: 1, child: value2),
+        ],
+      ),
+    );
+  }
 
   Widget _nvRow(String name, String value, {void Function()? onPressed}) {
     return Padding(
@@ -871,7 +1035,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     );
   }
 
-  Widget _slideRow(String name, double value, bool isActive, {void Function(double)? onChanged}) {
+  Widget _sliderRow(String name, double value, bool isActive, {void Function(double)? onChanged}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: Row(
