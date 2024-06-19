@@ -38,9 +38,9 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
             height: widget.height,
             color: Colors.white,
             child: SingleChildScrollView(
-              child: widget.width > 800
+              child: widget.width > 605
                   ? Padding(
-                      padding: const EdgeInsets.only(left: 165.0, top: 72.0),
+                      padding: EdgeInsets.only(left: widget.width * 0.1, top: 72.0),
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Text(CretaMyPageLang['accountManage']!,
                             /*'계정 관리',*/
@@ -214,33 +214,39 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                                 children: [
                                   Text(CretaMyPageLang['backgroundImg'], //"배경 이미지",
                                       style: CretaFont.titleMedium),
-                                  const SizedBox(width: 50),
-                                  MyPageCommonWidget.channelBannerImgComponent(
-                                      width: widget.width * .6,
-                                      bannerImgUrl: CretaAccountManager.getChannel!.bannerImgUrl,
-                                      onPressed: () async {
-                                        try {
-                                          _selectedImg = await ImagePicker()
-                                              .pickImage(source: ImageSource.gallery);
-                                          if (_selectedImg != null) {
-                                            _selectedImg!.readAsBytes().then((fileBytes) {
-                                              if (fileBytes.isNotEmpty) {
-                                                // popup 호출
-                                                showDialog(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return EditBannerImgPopUp(
-                                                          bannerImgBytes: fileBytes,
-                                                          selectedImg: _selectedImg!);
-                                                    });
+                                  //const SizedBox(width: 50),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                                      child: MyPageCommonWidget.channelBannerImgComponent(
+                                          //width: widget.width * .6,
+                                          bannerImgUrl:
+                                              CretaAccountManager.getChannel!.bannerImgUrl,
+                                          onPressed: () async {
+                                            try {
+                                              _selectedImg = await ImagePicker()
+                                                  .pickImage(source: ImageSource.gallery);
+                                              if (_selectedImg != null) {
+                                                _selectedImg!.readAsBytes().then((fileBytes) {
+                                                  if (fileBytes.isNotEmpty) {
+                                                    // popup 호출
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return EditBannerImgPopUp(
+                                                              bannerImgBytes: fileBytes,
+                                                              selectedImg: _selectedImg!);
+                                                        });
+                                                  }
+                                                });
                                               }
-                                            });
-                                          }
-                                        } catch (error) {
-                                          logger.info(
-                                              'something wrong in my_page_team_manage >> $error');
-                                        }
-                                      })
+                                            } catch (error) {
+                                              logger.info(
+                                                  'something wrong in my_page_team_manage >> $error');
+                                            }
+                                          }),
+                                    ),
+                                  )
                                 ],
                               ),
                               const SizedBox(height: 32),
@@ -249,9 +255,15 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                                 children: [
                                   Text(CretaMyPageLang['introChannel'], //"채널 소개",
                                       style: CretaFont.titleMedium),
-                                  const SizedBox(width: 64),
-                                  MyPageCommonWidget.channelDescriptionComponent(
-                                      width: widget.width * .6)
+                                  //const SizedBox(width: 64),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 64, right: 50),
+                                      child: MyPageCommonWidget.channelDescriptionComponent(
+                                          //width: widget.width * .6,
+                                          ),
+                                    ),
+                                  )
                                 ],
                               )
                             ],
@@ -261,12 +273,19 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                             width: widget.width * .6,
                             padding: const EdgeInsets.only(top: 34, bottom: 32)),
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(width: 12),
                             Text(CretaMyPageLang['allDeviceLogout']!, style: CretaFont.titleMedium),
                             const SizedBox(width: 24.0),
                             BTN.line_red_t_m(text: CretaMyPageLang['logoutBTN']!, onPressed: () {}),
-                            const SizedBox(width: 80.0),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(width: 12.0),
                             Text(CretaMyPageLang['removeAccount']!, style: CretaFont.titleMedium),
                             const SizedBox(width: 24.0),
                             BTN.fill_red_t_m(
@@ -275,7 +294,7 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                                 onPressed: () {}),
                           ],
                         ),
-                        const SizedBox(height: 142)
+                        const SizedBox(height: 142),
                       ]))
                   : const SizedBox.shrink(),
             ));

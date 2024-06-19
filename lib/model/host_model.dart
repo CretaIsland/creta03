@@ -42,6 +42,7 @@ class HostModel extends CretaModel {
   String location = '';
   String description = '';
   String os = '';
+  String resolution = '';
 
   String agentVersion = ''; // read only
   String playerVersion = ''; // read only
@@ -137,6 +138,7 @@ class HostModel extends CretaModel {
         creator,
         location,
         description,
+        resolution,
         agentVersion,
         playerVersion,
         weekTime,
@@ -205,6 +207,7 @@ class HostModel extends CretaModel {
     creator = srcHost.creator;
     location = srcHost.location;
     description = srcHost.description;
+    resolution = srcHost.resolution;
     agentVersion = srcHost.agentVersion;
     playerVersion = srcHost.playerVersion;
     weekTime = srcHost.weekTime;
@@ -276,6 +279,7 @@ class HostModel extends CretaModel {
     creator = srcHost.creator;
     location = srcHost.location;
     description = srcHost.description;
+    resolution = srcHost.resolution;
     agentVersion = srcHost.agentVersion;
     playerVersion = srcHost.playerVersion;
     weekTime = srcHost.weekTime;
@@ -349,6 +353,9 @@ class HostModel extends CretaModel {
     if (srcHost.description.isNotEmpty && srcHost.description != description) {
       description = srcHost.description;
     }
+    if (srcHost.resolution.isNotEmpty && srcHost.resolution != resolution) {
+      resolution = srcHost.resolution;
+    }
     if (srcHost.agentVersion.isNotEmpty && srcHost.agentVersion != agentVersion) {
       agentVersion = srcHost.agentVersion;
     }
@@ -413,6 +420,7 @@ class HostModel extends CretaModel {
     creator = map["creator"] ?? '';
     location = map["location"] ?? '';
     weekTime = map["weekTime"] ?? '';
+    resolution = map["resolution"] ?? ServiceType.defaultResolution();
     agentVersion = map["agentVersion"] ?? '';
     playerVersion = map["playerVersion"] ?? '';
     scrshotFile = map["scrshotFile"] ?? '';
@@ -485,6 +493,7 @@ class HostModel extends CretaModel {
         "creator": creator,
         "location": location,
         "description": description,
+        "resolution": resolution.isEmpty ? ServiceType.defaultResolution() : resolution,
         "agentVersion": agentVersion,
         "playerVersion": playerVersion,
         "weekTime": weekTime,

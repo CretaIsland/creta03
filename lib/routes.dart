@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
-
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:html';
 //import 'package:appflowy_editor/appflowy_editor.dart';
 //import 'package:creta_studio_model/model/contents_model.dart';
 import 'package:creta03/pages/landing_page.dart';
@@ -68,6 +69,14 @@ abstract class AppRoutes {
     return false;
   }
 
+  static String getFirstPath() {
+    Uri uri = Uri.parse(window.location.href);
+    // URL의 경로 세그먼트를 가져옵니다.
+    List<String> pathSegments = uri.pathSegments;
+    // 첫 번째 디렉토리 이름을 반환합니다. 경로가 없거나 첫 번째 디렉토리가 없는 경우 빈 문자열을 반환합니다.
+    return pathSegments.isNotEmpty ? pathSegments[0] : '';
+  }
+
   static String _getMiddlePath(String inputString) {
     // if (!inputString.contains('creta')) {
     //   return '';
@@ -100,7 +109,7 @@ abstract class AppRoutes {
   static const String studioBookMainPage = '/studio/bookMainPage';
   static const String deviceMainPage = '/device/deviceMainPage';
   static const String deviceSharedPage = '/device/deviceSharedPage';
-  static const String adminMainPage = '/device/adminMainPage';
+  static const String adminMainPage = '/admin/adminMainPage';
   //static const String deviceDetailPage = '/device/deviceDetailPage';
   static const String studioBookPreviewPage = '/studio/studioBookMainPreviewPage';
   static const String studioBookGridPage = '/studio/bookGridPage';

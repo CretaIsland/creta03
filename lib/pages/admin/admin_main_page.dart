@@ -7,7 +7,9 @@ import 'package:creta_common/common/creta_font.dart';
 import 'package:creta_common/common/creta_snippet.dart';
 import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_user_io/data_io/creta_manager.dart';
+import 'package:creta_user_io/data_io/team_manager.dart';
 import 'package:creta_user_io/data_io/user_property_manager.dart';
+import 'package:creta_user_model/model/team_model.dart';
 import 'package:creta_user_model/model/user_property_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
@@ -716,12 +718,20 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
         enterpriseUrl: input.enterpriseUrl,
         adminEmail: userAccount.email);
 
+    // Team 도 만들어줘야 함 !!!
+
+    TeamManager teamManager = TeamManager();
+    TeamModel team = teamManager.getNewTeam(
+        createAndSetToCurrent: false, username: input.name, userEmail: userAccount.email);
+    await teamManager.createTeam(team);
+
     UserPropertyModel userPropertyModel =
         CretaAccountManager.userPropertyManagerHolder.makeNewUserProperty(
       parentMid: userAccount.userId,
       email: userAccount.email,
       nickname: userAccount.name,
       enterprise: input.name,
+      teamMid: team.mid,
       verified: true,
     );
     await CretaAccountManager.userPropertyManagerHolder

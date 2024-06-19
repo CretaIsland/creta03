@@ -117,6 +117,25 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
     //Snippet.clearLang();
     //isLangInit = initLang();
     _initMenu();
+
+    String directory = AppRoutes.getFirstPath();
+    switch (directory) {
+      case 'community':
+        VerticalAppBar.appBarSelected = VerticalAppBarType.community;
+        break;
+      case 'studio':
+        VerticalAppBar.appBarSelected = VerticalAppBarType.studio;
+        break;
+      case 'device':
+        VerticalAppBar.appBarSelected = VerticalAppBarType.device;
+        break;
+      case 'mypage':
+        VerticalAppBar.appBarSelected = VerticalAppBarType.mypage;
+        break;
+      case 'admin':
+        VerticalAppBar.appBarSelected = VerticalAppBarType.admin;
+        break;
+    }
   }
 
   @override

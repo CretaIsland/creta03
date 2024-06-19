@@ -53,9 +53,9 @@ class _MyPageSettingsState extends State<MyPageSettings> {
           height: widget.height,
           color: Colors.white,
           child: SingleChildScrollView(
-              child: widget.width > 400
+              child: widget.width > 600
                   ? Padding(
-                      padding: const EdgeInsets.only(top: 72, left: 165),
+                      padding: EdgeInsets.only(top: 72, left: widget.width * 0.1),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

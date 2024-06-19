@@ -25,12 +25,13 @@ class MyPageDashBoard extends StatefulWidget {
 }
 
 class _MyPageDashBoardState extends State<MyPageDashBoard> {
+  static const Size cardSize = Size(418, 400);
   // 계정 정보 컴포넌트
   Widget accountInfo(UserPropertyModel userProperty) {
     TextStyle propertyFontStyle = CretaFont.bodyMedium.copyWith(color: CretaColor.text.shade400);
     return Container(
-      width: 400,
-      height: 400,
+      width: cardSize.width,
+      height: cardSize.height,
       decoration: BoxDecoration(
           border: Border.all(color: Colors.grey.shade200), borderRadius: BorderRadius.circular(20)),
       child: Column(
@@ -43,7 +44,7 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
                 style: CretaFont.titleELarge),
           ),
           MyPageCommonWidget.divideLine(
-              width: 400, padding: const EdgeInsets.only(top: 30, bottom: 48)),
+              width: cardSize.width, padding: const EdgeInsets.only(top: 30, bottom: 48)),
           Row(
             children: [
               const SizedBox(width: 30),
@@ -107,8 +108,8 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
   Widget recentLogInfo(UserPropertyModel userProperty) {
     TextStyle propertyFontStyle = CretaFont.bodyMedium.copyWith(color: CretaColor.text.shade400);
     return Container(
-      width: 400,
-      height: 400,
+      width: cardSize.width,
+      height: cardSize.height,
       decoration: BoxDecoration(
           border: Border.all(color: Colors.grey.shade200), borderRadius: BorderRadius.circular(20)),
       child: Column(
@@ -120,7 +121,7 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
                 style: CretaFont.titleELarge),
           ),
           MyPageCommonWidget.divideLine(
-              width: 400, padding: const EdgeInsets.only(top: 30, bottom: 48)),
+              width: cardSize.width, padding: const EdgeInsets.only(top: 30, bottom: 48)),
           Row(
             children: [
               const SizedBox(width: 30),
@@ -164,8 +165,8 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
   // 계정 정보 컴포넌트
   Widget teamInfo(List<TeamModel> teamList) {
     return Container(
-      width: 400,
-      height: 400,
+      width: cardSize.width,
+      height: cardSize.height,
       decoration: BoxDecoration(
           border: Border.all(color: Colors.grey.shade200), borderRadius: BorderRadius.circular(20)),
       child: Column(
@@ -177,7 +178,7 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
                 style: CretaFont.titleELarge),
           ),
           MyPageCommonWidget.divideLine(
-              width: 400, padding: const EdgeInsets.only(top: 30, bottom: 48)),
+              width: cardSize.width, padding: const EdgeInsets.only(top: 30, bottom: 48)),
           Padding(
             padding: const EdgeInsets.only(left: 30),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -201,7 +202,7 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
           height: widget.height,
           color: Colors.white,
           child: SingleChildScrollView(
-              child: widget.width > 400
+              child: widget.width > cardSize.width
                   ? Column(
                       children: [
                         const SizedBox(height: 60),

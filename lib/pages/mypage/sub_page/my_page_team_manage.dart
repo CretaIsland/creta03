@@ -65,10 +65,11 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
           width: widget.width,
           height: widget.height,
           color: Colors.white,
+          alignment: Alignment.topCenter,
           child: SingleChildScrollView(
-            child: widget.width > 700
+            child: widget.width > 605
                 ? Padding(
-                    padding: const EdgeInsets.only(top: 72, left: 165),
+                    padding: EdgeInsets.only(top: 72, left: widget.width * 0.1),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -80,7 +81,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                     CretaFont.displaySmall.copyWith(fontWeight: FontWeight.w600)),
                             const SizedBox(width: 32),
                             CretaWidgetDropDown(
-                                width: 140,
+                                width: 220,
                                 items: [
                                   for (var team in teamManager.teamModelList)
                                     Text(team.name, style: CretaFont.bodyMedium)
@@ -170,7 +171,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                                   }
                                                 }),
                                           )),
-                                      const SizedBox(height: 38),
+                                      const SizedBox(height: 24),
                                       SizedBox(
                                           width: 200,
                                           height: 20,
@@ -232,7 +233,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                     const SizedBox(height: 32.0),
                                     BTN.fill_blue_t_m(
                                         text: CretaMyPageLang['addMemberBTN']!,
-                                        width: 160,
+                                        width: 200,
                                         onPressed: () {})
                                   ],
                                 ),
@@ -292,36 +293,42 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                       children: [
                                         Text(CretaMyPageLang['backgroundImg']! /*"배경 이미지" */,
                                             style: CretaFont.titleMedium),
-                                        const SizedBox(width: 50),
-                                        MyPageCommonWidget.channelBannerImgComponent(
-                                            width: widget.width * .6,
-                                            bannerImgUrl:
-                                                CretaAccountManager.getChannel!.bannerImgUrl,
-                                            onPressed: () async {
-                                              try {
-                                                _selectedBannerImg = await ImagePicker()
-                                                    .pickImage(source: ImageSource.gallery);
-                                                if (_selectedBannerImg != null) {
-                                                  _selectedBannerImg!
-                                                      .readAsBytes()
-                                                      .then((fileBytes) {
-                                                    if (fileBytes.isNotEmpty) {
-                                                      // popup 호출
-                                                      showDialog(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return EditBannerImgPopUp(
-                                                                bannerImgBytes: fileBytes,
-                                                                selectedImg: _selectedBannerImg!);
-                                                          });
+                                        //const SizedBox(width: 50),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 50),
+                                            child: MyPageCommonWidget.channelBannerImgComponent(
+                                                //width: widget.width * .6,
+                                                bannerImgUrl:
+                                                    CretaAccountManager.getChannel!.bannerImgUrl,
+                                                onPressed: () async {
+                                                  try {
+                                                    _selectedBannerImg = await ImagePicker()
+                                                        .pickImage(source: ImageSource.gallery);
+                                                    if (_selectedBannerImg != null) {
+                                                      _selectedBannerImg!
+                                                          .readAsBytes()
+                                                          .then((fileBytes) {
+                                                        if (fileBytes.isNotEmpty) {
+                                                          // popup 호출
+                                                          showDialog(
+                                                              context: context,
+                                                              builder: (context) {
+                                                                return EditBannerImgPopUp(
+                                                                    bannerImgBytes: fileBytes,
+                                                                    selectedImg:
+                                                                        _selectedBannerImg!);
+                                                              });
+                                                        }
+                                                      });
                                                     }
-                                                  });
-                                                }
-                                              } catch (error) {
-                                                logger.info(
-                                                    'something wrong in my_page_team_manage >> $error');
-                                              }
-                                            })
+                                                  } catch (error) {
+                                                    logger.info(
+                                                        'something wrong in my_page_team_manage >> $error');
+                                                  }
+                                                }),
+                                          ),
+                                        )
                                       ],
                                     ),
                                     const SizedBox(height: 32),
@@ -330,9 +337,15 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                       children: [
                                         Text(CretaMyPageLang['introChannel']!,
                                             /*"채널 소개",*/ style: CretaFont.titleMedium),
-                                        const SizedBox(width: 64),
-                                        MyPageCommonWidget.channelDescriptionComponent(
-                                            width: widget.width * .6)
+                                        //const SizedBox(width: 64),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(left: 64, right: 50),
+                                            child: MyPageCommonWidget.channelDescriptionComponent(
+                                                //width: widget.width * .6,
+                                                ),
+                                          ),
+                                        )
                                       ],
                                     )
                                   ],

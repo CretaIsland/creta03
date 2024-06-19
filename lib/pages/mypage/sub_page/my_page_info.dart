@@ -82,7 +82,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
           child: SingleChildScrollView(
             child: widget.width > 500
                 ? Padding(
-                    padding: const EdgeInsets.only(left: 165.0, top: 72.0),
+                    padding: EdgeInsets.only(left: widget.width * 0.1, top: 72.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

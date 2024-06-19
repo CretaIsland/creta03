@@ -59,12 +59,13 @@ class MyPageCommonWidget {
 
   // 채널 배너 이미지
   static Widget channelBannerImgComponent(
-      {required double width,
+      {
+      //required double width,
       double height = 181,
       String bannerImgUrl = "",
       required void Function() onPressed}) {
     return Container(
-      width: width,
+      width: double.infinity,
       height: height,
       decoration: BoxDecoration(
           border: Border.all(color: Colors.grey.shade200),
@@ -85,9 +86,12 @@ class MyPageCommonWidget {
   }
 
   // 채널 설명
-  static Widget channelDescriptionComponent({required double width, double height = 181}) {
+  static Widget channelDescriptionComponent({
+    //required double width,
+    double height = 181,
+  }) {
     return Container(
-        width: width,
+        width: double.infinity,
         height: height,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey.shade200),

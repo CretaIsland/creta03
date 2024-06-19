@@ -10,6 +10,7 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 
 import '../../data_io/book_published_manager.dart';
+import '../../design_system/component/snippet.dart';
 import '../studio/book_grid_page.dart';
 
 class BookSelectPage extends StatefulWidget {
@@ -137,7 +138,9 @@ class _BookSelectPageState extends State<BookSelectPage> {
         return ListTile(
           title: Text(book.name.value),
           subtitle: Text(book.description.value),
-          trailing: Image.network(book.thumbnailUrl.value), //const Icon(Icons.arrow_forward_ios),
+          trailing: book.thumbnailUrl.value.isNotEmpty
+              ? Image.network(book.thumbnailUrl.value)
+              : Snippet.noImageAvailable(), //const Icon(Icons.arrow_forward_ios),
           onTap: () {
             // Do something with the selected book
             // For example, you might want to navigate to a detail page for the selected book

@@ -173,6 +173,7 @@ class _CretaTapBarButtonState extends State<CretaTapBarButton> {
                     color: _getfgColor(),
                     fontWeight: CretaFont.medium,
                     height: 0.9,
+                    fontSize: 18,
                   ),
                   softWrap: true,
                   overflow: TextOverflow.ellipsis,

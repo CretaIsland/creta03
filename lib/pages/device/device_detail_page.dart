@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_font.dart';
 import 'package:creta_common/common/creta_snippet.dart';
+import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_studio_model/model/book_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
@@ -318,13 +319,15 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     double hddUsage = 0;
     double memUsage = 0;
     double cpuUsage = 0;
+    double cpuTemper = 0;
     try {
       final hdd = jsonDecode(widget.hostModel.hddInfo);
       final cpu = jsonDecode(widget.hostModel.cpuInfo);
       final mem = jsonDecode(widget.hostModel.memInfo);
-      hddUsage = hdd['used'] / hdd['total'] * 100;
-      memUsage = mem['used'] / mem['total'] * 100;
-      cpuUsage = cpu['current'] / cpu['max'] * 100;
+      hddUsage = (hdd['used'] ?? 0) / (hdd['total'] ?? 1) * 100;
+      memUsage = (mem['used'] ?? 0) / (mem['total'] ?? 1) * 100;
+      cpuTemper = cpu['temperature'] ?? 0.0;
+      cpuUsage = (cpu['current'] ?? 0) / (cpu['max'] ?? 1) * 100;
     } catch (e) {
       logger.warning('Error in parsing hdd, cpu, mem: $e');
     }
@@ -366,19 +369,32 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                       HycopUtils.dateTimeToDisplay(widget.hostModel.powerOffTime)),
 
                   _nvWidget(
-                    'HDD Info',
-                    LinearProgressIndicator(value: hddUsage / 100),
+                    'Memory usage',
+                    LinearProgressIndicator(
+                        value: memUsage / 100,
+                        color: memUsage >= 90 ? CretaColor.stateCritical : CretaColor.primary),
+                    Text('${memUsage.round()}%', textAlign: TextAlign.end),
+                  ),
+                  _nvWidget(
+                    'HDD usage',
+                    LinearProgressIndicator(
+                        value: hddUsage / 100,
+                        color: hddUsage >= 90 ? CretaColor.stateCritical : CretaColor.primary),
                     Text('${hddUsage.round()}%', textAlign: TextAlign.end),
                   ),
                   _nvWidget(
-                    'CPU Info',
-                    LinearProgressIndicator(value: cpuUsage / 100),
+                    'CPU usage',
+                    LinearProgressIndicator(
+                        value: cpuUsage / 100,
+                        color: cpuUsage >= 90 ? CretaColor.stateCritical : CretaColor.primary),
                     Text('${cpuUsage.round()}%', textAlign: TextAlign.end),
                   ),
                   _nvWidget(
-                    'Memory Info',
-                    LinearProgressIndicator(value: memUsage / 100),
-                    Text('${memUsage.round()}%', textAlign: TextAlign.end),
+                    'CPU temperature',
+                    LinearProgressIndicator(
+                        value: cpuTemper / 100,
+                        color: cpuTemper >= 90 ? CretaColor.stateCritical : CretaColor.primary),
+                    Text('${cpuTemper.toStringAsFixed(1)}\u00B0C', textAlign: TextAlign.end),
                   ),
                   _nvRow('State Message', widget.hostModel.stateMsg),
                   _nvRow('Request', widget.hostModel.request),
@@ -503,6 +519,16 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                                 InputDecoration(labelText: 'Host Name', labelStyle: titleStyle),
                             onSaved: (value) {
                               widget.hostModel.hostName = value ?? '';
+                              //print('Saved : ${widget.hostModel.hostName}');
+                            },
+                          ),
+                          TextFormField(
+                            initialValue: widget.hostModel.resolution,
+                            decoration:
+                                InputDecoration(labelText: 'Resolution', labelStyle: titleStyle),
+                            onSaved: (value) {
+                              widget.hostModel.resolution =
+                                  value ?? ServiceType.defaultResolution();
                               //print('Saved : ${widget.hostModel.hostName}');
                             },
                           ),
@@ -898,9 +924,9 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(flex: 4, child: Text(name, style: titleStyle)),
-          Expanded(flex: 6, child: value),
-          if (value2 != null) Expanded(flex: 1, child: value2),
+          Expanded(flex: 5, child: Text(name, style: titleStyle)),
+          Expanded(flex: 8, child: value),
+          if (value2 != null) Expanded(flex: 2, child: value2),
         ],
       ),
     );
