@@ -320,16 +320,19 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     double memUsage = 0;
     double cpuUsage = 0;
     double cpuTemper = 0;
+    double wifiLevel = 0;
     try {
-      final hdd = jsonDecode(widget.hostModel.hddInfo);
-      final cpu = jsonDecode(widget.hostModel.cpuInfo);
-      final mem = jsonDecode(widget.hostModel.memInfo);
+      final hdd = jsonDecode(widget.hostModel.hddInfo.isEmpty ? '{}' : widget.hostModel.hddInfo);
+      final cpu = jsonDecode(widget.hostModel.cpuInfo.isEmpty ? '{}' : widget.hostModel.cpuInfo);
+      final mem = jsonDecode(widget.hostModel.memInfo.isEmpty ? '{}' : widget.hostModel.memInfo);
+      final wifi = jsonDecode(widget.hostModel.netInfo.isEmpty ? '{}' : widget.hostModel.netInfo);
       hddUsage = (hdd['used'] ?? 0) / (hdd['total'] ?? 1) * 100;
       memUsage = (mem['used'] ?? 0) / (mem['total'] ?? 1) * 100;
       cpuTemper = cpu['temperature'] ?? 0.0;
       cpuUsage = (cpu['current'] ?? 0) / (cpu['max'] ?? 1) * 100;
+      wifiLevel = double.parse(wifi['level'] ?? "0");
     } catch (e) {
-      logger.warning('Error in parsing hdd, cpu, mem: $e');
+      logger.warning('Error in parsing hdd, cpu, mem, wifi: $e');
     }
     return
         // Container(
@@ -396,13 +399,15 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                         color: cpuTemper >= 90 ? CretaColor.stateCritical : CretaColor.primary),
                     Text('${cpuTemper.toStringAsFixed(1)}\u00B0C', textAlign: TextAlign.end),
                   ),
+                  _nvWidget(
+                    'Wifi level',
+                    LinearProgressIndicator(
+                        value: wifiLevel == 0 ? 0.05 : (wifiLevel / 5),
+                        color: wifiLevel <= 2 ? CretaColor.stateCritical : CretaColor.primary),
+                    Text('$wifiLevel', textAlign: TextAlign.end),
+                  ),
+
                   _nvRow('State Message', widget.hostModel.stateMsg),
-                  _nvRow('Request', widget.hostModel.request),
-                  _nvRow('RequestedTime',
-                      HycopUtils.dateTimeToDisplay(widget.hostModel.requestedTime)),
-                  _nvRow('Response', widget.hostModel.response),
-                  _nvRow('Download Result', widget.hostModel.downloadResult.name.split('.').last),
-                  _nvRow('Download Message', widget.hostModel.downloadMsg),
                   _nvRow('Agent Version', widget.hostModel.agentVersion),
                   _nvRow('playerVersion', widget.hostModel.playerVersion),
                   if (widget.isChangeBook == false)
@@ -421,6 +426,12 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                         },
                       ),
                     ),
+                  _nvRow('Request', widget.hostModel.request),
+                  _nvRow('RequestedTime',
+                      HycopUtils.dateTimeToDisplay(widget.hostModel.requestedTime)),
+                  _nvRow('Response', widget.hostModel.response),
+                  _nvRow('Download Result', widget.hostModel.downloadResult.name.split('.').last),
+                  _nvRow('Download Message', widget.hostModel.downloadMsg),
 
                   // _nvRow('scrshotFile', widget.hostModel.scrshotFile), // 그림으로 표시해야함.
                   // _nvRow('scrshotTime', widget.hostModel.scrshotTime.toIso8601String()),

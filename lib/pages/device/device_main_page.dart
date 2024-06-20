@@ -1,8 +1,10 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors, prefer_final_fields
 
+import 'dart:convert';
 import 'dart:math';
 //import 'package:flutter_web_data_table/web_data_table.dart';
 
+import 'package:creta03/pages/device/device_header_info.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_snippet.dart';
 import 'package:creta_common/common/creta_vars.dart';
@@ -213,7 +215,20 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
             color: value ? Colors.green : Colors.red,
           ),
         );
+    MyDataCell Function(dynamic, String)? wifiCell;
+    wifiCell = (value, key) {
+      final wifi = jsonDecode((value as String).isEmpty ? '{}' : value);
+      String wifiLevel = wifi['level'] ?? "0";
 
+      return MyDataCell(Text(wifiLevel));
+    };
+    MyDataCell Function(dynamic, String)? hddCell;
+    hddCell = (value, key) {
+      final hdd = jsonDecode((value as String).isEmpty ? '{}' : value);
+      double hddUsage = (hdd['used'] ?? 0) / (hdd['total'] ?? 1) * 100;
+
+      return MyDataCell(Text('${hddUsage.toStringAsFixed(1)}%'));
+    };
     MyDataCell Function(dynamic, String)? hostIdCell;
     hostIdCell = (value, key) => MyDataCell(
           Text(
@@ -235,112 +250,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
           },
         );
 
-    String jsonStr = CretaAccountManager.getDeviceColumnInfo();
-    //print('jsonStr = $jsonStr');
-    if (jsonStr.isEmpty) {
-      jsonStr = '''{
-          "columnInfoList": [
-              {
-                  "name": "isVNC",
-                  "label": "vnc",
-                  "width": 30
-              },
-              {
-                  "name": "isUsed",
-                  "label": "usage",
-                  "width": 30
-              },
-              {
-                  "name": "isOperational",
-                  "label": "fault",
-                  "width": 30
-              },
-              {
-                  "name": "lastUpdateTime",
-                  "label": "lastUpdateTime",
-                  "width": 100
-              },
-              {
-                  "name": "hostId",
-                  "label": "ID",
-                  "width": 100
-              },
-              {
-                  "name": "hostName",
-                  "label": "hostName",
-                  "width": 120
-              },
-               {
-                  "name": "enterprise",
-                  "label": "enterprise",
-                  "width": 120
-              },
-              {
-                  "name": "creator",
-                  "label": "owner",
-                  "width": 120
-              },
-              {
-                  "name": "location",
-                  "label": "location",
-                  "width": 100
-              },
-              {
-                  "name": "description",
-                  "label": "description",
-                  "width": 100
-              },
-              {
-                  "name": "macAddress",
-                  "label": "macAddress",
-                  "width": 100
-              },
-              {
-                  "name": "requestedBook1",
-                  "label": "requestedBook1",
-                  "width": 100
-              },
-              {
-                  "name": "playingBook1",
-                  "label": "playingBook1",
-                  "width": 100
-              },
-              {
-                  "name": "requestedBook2",
-                  "label": "requestedBook2",
-                  "width": 100
-              },
-              {
-                  "name": "playingBook2",
-                  "label": "playingBook2",
-                  "width": 100
-              },
-              {
-                  "name": "request",
-                  "label": "request",
-                  "width": 100
-              },
-              {
-                  "name": "requestedTime",
-                  "label": "requestedTime",
-                  "width": 200
-              },
-              {
-                  "name": "updateTime",
-                  "label": "updateTime",
-                  "width": 200
-              },
-              {
-                  "name": "createTime",
-                  "label": "createTime",
-                  "width": 200
-              }
-              
-              
-          ]
-      }''';
-    }
-    columnInfoFromJson(jsonStr);
+    DeviceHeaderInfo headerInfo = DeviceHeaderInfo();
+    columnInfoList = headerInfo.initColumnInfo();
 
     for (var ele in columnInfoList) {
       if (ele.name == 'lastUpdateTime' ||
@@ -357,108 +268,31 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         ele.dataCell = isOperationalCell;
       } else if (ele.name == 'hostId') {
         ele.dataCell = hostIdCell;
+      } else if (ele.name == 'netInfo') {
+        ele.dataCell = wifiCell;
+      } else if (ele.name == 'hddInfo') {
+        ele.dataCell = hddCell;
       }
     }
-
-    // columnInfoList = [
-    //   MyColumnInfo(
-    //     name: 'isVNC',
-    //     label: 'vnc',
-    //     width: 30,
-    //     dataCell: isVNCCell,
-    //   ),
-    //   MyColumnInfo(
-    //     name: 'isUsed',
-    //     label: 'usage',
-    //     width: 30,
-    //     dataCell: isUsedCell,
-    //   ),
-    //   MyColumnInfo(
-    //     name: 'isOperational',
-    //     label: 'fault',
-    //     width: 30,
-    //     dataCell: isOperationalCell,
-    //   ),
-    //   MyColumnInfo(
-    //     name: 'lastUpdateTime',
-    //     label: 'lastUpdateTime',
-    //     width: 180,
-    //     dataCell: _dateToDataCell,
-    //     filterText: _dynamicDateToString,
-    //   ),
-    //   MyColumnInfo(
-    //     name: 'hostId',
-    //     label: 'ID',
-    //     width: 100,
-    //     dataCell: hostIdCell,
-    //   ),
-    //   MyColumnInfo(
-    //       name: 'hostName',
-    //       label: 'hostName',
-    //       width: 120,
-    //       dataCell: (value, key) => MyDataCell(Text('$value')),
-    //       filterText: null),
-    //   MyColumnInfo(
-    //       name: 'creator',
-    //       label: 'creator',
-    //       width: 120,
-    //       dataCell: (value, key) => MyDataCell(Text('$value')),
-    //       filterText: null),
-    //   MyColumnInfo(
-    //       name: 'location',
-    //       label: 'location',
-    //       width: 100,
-    //       dataCell: (value, key) => MyDataCell(Text('$value')),
-    //       filterText: null),
-    //   MyColumnInfo(
-    //       name: 'description',
-    //       label: 'description',
-    //       width: 100,
-    //       dataCell: (value, key) => MyDataCell(Text('$value')),
-    //       filterText: null),
-    //   MyColumnInfo(
-    //     name: 'requestedBook1',
-    //     label: 'requestedBook1',
-    //     width: 100,
-    //     dataCell: (value, key) => MyDataCell(Text('$value')),
-    //   ),
-    //   MyColumnInfo(
-    //     name: 'playingBook1',
-    //     label: 'playingBook1',
-    //     width: 100,
-    //     dataCell: (value, key) => MyDataCell(Text('$value')),
-    //   ),
-    //   MyColumnInfo(
-    //     name: 'requestedBook2',
-    //     label: 'requestedBook2',
-    //     width: 100,
-    //     dataCell: (value, key) => MyDataCell(Text('$value')),
-    //   ),
-    //   MyColumnInfo(
-    //     name: 'playingBook2',
-    //     label: 'playingBook2',
-    //     width: 100,
-    //     dataCell: (value, key) => MyDataCell(Text('$value')),
-    //   ),
-    //   MyColumnInfo(
-    //     name: 'request',
-    //     label: 'request',
-    //     width: 100,
-    //     dataCell: (value, key) => MyDataCell(Text('$value')),
-    //     //sortable: false,
-    //   ),
-    //   MyColumnInfo(
-    //     name: 'requestedTime',
-    //     label: 'requestedTime',
-    //     width: 200,
-    //     dataCell: _dateToDataCell,
-    //     filterText: _dynamicDateToString,
-    //   ),
-    // ];
   }
 
   void _initData() {
-    if (HycopFactory.serverType != ServerType.firebase) {
+    if (HycopFactory.serverType == ServerType.firebase) {
+      if (widget.selectedPage == DeviceSelectedPage.myPage) {
+        return hostManagerHolder!.initMyStream(
+          AccountManager.currentLoginUser.email,
+        );
+      }
+      if (widget.selectedPage == DeviceSelectedPage.sharedPage) {
+        String enterprise = '';
+        if (AccountManager.currentLoginUser.isSuperUser() == false) {
+          enterprise = CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.enterprise;
+        }
+        return hostManagerHolder!.initSharedStream(
+          enterprise,
+        );
+      }
+    } else {
       if (widget.selectedPage == DeviceSelectedPage.myPage) {
         hostManagerHolder!
             .myDataOnly(
@@ -715,27 +549,32 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
     //   return consumerFunc(context, null);
     // }
     if (HycopFactory.serverType == ServerType.firebase) {
-      if (widget.selectedPage == DeviceSelectedPage.myPage) {
-        return hostManagerHolder!.myStreamDataOnly(
-          AccountManager.currentLoginUser.email,
-          consumerFunc: (resultList) {
-            return _hostList(hostManagerHolder!);
-          },
-        );
-      }
-      if (widget.selectedPage == DeviceSelectedPage.sharedPage) {
-        String enterprise = '';
-        if (AccountManager.currentLoginUser.isSuperUser() == false) {
-          enterprise = CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.enterprise;
-        }
-        return hostManagerHolder!.sharedStreamDataOnly(
-          enterprise,
-          consumerFunc: (resultList) {
-            return _hostList(hostManagerHolder!);
-          },
-        );
-      }
-      return Center(child: Text('wrong selectedPage ${widget.selectedPage}'));
+      // if (widget.selectedPage == DeviceSelectedPage.myPage) {
+      //   return hostManagerHolder!.myStreamDataOnly(
+      //     AccountManager.currentLoginUser.email,
+      //     consumerFunc: (resultList) {
+      //       return _hostList(hostManagerHolder!);
+      //     },
+      //   );
+      // }
+      // if (widget.selectedPage == DeviceSelectedPage.sharedPage) {
+      //   String enterprise = '';
+      //   if (AccountManager.currentLoginUser.isSuperUser() == false) {
+      //     enterprise = CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.enterprise;
+      //   }
+      //   return hostManagerHolder!.sharedStreamDataOnly(
+      //     enterprise,
+      //     consumerFunc: (resultList) {
+      //       return _hostList(hostManagerHolder!);
+      //     },
+      //   );
+      // }
+      //return Center(child: Text('wrong selectedPage ${widget.selectedPage}'));
+      return hostManagerHolder!.streamHost(
+        consumerFunc: (resultList) {
+          return _hostList(hostManagerHolder!);
+        },
+      );
     }
 
     // firebase 가 아닌 경우.
@@ -813,7 +652,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
         itemBuilder: (BuildContext context, int index) {
           return WebDataTable(
             onDragComplete: () {
-              //print('onDragComplete');
+              setState(() {});
               CretaAccountManager.setDeviceColumnInfo(columnInfoToJson());
             },
             onPanEnd: () {
@@ -1023,7 +862,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
 
   String _dateToString(DateTime value) {
     DateTime local = value.toLocal();
-    return local.toString();
+    return "${local.year}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}:${local.second.toString().padLeft(2, '0')}";
   }
 
   String _dynamicDateToString(dynamic value) {
@@ -1568,7 +1407,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
             margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
             color: Colors.white,
             child: DeviceDetailPage(
-              dialogSize : Size(width, height), 
+              dialogSize: Size(width, height),
               formKey: formKey,
               hostModel: newOne,
               isMultiSelected: isMultiSelected,

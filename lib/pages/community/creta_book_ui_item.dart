@@ -759,7 +759,8 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
         CretaMenuItem(
           caption: CretaCommuLang['broadcast'] ?? 'Broadcast',
           onPressed: () {
-            HostUtil.broadCast(context, hostManagerHolder, widget.bookModel);
+            HostUtil.broadCast(
+                context, hostManagerHolder, widget.bookModel.mid, widget.bookModel.name.value);
           },
         ),
       if (AccountManager.currentLoginUser.isLoginedUser)

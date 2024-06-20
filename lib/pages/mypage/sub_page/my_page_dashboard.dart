@@ -25,7 +25,7 @@ class MyPageDashBoard extends StatefulWidget {
 }
 
 class _MyPageDashBoardState extends State<MyPageDashBoard> {
-  static const Size cardSize = Size(418, 400);
+  static const Size cardSize = Size(450, 400);
   // 계정 정보 컴포넌트
   Widget accountInfo(UserPropertyModel userProperty) {
     TextStyle propertyFontStyle = CretaFont.bodyMedium.copyWith(color: CretaColor.text.shade400);

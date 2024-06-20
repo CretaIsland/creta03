@@ -1529,8 +1529,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                                 CretaMenuItem(
                                   caption: CretaCommuLang['broadcast'] ?? 'Broadcast',
                                   onPressed: () {
-                                    HostUtil.broadCast(
-                                        context, hostManagerHolder, _currentBookModel!);
+                                    HostUtil.broadCast(context, hostManagerHolder,
+                                        _currentBookModel!.mid, _currentBookModel!.name.value);
                                   },
                                 ),
                               if (AccountManager.currentLoginUser.isLoginedUser)

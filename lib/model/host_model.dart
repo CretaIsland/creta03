@@ -96,6 +96,7 @@ class HostModel extends CretaModel {
   String hddInfo = ''; // read only
   String cpuInfo = ''; // read only
   String memInfo = ''; // read only
+  String netInfo = ''; // read only
 
   String stateMsg = ''; // read only
   DateTime powerOnTime = DateTime(1970, 1, 1); // read only
@@ -170,6 +171,7 @@ class HostModel extends CretaModel {
         hddInfo,
         cpuInfo,
         memInfo,
+        netInfo,
         stateMsg,
         powerOnTime,
         powerOffTime,
@@ -242,6 +244,7 @@ class HostModel extends CretaModel {
     hddInfo = srcHost.hddInfo;
     cpuInfo = srcHost.cpuInfo;
     memInfo = srcHost.memInfo;
+    netInfo = srcHost.netInfo;
     stateMsg = srcHost.stateMsg;
     powerOnTime = srcHost.powerOnTime;
     powerOffTime = srcHost.powerOffTime;
@@ -314,6 +317,7 @@ class HostModel extends CretaModel {
     hddInfo = srcHost.hddInfo;
     cpuInfo = srcHost.cpuInfo;
     memInfo = srcHost.memInfo;
+    netInfo = srcHost.netInfo;
     stateMsg = srcHost.stateMsg;
     powerOnTime = srcHost.powerOnTime;
     powerOffTime = srcHost.powerOffTime;
@@ -456,6 +460,7 @@ class HostModel extends CretaModel {
     hddInfo = map["hddInfo"] ?? '';
     cpuInfo = map["cpuInfo"] ?? '';
     memInfo = map["memInfo"] ?? '';
+    netInfo = map["netInfo"] ?? '';
     stateMsg = map["stateMsg"] ?? '';
     powerOnTime = HycopUtils.dateTimeFromDB(map["powerOnTime"] ?? '');
     powerOffTime = HycopUtils.dateTimeFromDB(map["powerOffTime"] ?? '');
@@ -525,6 +530,7 @@ class HostModel extends CretaModel {
         "hddInfo": hddInfo,
         "cpuInfo": cpuInfo,
         "memInfo": memInfo,
+        "netInfo": netInfo,
         "stateMsg": stateMsg,
         "powerOnTime": HycopUtils.dateTimeToDB(powerOnTime),
         "powerOffTime": HycopUtils.dateTimeToDB(powerOffTime),

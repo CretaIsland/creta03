@@ -114,6 +114,9 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
 
   bool _tagEnabled = true;
 
+  String _publishedBookMid = '';
+  String _publishedBookName = '';
+
   //final bool _isInvite = false;
 
   // late AnimationController animationController;
@@ -417,8 +420,8 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                                     text: CretaStudioLang['broadcast'] ?? 'broadcast',
                                     onPressed: () async {
                                       //setState(() {
-                                      await HostUtil.broadCast(
-                                          context, hostManagerHolder, widget.model!);
+                                      await HostUtil.broadCast(context, hostManagerHolder,
+                                          _publishedBookMid, _publishedBookName);
                                       Navigator.of(context).pop();
                                       //});
                                     },
@@ -477,7 +480,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
 
   Widget step3() {
     return SizedBox(
-      height: 400,
+      height: 380,
       child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -678,6 +681,8 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   //   return true;
   // }
   Future<bool> _beforePublish() async {
+    _publishedBookMid = '';
+    _publishedBookName = '';
     return false;
   }
 
@@ -701,12 +706,16 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
         );
         _modifier = isNew ? CretaStudioLang['newely']! : CretaStudioLang['update']!;
         _publishResultStr = CretaStudioLang['publishComplete']!;
+
+        _publishedBookMid = published.mid;
+        _publishedBookName = published.name.value;
+
         for (var email in _invitees) {
           CretaUtils.inviteBook(
             context,
             email,
-            published.mid,
-            published.name.value,
+            _publishedBookMid,
+            _publishedBookName,
             AccountManager.currentLoginUser.name,
           );
         }

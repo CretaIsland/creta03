@@ -1,6 +1,5 @@
 import 'package:creta_common/common/creta_font.dart';
 import 'package:creta_common/lang/creta_lang.dart';
-import 'package:creta_studio_model/model/book_model.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 
 // ignore: depend_on_referenced_packages
@@ -14,6 +13,7 @@ import 'package:routemaster/routemaster.dart';
 import '../../data_io/host_manager.dart';
 import '../../design_system/dialog/creta_alert_dialog.dart';
 import '../../design_system/text_field/creta_search_bar.dart';
+import '../../lang/creta_device_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../model/enterprise_model.dart';
 import '../../model/host_model.dart';
@@ -24,7 +24,8 @@ class HostUtil {
   static Future<void> broadCast(
     BuildContext context,
     HostManager hostManagerHolder,
-    BookModel model,
+    String publishedBookMid,
+    String publishedBookName,
   ) async {
     List<HostModel> selectedHosts = [];
     String message = '';
@@ -63,8 +64,8 @@ class HostUtil {
               }
 
               for (var host in selectedHosts) {
-                host.requestedBook1Id = model.mid;
-                host.requestedBook1 = model.name.value;
+                host.requestedBook1Id = publishedBookMid;
+                host.requestedBook1 = publishedBookName;
                 host.requestedBook1Time = DateTime.now().toUtc();
                 await hostManagerHolder.setToDB(host);
               }
@@ -94,7 +95,7 @@ class HostUtil {
               //child: Container(
               content: Center(
                   child: Text(
-                      CretaLang['moveToDevice'] ??
+                      CretaDeviceLang['moveToDevice'] ??
                           'Would you like to go to the device management page ?',
                       style: CretaFont.bodyMedium)),
               okButtonText: 'Yes',

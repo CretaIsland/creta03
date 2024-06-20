@@ -583,122 +583,122 @@ class MyPaginatedDataTableState extends State<MyPaginatedDataTable> {
 
     double maxViewWidth = MyColumnInfo.totalWidth(widget.columnInfo) +
         (widget.horizontalMargin * widget.columnInfo.length) +
-        40; //
+        100; //
     // CARD
     return SizedBox(
       width: maxViewWidth,
-      child: Card(
-        semanticContainer: false,
-        shape: const RoundedRectangleBorder(
-            //borderRadius: BorderRadius.circular(0.0),
-            ),
-        child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                if (headerWidgets.isNotEmpty)
-                  Semantics(
-                    container: true,
-                    child: DefaultTextStyle(
-                      // These typographic styles aren't quite the regular ones. We pick the closest ones from the regular
-                      // list and then tweak them appropriately.
-                      // See https://material.io/design/components/data-tables.html#tables-within-cards
-                      style: _selectedRowCount > 0
-                          ? themeData.textTheme.titleMedium!
-                              .copyWith(color: themeData.colorScheme.secondary)
-                          : themeData.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w400),
-                      child: IconTheme.merge(
-                        data: const IconThemeData(
-                          opacity: 0.54,
-                        ),
-                        child: Ink(
-                          height: 64.0,
-                          color: _selectedRowCount > 0 ? themeData.secondaryHeaderColor : null,
-                          child: Padding(
-                            padding: const EdgeInsetsDirectional.only(start: 24, end: 14.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: headerWidgets,
-                            ),
+      //child: Card(
+      //semanticContainer: false,
+      // shape: const RoundedRectangleBorder(
+      //     //borderRadius: BorderRadius.circular(0.0),
+      //     ),
+      child: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              if (headerWidgets.isNotEmpty)
+                Semantics(
+                  container: true,
+                  child: DefaultTextStyle(
+                    // These typographic styles aren't quite the regular ones. We pick the closest ones from the regular
+                    // list and then tweak them appropriately.
+                    // See https://material.io/design/components/data-tables.html#tables-within-cards
+                    style: _selectedRowCount > 0
+                        ? themeData.textTheme.titleMedium!
+                            .copyWith(color: themeData.colorScheme.secondary)
+                        : themeData.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w400),
+                    child: IconTheme.merge(
+                      data: const IconThemeData(
+                        opacity: 0.54,
+                      ),
+                      child: Ink(
+                        height: 64.0,
+                        color: _selectedRowCount > 0 ? themeData.secondaryHeaderColor : null,
+                        child: Padding(
+                          padding: const EdgeInsetsDirectional.only(start: 24, end: 14.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: headerWidgets,
                           ),
                         ),
                       ),
                     ),
                   ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  primary: widget.primary,
-                  controller: widget.controller,
-                  dragStartBehavior: widget.dragStartBehavior,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(minWidth: constraints.minWidth),
-                    child: MyDataTable(
-                      key: _tableKey,
-                      columns: widget.columns,
-                      columnInfo: widget.columnInfo,
-                      onPanUpdate: () {
-                        setState(() {
-                          //print('onPanUpdate');
-                        });
-                      },
-                      onPanEnd: () {
-                        widget.onPanEnd?.call();
-                      },
-                      onDragComplete: () {
-                        widget.onDragComplete?.call();
-                      },
-                      sortColumnIndex: widget.sortColumnIndex,
-                      sortAscending: widget.sortAscending,
-                      onSelectAll: widget.onSelectAll,
-                      // Make sure no decoration is set on the MyDataTable
-                      // from the theme, as its already wrapped in a Card.
-                      //decoration: const BoxDecoration(),
-                      dataRowMinHeight: widget.dataRowMinHeight,
-                      dataRowMaxHeight: widget.dataRowMaxHeight,
-                      headingRowHeight: widget.headingRowHeight,
-                      horizontalMargin: widget.horizontalMargin,
-                      checkboxHorizontalMargin: widget.checkboxHorizontalMargin,
-                      columnSpacing: widget.columnSpacing,
-                      showCheckboxColumn: widget.showCheckboxColumn,
-                      showBottomBorder: true,
-                      rows: _getRows(_firstRowIndex, widget.rowsPerPage),
-                      headingRowColor: widget.headingRowColor,
-                    ),
+                ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                primary: widget.primary,
+                controller: widget.controller,
+                dragStartBehavior: widget.dragStartBehavior,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: constraints.minWidth),
+                  child: MyDataTable(
+                    key: _tableKey,
+                    columns: widget.columns,
+                    columnInfo: widget.columnInfo,
+                    onPanUpdate: () {
+                      setState(() {
+                        //print('onPanUpdate');
+                      });
+                    },
+                    onPanEnd: () {
+                      widget.onPanEnd?.call();
+                    },
+                    onDragComplete: () {
+                      widget.onDragComplete?.call();
+                    },
+                    sortColumnIndex: widget.sortColumnIndex,
+                    sortAscending: widget.sortAscending,
+                    onSelectAll: widget.onSelectAll,
+                    // Make sure no decoration is set on the MyDataTable
+                    // from the theme, as its already wrapped in a Card.
+                    //decoration: const BoxDecoration(),
+                    dataRowMinHeight: widget.dataRowMinHeight,
+                    dataRowMaxHeight: widget.dataRowMaxHeight,
+                    headingRowHeight: widget.headingRowHeight,
+                    horizontalMargin: widget.horizontalMargin,
+                    checkboxHorizontalMargin: widget.checkboxHorizontalMargin,
+                    columnSpacing: widget.columnSpacing,
+                    showCheckboxColumn: widget.showCheckboxColumn,
+                    showBottomBorder: true,
+                    rows: _getRows(_firstRowIndex, widget.rowsPerPage),
+                    headingRowColor: widget.headingRowColor,
                   ),
                 ),
-                if (!widget.showEmptyRows)
-                  SizedBox(
-                      height: (widget.dataRowMaxHeight ?? kMinInteractiveDimension) *
-                          (widget.rowsPerPage - _rowCount + _firstRowIndex)
-                              .clamp(0, widget.rowsPerPage)),
-                DefaultTextStyle(
-                  style: footerTextStyle!,
-                  child: IconTheme.merge(
-                    data: const IconThemeData(
-                      opacity: 0.54,
-                    ),
-                    child: SizedBox(
-                      // TO DO(bkonyi): this won't handle text zoom correctly,
-                      //  https://github.com/flutter/flutter/issues/48522
-                      height: 56.0,
-                      child: SingleChildScrollView(
-                        dragStartBehavior: widget.dragStartBehavior,
-                        scrollDirection: Axis.horizontal,
-                        //reverse: true,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: footerWidgets,
-                        ),
+              ),
+              if (!widget.showEmptyRows)
+                SizedBox(
+                    height: (widget.dataRowMaxHeight ?? kMinInteractiveDimension) *
+                        (widget.rowsPerPage - _rowCount + _firstRowIndex)
+                            .clamp(0, widget.rowsPerPage)),
+              DefaultTextStyle(
+                style: footerTextStyle!,
+                child: IconTheme.merge(
+                  data: const IconThemeData(
+                    opacity: 0.54,
+                  ),
+                  child: SizedBox(
+                    // TO DO(bkonyi): this won't handle text zoom correctly,
+                    //  https://github.com/flutter/flutter/issues/48522
+                    height: 56.0,
+                    child: SingleChildScrollView(
+                      dragStartBehavior: widget.dragStartBehavior,
+                      scrollDirection: Axis.horizontal,
+                      //reverse: true,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: footerWidgets,
                       ),
                     ),
                   ),
                 ),
-              ],
-            );
-          },
-        ),
+              ),
+            ],
+          );
+        },
+        //),
       ),
     );
   }
