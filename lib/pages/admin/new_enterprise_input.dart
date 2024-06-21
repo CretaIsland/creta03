@@ -89,13 +89,13 @@ class NewEnterpriseInputState extends State<NewEnterpriseInput> {
                 decoration: InputDecoration(hintText: CretaDeviceLang['description']!),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                onChanged: (value) => widget.data.enterpriseUrl = value,
-                decoration: InputDecoration(hintText: CretaDeviceLang['enterpriseUrl']!),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: TextFormField(
+            //     onChanged: (value) => widget.data.enterpriseUrl = value,
+            //     decoration: InputDecoration(hintText: CretaDeviceLang['enterpriseUrl']!),
+            //   ),
+            // ),
           ],
         ),
       ),

@@ -471,7 +471,7 @@ class HostModel extends CretaModel {
     os = map["os"] ?? '';
     //isInitialized = map["isInitialized"] ?? false;
     isValidLicense = map["isValidLicense"] ?? true;
-    isUsed = map["isUsed"] ?? false;
+    isUsed = map["isUsed"] ?? true;
     isVNC = map["isVNC"] ?? false;
     isOperational = map["isOperational"] ?? true;
     mute = map["mute"] ?? false;

@@ -220,6 +220,8 @@ class BookPublishedManager extends CretaManager {
       published.jsonStr = '{\n$jsonStr\n}';
     }
 
+    
+
     published.sourceMid = src.mid;
     src.publishMid = published.mid;
     src.save();

@@ -281,6 +281,25 @@ class BookManager extends BaseBookManager {
     return bookStr;
   }
 
+  bool uploadCompleteTest(PageManager? pageManager, BookModel book) {
+    book.toJson();
+    if (pageManager != null) {
+      pageManager.toJson();
+    }
+    if (BookManager.contentsUrlMap.isEmpty) {
+      return true;
+    }
+
+    for (var ele in BookManager.contentsUrlMap.values) {
+      if (ele.contains('blob:')) {
+        logger.severe('uploading is not ending yet ($ele)');
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   Future<bool> download(BuildContext context, PageManager? pageManager, bool shouldDownload) async {
     BookModel? book = onlyOne() as BookModel?;
     if (book == null) {
@@ -499,8 +518,8 @@ class BookManager extends BaseBookManager {
       //   }
       //   return null;
       // });
-      
-      // 20240520 - Hycop(0.4.25) 새로운 파일 이동 코드 (url 파싱 없이 이동 가능) 
+
+      // 20240520 - Hycop(0.4.25) 새로운 파일 이동 코드 (url 파싱 없이 이동 가능)
       HycopFactory.storage!.moveFileFromUrl(ele.value).then((newFileModel) {
         if (newFileModel != null) {
           ele.key.remoteUrl = newFileModel.url;

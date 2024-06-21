@@ -701,6 +701,10 @@
         "apply" : "適用",
         "broadcastComplete" : "放送が適用されました。",
         "moveToDevice" : "デバイス管理画面に移動しますか？",
+
+        "needToWaitUplodingTitle" : "まだアップロード中です。",
+        "needToWaitUploding" : "まだコンテンツのアップロードが完了していません。アップロードが完了した後に発行できます。しばらくしてからもう一度お試しください。",
+    
           
         "end" : "End"
         

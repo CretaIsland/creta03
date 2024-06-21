@@ -231,7 +231,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                       borderRadius: BorderRadius.circular(16.0),
                       child: Image.network(
                         snapshot.data![index],
-                        fit: BoxFit.cover,
                       ),
                     ),
                   );

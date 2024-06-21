@@ -704,6 +704,10 @@
     "broadcastComplete" : "The broadcast has been applied.",
     "moveToDevice" : "Would you like to go to the device management page ?",
 
+    "needToWaitUplodingTitle" : "Still uploading.",
+    "needToWaitUploding" : "The content has not been uploaded yet. You can publish it after the upload is finished. Please try again later.",
+
+
     "end" : "End"
     }
      

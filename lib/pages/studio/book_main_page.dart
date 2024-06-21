@@ -127,6 +127,28 @@ class BookMainPage extends StatefulWidget {
     );
   }
 
+  static void warningNeedToWaitUploding(BuildContext context) {
+    CretaPopup.simple(
+      context: context,
+      title: CretaStudioLang['needToWaitUplodingTitle'] ?? 'Still uploading.',
+      icon: Icons.login,
+      question: CretaStudioLang['needToWaitUploding'] ??
+          'The content has not been uploaded yet. You can publish it after the upload is finished. Please try again later.',
+      yesBtText: CretaLang['close']!,
+      onYes: () {},
+      // noBtText: CretaStudioLang['noBtDnText']!,
+      // onNo: () {},
+      // onYes: () {
+      //   LoginDialog.popupDialog(
+      //     context: context,
+      //     getBuildContext: () {
+      //       return context;
+      //     },
+      //   );
+      // },
+    );
+  }
+
   //static ContaineeEnum selectedClass = ContaineeEnum.Book;
   final bool isPreviewX;
   final bool isThumbnailX;
@@ -1661,6 +1683,13 @@ class _BookMainPageState extends State<BookMainPage> {
                   //BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
                   if (AccountManager.currentLoginUser.isLoginedUser == false) {
                     BookMainPage.warningNeedToLogin(context);
+                    return;
+                  }
+
+                  if (BookMainPage.bookManagerHolder!
+                          .uploadCompleteTest(BookMainPage.pageManagerHolder, _bookModel!) ==
+                      false) {
+                    BookMainPage.warningNeedToWaitUploding(context);
                     return;
                   }
 
