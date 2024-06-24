@@ -239,7 +239,6 @@ class ContentsManager extends BaseContentsManager {
   }
 
   Future<ContentsModel> _createNextContents(ContentsModel model, bool doNotify) async {
-
     await createToDB(model);
     insert(model, postion: getLength(), doNotify: doNotify);
 
@@ -1534,6 +1533,8 @@ class ContentsManager extends BaseContentsManager {
   }
 
   String toJson() {
+    //print('xxxxxxxxxxxxxxxxxx toJson XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+    printIt();
     if (getAvailLength() == 0) {
       return ',\n\t\t\t"contents" : []\n';
     }
@@ -1598,6 +1599,15 @@ class ContentsManager extends BaseContentsManager {
       ContentsModel newModel = ContentsModel('', bookMid);
       newModel.copyFrom(model, newMid: newModel.mid, pMid: frame.mid);
       await createToDB(newModel);
+    }
+  }
+
+  void printIt() {
+    //print('contentsManager.printIt()========================================');
+    for (var ele in modelList) {
+      ContentsModel model = ele as ContentsModel;
+      //print(
+      //    '*** contents = ${model.mid}, ${model.parentMid.value}, ${model.remoteUrl}, ${model.isRemoved.value}, ${model.updateTime}');
     }
   }
 }

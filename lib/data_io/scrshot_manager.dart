@@ -30,13 +30,15 @@ class ScrshotManager extends CretaManager {
 
   String prefix() => CretaManager.modelPrefix(ExModelType.scrshot);
 
-  Future<List<AbsExModel>> getScrshotHistory(String hostId, {int limit = 100}) async {
+  Future<List<AbsExModel>> getScrshotHistory(String hostId, {int limit = 30}) async {
     logger.finest('lastestData');
     Map<String, QueryValue> query = {};
     query['hostId'] = QueryValue(value: hostId);
+    Map<String, OrderDirection> orderBy = {};
+    orderBy['updateTime'] = OrderDirection.descending;
     //query['isRemoved'] = QueryValue(value: false);
     //print('myDataOnly start');
-    final retval = await queryFromDB(query, limit: limit);
+    final retval = await queryFromDB(query, limit: limit, orderBy: orderBy);
     //print('myDataOnly end ${retval.length}');
     return retval;
   }

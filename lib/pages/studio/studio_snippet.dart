@@ -212,9 +212,9 @@ class StudioSnippet {
       model.remoteUrl = fileModel.url;
       model.thumbnailUrl = fileModel.thumbnailUrl;
 
-      logger.info('uploaded url = ${model.url}');
+      logger.severe('uploaded url = ${model.url}');
       logger.info('uploaded fileName = ${model.name}');
-      logger.info('uploaded remoteUrl = ${model.remoteUrl!}');
+      logger.severe('uploaded remoteUrl = ${model.remoteUrl!}');
       logger.info('uploaded aspectRatio = ${model.aspectRatio.value}');
       //model.save(); //<-- save 는 지연되므로 setToDB 를 바로 호출하는 것이 바람직하다.
       await contentsManager.setToDB(model);
@@ -224,7 +224,22 @@ class StudioSnippet {
     logger.info('send event to property');
     logger.info('uploaded thumbnailUrl = ${model.thumbnailUrl}');
     UploadingPopup.uploadEnd(model.name);
-    contentsManager.sendEvent?.sendEvent(model);
+    //print('uploading end -----------------------------------------------------------------');
+    contentsManager.printIt();
+
+    // skpark 이상한 버그가 있다.  modelist 에 같은놈이 있다.
+    // 이는 CretaBook 을 신규로 만들고, 콘텐츠를 업로드하는 경우에만 발생한다.
+    // 어쩔 수 없이 임시로 같은놈에게도 같은 값을 할당해 준다.
+    // 나중에 같은 놈이 생기지 않도록 수정해야 한다.
+    for (var ele in contentsManager.modelList) {
+      ContentsModel founded = ele as ContentsModel;
+      if (founded.mid == model.mid) {
+        founded.remoteUrl = model.remoteUrl;
+        founded.thumbnailUrl = model.thumbnailUrl;
+        contentsManager.sendEvent?.sendEvent(founded);
+      }
+    }
+    contentsManager.printIt();
   }
 
   static List<CretaMenuItem> getCopyRightListItem(

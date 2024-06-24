@@ -103,16 +103,20 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     ScrshotManager scrshotManager = ScrshotManager();
     List<AbsExModel> modelList =
         await scrshotManager.getScrshotHistory(widget.hostModel.hostId, limit: 30);
-    //print('scrshot history: ${value.length}');
+    //print('scrshot history: ${modelList.length}');
     // 여기서 URL 을 목록으로 가져오는 작업을 한다.
     List<String> scrshotUrlHistory = [];
 
     for (var ele in modelList) {
       ScrshotModel model = ele as ScrshotModel;
       if (model.scrshotFile.isNotEmpty) {
-        String url = await HycopFactory.storage!.getImageUrl(model.scrshotFile);
-        //print('scrshot url: $url');
-        scrshotUrlHistory.add(url);
+        try {
+          String url = await HycopFactory.storage!.getImageUrl(model.scrshotFile);
+          //print('scrshot url: $url, ${model.scrshotTime}');
+          scrshotUrlHistory.add(url);
+        } catch (e) {
+          logger.severe('Error in getting scrshot url: $e');
+        }
       }
     }
     //print('scrshot list: ${scrshotUrlHistory.length}');

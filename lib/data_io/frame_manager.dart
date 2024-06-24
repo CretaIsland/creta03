@@ -637,6 +637,7 @@ class FrameManager extends BaseFrameManager {
   }
 
   ContentsManager findOrCreateContentsManager(FrameModel frameModel) {
+    //print('findOrCreateContentsManager');
     ContentsManager? retval;
     if (frameModel.isOverlay.value == true && pageModel.mid != frameModel.parentMid.value) {
       //  Overlay 이기 때문에,  ContentsManager 가 다른 frameManager 에 있는 것이므로
@@ -660,7 +661,7 @@ class FrameManager extends BaseFrameManager {
       retval = findContentsManagerByMid(frameModel.mid);
       if (retval == null) {
         // 여기서 ContentsManagerMap  에 등록된다.
-        logger.info('contentsManager not found !!! new ContentsManager created');
+        //print('contentsManager not found !!! new ContentsManager created');
         retval = newContentsManager(frameModel);
         retval.clearAll();
       }

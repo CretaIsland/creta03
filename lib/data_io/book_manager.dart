@@ -282,6 +282,7 @@ class BookManager extends BaseBookManager {
   }
 
   bool uploadCompleteTest(PageManager? pageManager, BookModel book) {
+   
     book.toJson();
     if (pageManager != null) {
       pageManager.toJson();
@@ -291,6 +292,7 @@ class BookManager extends BaseBookManager {
     }
 
     for (var ele in BookManager.contentsUrlMap.values) {
+      //print('***************************************ele=$ele');
       if (ele.contains('blob:')) {
         logger.severe('uploading is not ending yet ($ele)');
         return false;
