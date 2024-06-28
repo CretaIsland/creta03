@@ -1606,8 +1606,8 @@ class ContentsManager extends BaseContentsManager {
     //print('contentsManager.printIt()========================================');
     for (var ele in modelList) {
       ContentsModel model = ele as ContentsModel;
-      //print(
-      //    '*** contents = ${model.mid}, ${model.parentMid.value}, ${model.remoteUrl}, ${model.isRemoved.value}, ${model.updateTime}');
+      logger.info(
+          '*** contents = ${model.mid}, ${model.parentMid.value}, ${model.remoteUrl}, ${model.isRemoved.value}, ${model.updateTime}');
     }
   }
 }

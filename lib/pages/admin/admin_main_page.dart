@@ -2,6 +2,7 @@
 
 import 'dart:math';
 
+import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_const.dart';
 import 'package:creta_common/common/creta_font.dart';
 import 'package:creta_common/common/creta_snippet.dart';
@@ -21,8 +22,12 @@ import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../data_io/enterprise_manager.dart';
+import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/component/creta_basic_layout_mixin.dart';
 import '../../design_system/component/snippet.dart';
+import '../../design_system/dataTable/my_data_mixin.dart';
+import '../../design_system/dataTable/my_data_table.dart';
+import '../../design_system/dataTable/web_data_table.dart';
 import '../../design_system/dialog/creta_alert_dialog.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_device_lang.dart';
@@ -32,8 +37,10 @@ import '../../routes.dart';
 import '../login/creta_account_manager.dart';
 import '../studio/studio_constant.dart';
 import 'enterprise_grid_item.dart';
+import 'enterprise_header_info.dart';
 import 'enterprsie_detail_page.dart';
 import 'new_enterprise_input.dart';
+import 'team_tree_widget.dart';
 //import '../login_page.dart';
 
 // EnterpriseSelectNotifier selectNotifierHolder = EnterpriseSelectNotifier();
@@ -109,7 +116,7 @@ class AdminMainPage extends StatefulWidget {
   State<AdminMainPage> createState() => _AdminMainPageState();
 }
 
-class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixin {
+class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixin, MyDataMixin {
   int counter = 0;
   final Random random = Random();
   //late WindowResizeListner sizeListener;
@@ -119,7 +126,9 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   //bool _openDetail = false;
   EnterpriseModel? selectedEnterprise;
 
-  //bool _isGridView = true;
+  bool _isGridView = true;
+
+  late double _panelWidth;
 
   // ignore: unused_field
 
@@ -132,7 +141,8 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   bool dropDownButtonOpened = false;
   GlobalKey dropDownButtonKey = GlobalKey();
 
-  late ScrollController scrollContoller;
+  //@override
+  //late ScrollController scrollContoller;
   LanguageType oldLanguage = LanguageType.none;
 
   static Future<bool>? isLangInit;
@@ -153,10 +163,33 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
     logger.fine('initState start');
 
     super.initState();
+    initMixin(columName: 'name', ascending: false, scroll: getBannerScrollController);
+
+    _panelWidth = rightPaneRect.childWidth;
+
+    MyDataCell Function(dynamic, String)? listCell;
+    listCell = (value, key) => MyDataCell(
+          Text(
+            '$value',
+            style: TextStyle(
+              decoration: TextDecoration.underline,
+              color: CretaColor.primary,
+            ),
+          ),
+        );
+
+    EnterpriseHeaderInfo headerInfo = EnterpriseHeaderInfo();
+    columnInfoList = headerInfo.initColumnInfo();
+
+    for (var ele in columnInfoList) {
+      if (ele.name == 'admins') {
+        ele.dataCell = listCell;
+      }
+    }
 
     //scrollContoller = ScrollController();
     //scrollContoller.addListener(_scrollListener);
-    scrollContoller = getBannerScrollController;
+    //scrollContoller = getBannerScrollController;
     setUsingBannerScrollBar(
       scrollChangedCallback: _scrollListener,
       // bannerMaxHeight: 196 + 200,
@@ -225,7 +258,8 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
     //WidgetsBinding.instance.removeObserver(sizeListener);
     //HycopFactory.realtime!.removeListener('creta_book');
     enterpriseManagerHolder?.removeRealTimeListen();
-    scrollContoller.dispose();
+    disposeMixin();
+    //scrollContoller.dispose();
     //HycopFactory.myRealtime!.stop();
   }
 
@@ -317,9 +351,16 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
                       ],
                       //mainWidget: sizeListener.isResizing() ? Container() : _bookGrid(context))),
                       onSearch: (value) {
-                        enterpriseManagerHolder!.onSearch(value, () => setState(() {}));
+                        if (_isGridView) {
+                          enterpriseManagerHolder!.onSearch(value, () => setState(() {}));
+                        } else {
+                          //print('onSearch : value = $value');
+                          setState(() {
+                            filterTexts = value.trim().split(' ');
+                          });
+                        }
                       },
-                      mainWidget: _enterpriseMain, // _bookGrid, //_bookGrid(context),
+                      mainWidget: _mainWidget, // _bookGrid, //_bookGrid(context),
                       onFoldButtonPressed: () {
                         setState(() {});
                       },
@@ -353,7 +394,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
     }
   }
 
-  Widget _enterpriseMain(BuildContext context) {
+  Widget _mainWidget(BuildContext context) {
     // if (sizeListener.isResizing()) {
     //   return consumerFunc(context, null);
     // }
@@ -377,13 +418,93 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
       /*List<AbsExModel>? data*/
       ) {
     logger.finest('consumerFunc');
-    // _onceDBGetComplete = true;
+    _onceDBGetComplete = true;
     // selectedItems = List.generate(enterpriseManagerHolder!.getAvailLength() + 2, (index) => false);
 
     return Consumer<EnterpriseManager>(builder: (context, enterpriseManager, child) {
-      logger.fine('Consumer  ${enterpriseManager.getLength() + 1}');
+      if (selectedEnterprise != null) {
+        int length = enterpriseManager.getLength() + 2;
+        _panelWidth = rightPaneRect.childWidth / 2;
+        if (_panelWidth < 420) {
+          _panelWidth = rightPaneRect.childWidth;
+          return _enterpriseList(enterpriseManager);
+        }
+        print(
+            '$_panelWidth, $length, ${rightPaneRect.childWidth} =====================================');
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(width: _panelWidth, child: _enterpriseList(enterpriseManager)),
+            TeamTreeWidget(enterpriseModel: selectedEnterprise!),
+          ],
+        );
+      }
+      _panelWidth = rightPaneRect.childWidth;
       return _enterpriseList(enterpriseManager);
     });
+  }
+
+  Widget _toolbar() {
+    return Container(
+      padding: EdgeInsets.only(bottom: _isGridView ? 20.0 : 0.0),
+      //height: LayoutConst.deviceToolbarHeight,
+      //color: Colors.amberAccent,
+      child: Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        runAlignment: WrapAlignment.spaceBetween,
+        //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Row(children: [
+              _isGridView
+                  ? BTN.fill_gray_i_l(
+                      tooltip: ' list style ',
+                      tooltipBg: Colors.black12,
+                      icon: Icons.list,
+                      iconSize: 24,
+                      onPressed: () {
+                        setState(() {
+                          _isGridView = false;
+                        });
+                      },
+                    )
+                  : BTN.fill_gray_i_l(
+                      tooltip: ' grid style ',
+                      tooltipBg: Colors.black12,
+                      icon: Icons.grid_view_outlined,
+                      onPressed: () {
+                        setState(() {
+                          _isGridView = true;
+                        });
+                      },
+                    ),
+              BTN.fill_gray_i_l(
+                tooltip: ' refresh ',
+                tooltipBg: Colors.black12,
+                // refresh
+                icon: Icons.refresh,
+                iconSize: 20,
+                onPressed: () {
+                  setState(() {
+                    _onceDBGetComplete = false;
+                    _initData();
+                  });
+                },
+              ),
+              BTN.fill_gray_i_l(
+                tooltip: ' add new device ',
+                tooltipBg: Colors.black12,
+                // refresh
+                icon: Icons.add_outlined,
+                iconSize: 24,
+                onPressed: insertItem,
+              ),
+            ]),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _enterpriseList(EnterpriseManager enterpriseManager) {
@@ -396,7 +517,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
     // int columnCount = (rightPaneRect.childWidth - CretaConst.cretaPaddingPixel * 2) ~/
     //     CretaConst.bookThumbSize.width;
 
-    int columnCount = ((rightPaneRect.childWidth - CretaConst.cretaPaddingPixel * 2) /
+    int columnCount = ((_panelWidth - CretaConst.cretaPaddingPixel * 2) /
             (itemWidth > 0
                 ? min(itemWidth, CretaConst.bookThumbSize.width)
                 : CretaConst.bookThumbSize.width))
@@ -405,9 +526,9 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
     //print('columnCount=$columnCount');
 
     if (columnCount <= 1) {
-      if (rightPaneRect.childWidth > 280) {
+      if (_panelWidth > 280) {
         columnCount = 2;
-      } else if (rightPaneRect.childWidth > 154) {
+      } else if (_panelWidth > 154) {
         columnCount = 1;
       } else {
         return SizedBox.shrink();
@@ -449,6 +570,96 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
       },
     );
 
+    if (rowPerChanged == false) {
+      initialRowPerPage = getInitialRowPerPages(getDataAreaHeight(context), rowHeight);
+      initAvailableRowPerPage(initialRowPerPage);
+    }
+
+    Widget dataTable = ListView.builder(
+        controller: scrollContoller, // Provide the controller to ListView
+        itemCount: 1,
+        itemBuilder: (BuildContext context, int index) {
+          return WebDataTable(
+            showCheckboxColumn: false,
+            header: SizedBox(
+              width: 300,
+              child: Center(child: Text('Enterprise List', style: CretaFont.titleLarge)),
+            ),
+            onDragComplete: () {
+              setState(() {});
+              CretaAccountManager.setDeviceColumnInfo(columnInfoToJson());
+            },
+            onPanEnd: () {
+              CretaAccountManager.setDeviceColumnInfo(columnInfoToJson());
+            },
+            columnInfo: columnInfoList,
+            horizontalMargin: 6,
+            columnSpacing: 10,
+            headingRowHeight: headingRowHeight,
+            dataRowMinHeight: rowHeight,
+            dataRowMaxHeight: rowHeight * 2,
+            controller: horizontalController,
+            availableRowsPerPage: availableRowPerPage,
+            source: WebDataTableSource(
+              sortColumnName: sortColumnName,
+              sortAscending: sortAscending,
+              filterTexts: filterTexts,
+              primaryKeyName: 'mid',
+              rows: enterpriseManager.modelList.map((e) => e.toMap()).toList(),
+              selectedRowKeys: selectedRowKeys,
+              onTapRow: (rows, index) {
+                // Map<String, dynamic> row = rows[index];
+                // String mid = row['mid'] ?? '';
+                //print('model=$mid, selectNotifierHolder.length = ${selectNotifierHolder.length}');
+                //selectNotifierHolder.toggleSelect(mid);
+                //print('onTapRows');
+              },
+              onSelectRows: (keys) {
+                //print('onSelectRows(): count = ${keys.length} keys = $keys}');
+
+                // for (var mid in keys) {
+                //   //selectNotifierHolder.selected(mid, true);
+                // }
+                //print(
+                //    '3. selectNotifierHolder.hasSelected() = ${selectNotifierHolder.hasSelected()}');
+
+                setState(() {
+                  selectedRowKeys = keys;
+                });
+              },
+              columns: columnInfoList
+                  .map((columnInfo) => WebDataColumn(
+                        width: columnInfo.width,
+                        name: columnInfo.name,
+                        label: Text(columnInfo.label),
+                        dataCell: columnInfo.dataCell ?? (value, key) => MyDataCell(Text('$value')),
+                        filterText: columnInfo.filterText,
+                      ))
+                  .toList(),
+            ),
+            onPageChanged: (offset) {
+              //print('onPageChanged(): offset = $offset');
+            },
+            onSort: (columnName, ascending) {
+              //print('onSort(): columnName = $columnName, ascending = $ascending');
+              setState(() {
+                sortColumnName = columnName;
+                sortAscending = ascending;
+              });
+            },
+            onRowsPerPageChanged: (rowsPerPage) {
+              //print('onRowsPerPageChanged(): rowsPerPage = $rowsPerPage');
+              setState(() {
+                if (rowsPerPage != null) {
+                  initialRowPerPage = rowsPerPage;
+                  rowPerChanged = true;
+                }
+              });
+            },
+            rowsPerPage: initialRowPerPage,
+          );
+        });
+
     return Scrollbar(
       thumbVisibility: true,
       controller: scrollContoller,
@@ -457,8 +668,8 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            //_toolbar(),
-            Expanded(child: gridView),
+            _toolbar(),
+            Expanded(child: _isGridView ? gridView : dataTable),
           ],
         ),
       ),
@@ -510,90 +721,65 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
     }
     //print('----------------------');
     //if (isValidIndex(index)) {
-    return GestureDetector(
-      onDoubleTap: () async {
-        if (itemModel != null) {
-          setState(() {
-            //_openDetail = true;
-            selectedEnterprise = itemModel;
-          });
-          await _showDetailView();
-        }
-      },
-      onTap: () {
-        if (itemModel != null) {
-          //selectNotifierHolder.toggleSelect(itemModel.mid);
-        }
-      },
-      child:
-
-          // EnterpriseGridItem(
-          //   enterpriseManager: enterpriseManager,
-          //   index: index - 1,
-          //   itemKey: GlobalKey<EnterpriseGridItemState>(),
-          //   // key: isValidIndex(index)
-          //   //     ? (bookManager.findByIndex(index - 1) as CretaModel).key
-          //   //     : GlobalKey(),
-          //   enterpriseModel: isValidIndex(index, enterpriseManager)
-          //       ? enterpriseManager.findByIndex(index - 1) as EnterpriseModel
-          //       : null,
-          //   width: itemWidth,
-          //   height: itemHeight,
-          //   selectedPage: widget.selectedPage,
-          //   onEdit: (enterpriseModel) {
-          //     setState(() {
-          //       _openDetail = true;
-          //       selectedEnterprise = enterpriseModel;
-          //     });
-          //   },
-          // ),
-
-          Stack(
-        fit: StackFit.expand,
-        children: [
-          EnterpriseGridItem(
-              enterpriseManager: enterpriseManager,
-              index: index - 1,
-              //itemKey: selectNotifierHolder.getKey(itemModel?.mid ?? ''),
-              // key: isValidIndex(index)
-              //     ? (bookManager.findByIndex(index - 1) as CretaModel).key
-              //     : GlobalKey(),
-              enterpriseModel: itemModel,
-              width: itemWidth,
-              height: itemHeight,
-              selectedPage: widget.selectedPage,
-              onEdit: (enterpriseModel) async {
-                //setState(() {
-                //_openDetail = true;
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        EnterpriseGridItem(
+            key: GlobalObjectKey(itemModel != null
+                ? 'EnterpriseGridItem_${itemModel.mid}_${selectedEnterprise != null && selectedEnterprise!.mid == itemModel.mid}'
+                : 'EnterpriseGridItem_insert'),
+            enterpriseManager: enterpriseManager,
+            index: index - 1,
+            //itemKey: selectNotifierHolder.getKey(itemModel?.mid ?? ''),
+            // key: isValidIndex(index)
+            //     ? (bookManager.findByIndex(index - 1) as CretaModel).key
+            //     : GlobalKey(),
+            enterpriseModel: itemModel,
+            width: itemWidth,
+            height: itemHeight,
+            selectedPage: widget.selectedPage,
+            isSelected: (selectedEnterprise != null &&
+                itemModel != null &&
+                selectedEnterprise!.mid == itemModel.mid),
+            onTap: (enterpriseModel) async {
+              setState(() {
                 selectedEnterprise = enterpriseModel;
-                //});
-                await _showDetailView();
-              },
-              onInsert: insertItem),
-          // if (_isSelected(index))
-          //   Positioned(
-          //     top: 4,
-          //     left: 4,
-          //     child: Container(
-          //       //padding: EdgeInsets.all(2), // Adjust padding as needed
-          //       decoration: BoxDecoration(
-          //         // border: Border.all(
-          //         //   color: Colors.white, // Change border color as needed
-          //         //   width: 2, // Change border width as needed
-          //         // ),
-          //         shape: BoxShape.circle,
-          //         color: Colors.white.withOpacity(0.5),
-          //       ),
-          //       child: Icon(
-          //         Icons.check_circle_outline,
-          //         size: 42,
-          //         color: CretaColor.primary,
-          //       ),
-          //     ),
-          //   ),
-        ],
-      ),
+              });
+            },
+            onEdit: (enterpriseModel) async {
+              //setState(() {
+              //_openDetail = true;
+              selectedEnterprise = enterpriseModel;
+              //});
+              await _showDetailView();
+            },
+            onInsert: insertItem),
+        // if (selectedEnterprise != null &&
+        //     itemModel != null &&
+        //     selectedEnterprise!.mid == itemModel.mid)
+        //   Positioned(
+        //     top: 4,
+        //     left: 4,
+        //     child: Container(
+        //       //padding: EdgeInsets.all(2), // Adjust padding as needed
+        //       decoration: BoxDecoration(
+        //         // border: Border.all(
+        //         //   color: Colors.white, // Change border color as needed
+        //         //   width: 2, // Change border width as needed
+        //         // ),
+        //         shape: BoxShape.circle,
+        //         color: Colors.white.withOpacity(0.5),
+        //       ),
+        //       child: Icon(
+        //         Icons.check_circle_outline,
+        //         size: 42,
+        //         color: CretaColor.primary,
+        //       ),
+        //     ),
+        //   ),
+      ],
     );
+    //);
   }
 
   Future<void> _showDetailView() async {
@@ -621,6 +807,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
             child: EnterpriseDetailPage(
               formKey: formKey,
               enterpriseModel: newOne,
+              width: width,
             ),
           ),
           actions: <Widget>[
@@ -712,7 +899,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
 
     UserModel userAccount =
         await AccountManager.createDefaultAccount(input.name); //EnterpriseModel model =
-    await enterpriseManagerHolder!.createEnterprise(
+    EnterpriseModel enterprise = await enterpriseManagerHolder!.createEnterprise(
         name: input.name,
         description: input.description,
         enterpriseUrl: input.enterpriseUrl,
@@ -723,6 +910,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
     TeamManager teamManager = TeamManager();
     TeamModel team = teamManager.getNewTeam(
         createAndSetToCurrent: false, username: input.name, userEmail: userAccount.email);
+    team.parentMid.set(enterprise.mid, noUndo: true, save: false);
     await teamManager.createTeam(team);
 
     UserPropertyModel userPropertyModel =

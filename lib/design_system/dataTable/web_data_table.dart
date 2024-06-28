@@ -76,7 +76,7 @@ class WebDataTable extends StatelessWidget {
         controller: controller,
         scrollDirection: Axis.horizontal,
         child: MyPaginatedDataTable(
-          //header: header,
+          header: header,
           onPanEnd: onPanEnd,
           onDragComplete: onDragComplete,
           columnInfo: columnInfo,

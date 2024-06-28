@@ -113,4 +113,9 @@ class EnterpriseManager extends CretaManager {
     selectedMid = enterpriseModel.mid;
     return enterpriseModel;
   }
+
+  @override
+  void onSearch(String value, Function afterSearch) {
+    search(['name', 'description'], value, afterSearch);
+  }
 }

@@ -1,23 +1,31 @@
 //import 'package:creta_common/common/creta_common_utils.dart';
 
+import 'dart:typed_data';
+
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 import 'package:creta_common/common/creta_font.dart';
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/logger.dart';
+import 'package:hycop/hycop/hycop_factory.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../lang/creta_device_lang.dart';
 import '../../model/enterprise_model.dart';
 import '../login/creta_account_manager.dart';
+import '../mypage/mypage_common_widget.dart';
 //import 'book_select_filter.dart';
 
 class EnterpriseDetailPage extends StatefulWidget {
   final EnterpriseModel enterpriseModel;
   final GlobalKey<FormState> formKey;
+  final double width;
 
   const EnterpriseDetailPage({
     super.key,
     required this.enterpriseModel,
     required this.formKey,
+    required this.width,
   });
 
   @override
@@ -30,6 +38,9 @@ class _EnterpriseDetailPageState extends State<EnterpriseDetailPage> {
   TextEditingController adminEmailTextController = TextEditingController();
 
   String _message = '';
+
+  XFile? _selectedImg;
+  Uint8List? _selectedImgBytes;
 
   @override
   void initState() {
@@ -57,71 +68,129 @@ class _EnterpriseDetailPageState extends State<EnterpriseDetailPage> {
         //   child:
         Form(
       key: widget.formKey,
-      child: ListView(
-        children: <Widget>[
-          _nvRow('Enterprise ID', widget.enterpriseModel.name),
-          ..._admin(),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+            width: widget.width * 0.45,
+            child: ListView(
+              children: <Widget>[
+                _nvRow('Enterprise ID', widget.enterpriseModel.name),
+                ..._admin(),
 
-          TextFormField(
-            initialValue: widget.enterpriseModel.description,
-            decoration: InputDecoration(labelText: 'Description', labelStyle: titleStyle),
-            onSaved: (value) => widget.enterpriseModel.description = value ?? '',
-          ),
-          TextFormField(
-            initialValue: widget.enterpriseModel.enterpriseUrl,
-            decoration: InputDecoration(labelText: 'Enterprise Url', labelStyle: titleStyle),
-            onSaved: (value) => widget.enterpriseModel.enterpriseUrl = value ?? '',
-          ),
-          TextFormField(
-            initialValue: widget.enterpriseModel.openAiKey,
-            decoration: InputDecoration(labelText: 'openAiKey', labelStyle: titleStyle),
-            onSaved: (value) => widget.enterpriseModel.openAiKey = value ?? '',
-          ),
-          TextFormField(
-            initialValue: widget.enterpriseModel.openWeatherApiKey,
-            decoration: InputDecoration(labelText: 'openWeatherApiKey', labelStyle: titleStyle),
-            onSaved: (value) => widget.enterpriseModel.openWeatherApiKey = value ?? '',
-          ),
+                TextFormField(
+                  initialValue: widget.enterpriseModel.description,
+                  decoration: InputDecoration(labelText: 'Description', labelStyle: titleStyle),
+                  onSaved: (value) => widget.enterpriseModel.description = value ?? '',
+                ),
+                TextFormField(
+                  initialValue: widget.enterpriseModel.enterpriseUrl,
+                  decoration: InputDecoration(labelText: 'Enterprise Url', labelStyle: titleStyle),
+                  onSaved: (value) => widget.enterpriseModel.enterpriseUrl = value ?? '',
+                ),
+                TextFormField(
+                  initialValue: widget.enterpriseModel.openAiKey,
+                  decoration: InputDecoration(labelText: 'openAiKey', labelStyle: titleStyle),
+                  onSaved: (value) => widget.enterpriseModel.openAiKey = value ?? '',
+                ),
+                TextFormField(
+                  initialValue: widget.enterpriseModel.socketUrl,
+                  decoration: InputDecoration(labelText: 'socketUrl', labelStyle: titleStyle),
+                  onSaved: (value) => widget.enterpriseModel.socketUrl = value ?? '',
+                ),
+                TextFormField(
+                  initialValue: widget.enterpriseModel.mediaApiUrl,
+                  decoration: InputDecoration(labelText: 'mediaApiUrl', labelStyle: titleStyle),
+                  onSaved: (value) => widget.enterpriseModel.mediaApiUrl = value ?? '',
+                ),
 
-          TextFormField(
-            initialValue: widget.enterpriseModel.giphyApiKey.toString(),
-            decoration: InputDecoration(labelText: 'giphyApiKey', labelStyle: titleStyle),
-            onSaved: (value) => widget.enterpriseModel.giphyApiKey = value ?? '',
-          ),
-          TextFormField(
-            initialValue: widget.enterpriseModel.newsApiKey,
-            decoration: InputDecoration(labelText: 'newsApiKey', labelStyle: titleStyle),
-            onSaved: (value) => widget.enterpriseModel.newsApiKey = value ?? '',
-          ),
-          TextFormField(
-            initialValue: widget.enterpriseModel.dailyWordApi,
-            decoration: InputDecoration(labelText: 'dailyWordApi', labelStyle: titleStyle),
-            onSaved: (value) => widget.enterpriseModel.dailyWordApi = value ?? '',
-          ),
+                TextFormField(
+                  initialValue: widget.enterpriseModel.webrtcUrl.toString(),
+                  decoration: InputDecoration(labelText: 'webrtcUrl', labelStyle: titleStyle),
+                  onSaved: (value) => widget.enterpriseModel.webrtcUrl = value ?? '',
+                ),
 
-          TextFormField(
-            initialValue: widget.enterpriseModel.currencyXchangeApi.toString(),
-            decoration: InputDecoration(labelText: 'currencyXchangeApi', labelStyle: titleStyle),
-            onSaved: (value) => widget.enterpriseModel.currencyXchangeApi = value ?? '',
+                // Add more widgets for the second column here
+              ],
+            ),
           ),
-          TextFormField(
-            initialValue: widget.enterpriseModel.socketUrl,
-            decoration: InputDecoration(labelText: 'socketUrl', labelStyle: titleStyle),
-            onSaved: (value) => widget.enterpriseModel.socketUrl = value ?? '',
-          ),
-          TextFormField(
-            initialValue: widget.enterpriseModel.mediaApiUrl,
-            decoration: InputDecoration(labelText: 'mediaApiUrl', labelStyle: titleStyle),
-            onSaved: (value) => widget.enterpriseModel.mediaApiUrl = value ?? '',
-          ),
+          SizedBox(
+            width: widget.width * 0.45,
+            child: ListView(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text('Enterprise Logo image', style: titleStyle),
+                ),
+                MyPageCommonWidget.profileImgComponent(
+                    width: 200,
+                    height: 200,
+                    profileImgUrl: widget.enterpriseModel.imageUrl,
+                    profileImgBytes: _selectedImgBytes,
+                    userName: widget.enterpriseModel.name,
+                    replaceColor: Colors.amberAccent,
+                    borderRadius: BorderRadius.circular(20),
+                    editBtn: Center(
+                      child: BTN.opacity_gray_i_l(
+                          icon: const Icon(Icons.camera_alt_outlined, color: Colors.white).icon!,
+                          onPressed: () async {
+                            try {
+                              _selectedImg =
+                                  await ImagePicker().pickImage(source: ImageSource.gallery);
+                              if (_selectedImg != null) {
+                                _selectedImg!.readAsBytes().then((value) {
+                                  setState(() {
+                                    _selectedImgBytes = value;
+                                  });
+                                  HycopFactory.storage!
+                                      .uploadFile(_selectedImg!.name, _selectedImg!.mimeType!,
+                                          _selectedImgBytes!)
+                                      .then((value) {
+                                    if (value != null) {
+                                      widget.enterpriseModel.imageUrl = value.url;
+                                    }
+                                  });
+                                });
+                              }
+                            } catch (error) {
+                              logger.severe("error at enterprise image >> $error");
+                            }
+                          }),
+                    )),
 
-          TextFormField(
-            initialValue: widget.enterpriseModel.webrtcUrl.toString(),
-            decoration: InputDecoration(labelText: 'webrtcUrl', labelStyle: titleStyle),
-            onSaved: (value) => widget.enterpriseModel.webrtcUrl = value ?? '',
-          ),
+                TextFormField(
+                  initialValue: widget.enterpriseModel.openWeatherApiKey,
+                  decoration:
+                      InputDecoration(labelText: 'openWeatherApiKey', labelStyle: titleStyle),
+                  onSaved: (value) => widget.enterpriseModel.openWeatherApiKey = value ?? '',
+                ),
+                TextFormField(
+                  initialValue: widget.enterpriseModel.giphyApiKey.toString(),
+                  decoration: InputDecoration(labelText: 'giphyApiKey', labelStyle: titleStyle),
+                  onSaved: (value) => widget.enterpriseModel.giphyApiKey = value ?? '',
+                ),
+                TextFormField(
+                  initialValue: widget.enterpriseModel.newsApiKey,
+                  decoration: InputDecoration(labelText: 'newsApiKey', labelStyle: titleStyle),
+                  onSaved: (value) => widget.enterpriseModel.newsApiKey = value ?? '',
+                ),
+                TextFormField(
+                  initialValue: widget.enterpriseModel.dailyWordApi,
+                  decoration: InputDecoration(labelText: 'dailyWordApi', labelStyle: titleStyle),
+                  onSaved: (value) => widget.enterpriseModel.dailyWordApi = value ?? '',
+                ),
 
-          // Add more widgets for the second column here
+                TextFormField(
+                  initialValue: widget.enterpriseModel.currencyXchangeApi.toString(),
+                  decoration:
+                      InputDecoration(labelText: 'currencyXchangeApi', labelStyle: titleStyle),
+                  onSaved: (value) => widget.enterpriseModel.currencyXchangeApi = value ?? '',
+                ),
+
+                // Add more widgets for the second column here
+              ],
+            ),
+          ),
         ],
       ),
     );

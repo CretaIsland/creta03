@@ -31,7 +31,9 @@ class EnterpriseGridItem extends StatefulWidget {
   //final GlobalKey<EnterpriseGridItemState> itemKey;
   final AdminSelectedPage selectedPage;
   final void Function(EnterpriseModel? enterpriseModel) onEdit;
+  final void Function(EnterpriseModel? enterpriseModel) onTap;
   final void Function() onInsert;
+  final bool isSelected;
 
   const EnterpriseGridItem({
     super.key,
@@ -43,7 +45,9 @@ class EnterpriseGridItem extends StatefulWidget {
     required this.height,
     required this.selectedPage,
     required this.onEdit,
+    required this.onTap,
     required this.onInsert,
+    required this.isSelected,
   });
 
   @override
@@ -126,7 +130,7 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
             borderRadius: BorderRadius.circular(20.0),
             border: widget.enterpriseModel != null
                 ? Border.all(
-                    color: Colors.grey.withOpacity(0.1),
+                    color: widget.isSelected ? Colors.yellow : Colors.grey.withOpacity(0.1),
                     width: borderWidth,
                   )
                 : null,
@@ -162,8 +166,14 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
 
   Widget _drawenterprise() {
     return InkWell(
-      onTap: () {
+      onDoubleTap: () {
         widget.onEdit.call(widget.enterpriseModel);
+      },
+      onTap: () {
+        widget.onTap.call(widget.enterpriseModel);
+        // setState(() {
+        //   _isSelected = true;
+        // });
       },
       child: Center(
         child: Column(
@@ -286,7 +296,14 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
   Widget _thumnailArea() {
     int randomNumber = random.nextInt(1000);
     int duration = widget.index == 0 ? 500 : 500 + randomNumber;
-    String url = 'https://picsum.photos/200/?random=$defaultThumbnailNumber';
+    String url = '';
+
+    if (widget.enterpriseModel == null || widget.enterpriseModel!.imageUrl.isEmpty) {
+      url = 'https://picsum.photos/200/?random=$defaultThumbnailNumber';
+    } else {
+      url = widget.enterpriseModel!.imageUrl;
+    }
+
     try {
       return SizedBox(
           width: aWidth,

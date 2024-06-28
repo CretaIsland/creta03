@@ -158,4 +158,9 @@ class HostManager extends CretaManager {
 
     return streamData(consumerFunc: consumerFunc, where: query, orderBy: 'updateTime');
   }
+
+  @override
+  void onSearch(String value, Function afterSearch) {
+    search(['hostName', 'hostId', 'description'], value, afterSearch);
+  }
 }
