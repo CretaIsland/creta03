@@ -423,14 +423,14 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
 
     return Consumer<EnterpriseManager>(builder: (context, enterpriseManager, child) {
       if (selectedEnterprise != null) {
-        int length = enterpriseManager.getLength() + 2;
+        //int length = enterpriseManager.getLength() + 2;
         _panelWidth = rightPaneRect.childWidth / 2;
         if (_panelWidth < 420) {
           _panelWidth = rightPaneRect.childWidth;
           return _enterpriseList(enterpriseManager);
         }
-        print(
-            '$_panelWidth, $length, ${rightPaneRect.childWidth} =====================================');
+        // print(
+        //     '$_panelWidth, $length, ${rightPaneRect.childWidth} =====================================');
         return Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [

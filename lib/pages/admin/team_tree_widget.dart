@@ -4,12 +4,10 @@ import 'dart:math';
 
 import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'package:creta_user_io/data_io/team_manager.dart';
-import 'package:creta_user_io/data_io/user_property_manager.dart';
 import 'package:creta_user_model/model/team_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 import 'package:provider/provider.dart';
-import 'package:hycop/common/util/logger.dart';
 
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/component/creta_basic_layout_mixin.dart';
@@ -114,7 +112,7 @@ class _TeamTreeWidgetState extends State<TeamTreeWidget> with CretaBasicLayoutMi
     // selectedItems = List.generate(teamManagerHolder!.getAvailLength() + 2, (index) => false);
 
     return Consumer<TeamManager>(builder: (context, teamManager, child) {
-      print('Consumer  ${teamManager.getLength() + 1} =============================');
+      //print('Consumer  ${teamManager.getLength() + 1} =============================');
       return _teamTree(teamManager);
     });
   }
@@ -184,9 +182,7 @@ class _TeamTreeWidgetState extends State<TeamTreeWidget> with CretaBasicLayoutMi
     List<Widget> children = [];
 
     for (var team in teams) {
-      print(parentMid);
-      print(team.mid);
-      print(team.parentMid.value);
+    
       if (team.parentMid.value != parentMid) {
         continue;
       }
