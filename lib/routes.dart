@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'data_io/book_manager.dart';
+import 'data_io/enterprise_manager.dart';
 import 'design_system/component/colorPicker/color_picker_demo.dart';
 import 'design_system/demo_page/font_demo_page.dart';
 import 'design_system/demo_page/button_demo_page.dart';
@@ -78,10 +79,6 @@ abstract class AppRoutes {
   }
 
   static String _getMiddlePath(String inputString) {
-    // if (!inputString.contains('creta')) {
-    //   return '';
-    // }
-
     // Find the index of the second occurrence of '/'
     int firstSlashIndex = inputString.indexOf('/');
     int secondSlashIndex = inputString.indexOf('/', firstSlashIndex + 1);
@@ -189,7 +186,7 @@ final routesLoggedOut = RouteMap(
         child: DeviceMainPage(
             key: GlobalObjectKey('deviceSharedPage'), selectedPage: DeviceSelectedPage.sharedPage)),
     AppRoutes.adminMainPage: (_) =>
-        TransitionPage(child: AdminMainPage(selectedPage: AdminSelectedPage.enterprise)),
+        TransitionPage(child: AdminMainPage(/*selectedPage: AdminSelectedPage.enterprise*/)),
 
     //AppRoutes.deviceDetailPage: (_) => TransitionPage(child: DeviceDetailPage()),
     AppRoutes.studioBookMainPage: (routeData) {
@@ -308,12 +305,19 @@ final routesLoggedOut = RouteMap(
     //         ),
     //       )
     //     : const Redirect(AppRoutes.intro),
-    AppRoutes.communityHome: (_) => TransitionPage(
-          child: CommunityPage(
-            key: GlobalObjectKey('AppRoutes.communityHome'),
-            subPageUrl: AppRoutes.communityHome,
-          ),
+    AppRoutes.communityHome: (_) {
+      // superAdmin 인데, Enterprise 가 없으면, Enterprise 선택 페이지로 간다.
+      if (AccountManager.currentLoginUser.isSuperUser() &&
+          EnterpriseManager.currentEnterpriseModel == null) {
+        return const Redirect(AppRoutes.adminMainPage);
+      }
+      return TransitionPage(
+        child: CommunityPage(
+          key: GlobalObjectKey('AppRoutes.communityHome'),
+          subPageUrl: AppRoutes.communityHome,
         ),
+      );
+    },
     AppRoutes.channel: (routeData) {
       // if (AccountManager.currentLoginUser.isLoginedUser) {
       String url = routeData.fullPath;

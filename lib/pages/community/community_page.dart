@@ -2118,7 +2118,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
+
+   return MultiProvider(
       providers: [
         ChangeNotifierProvider<UserPropertyManager>.value(
             value: CretaAccountManager.userPropertyManagerHolder),

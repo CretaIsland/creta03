@@ -1,3 +1,4 @@
+import 'package:creta_user_model/model/user_property_model.dart';
 import 'package:hycop/hycop.dart';
 //import '../pages/login_page.dart';
 //import '../pages/login/creta_account_manager.dart';
@@ -112,7 +113,7 @@ class ChannelManager extends CretaManager {
   Future<List<ChannelModel>> getChannelFromList(List<String> channelIdList) async {
     List<ChannelModel> channelList = [];
     for (String channelId in channelIdList) {
-      if (channelId == "public") {
+      if (channelId == UserPropertyModel.defaultEmail) {
         // do nothing
       } else {
         Map<String, QueryValue> query = {};

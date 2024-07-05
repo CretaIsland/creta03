@@ -101,7 +101,7 @@ class BookManager extends BaseBookManager {
       '<${PermissionType.reader.name}>$userId',
       '<${PermissionType.writer.name}>$userId',
       '<${PermissionType.owner.name}>$userId',
-      '<${PermissionType.owner.name}>public',
+      '<${PermissionType.owner.name}>${UserPropertyModel.defaultEmail}',
     ];
     TeamModel? myTeam = TeamManager.getCurrentTeam;
     if (myTeam != null) {

@@ -9,6 +9,7 @@ import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:url_launcher/link.dart';
 //import 'package:creta_common/lang/creta_lang.dart';
+import '../../data_io/enterprise_manager.dart';
 import '../../lang/creta_commu_lang.dart';
 import '../../pages/studio/studio_getx_controller.dart';
 import '../../vertical_app_bar.dart';
@@ -210,9 +211,11 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
                               return BTN.fill_gray_l_profile(
                                 width: 195,
                                 text: AccountManager.currentLoginUser.name,
-                                subText: enterprise.isEmpty
-                                    ? '${CretaCommuLang["subscriber"]!} ${CretaAccountManager.getChannel?.followerCount ?? 0}'
-                                    : enterprise, //CretaLang['billInfo']!,
+                                subText: EnterpriseManager.isEnterpriseUser(enterprise)
+                                    ? EnterpriseManager.currentEnterpriseModel == null
+                                        ? enterprise
+                                        : EnterpriseManager.currentEnterpriseModel!.name
+                                    : '${CretaCommuLang["subscriber"]!} ${CretaAccountManager.getChannel?.followerCount ?? 0}',
                                 image: const AssetImage('assets/creta_default.png'),
                                 onPressed: () {
                                   if (channelId.isNotEmpty) {

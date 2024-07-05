@@ -925,8 +925,9 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
       //}
       //return false;
     }
-    // 팀명인지 확인한다. 현재 enterpriseId 가 없으므로 creta 으로 검색한다
-    TeamModel? team = await CretaAccountManager.findTeamModelByName(email, 'creta');
+    // 팀명인지 확인한다. 현재 enterpriseId 가 없으므로 ${UserPropertyModel.defaultEnterprise} 으로 검색한다
+    TeamModel? team =
+        await CretaAccountManager.findTeamModelByName(email, UserPropertyModel.defaultEnterprise);
     if (team != null) {
       setState(() {
         _addReaders(team.mid);
@@ -955,11 +956,11 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                 icon: Icons.add_outlined,
                 text: CretaLang['entire']!,
                 onPressed: () {
-                  UserPropertyModel? user = _findModel('public');
+                  UserPropertyModel? user = _findModel(UserPropertyModel.defaultEmail);
                   if (user == null) {
                     //아직 전체가 없을 때만 넣는다.
                     setState(() {
-                      _addReaders('public');
+                      _addReaders(UserPropertyModel.defaultEmail);
                       userModelList
                           .add(CretaAccountManager.userPropertyManagerHolder.makeDummyModel(null));
                       _resetList();
@@ -1063,7 +1064,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                       CretaAccountManager.userPropertyManagerHolder.profileImageBox(
                           model: userModel,
                           radius: 28,
-                          color: email == 'public'
+                          color: email == UserPropertyModel.defaultEmail
                               ? CretaColor.primary
                               : Colors.primaries[index % Colors.primaries.length]),
                       //const Icon(Icons.account_circle_outlined),
@@ -1213,11 +1214,11 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                 icon: Icons.add_outlined,
                 text: CretaLang['myChannel']!,
                 onPressed: () {
-                  // UserPropertyModel? user = _findChannelModel('public');
+                  // UserPropertyModel? user = _findChannelModel('${UserPropertyModel.defaultEmail}');
                   // if (user == null) {
                   //   //아직 전체가 없을 때만 넣는다.
                   //   setState(() {
-                  //     widget.model!.channels.add('public');
+                  //     widget.model!.channels.add('${UserPropertyModel.defaultEmail}');
                   //     widget.model!.save();
                   //     channelUserModelList
                   //         .add(LoginPage.userPropertyManagerHolder!.makeDummyModel(null));
@@ -1312,7 +1313,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                       // LoginPage.userPropertyManagerHolder!.profileImageBox(
                       //     model: userModel,
                       //     radius: 28,
-                      //     color: userModel.email == 'public' ? CretaColor.primary : null),
+                      //     color: userModel.email == '${UserPropertyModel.defaultEmail}' ? CretaColor.primary : null),
                       CretaAccountManager.userPropertyManagerHolder.imageCircle(
                         teamModel?.profileImgUrl ??
                             CretaAccountManager.getUserProperty!.profileImgUrl,

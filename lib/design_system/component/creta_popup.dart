@@ -198,7 +198,10 @@ class CretaPopup {
                 ),
               ],
             ),
-            content: Text(question, style: CretaFont.bodyMedium),
+            content: Text(
+              question,
+              style: CretaFont.bodyMedium.copyWith(height: 1.5),
+            ),
             actions: <Widget>[
               Column(
                 children: [

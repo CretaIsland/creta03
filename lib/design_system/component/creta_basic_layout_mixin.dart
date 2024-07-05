@@ -182,6 +182,7 @@ mixin CretaBasicLayoutMixin {
     double bottomMarginOnRightPane = 0,
     List<CretaMenuItem>? tabMenuList,
     Function? onFoldButtonPressed,
+    bool scrollbarOnRight = true,
   }) {
     //print('mainPage() called++++++++++++++++++++++++++++++++++');
 
@@ -260,7 +261,7 @@ mixin CretaBasicLayoutMixin {
                               listOfListFilter: listOfListFilter,
                               titlePane: titlePane,
                               isSearchbarInBanner: isSearchbarInBanner,
-                              scrollbarOnRight: true,
+                              scrollbarOnRight: scrollbarOnRight,
                               listOfListFilterOnRight: listOfListFilterOnRight,
                               onSearch: onSearch,
                               leftPaddingOnFilter: leftPaddingOnFilter,
@@ -270,6 +271,7 @@ mixin CretaBasicLayoutMixin {
                   ],
                 )
               : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // banner pane
                     StudioVariables.displayHeight >

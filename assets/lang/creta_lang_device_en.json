@@ -79,6 +79,26 @@
     "moveToDevice" : "Would you like to go to the device management page ?",
     "selectDevice" : "Please select a device.",
     
+    "newTeam": "Register new team",
+    "shouldInputTeamName": "Please enter the team name",
+    "shouldInputEmail": "Please enter the email address",
+    "teamName": "Team name",
+    "email": "Email",  
+
+    "chooseEnterprise" : "There is no currently selected enterprise in Super Admin.\n Be sure to select the enterprise you want to use first by clicking it with the mouse.",
+    "teamManage" : "Team Management",
+    "teamDesc": "Manage your team information",
+    "inputTeamInfo" : "Enter the team information to create",
+    "NewTeamCreated" : "A new team has been created as follows",
+    "teamDetail" : "Team detail",
+
+    "alreayAnotherEnterpriseMember" : "The email is already a member of another enterprise.  Members of other enterprises cannot register multiple times. Please try with another email from this person.",
+    "alreayPrivateMember" : "This email has already been registered as an individual member. An email registered as an individual member cannot become an enterprise member.  Please try with another email from this person.",
+
+    "currentTeamCantDelete" : "The current team cannot be deleted.",
+    "onlyChild" : "There is a user whose only team is this team.  In this case, you must first delete the user and then delete the team.",
+
+
     "end"  : "End"
 
 }

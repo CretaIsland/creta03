@@ -302,8 +302,9 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
       //showSnackBar(context, CretaStudioLang['noExitEmail']!, duration: const Duration(seconds: 3));
       return true;
     }
-    // 팀명인지 확인한다. 현재 enterpriseId 가 없으므로 creta 으로 검색한다
-    TeamModel? team = await CretaAccountManager.findTeamModelByName(email, 'creta');
+    // 팀명인지 확인한다. 현재 enterpriseId 가 없으므로 ${UserPropertyModel.defaultEnterprse} 으로 검색한다
+    TeamModel? team =
+        await CretaAccountManager.findTeamModelByName(email, UserPropertyModel.defaultEnterprise);
     if (team != null) {
       setState(() {
         _addWriters(team.mid);
@@ -438,7 +439,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
                       CretaAccountManager.userPropertyManagerHolder.profileImageBox(
                         model: userModel,
                         radius: 28,
-                        color: email == 'public'
+                        color: email == UserPropertyModel.defaultEmail
                             ? CretaColor.primary
                             : Colors.primaries[index % Colors.primaries.length],
                       ),

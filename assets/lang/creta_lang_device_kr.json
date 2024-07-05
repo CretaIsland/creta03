@@ -80,6 +80,26 @@
     "moveToDevice" : "디바이스 관리 페이지로 이동하시겠습니까?",
     "selectDevice" : "먼저 디바이스를 선택하세요",
 
+    "newTeam": "새 팀 등록",
+    "shouldInputTeamName": "팀 이름을 입력하세요.",
+    "shouldInputEmail": "이메일을 입력하세요.",
+    "teamName": "팀 이름",
+    "email": "이메일",  
+
+    "chooseEnterprise" : "슈퍼 어드민의 현재 선택된 엔터프라이즈가 없습니다.\n 반드시 먼저 사용할 엔터프라이즈를 마우스로 클릭하여 선택하세요",
+    "teamManage" : "팀 관리",
+    "teamDesc": "님의 크레타 팀 정보를 관리합니다.",
+
+    "inputTeamInfo" : "생성할 팀 정보를 입력하세요.",
+    "NewTeamCreated" : "다음과 같이 새로운 팀이 생성되었습니다.",
+    "teamDetail" : "팀 상세화면",
+
+    "alreayAnotherEnterpriseMember" : "이미 다른 엔터프라이즈의 팀원입니다.  다른 엔터프라이즈의 소속 회원은 중복 가입할 수 없습니다. 이 사람의 다른 email 로 시도하십시오.",
+    "alreayPrivateMember" : "이미 개인 회원으로 가입된 email입니다.  개인 회원으로 가입된 email로는 엔터프라이즈 소속 회원이 될 수 없습니다.  이 사람의 다른 email 로 시도하십시오.",
+
+    "currentTeamCantDelete" : "현재 소속된 팀은 삭제할 수 없습니다",
+    "onlyChild" : "이 팀이 유일한 소속팀인 유저가 있습니다.  이런 경우 유저를 먼저 삭제하고 팀을 삭제해야 합니다.",
+
 
     "END" : ""
 }

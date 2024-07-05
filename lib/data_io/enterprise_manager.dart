@@ -1,6 +1,8 @@
 import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'package:creta_common/model/creta_model.dart';
 import 'package:creta03/model/enterprise_model.dart';
+import 'package:creta_user_io/data_io/user_property_manager.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
 //import 'package:creta03/pages/login_page.dart';
 import 'package:hycop/hycop.dart';
 
@@ -9,15 +11,85 @@ class EnterpriseManager extends CretaManager {
 
   EnterpriseManager() : super('creta_enterprise', null);
 
+  static EnterpriseManager? _enterpriseManagerHolder;
+  static EnterpriseManager get instance {
+    if (_enterpriseManagerHolder == null) {
+      _enterpriseManagerHolder = EnterpriseManager();
+      _enterpriseManagerHolder!.configEvent(notifyModify: false);
+      _enterpriseManagerHolder!.clearAll();
+    }
+    return _enterpriseManagerHolder!;
+  }
+
+  static EnterpriseModel? currentEnterpriseModel;
+
+  static Future<void> initEnterprise() async {
+    if (AccountManager.currentLoginUser.isSuperUser() == false && hasValidEnterprise()) {
+      List<AbsExModel> enterprises = await _enterpriseManagerHolder!
+          .myDataOnly(UserPropertyManager.getUserProperty!.enterprise);
+
+      if (enterprises.isNotEmpty) {
+        currentEnterpriseModel = enterprises.first as EnterpriseModel;
+      }
+    }
+  }
+
+  static bool isEnterpriseUser(String enterprise) {
+    if (AccountManager.currentLoginUser.isSuperUser()) {
+      return true;
+    }
+    return enterprise.isNotEmpty && enterprise != UserPropertyModel.defaultEnterprise;
+  }
+
+  static hasValidEnterprise() {
+    return (UserPropertyManager.getUserProperty != null &&
+        UserPropertyManager.getUserProperty!.enterprise.isNotEmpty &&
+        UserPropertyManager.getUserProperty!.enterprise != UserPropertyModel.defaultEnterprise);
+  }
+
+  // static String superAdminCurrentEnterprise = '';
+  // static String currentEnterpriseMid = '';
+
+  // static String getEnterprise() {
+  //   if (AccountManager.currentLoginUser.isSuperUser()) {
+  //     if (EnterpriseManager.superAdminCurrentEnterprise.isNotEmpty) {
+  //       return EnterpriseManager.superAdminCurrentEnterprise;
+  //     }
+  //   }
+  //   return CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.enterprise;
+  // }
+
+  // Future<String> getEnterpriseMid() async {
+  //   if (AccountManager.currentLoginUser.isSuperUser()) {
+  //     if (EnterpriseManager.currentEnterpriseMid.isNotEmpty) {
+  //       return EnterpriseManager.currentEnterpriseMid;
+  //     }
+  //   }
+  //   if (CretaAccountManager.userPropertyManagerHolder.userPropertyModel == null) {
+  //     logger.severe('userPropertyModel is null in getEnterpriseMid()');
+  //     return '';
+  //   }
+
+  //   String name = CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.enterprise;
+  //   Map<String, QueryValue> query = {};
+  //   query['name'] = QueryValue(value: name);
+  //   final retval = await queryFromDB(query);
+
+  //   if (retval.isEmpty) {
+  //     logger.severe('queryFromDB is empty in getEnterpriseMid()');
+  //     return '';
+  //   }
+
+  //   AbsExModel model = retval.first;
+  //   return model.mid;
+  // }
+
   @override
   Future<List<AbsExModel>> myDataOnly(String userId, {int? limit}) async {
     logger.finest('myDataOnly');
     Map<String, QueryValue> query = {};
-    //query['creator'] = QueryValue(value: userId);
     query['isRemoved'] = QueryValue(value: false);
-    //print('myDataOnly start');
     final retval = await queryFromDB(query, limit: limit);
-    //print('myDataOnly end ${retval.length}');
     return retval;
   }
 

@@ -4,11 +4,13 @@ import 'dart:math';
 
 //import 'package:creta03/lang/creta_studio_lang.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 // ignore: depend_on_referenced_packages
-import 'package:hycop/common/util/logger.dart';
+import 'package:hycop/hycop.dart';
 
 import '../../data_io/enterprise_manager.dart';
 //import '../../design_system/buttons/creta_button_wrapper.dart';
+import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_elibated_button.dart';
 import '../../design_system/component/custom_image.dart';
 import '../../design_system/component/snippet.dart';
@@ -18,9 +20,11 @@ import 'package:creta_common/common/creta_font.dart';
 //import 'package:creta_common/lang/creta_lang.dart';
 //import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_device_lang.dart';
+import '../../lang/creta_studio_lang.dart';
 import '../../model/enterprise_model.dart';
+import '../../vertical_app_bar.dart';
 import '../studio/studio_constant.dart';
-import 'admin_main_page.dart';
+import '../studio/studio_getx_controller.dart';
 
 class EnterpriseGridItem extends StatefulWidget {
   final int index;
@@ -29,9 +33,9 @@ class EnterpriseGridItem extends StatefulWidget {
   final double height;
   final EnterpriseManager enterpriseManager;
   //final GlobalKey<EnterpriseGridItemState> itemKey;
-  final AdminSelectedPage selectedPage;
   final void Function(EnterpriseModel? enterpriseModel) onEdit;
   final void Function(EnterpriseModel? enterpriseModel) onTap;
+  final void Function(EnterpriseModel? enterpriseModel) onCheck;
   final void Function() onInsert;
   final bool isSelected;
 
@@ -43,9 +47,9 @@ class EnterpriseGridItem extends StatefulWidget {
     this.enterpriseModel,
     required this.width,
     required this.height,
-    required this.selectedPage,
     required this.onEdit,
     required this.onTap,
+    required this.onCheck,
     required this.onInsert,
     required this.isSelected,
   });
@@ -65,6 +69,8 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
   double aHeight = 0;
   final double borderWidth = 6.0;
 
+  BoolEventController? _foldSendEvent;
+
   void notify(String mid) {
     setState(() {});
   }
@@ -74,6 +80,9 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
     super.initState();
 
     defaultThumbnailNumber = random.nextInt(1000);
+
+    final BoolEventController foldReceiveEvent = Get.find(tag: 'link-widget-to-property');
+    _foldSendEvent = foldReceiveEvent;
 
     // _popupMenuList = [
     //   CretaMenuItem(
@@ -130,7 +139,13 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
             borderRadius: BorderRadius.circular(20.0),
             border: widget.enterpriseModel != null
                 ? Border.all(
-                    color: widget.isSelected ? Colors.yellow : Colors.grey.withOpacity(0.1),
+                    color: widget.isSelected ||
+                            (widget.enterpriseModel != null &&
+                                EnterpriseManager.currentEnterpriseModel != null &&
+                                EnterpriseManager.currentEnterpriseModel!.name ==
+                                    widget.enterpriseModel!.name)
+                        ? Colors.yellow
+                        : Colors.grey.withOpacity(0.1),
                     width: borderWidth,
                   )
                 : null,
@@ -166,10 +181,12 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
 
   Widget _drawenterprise() {
     return InkWell(
-      onDoubleTap: () {
-        widget.onEdit.call(widget.enterpriseModel);
-      },
+      // onDoubleTap: () {
+      //   widget.onEdit.call(widget.enterpriseModel);
+      // },
       onTap: () {
+        EnterpriseManager.currentEnterpriseModel = widget.enterpriseModel;
+        _foldSendEvent?.sendEvent(VerticalAppBar.fold);
         widget.onTap.call(widget.enterpriseModel);
         // setState(() {
         //   _isSelected = true;
@@ -177,7 +194,7 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
       },
       child: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             ClipRRect(
               borderRadius: BorderRadius.only(
@@ -185,29 +202,45 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
                   topRight: Radius.circular(20.0 - borderWidth)),
               child: Stack(
                 children: [
-                  _thumnailArea(),
-                  //_controllArea(),
-                  //if (widget.enterpriseModel != null && selectNotifierHolder.isSelected(widget.enterpriseModel!.mid))
-                  // Positioned(
-                  //   top: 4,
-                  //   left: 4,
-                  //   child: Container(
-                  //     //padding: EdgeInsets.all(2), // Adjust padding as needed
-                  //     decoration: BoxDecoration(
-                  //       // border: Border.all(
-                  //       //   color: Colors.white, // Change border color as needed
-                  //       //   width: 2, // Change border width as needed
-                  //       // ),
-                  //       shape: BoxShape.circle,
-                  //       color: Colors.white.withOpacity(0.5),
-                  //     ),
-                  //     child: Icon(
-                  //       Icons.check_outlined,
-                  //       size: 42,
-                  //       color: Colors.red,
-                  //     ),
-                  //   ),
-                  // ),
+                  _thumbnailArea(),
+                  _controllArea(),
+                  Positioned(
+                    top: 4,
+                    left: 4,
+                    child: Container(
+                      //padding: EdgeInsets.all(2), // Adjust padding as needed
+                      decoration: BoxDecoration(
+                        // border: Border.all(
+                        //   color: Colors.white, // Change border color as needed
+                        //   width: 2, // Change border width as needed
+                        // ),
+                        shape: BoxShape.circle,
+                        color: Colors.white.withOpacity(0.5),
+                      ),
+                      child: AccountManager.currentLoginUser.isSuperUser()
+                          ? Checkbox(
+                              value: _isSuperEnterprise(),
+                              onChanged: (bool? newValue) {
+                                if (newValue! == true) {
+                                  EnterpriseManager.currentEnterpriseModel = widget.enterpriseModel;
+                                } else {
+                                  EnterpriseManager.currentEnterpriseModel = null;
+                                }
+
+                                _foldSendEvent?.sendEvent(VerticalAppBar.fold);
+                                widget.onTap.call(EnterpriseManager.currentEnterpriseModel);
+                              },
+                              checkColor: Colors.red, // color of tick Mark
+                              fillColor: WidgetStateProperty.all(Colors.white),
+                            )
+                          : SizedBox.shrink(),
+                      // Icon(
+                      //   Icons.check_outlined,
+                      //   size: 42,
+                      //   color: Colors.red,
+                      // ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -220,6 +253,12 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
         ),
       ),
     );
+  }
+
+  bool _isSuperEnterprise() {
+    return widget.enterpriseModel != null &&
+        EnterpriseManager.currentEnterpriseModel != null &&
+        EnterpriseManager.currentEnterpriseModel!.name == widget.enterpriseModel!.name;
   }
 
   // Widget _controllArea() {
@@ -293,7 +332,7 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
   //   return Container();
   // }
 
-  Widget _thumnailArea() {
+  Widget _thumbnailArea() {
     int randomNumber = random.nextInt(1000);
     int duration = widget.index == 0 ? 500 : 500 + randomNumber;
     String url = '';
@@ -313,7 +352,7 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
               hasMouseOverEffect: true,
               duration: duration,
               width: aWidth,
-              height: aHeight,
+              height: aHeight - LayoutConst.bookDescriptionHeight,
               image: url));
     } catch (err) {
       logger.warning('CustomeImage failed $err');
@@ -328,7 +367,7 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
       //width: aWidth,
       height: LayoutConst.bookDescriptionHeight,
       color: Colors.white,
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -346,6 +385,7 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.left,
                     style: CretaFont.bodyLarge,
+                    maxLines: 1,
                   ),
                 )),
           ),
@@ -363,6 +403,7 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.left,
                   style: CretaFont.buttonMedium,
+                  maxLines: 1,
                 ),
               ),
             ),
@@ -370,5 +411,78 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
         ],
       ),
     );
+  }
+
+  Widget _controllArea() {
+    //String url = '${AppRoutes.deviceDetailPage}?${widget.hostModel!.mid}';
+    double controllAreaHeight = aHeight - LayoutConst.bookDescriptionHeight;
+
+    //print('hostItemHeight = $aHeight');
+    //print('controllAreaHeight = $controllAreaHeight');
+
+    if (mouseOver) {
+      return Container(
+        padding: const EdgeInsets.only(top: 8.0, right: 8),
+        alignment: AlignmentDirectional.topEnd,
+        decoration: mouseOver
+            ? Snippet.gradationShadowDeco()
+            : BoxDecoration(
+                color: Colors.transparent,
+              ),
+        //width: aWidth,
+        height: controllAreaHeight, //aHeight - LayoutConst.hostDescriptionHeight,
+        //color: CretaColor.text[200]!.withOpacity(0.2),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                // Delete Enterprise 는 일단 지금은 허용하지 않는다.
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                //   child: BTN.opacity_gray_i_s(
+                //     icon: Icons.delete_outline,
+                //     onPressed: () {
+                //       logger.finest('delete pressed');
+                //       CretaPopup.yesNoDialog(
+                //         context: context,
+                //         title: CretaLang['deleteConfirmTitle']!,
+                //         icon: Icons.warning_amber_outlined,
+                //         question: CretaLang['deleteConfirm']!,
+                //         noBtText: CretaStudioLang['noBtDnText']!,
+                //         yesBtText: CretaStudioLang['yesBtDnText']!,
+                //         yesIsDefault: true,
+                //         onNo: () {
+                //           //Navigator.of(context).pop();
+                //         },
+                //         onYes: () {
+                //           //Navigator.of(context).pop();
+                //         },
+                //       );
+                //     },
+                //     tooltip: CretaStudioLang['tooltipDelete']!,
+                //   ),
+                // ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 4.0),
+                  child: BTN.opacity_gray_i_s(
+                    icon: Icons.edit_outlined,
+                    onPressed: () {
+                      logger.finest('edit pressed');
+                      widget.onEdit.call(widget.enterpriseModel);
+                    },
+                    tooltip: CretaStudioLang['tooltipEdit'] ?? 'Edit',
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        //),
+      );
+    }
+    return Container();
   }
 }

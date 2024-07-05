@@ -4,6 +4,7 @@
 //import 'dart:typed_data';
 //import 'dart:ui' as ui;
 //import 'dart:html' as html;
+
 import 'package:creta_common/common/creta_common_utils.dart';
 import 'package:creta_common/common/creta_vars.dart';
 import 'package:http/http.dart' as http;
@@ -276,6 +277,76 @@ class CretaUtils {
 
     if (res != null) {
       showSnackBar(context, CretaStudioLang['inviteEmailSucceed']!);
+      return true;
+    }
+    return false;
+  }
+
+  static Future<bool> sendEnterpriseInvitation(BuildContext context, String email,
+      String enterpriseMid, String enterpriseName, String userName) async {
+    String base = Uri.base.origin;
+    //print('---------------base=$base');
+
+    String url = '${CretaAccountManager.getEnterprise!.mediaApiUrl}/sendEmail';
+    String option = '''{
+        "invitationUserName": "$userName",        
+        "enterprise": "$enterpriseName",        
+        "cretaBookLink": "$base"        
+    }''';
+    Map<String, dynamic> body = {
+      "receiverEmail": ['"$email"'], // 수신인
+      "emailType": '"enterprise"',
+      "emailOption": option,
+    };
+
+    http.Response? res = await CretaUtils.post(url, body, onError: (code) {
+      showSnackBar(context, '${CretaStudioLang['inviteEmailFailed']!}($code)');
+    }, onException: (e) {
+      showSnackBar(context, '${CretaStudioLang['inviteEmailFailed']!}($e)');
+    });
+
+    if (res != null) {
+      showSnackBar(context, CretaStudioLang['inviteEmailSucceed']!);
+      return true;
+    }
+    return false;
+  }
+
+  static Future<bool> sendTeamNotify(
+    //BuildContext context,
+    String email,
+    String team,
+    String userName,
+  ) async {
+    // String option = '''{
+    //     "subject": "[크레타] 소속 팀이 추가되었습니다",
+    //     "content": "안녕하세요. $userName 님,\\n\\n$team 팀에 소속되었음을 알려드립니다.\\n  만약 팀에 소속을 원하지 않으시면, 로그인하여 탈퇴하여 주세요.\\n\\n$userName으로부터."
+    // }''';
+
+    String base = Uri.base.origin;
+    String url = '${CretaAccountManager.getEnterprise!.mediaApiUrl}/sendEmail';
+    String option = '''{
+        "invitationUserName": "$userName",        
+        "team": "$team",        
+        "cretaLink": "$base${AppRoutes.myPageTeamManage}"        
+    }''';
+    Map<String, dynamic> body = {
+      "receiverEmail": ['"$email"'], // 수신인
+      "emailType": '"team"',
+      "emailOption": option,
+    };
+
+    http.Response? res = await CretaUtils.post(url, body, onError: (code) {
+      //showSnackBar(context, '${CretaStudioLang['inviteEmailFailed']!}($code)');
+      logger.severe('${CretaStudioLang['inviteEmailFailed']!}($code)');
+    }, onException: (e) {
+      //showSnackBar(context, '${CretaStudioLang['inviteEmailFailed']!}($e)');
+      logger.severe('${CretaStudioLang['inviteEmailFailed']!}($e)');
+    });
+
+    if (res != null) {
+      //showSnackBar(context, CretaStudioLang['inviteEmailSucceed']!);
+      logger.info(CretaStudioLang['inviteEmailSucceed']!);
       return true;
     }
     return false;

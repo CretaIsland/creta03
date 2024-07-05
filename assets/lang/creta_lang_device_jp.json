@@ -80,6 +80,26 @@
     "moveToDevice" : "デバイス管理ページに移動しますか?",
     "selectDevice" : "デバイスを選択してください",
 
+    "newTeam": "新しいチームの登録",
+    "shouldInputTeamName": "チーム名を入力してください",
+    "shouldInputEmail": "メールアドレスを入力してください",
+    "teamName": "チーム名",
+    "email": "メールアドレス",  
+
+    "chooseEnterprise": "スーパーアドミンの現在選択されているエンタープライズはありません。\n必ず最初に使用するエンタープライズをマウスでクリックして選択してください。",
+    "teamManage" : "チーム管理",
+    "teamDesc": "さんのクレタチーム情報を管理します。",
+    "inputTeamInfo" : "作成するチーム情報を入力してください",
+    "NewTeamCreated" : "次のように新しいチームが作成されました。",
+    "teamDetail" : "チーム詳細",
+
+    "alreayAnotherEnterpriseMember" : "もう他のエンタープライズのチームメンバーです。  他のエンタープライズに所属するメンバーは重複して参加できません。この人の他のemailで試してください。",
+    "alreayPrivateMember" : "すでに個人会員として登録されているemailです。  個人会員として登録されたemailでは、エンタープライズ所属の会員になることはできません。  この人の他のemailで試してください。",
+
+    "currentTeamCantDelete" : "現在のチームは削除できません。",
+    "onlyChild" : "このチームが唯一の所属チームであるユーザーがいます。  この場合、ユーザーを最初に削除してチームを削除する必要があります。",
+
+
    "end"  : "End"
 
 
