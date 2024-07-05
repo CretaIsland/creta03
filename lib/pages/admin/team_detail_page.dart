@@ -378,8 +378,6 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
 
     UserPropertyModel? user = await CretaAccountManager.getUserPropertyModel(email);
     if (user != null) {
-      print(
-          'user.enterprise(${user.enterprise}) ?? widget.teamModel.enterprise(${widget.teamModel.enterprise})');
       // case 1
       if (user.enterprise == widget.teamModel.enterprise) {
         // case 1-1
@@ -400,7 +398,6 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
           '이미 다른 엔터프라이즈의 팀원입니다.  다른 엔터프라이즈의 소속 회원은 중복 가입할 수 없습니다. 이 사람의 다른 email 로 시도하십시오.';
       return (false, msg);
     }
-    print('new user !!!!!!!!!!!!!!!!!!!!!!!!!!!');
     // case 2
     // 1) 만들어 준다.  (user 의 teams 에도 값을 넣어주는 것을 잊지 말자)
     UserModel userAccount =
