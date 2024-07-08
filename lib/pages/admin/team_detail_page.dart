@@ -251,10 +251,15 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
                 Text(widget.teamModel.managers[index]),
                 const SizedBox(width: 15),
                 BTN.fill_gray_100_i_s(
-                  onPressed: () {
-                    setState(() {
-                      widget.teamModel.managers.removeAt(index);
-                    });
+                  onPressed: () async {
+                    String removed = widget.teamModel.managers.removeAt(index);
+                    widget.teamModel.managers.remove(removed);
+                    setState(() {});
+                    // 여기서,  user 를 가져와서, user.team 에서 제거해야 한다.
+                    UserPropertyModel? user =
+                        await CretaAccountManager.getUserPropertyModel(removed);
+                    user?.teams.remove(widget.teamModel.mid);
+                    CretaAccountManager.userPropertyManagerHolder.setToDB(user!);
                   },
                   icon: Icons.close,
                 ),
@@ -328,11 +333,15 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
                 Text(widget.teamModel.generalMembers[index]),
                 const SizedBox(width: 15),
                 BTN.fill_gray_100_i_s(
-                  onPressed: () {
-                    setState(() {
-                      String removed = widget.teamModel.generalMembers.removeAt(index);
-                      widget.teamModel.teamMembers.remove(removed);
-                    });
+                  onPressed: () async {
+                    String removed = widget.teamModel.generalMembers.removeAt(index);
+                    widget.teamModel.teamMembers.remove(removed);
+                    setState(() {});
+                    // 여기서,  user 를 가져와서, user.team 에서 제거해야 한다.
+                    UserPropertyModel? user =
+                        await CretaAccountManager.getUserPropertyModel(removed);
+                    user?.teams.remove(widget.teamModel.mid);
+                    CretaAccountManager.userPropertyManagerHolder.setToDB(user!);
                   },
                   icon: Icons.close,
                 ),
@@ -381,7 +390,7 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
       // case 1
       if (user.enterprise == widget.teamModel.enterprise) {
         // case 1-1
-        user.teams.add(widget.teamModel.name);
+        user.teams.add(widget.teamModel.mid);
         CretaAccountManager.userPropertyManagerHolder.setToDB(user);
         CretaUtils.sendTeamNotify(
             email, widget.teamModel.name, AccountManager.currentLoginUser.email);
@@ -418,7 +427,8 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
 
     // 2) verify 이메일을 보낸다.  verify 하면 끝난다.
     CretaUtils.sendVerifyEmail(
-        email, AccountManager.currentLoginUser.email, email, userPropertyModel.mid);
+        email, AccountManager.currentLoginUser.email, email, userPropertyModel.mid,
+        password: userAccount.password);
 
     return (true, '');
   }

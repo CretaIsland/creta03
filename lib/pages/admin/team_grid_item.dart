@@ -296,7 +296,7 @@ class TeamGridItemState extends State<TeamGridItem> {
                         onYes: () async {
                           for (var user in users) {
                             user.teams.remove(widget.teamModel!.mid);
-                            await widget.teamManager.setToDB(user);
+                            await CretaAccountManager.userPropertyManagerHolder.setToDB(user);
                           }
                           widget.teamManager.deleteTeam(widget.teamModel!);
                         },

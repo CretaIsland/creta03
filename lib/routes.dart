@@ -307,7 +307,7 @@ final routesLoggedOut = RouteMap(
     //     : const Redirect(AppRoutes.intro),
     AppRoutes.communityHome: (_) {
       // superAdmin 인데, Enterprise 가 없으면, Enterprise 선택 페이지로 간다.
-      if (AccountManager.currentLoginUser.isSuperUser() &&
+      if (AccountManager.currentLoginUser.isSuperUser &&
           EnterpriseManager.currentEnterpriseModel == null) {
         return const Redirect(AppRoutes.adminMainPage);
       }

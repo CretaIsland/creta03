@@ -207,7 +207,7 @@ class _TeamListWidgetState extends State<TeamListWidget> with MyDataMixin {
               ),
             ]),
           ),
-          if (AccountManager.currentLoginUser.isSuperUser())
+          if (AccountManager.currentLoginUser.isSuperUser)
             EnterpriseManager.currentEnterpriseModel == null
                 ? Text(
                     'Please Select your Enterprise First !!!',
@@ -551,7 +551,7 @@ class _TeamListWidgetState extends State<TeamListWidget> with MyDataMixin {
               child: Text('Cancel'),
               onPressed: () {
                 input.name = '';
-                input.description = '';
+                //input.description = '';
                 input.teamUrl = '';
                 input.message = CretaDeviceLang['availiableID']!;
                 Navigator.of(context).pop();

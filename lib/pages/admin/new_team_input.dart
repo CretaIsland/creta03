@@ -5,7 +5,7 @@ import '../../lang/creta_device_lang.dart';
 
 class TeamData {
   GlobalObjectKey<FormState>? formKey;
-  String description = '';
+  //String description = '';
   String name = '';
   String teamUrl = '';
   String message = '';
@@ -82,13 +82,13 @@ class NewTeamInputState extends State<NewTeamInput> {
                 widget.data.message,
                 style: const TextStyle(color: Colors.red),
               ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                onChanged: (value) => widget.data.description = value,
-                decoration: InputDecoration(hintText: CretaDeviceLang['description']!),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: TextFormField(
+            //     onChanged: (value) => widget.data.description = value,
+            //     decoration: InputDecoration(hintText: CretaDeviceLang['description']!),
+            //   ),
+            // ),
             // Padding(
             //   padding: const EdgeInsets.all(8.0),
             //   child: TextFormField(

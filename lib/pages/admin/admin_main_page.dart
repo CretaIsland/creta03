@@ -95,7 +95,7 @@ class AdminMainPage extends StatefulWidget {
 
   static void showSelectEnterpriseWarnning(BuildContext context) {
     // superAdmin 인데, Enterprise 가 없으면, Enterprise 선택 pop up dialog 띄우기
-    if (AccountManager.currentLoginUser.isSuperUser() &&
+    if (AccountManager.currentLoginUser.isSuperUser &&
         EnterpriseManager.currentEnterpriseModel == null) {
       Future.delayed(Duration.zero, () {
         CretaPopup.simple(

@@ -389,8 +389,8 @@ class CretaUtils {
     return false;
   }
 
-  static Future<bool> sendVerifyEmail(
-      String nickname, String userId, String email, String secret) async {
+  static Future<bool> sendVerifyEmail(String nickname, String userId, String email, String secret,
+      {String? password}) async {
     String base = Uri.base.origin;
     //print('---------------base=$base');
 
@@ -399,10 +399,20 @@ class CretaUtils {
     //     "subject": "[크레타] 가입을 환영합니다",
     //     "content": "크레타에 오신 것을 환영합니다\\n\\n아래 URL링크를 눌러서 회원가입을 완료해주세요.\\n\\n$base${AppRoutes.verifyEmail}?userId=$userId&secret=$secret\\n\\n크레타 팀으로부터."
     // }''';
-    String option = '''{
+    late String option;
+    if (password != null) {
+      option = '''{
         "verifyUserName": "$nickname",        
-        "verifyUserUrl": "$base${AppRoutes.verifyEmail}?userId=$userId&secret=$secret"        
+        "password": "$password",
+        "verifyUserUrl": "$base${AppRoutes.verifyEmail}?userId=$userId&secret=$secret"  
     }''';
+    } else {
+      option = '''{
+        "verifyUserName": "$nickname",        
+        "verifyUserUrl": "$base${AppRoutes.verifyEmail}?userId=$userId&secret=$secret"  
+    }''';
+    }
+
     Map<String, dynamic> body = {
       "receiverEmail": ['"$email"'], // 수신인
       "emailType": '"verify"',
@@ -457,6 +467,4 @@ class CretaUtils {
   static String get24HourFormat(TimeOfDay time) {
     return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
   }
-
-  
 }

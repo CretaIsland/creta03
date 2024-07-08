@@ -195,7 +195,7 @@ class _EnterpriseListWidgetState extends State<EnterpriseListWidget> with MyData
               ),
             ]),
           ),
-          if (AccountManager.currentLoginUser.isSuperUser())
+          if (AccountManager.currentLoginUser.isSuperUser)
             EnterpriseManager.currentEnterpriseModel == null
                 ? Text(
                     'Please Select your Enterprise !!!',

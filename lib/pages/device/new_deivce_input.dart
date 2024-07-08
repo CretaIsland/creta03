@@ -53,7 +53,7 @@ class NewDeviceInputState extends State<NewDeviceInput> {
                 Container(
                   width: 240,
                   padding: const EdgeInsets.all(8.0),
-                  child: AccountManager.currentLoginUser.isSuperUser()
+                  child: AccountManager.currentLoginUser.isSuperUser
                       ? TextFormField(
                           initialValue: widget.data.enterprise,
                           onChanged: (value) => widget.data.enterprise = value,

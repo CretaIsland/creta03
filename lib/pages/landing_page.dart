@@ -21,6 +21,7 @@ import '../design_system/component/snippet.dart';
 import '../design_system/menu/creta_widget_drop_down.dart';
 import '../lang/creta_commu_lang.dart';
 import '../lang/creta_mypage_lang.dart';
+import 'mypage/popup/chage_pwd_popup.dart';
 import 'studio/studio_variables.dart';
 
 class LandingPage extends StatefulWidget {
@@ -287,6 +288,7 @@ class _LandingPageState extends State<LandingPage> {
                             scrollDirection: Axis.horizontal,
                             controller: _horizontalController,
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 appBar(),
@@ -415,11 +417,11 @@ class _LandingPageState extends State<LandingPage> {
     int langIndex = CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.language.index;
 
     return Container(
-      width: _screenWidth,
+      width: MediaQuery.sizeOf(context).width, // _screenWidth,
       decoration: BoxDecoration(
           color: Colors.white, boxShadow: appBarShadow != null ? [appBarShadow!] : null),
       child: Padding(
-        padding: const EdgeInsets.only(top: 45, left: 160, right: 160, bottom: 24),
+        padding: const EdgeInsets.only(top: 45, left: 140, right: 140, bottom: 24),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -451,6 +453,16 @@ class _LandingPageState extends State<LandingPage> {
                           onTap: () => LoginDialog.popupDialog(
                             context: context,
                             getBuildContext: getBuildContext,
+                            onAfterLogin: () {
+                              //setState(() {});
+                              if (AccountManager.currentLoginUser.hasGenPassword) {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => ChangePwdPopUp.changePwdPopUp(context,
+                                        title: CretaMyPageLang['shouldChangePassword'] ??
+                                            '반드시 비밀번호를 변경한 후 사용해주세요.'));
+                              }
+                            },
                           ),
                         ),
                   customButton(

@@ -12,11 +12,11 @@ class ChangePwdPopUp {
   static String _newPassword = '';
   static String _checkNewPassword = '';
 
-  static Widget changePwdPopUp(BuildContext context) {
+  static Widget changePwdPopUp(BuildContext context, {String? title}) {
     return CretaDialog(
       width: 406.0,
       height: 289.0,
-      title: CretaCommuLang['changePassword'],
+      title: title ?? CretaCommuLang['changePassword'],
       crossAxisAlign: CrossAxisAlignment.center,
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

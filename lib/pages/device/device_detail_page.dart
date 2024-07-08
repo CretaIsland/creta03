@@ -126,7 +126,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   bool _hasAuth() {
     return (widget.hostModel.creator.isEmpty ||
         widget.hostModel.creator == AccountManager.currentLoginUser.email ||
-        AccountManager.currentLoginUser.isSuperUser() == true ||
+        AccountManager.currentLoginUser.isSuperUser == true ||
         admins.contains(AccountManager.currentLoginUser.email));
   }
 

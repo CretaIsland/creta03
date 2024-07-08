@@ -70,7 +70,7 @@
     "teamExit": "チームから出る",
     "deleteTeam": "チームを削除",
     "throwBTN": "エクスポート",
-    "addMemberBTN": "チームメンバーを追加",
+    "addMemberBTN": "チームメンバーを管理",
     "exitBTN": "退出",
     "deleteTeamBTN": "チームを削除",
     "cretaGradeList": ["クレタルーキー", "クレタスター", "クレタセレブ"],
@@ -142,6 +142,12 @@
     "dollor": "円",
     "peopleNo": "人数",
     "people" : "人",
+
+    "shouldChangePassword": "必ずパスワードを変更してからご使用ください。",
+    "noTeam" : "所属しているチームがありません。",
+
+    "memberAuth" :  "メンバー権限",
+    "managerAuth" :  "マネージャー権限",
 
 
     "end" : ""

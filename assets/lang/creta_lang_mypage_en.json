@@ -101,7 +101,7 @@
     "teamExit": "Exit from the team",
     "deleteTeam": "Delete team",
     "throwBTN": "Export",
-    "addMemberBTN": "Add a team member",
+    "addMemberBTN": "Manage member",
     "exitBTN": "Exit",
     "deleteTeamBTN": "Delete team",
     "cretaGradeList": [
@@ -182,6 +182,13 @@
     "dollor": "Dollars",
     "peopleNo": "Number of People",
     "people" : "people",
-  
-    "endOfList": "End of List"
+
+    "shouldChangePassword": "Be sure to change your password before using it.",
+    "noTeam" : "No team to belong to.",
+
+    "memberAuth" :  "Member Authority",
+    "managerAuth" :  "Manager Authority",
+
+
+      "endOfList": "End of List"
 }

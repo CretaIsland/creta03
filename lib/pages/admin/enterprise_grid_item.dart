@@ -217,7 +217,7 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
                         shape: BoxShape.circle,
                         color: Colors.white.withOpacity(0.5),
                       ),
-                      child: AccountManager.currentLoginUser.isSuperUser()
+                      child: AccountManager.currentLoginUser.isSuperUser
                           ? Checkbox(
                               value: _isSuperEnterprise(),
                               onChanged: (bool? newValue) {

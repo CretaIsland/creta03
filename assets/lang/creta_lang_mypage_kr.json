@@ -70,7 +70,7 @@
     "teamExit": "팀에서 나가기",
     "deleteTeam": "팀 삭제",
     "throwBTN": "내보내기",
-    "addMemberBTN": "팀원 추가",
+    "addMemberBTN": "팀원 관리",
     "exitBTN": "나가기",
     "deleteTeamBTN": "팀 삭제",
     "cretaGradeList": ["크레타 루키", "크레타 스타", "크레타 셀럽"],
@@ -143,6 +143,11 @@
     "peopleNo" : "인원",
     "people" : "명",
 
+    "shouldChangePassword": "반드시 비밀번호를 변경한 후 사용해주세요.",
+    "noTeam" : " 소속된 팀이 없습니다.",
+
+    "memberAuth" :  "팀원 권한",
+    "managerAuth" :  "관리자 권한",
 
     "end"  :  "끝"
   }

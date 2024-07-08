@@ -24,8 +24,8 @@ class EnterpriseManager extends CretaManager {
   static EnterpriseModel? currentEnterpriseModel;
 
   static Future<void> initEnterprise() async {
-    if (AccountManager.currentLoginUser.isSuperUser() == false && hasValidEnterprise()) {
-      List<AbsExModel> enterprises = await _enterpriseManagerHolder!
+    if (AccountManager.currentLoginUser.isSuperUser == false && hasValidEnterprise()) {
+      List<AbsExModel> enterprises = await EnterpriseManager.instance
           .myDataOnly(UserPropertyManager.getUserProperty!.enterprise);
 
       if (enterprises.isNotEmpty) {
@@ -35,7 +35,7 @@ class EnterpriseManager extends CretaManager {
   }
 
   static bool isEnterpriseUser(String enterprise) {
-    if (AccountManager.currentLoginUser.isSuperUser()) {
+    if (AccountManager.currentLoginUser.isSuperUser) {
       return true;
     }
     return enterprise.isNotEmpty && enterprise != UserPropertyModel.defaultEnterprise;

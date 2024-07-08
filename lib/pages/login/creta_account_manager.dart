@@ -329,15 +329,10 @@ class CretaAccountManager {
     }
   }
 
-  static void deleteTeamMember(String targetEmail, int permission) {
+  static void deleteTeamMember(String targetEmail) {
     if (getCurrentTeam == null) return;
-    if (permission == 1) {
-      //manager
-      getCurrentTeam!.managers.remove(targetEmail);
-    } else {
-      // general
-      getCurrentTeam!.generalMembers.remove(targetEmail);
-    }
+    getCurrentTeam!.managers.remove(targetEmail);
+    getCurrentTeam!.generalMembers.remove(targetEmail);
 
     getCurrentTeam!.teamMembers.remove(targetEmail);
     getCurrentTeam!.removedMembers.add(targetEmail);
