@@ -228,6 +228,10 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
 
   @override
   Widget build(BuildContext context) {
+    // if (UserPropertyManager.getUserProperty == null) {
+    //   print('myPage.dart build-------------------------------------------------2');
+    //   return const SizedBox.shrink();
+    // }
     resize(context);
     return MultiProvider(
       providers: [
@@ -255,8 +259,10 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
             if (snapshot.connectionState == ConnectionState.done) {
               logger.finest("founded ${snapshot.data!}");
               // if (snapshot.data!.isEm
+
               return Consumer<UserPropertyManager>(builder: (context, userPropertyManager, child) {
-                if (oldLanguage != userPropertyManager.userPropertyModel!.language) {
+                if (userPropertyManager.userPropertyModel != null &&
+                    oldLanguage != userPropertyManager.userPropertyModel!.language) {
                   oldLanguage = userPropertyManager.userPropertyModel!.language;
                   _initMenu();
                 }

@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../common/creta_utils.dart';
+import '../../data_io/enterprise_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../lang/creta_device_lang.dart';
 import '../login/creta_account_manager.dart';
@@ -368,6 +369,8 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
 
   Future<(bool, String)> checkTeamMember(String email) async {
     /*
+    A.  Enterprise Case
+
       case 1 : 이미 있는 경우
           case 1-1 : 이미 이 엔터프라이즈의 다른 팀원이다.
             1) 그냥 그 USer 의 teams 에 추가해준다.
@@ -383,53 +386,101 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
             2) verify 이메일을 보낸다.  verify 하면 끝난다.
             3) 최초 로그인시 password 를 바꿀것을 강요한다.
 
+    B.  Private Case
+
+  case 1 : 이미 있는 경우
+          case 1-1 : 엔터프라이즈의 팀원이다.
+            1) 엔터프라이즈의 팀원은 데려올 수 없다!!! 경고하고 끝낸다.
+          case 1-2 : 개인회원으로 가입되어 있다.
+            1) 그냥 그 USer 의 teams 에 추가해준다.
+            2)  team 에 추가되었음을 이메일로 알려준다. 특별히 다른 조치를 취하지 않는다.
+       
+    
+      case 2 :  아직 없는 경우z
+            1) 회원 가입한 경우만 회원으로 추가할 수 있다.
+
     */
+
+    if (EnterpriseManager.isEnterpriseUser(widget.teamModel.enterprise)) {
+      // A.  Enterprise Case
+
+      UserPropertyModel? user = await CretaAccountManager.getUserPropertyModel(email);
+      if (user != null) {
+        // case 1
+        if (user.enterprise == widget.teamModel.enterprise) {
+          // case 1-1
+          user.teams.add(widget.teamModel.mid);
+          CretaAccountManager.userPropertyManagerHolder.setToDB(user);
+          CretaUtils.sendTeamNotify(
+              email, widget.teamModel.name, AccountManager.currentLoginUser.email);
+          return (true, '');
+        }
+        if (user.enterprise.isNotEmpty && user.enterprise == UserPropertyModel.defaultEnterprise) {
+          // case 1-2
+          String msg = CretaDeviceLang["alreayPrivateMember"] ??
+              '이미 개인 회원으로 가입된 email입니다.  개인 회원으로 가입된 email로는 엔터프라이즈 소속 회원이 될 수 없습니다.  이 사람의 다른 email 로 시도하십시오.';
+          return (false, msg);
+        }
+        // case 1-3
+        String msg = CretaDeviceLang["alreayAnotherEnterpriseMember"] ??
+            '이미 다른 엔터프라이즈의 팀원입니다.  다른 엔터프라이즈의 소속 회원은 중복 가입할 수 없습니다. 이 사람의 다른 email 로 시도하십시오.';
+        return (false, msg);
+      }
+      // case 2
+      // 1) 만들어 준다.  (user 의 teams 에도 값을 넣어주는 것을 잊지 말자)
+      UserModel userAccount =
+          await AccountManager.createAccountByAdmin(email, email); //EnterpriseModel model =
+
+      UserPropertyModel userPropertyModel =
+          CretaAccountManager.userPropertyManagerHolder.makeNewUserProperty(
+        parentMid: userAccount.userId,
+        email: userAccount.email,
+        nickname: userAccount.name,
+        enterprise: widget.teamModel.enterprise,
+        teamMid: widget.teamModel.mid,
+        verified: false,
+      );
+
+      await CretaAccountManager.userPropertyManagerHolder
+          .createUserProperty(createModel: userPropertyModel);
+
+      // 2) verify 이메일을 보낸다.  verify 하면 끝난다.
+      CretaUtils.sendVerifyEmail(
+          email, AccountManager.currentLoginUser.email, email, userPropertyModel.mid,
+          password: userAccount.password);
+
+      return (true, '');
+    }
+
+    //  B.  Private Case
+
+    int total = widget.teamModel.generalMembers.length + widget.teamModel.managers.length;
+    if (total >= 4) {
+      String msg =
+          CretaDeviceLang["memberLimitExceed"] ?? '팀원은 4명까지만 추가할 수 있습니다.  더 이상 추가할 수 없습니다.';
+      return (false, msg);
+    }
 
     UserPropertyModel? user = await CretaAccountManager.getUserPropertyModel(email);
     if (user != null) {
       // case 1
-      if (user.enterprise == widget.teamModel.enterprise) {
+      if (EnterpriseManager.isEnterpriseUser(user.enterprise)) {
         // case 1-1
-        user.teams.add(widget.teamModel.mid);
-        CretaAccountManager.userPropertyManagerHolder.setToDB(user);
-        CretaUtils.sendTeamNotify(
-            email, widget.teamModel.name, AccountManager.currentLoginUser.email);
-        return (true, '');
-      }
-      if (user.enterprise.isNotEmpty && user.enterprise == UserPropertyModel.defaultEnterprise) {
-        // case 1-2
-        String msg = CretaDeviceLang["alreayPrivateMember"] ??
-            '이미 개인 회원으로 가입된 email입니다.  개인 회원으로 가입된 email로는 엔터프라이즈 소속 회원이 될 수 없습니다.  이 사람의 다른 email 로 시도하십시오.';
+        String msg = CretaDeviceLang["enterpriseCantbePrivateTeamMember"] ??
+            '엔터프라이즈의 팀원입니다.  엔터프라이즈의 소속 회원은 개인회원의 팀에 소속될 수 없습니다. 이 사람의 다른 email 로 시도하십시오.';
         return (false, msg);
       }
-      // case 1-3
-      String msg = CretaDeviceLang["alreayAnotherEnterpriseMember"] ??
-          '이미 다른 엔터프라이즈의 팀원입니다.  다른 엔터프라이즈의 소속 회원은 중복 가입할 수 없습니다. 이 사람의 다른 email 로 시도하십시오.';
-      return (false, msg);
+      // case 1-2
+
+      user.teams.add(widget.teamModel.mid);
+      CretaAccountManager.userPropertyManagerHolder.setToDB(user);
+      CretaUtils.sendTeamNotify(
+          email, widget.teamModel.name, AccountManager.currentLoginUser.email);
+      return (true, '');
     }
     // case 2
-    // 1) 만들어 준다.  (user 의 teams 에도 값을 넣어주는 것을 잊지 말자)
-    UserModel userAccount =
-        await AccountManager.createAccountByAdmin(email, email); //EnterpriseModel model =
-
-    UserPropertyModel userPropertyModel =
-        CretaAccountManager.userPropertyManagerHolder.makeNewUserProperty(
-      parentMid: userAccount.userId,
-      email: userAccount.email,
-      nickname: userAccount.name,
-      enterprise: widget.teamModel.enterprise,
-      teamMid: widget.teamModel.mid,
-      verified: false,
-    );
-
-    await CretaAccountManager.userPropertyManagerHolder
-        .createUserProperty(createModel: userPropertyModel);
-
-    // 2) verify 이메일을 보낸다.  verify 하면 끝난다.
-    CretaUtils.sendVerifyEmail(
-        email, AccountManager.currentLoginUser.email, email, userPropertyModel.mid,
-        password: userAccount.password);
-
-    return (true, '');
+    String msg = CretaDeviceLang["notRegisteredMember"] ??
+        '아직 회원 가입되지 않은 이메일입니다. 회원 가입을 한 사람만 팀원이 될 수 있습니다.';
+    return (false, msg);
   }
 }

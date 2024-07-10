@@ -189,6 +189,9 @@
     "memberAuth" :  "Member Authority",
     "managerAuth" :  "Manager Authority",
 
+    "enterpriseCantbePrivateTeamMember" :  "This person is a member of the enterprise. Members of the enterprise cannot belong to the team of individual members. Please try with another email.",
+    "notRegisteredMember" : "This is an email address that has not yet been registered. Only those who have registered can become team members.",
+    "memberLimitExceed" : "Only up to 4 team members can be added. You cannot add more than this.",
 
       "endOfList": "End of List"
 }

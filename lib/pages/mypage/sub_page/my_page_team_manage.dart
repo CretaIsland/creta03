@@ -49,7 +49,19 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
   bool hasTeam = true;
   late String enterprise;
   bool isEnterprise = false;
-  bool hasPermission = false;
+  bool hasPermition = false;
+
+  @override
+  void setState(VoidCallback fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -62,7 +74,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
       hasTeam = false;
     }
     if (TeamManager.getCurrentTeam != null) {
-      hasPermission = CretaAccountManager.currentLoginUser.email ==
+      hasPermition = CretaAccountManager.currentLoginUser.email ==
               TeamManager.getCurrentTeam!.owner ||
           TeamManager.getCurrentTeam!.managers.contains(CretaAccountManager.currentLoginUser.email);
 
@@ -75,10 +87,18 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
 
   @override
   Widget build(BuildContext context) {
+    // if (UserPropertyManager.getUserProperty == null) {
+    //   print('build-------------------------------------------------2');
+    //   return const SizedBox.shrink();
+    // }
     return Consumer3<UserPropertyManager, TeamManager, ChannelManager>(
       builder: (context, userPropertyManager, teamManager, channelManager, child) {
         if (hasTeam && isEnterprise && teamManager.teamModelList.isEmpty) {
           hasTeam = false;
+        }
+
+        if (TeamManager.getCurrentTeam == null) {
+          return const SizedBox.shrink();
         }
 
         return Container(
@@ -166,43 +186,47 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   MyPageCommonWidget.profileImgComponent(
-                      width: 200,
-                      height: 200,
-                      profileImgUrl: TeamManager.getCurrentTeam!.profileImgUrl,
-                      profileImgBytes: _selectedProfileImgBytes,
-                      userName: teamManager.currentTeam!.name,
-                      replaceColor: replaceColor,
-                      borderRadius: BorderRadius.circular(20),
-                      editBtn: Center(
-                        child: BTN.opacity_gray_i_l(
-                            icon: const Icon(Icons.camera_alt_outlined, color: Colors.white).icon!,
-                            onPressed: () async {
-                              try {
-                                _selectedProfileImg =
-                                    await ImagePicker().pickImage(source: ImageSource.gallery);
-                                if (_selectedProfileImg != null) {
-                                  _selectedProfileImg!.readAsBytes().then((value) {
-                                    setState(() {
-                                      _selectedProfileImgBytes = value;
-                                    });
-                                    HycopFactory.storage!
-                                        .uploadFile(
-                                            _selectedProfileImg!.name,
-                                            _selectedProfileImg!.mimeType!,
-                                            _selectedProfileImgBytes!)
-                                        .then((value) {
-                                      if (value != null) {
-                                        TeamManager.getCurrentTeam!.profileImgUrl = value.url;
-                                        teamManager.setToDB(CretaAccountManager.getCurrentTeam!);
-                                      }
-                                    });
-                                  });
-                                }
-                              } catch (error) {
-                                logger.info("error at mypage info >> $error");
-                              }
-                            }),
-                      )),
+                    width: 200,
+                    height: 200,
+                    profileImgUrl: TeamManager.getCurrentTeam!.profileImgUrl,
+                    profileImgBytes: _selectedProfileImgBytes,
+                    userName: teamManager.currentTeam!.name,
+                    replaceColor: replaceColor,
+                    borderRadius: BorderRadius.circular(20),
+                    editBtn: hasPermition
+                        ? Center(
+                            child: BTN.opacity_gray_i_l(
+                                icon: const Icon(Icons.camera_alt_outlined, color: Colors.white)
+                                    .icon!,
+                                onPressed: () async {
+                                  try {
+                                    _selectedProfileImg =
+                                        await ImagePicker().pickImage(source: ImageSource.gallery);
+                                    if (_selectedProfileImg != null) {
+                                      _selectedProfileImg!.readAsBytes().then((value) {
+                                        setState(() {
+                                          _selectedProfileImgBytes = value;
+                                        });
+                                        HycopFactory.storage!
+                                            .uploadFile(
+                                                _selectedProfileImg!.name,
+                                                _selectedProfileImg!.mimeType!,
+                                                _selectedProfileImgBytes!)
+                                            .then((value) {
+                                          if (value != null) {
+                                            TeamManager.getCurrentTeam!.profileImgUrl = value.url;
+                                            teamManager
+                                                .setToDB(CretaAccountManager.getCurrentTeam!);
+                                          }
+                                        });
+                                      });
+                                    }
+                                  } catch (error) {
+                                    logger.info("error at mypage info >> $error");
+                                  }
+                                }))
+                        : const SizedBox.shrink(),
+                  ),
                   const SizedBox(height: 36),
                   Text(TeamManager.getCurrentTeam!.name, style: CretaFont.titleMedium),
                   const SizedBox(height: 20),
@@ -215,15 +239,16 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                           children: [
                             Text("Team for 4", style: CretaFont.titleMedium),
                             const SizedBox(width: 60),
-                            BTN.line_blue_t_m(
-                                height: 32,
-                                text: CretaMyPageLang['ratePlanChangeBTN']!,
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => PopUpRatePlan.ratePlanPopUp(context),
-                                  );
-                                })
+                            if (hasPermition)
+                              BTN.line_blue_t_m(
+                                  height: 32,
+                                  text: CretaMyPageLang['ratePlanChangeBTN']!,
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => PopUpRatePlan.ratePlanPopUp(context),
+                                    );
+                                  })
                           ],
                         )
                 ],
@@ -243,7 +268,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                     Text(CretaMyPageLang['teamMemberManage']!, style: CretaFont.titleELarge),
                     const SizedBox(width: 40.0),
                     if (isEnterprise == false)
-                      Text('${CretaMyPageLang['inviteablePeopleNumber']!} 1 / 4',
+                      Text('${CretaMyPageLang['inviteablePeopleNumber']!} 4',
                           style: CretaFont.bodySmall.copyWith(color: CretaColor.text.shade400))
                   ],
                 ),
@@ -253,12 +278,13 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                   memberComponent(member, teamManager)
                 ],
                 const SizedBox(height: 32.0),
-                BTN.fill_blue_t_m(
-                    text: CretaMyPageLang['addMemberBTN']!,
-                    width: 200,
-                    onPressed: () {
-                      _editTeam(teamManager: teamManager);
-                    })
+                if (hasPermition)
+                  BTN.fill_blue_t_m(
+                      text: CretaMyPageLang['addMemberBTN']!,
+                      width: 200,
+                      onPressed: () {
+                        _editTeam(teamManager: teamManager);
+                      })
               ],
             ),
           ),
@@ -276,6 +302,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                     Text(CretaMyPageLang['openChannel']! /*"채널 공개"*/, style: CretaFont.titleMedium),
                     const SizedBox(width: 200),
                     CretaToggleButton(
+                      isActive: hasPermition,
                       defaultValue: TeamManager.getCurrentTeam!.isPublicProfile,
                       onSelected: (value) {
                         TeamManager.getCurrentTeam!.isPublicProfile = value;
@@ -294,6 +321,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                         style: CretaFont.titleMedium),
                     const SizedBox(width: 200),
                     CretaToggleButton(
+                      isActive: hasPermition,
                       defaultValue: TeamManager.getCurrentTeam!.isPublicProfile,
                       onSelected: (value) {
                         TeamManager.getCurrentTeam!.isPublicProfile = value;
@@ -320,25 +348,27 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                             //width: widget.width * .6,
                             bannerImgUrl: CretaAccountManager.getChannel!.bannerImgUrl,
                             onPressed: () async {
-                              try {
-                                _selectedBannerImg =
-                                    await ImagePicker().pickImage(source: ImageSource.gallery);
-                                if (_selectedBannerImg != null) {
-                                  _selectedBannerImg!.readAsBytes().then((fileBytes) {
-                                    if (fileBytes.isNotEmpty) {
-                                      // popup 호출
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return EditBannerImgPopUp(
-                                                bannerImgBytes: fileBytes,
-                                                selectedImg: _selectedBannerImg!);
-                                          });
-                                    }
-                                  });
+                              if (hasPermition) {
+                                try {
+                                  _selectedBannerImg =
+                                      await ImagePicker().pickImage(source: ImageSource.gallery);
+                                  if (_selectedBannerImg != null) {
+                                    _selectedBannerImg!.readAsBytes().then((fileBytes) {
+                                      if (fileBytes.isNotEmpty) {
+                                        // popup 호출
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return EditBannerImgPopUp(
+                                                  bannerImgBytes: fileBytes,
+                                                  selectedImg: _selectedBannerImg!);
+                                            });
+                                      }
+                                    });
+                                  }
+                                } catch (error) {
+                                  logger.info('something wrong in my_page_team_manage >> $error');
                                 }
-                              } catch (error) {
-                                logger.info('something wrong in my_page_team_manage >> $error');
                               }
                             }),
                       ),
@@ -392,9 +422,11 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
         ),
         const SizedBox(width: 14),
         SizedBox(
-          width: 120.0,
+          width: 240.0,
           child: Text(
-            memberModel.nickname,
+            memberModel.email != memberModel.nickname
+                ? '${memberModel.nickname}, ${memberModel.email}'
+                : memberModel.email,
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -402,12 +434,14 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
         SizedBox(
           width: 120.0,
           child: Text(
-            TeamManager.isManager(memberModel.email) ? '관리자 권한' : '팀원 권한',
+            TeamManager.isManager(memberModel.email)
+                ? CretaMyPageLang['memberAuth'] ?? '관리자 권한'
+                : CretaMyPageLang['managerAuth'] ?? '팀원 권한',
             overflow: TextOverflow.ellipsis,
           ),
         ),
         // const SizedBox(width: 50.0),
-        // (hasPermission) && memberModel.email != CretaAccountManager.currentLoginUser.email
+        // (hasPermition) && memberModel.email != CretaAccountManager.currentLoginUser.email
         //     ? BTN.line_blue_t_m(
         //         text: CretaMyPageLang['throwBTN'] ?? "내보내기",
         //         onPressed: () {
@@ -448,7 +482,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
           actions: <Widget>[
             TextButton(
                 child: const Text('OK'),
-                onPressed: () {
+                onPressed: () async {
                   if (formKey.currentState!.validate()) {
                     //print('formKey.currentState!.validate()====================');
                     formKey.currentState?.save();
@@ -458,9 +492,11 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                     CretaAccountManager.userPropertyManagerHolder
                         .updateTeams(newOne.managers, newOne.name);
 
-                    teamManager.resetTeamMemberMap([...newOne.managers, ...newOne.generalMembers],
+                    await teamManager.resetTeamMemberMap(
+                        [...newOne.managers, ...newOne.generalMembers],
                         CretaAccountManager.userPropertyManagerHolder);
                   }
+                  // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 }),
             TextButton(

@@ -63,7 +63,7 @@ class CretaAccountManager {
   //static TeamModel? getCurrentTeam;
   static TeamModel? get getCurrentTeam => TeamManager.getCurrentTeam;
   //static final Map<String, List<UserPropertyModel>> getTeamMemberMap = {};
-  static Map<String, List<UserPropertyModel>> get getTeamMemberMap => TeamManager.getTeamMemberMap;
+  static Map<String, Set<UserPropertyModel>> get getTeamMemberMap => TeamManager.getTeamMemberMap;
 
   static ChannelModel? _loginChannel;
   static set setChannel(ChannelModel? model) => _loginChannel = model;
@@ -131,14 +131,14 @@ class CretaAccountManager {
     // team이 없거나, ent없으면 모든정보초기화
     if (_loginEnterprise == null) {
       // team이 없는건 가능, ent없으면 모든정보초기화
-      logger.warning('login failed (_initEnterprise failed)');
+      logger.severe('login failed (_initEnterprise failed)');
       await logout();
       return false;
     }
     return true;
   }
 
-  static Future<bool> logout({bool doGuestLogin = true}) async {
+  static void clear() {
     channelManagerHolder.clearAll();
     enterpriseManagerHolder.clearAll();
     _favFrameManagerHolder?.clearAll();
@@ -150,7 +150,10 @@ class CretaAccountManager {
     _loginChannel = null;
     _loginEnterprise = null;
     _loginFrameList.clear();
+  }
 
+  static Future<bool> logout({bool doGuestLogin = true, bool doClear = true}) async {
+    if (doClear) clear();
     await AccountManager.logout();
     if (doGuestLogin) await _guestUserLogin();
     return true;
@@ -305,16 +308,16 @@ class CretaAccountManager {
     }
   }
 
-  static List<UserPropertyModel>? getMyTeamMembers() {
+  static Set<UserPropertyModel>? getMyTeamMembers() {
     return TeamManager.getMyTeamMembers();
   }
 
-  static Future<List<UserPropertyModel>> _getTeamMembers(
+  static Future<Set<UserPropertyModel>> _getTeamMembers(
     String tmMid,
     List<String> memberEmailList,
     /*{int limit = 99}*/
   ) async {
-    List<UserPropertyModel> teamMemberList = [];
+    Set<UserPropertyModel> teamMemberList = {};
     try {
       userPropertyManagerHolder.queryFromIdList(memberEmailList);
       await userPropertyManagerHolder.isGetListFromDBComplete();
@@ -325,7 +328,7 @@ class CretaAccountManager {
       return teamMemberList;
     } catch (error) {
       logger.fine('something wrong in teamManager >> $error');
-      return [];
+      return {};
     }
   }
 
@@ -418,7 +421,10 @@ class CretaAccountManager {
 
   static Future<bool> _initEnterprise({int limit = 99}) async {
     Map<String, QueryValue> query = {};
-    query['name'] = QueryValue(value: getUserProperty!.enterprise);
+    query['name'] = QueryValue(
+        value: getUserProperty!.enterprise.isEmpty
+            ? UserPropertyModel.defaultEnterprise
+            : getUserProperty!.enterprise);
     query['isRemoved'] = QueryValue(value: false);
     Map<String, OrderDirection> orderBy = {};
     orderBy['order'] = OrderDirection.ascending;

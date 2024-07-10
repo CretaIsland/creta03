@@ -338,7 +338,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
   }
 
   List<Widget> _myMembers() {
-    List<UserPropertyModel>? myMembers = CretaAccountManager.getMyTeamMembers();
+    Set<UserPropertyModel>? myMembers = CretaAccountManager.getMyTeamMembers();
     if (myMembers == null) {
       return [];
     }

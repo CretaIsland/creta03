@@ -220,8 +220,6 @@ class BookPublishedManager extends CretaManager {
       published.jsonStr = '{\n$jsonStr\n}';
     }
 
-    
-
     published.sourceMid = src.mid;
     src.publishMid = published.mid;
     src.save();
@@ -272,7 +270,7 @@ class BookPublishedManager extends CretaManager {
       queryVal.add('<${PermissionType.owner.name}>$myTeamId');
     }
 
-    List<UserPropertyModel>? myMembers = CretaAccountManager.getMyTeamMembers();
+    Set<UserPropertyModel>? myMembers = CretaAccountManager.getMyTeamMembers();
     if (myMembers == null) {
       return [];
     }

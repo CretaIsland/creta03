@@ -148,7 +148,7 @@ class BookManager extends BaseBookManager {
       queryVal.add('<${PermissionType.owner.name}>$myTeamId');
     }
 
-    List<UserPropertyModel>? myMembers = CretaAccountManager.getMyTeamMembers();
+    Set<UserPropertyModel>? myMembers = CretaAccountManager.getMyTeamMembers();
     if (myMembers == null) {
       return [];
     }

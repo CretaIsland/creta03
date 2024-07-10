@@ -596,7 +596,7 @@ class LoginDialog extends StatefulWidget {
         if (AccountManager.currentLoginUser.isLoginedUser) {
           // 로그인에 성공했을때,  아래 변수를 초기화 해주어야 함.
           CretaAccountManager.experienceWithoutLogin = false; //skpark add
-          await EnterpriseManager.initEnterprise();  //skpark add
+          await EnterpriseManager.initEnterprise(); //skpark add
           onAfterLogin?.call();
         }
       } else {
@@ -726,7 +726,14 @@ class _LoginDialogState extends State<LoginDialog> {
             _moveToPageState(LoginPageState.verifyEmail);
           }
         } else {
-          throw HycopUtils.getHycopException(defaultMessage: 'not exist userproperty !!!');
+          //throw HycopUtils.getHycopException(defaultMessage: 'not exist userproperty !!!');
+          logger.severe('not exist userproperty !!!');
+          String errMsg = '${CretaCommuLang["loginFailure"]!} : init userproperty failed!!!';
+          setState(() {
+            _setErrorMessage(loginErrorMessage: errMsg);
+            _isLoginProcessing = false;
+          });
+          await CretaAccountManager.logout();
         }
       });
     }).onError((error, stackTrace) async {
@@ -1477,9 +1484,12 @@ class _LoginDialogState extends State<LoginDialog> {
           ),
           Padding(
             padding: EdgeInsets.fromLTRB(40, 8, 0, 0),
-            child: Text(
-              _loginErrorMessage,
-              style: CretaFont.bodyESmall.copyWith(color: CretaColor.stateCritical),
+            child: SizedBox(
+              width: 326,
+              child: Text(
+                _loginErrorMessage,
+                style: CretaFont.bodyESmall.copyWith(color: CretaColor.stateCritical),
+              ),
             ),
           ),
           Padding(
