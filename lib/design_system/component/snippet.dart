@@ -31,6 +31,7 @@ import '../../lang/creta_device_lang.dart';
 import '../../lang/creta_mypage_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../pages/intro_page.dart';
+import '../../pages/popup/bass_demo_popup.dart';
 import '../../pages/studio/book_main_page.dart';
 import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_variables.dart';
@@ -555,8 +556,13 @@ class Snippet {
                 ? CretaLang['accountMenu']![6]
                 : CretaLang['accountMenu']![5], //개발자모드
             onPressed: () {
-              CretaVars.isDeveloper = !CretaVars.isDeveloper;
-              invalidate?.call();
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return BassDemoPopUp();
+                  });
+              // CretaVars.isDeveloper = !CretaVars.isDeveloper;
+              // invalidate?.call();
             },
           ),
       ],

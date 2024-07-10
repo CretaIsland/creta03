@@ -98,6 +98,7 @@
     "currentTeamCantDelete" : "The current team cannot be deleted.",
     "onlyChild" : "There is a user whose only team is this team.  In this case, you must first delete the user and then delete the team.",
 
+    "userManage"  : "User Management",
 
     "end"  : "End"
 

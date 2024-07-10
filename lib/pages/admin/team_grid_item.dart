@@ -258,7 +258,6 @@ class TeamGridItemState extends State<TeamGridItem> {
 
                       // 팀을 지우려면
                       // 1) 소속 멤버의 teams 에서 해당 탬을 지워야 함
-                      // 2) 그런데, 만약 어느 User 가 소속한 유일한 팀이 이팀이라면  User 를 먼저 삭제하라고 해야함
                       // 3) 팀을 지워야 함
                       if (widget.teamModel == null) {
                         return;
@@ -272,14 +271,14 @@ class TeamGridItemState extends State<TeamGridItem> {
                       }
 
                       List<UserPropertyModel> users = await teamWillbeDeleted(widget.teamModel!);
-                      if (users.isEmpty) {
-                        showSnackBar(
-                            // ignore: use_build_context_synchronously
-                            context,
-                            CretaDeviceLang['onlyChild'] ??
-                                'There is a user whose only team is this team.  In this case, you must first delete the user and then delete the team.');
-                        return;
-                      }
+                      // if (users.isEmpty) {
+                      //   showSnackBar(
+                      //       // ignore: use_build_context_synchronously
+                      //       context,
+                      //       CretaDeviceLang['onlyChild'] ??
+                      //           'There is a user whose only team is this team.  In this case, you must first delete the user and then delete the team.');
+                      //   return;
+                      // }
 
                       CretaPopup.yesNoDialog(
                         // ignore: use_build_context_synchronously
@@ -331,11 +330,11 @@ class TeamGridItemState extends State<TeamGridItem> {
     for (var element in widget.teamModel!.teamMembers) {
       UserPropertyModel? user = await CretaAccountManager.getUserPropertyModel(element);
       if (user != null) {
-        // 1) 소속 멤버의 teams 에서 해당 탬을 지워야 함
-        // 2) 그런데, 만약 어느 User 가 소속한 유일한 팀이 이팀이라면  User 를 먼저 삭제하라고 해야함
-        if (user.teams.length == 1 && user.teams[0] == team.mid) {
-          return [];
-        }
+        // // 1) 소속 멤버의 teams 에서 해당 탬을 지워야 함
+        // // 2) 그런데, 만약 어느 User 가 소속한 유일한 팀이 이팀이라면  User 를 먼저 삭제하라고 해야함
+        // if (user.teams.length == 1 && user.teams[0] == team.mid) {
+        //   return [];
+        // }
         retval.add(user);
       }
     }
