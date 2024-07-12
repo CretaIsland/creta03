@@ -107,7 +107,10 @@ class NewDeviceInputState extends State<NewDeviceInput> {
             if (widget.data.message.isNotEmpty)
               Text(
                 widget.data.message,
-                style: const TextStyle(color: Colors.red),
+                style: TextStyle(
+                    color: (widget.data.message == CretaDeviceLang['availiableID']!)
+                        ? Colors.blue
+                        : Colors.red),
               ),
             Padding(
               padding: const EdgeInsets.all(8.0),

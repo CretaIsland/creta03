@@ -100,6 +100,12 @@
 
     "userManage"  : "User Management",
 
+    "onlyTeamMemberCanbeAdmin" : "Only team members can be administrators. Please try again after adding the user to the team.",
+    "alreadyExistEmail":    "The same email ID already exists",
+    "alreadyExistTeam":    "The same Team ID already exists",
+
+    "teamsAlsoBeDeleted" : "The following teams will also be deleted.",
+
     "end"  : "End"
 
 }

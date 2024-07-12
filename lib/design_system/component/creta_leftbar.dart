@@ -212,9 +212,9 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
                                 width: 195,
                                 text: AccountManager.currentLoginUser.name,
                                 subText: EnterpriseManager.isEnterpriseUser(enterprise)
-                                    ? EnterpriseManager.currentEnterpriseModel == null
+                                    ? CretaAccountManager.getEnterprise == null
                                         ? enterprise
-                                        : EnterpriseManager.currentEnterpriseModel!.name
+                                        : CretaAccountManager.getEnterprise!.name
                                     : '${CretaCommuLang["subscriber"]!} ${CretaAccountManager.getChannel?.followerCount ?? 0}',
                                 image: const AssetImage('assets/creta_default.png'),
                                 onPressed: () {

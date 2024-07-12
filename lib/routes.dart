@@ -13,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'data_io/book_manager.dart';
-import 'data_io/enterprise_manager.dart';
 import 'design_system/component/colorPicker/color_picker_demo.dart';
 import 'design_system/demo_page/font_demo_page.dart';
 import 'design_system/demo_page/button_demo_page.dart';
@@ -308,7 +307,7 @@ final routesLoggedOut = RouteMap(
     AppRoutes.communityHome: (_) {
       // superAdmin 인데, Enterprise 가 없으면, Enterprise 선택 페이지로 간다.
       if (AccountManager.currentLoginUser.isSuperUser &&
-          EnterpriseManager.currentEnterpriseModel == null) {
+          CretaAccountManager.getEnterprise == null) {
         return const Redirect(AppRoutes.adminMainPage);
       }
       return TransitionPage(

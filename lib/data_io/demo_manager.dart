@@ -43,16 +43,4 @@ class DemoManager extends CretaManager {
   Widget streamHost({required Widget Function(List<Map<String, dynamic>>) consumerFunc}) {
     return streamData2(consumerFunc: consumerFunc, snapshot: _stream);
   }
-
-  @override
-  Future<List<AbsExModel>> myDataOnly(String userId, {int? limit}) async {
-    logger.finest('myDataOnly');
-    Map<String, QueryValue> query = {};
-    query['creator'] = QueryValue(value: userId);
-    query['isRemoved'] = QueryValue(value: false);
-    //print('myDataOnly start');
-    final retval = await queryFromDB(query, limit: limit);
-    //print('myDataOnly end ${retval.length}');
-    return retval;
-  }
 }

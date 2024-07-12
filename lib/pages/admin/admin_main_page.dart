@@ -11,7 +11,6 @@ import 'package:creta_user_io/data_io/user_property_manager.dart';
 //import '../../common/window_resize_lisnter.dart';
 import 'package:hycop/common/util/logger.dart';
 
-import '../../data_io/enterprise_manager.dart';
 import '../../design_system/component/creta_basic_layout_mixin.dart';
 import '../../design_system/component/creta_popup.dart';
 import '../../design_system/component/snippet.dart';
@@ -95,8 +94,7 @@ class AdminMainPage extends StatefulWidget {
 
   static void showSelectEnterpriseWarnning(BuildContext context) {
     // superAdmin 인데, Enterprise 가 없으면, Enterprise 선택 pop up dialog 띄우기
-    if (AccountManager.currentLoginUser.isSuperUser &&
-        EnterpriseManager.currentEnterpriseModel == null) {
+    if (AccountManager.currentLoginUser.isSuperUser && CretaAccountManager.getEnterprise == null) {
       Future.delayed(Duration.zero, () {
         CretaPopup.simple(
           context: context,
@@ -318,7 +316,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
                             return TeamListWidget(
                               width: rightPaneRect.childWidth,
                               height: rightPaneRect.childHeight - 46,
-                              enterprise: EnterpriseManager.currentEnterpriseModel,
+                              enterprise: CretaAccountManager.getEnterprise,
                             );
                           case AdminSelectedPage.user:
                             return Text('User Manage Page not yet implemented');

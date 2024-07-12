@@ -102,6 +102,12 @@
 
     "userManage"  : "유저 관리",
 
+    "onlyTeamMemberCanbeAdmin" : "오직 현재 소속 팀의 팀원만 어드민이 될 수 있습니다.  먼저 팀관리 화면에서 팀원으로 등록후 어드민으로 등록해주세요",
+    "alreadyExistEmail":    "같은 email ID 가 이미 존재합니다",
+    "alreadyExistTeam":    "같은 Team ID 가 이미 존재합니다",
+
+    "teamsAlsoBeDeleted" : "다음과 같은 소속팀이 함께 삭제됩니다.",
+
 
     "END" : ""
 }

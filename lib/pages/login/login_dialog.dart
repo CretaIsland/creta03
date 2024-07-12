@@ -12,7 +12,6 @@ import 'package:email_validator/email_validator.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 
 //import '../login_page.dart';
-import '../../data_io/enterprise_manager.dart';
 import '../../lang/creta_commu_lang.dart';
 import 'creta_account_manager.dart';
 //import '../../routes.dart';
@@ -596,7 +595,7 @@ class LoginDialog extends StatefulWidget {
         if (AccountManager.currentLoginUser.isLoginedUser) {
           // 로그인에 성공했을때,  아래 변수를 초기화 해주어야 함.
           CretaAccountManager.experienceWithoutLogin = false; //skpark add
-          await EnterpriseManager.initEnterprise(); //skpark add
+          //await EnterpriseManager.initEnterprise(); //skpark add
           onAfterLogin?.call();
         }
       } else {
@@ -604,7 +603,7 @@ class LoginDialog extends StatefulWidget {
         if (AccountManager.currentLoginUser.isLoginedUser) {
           // 로그인에 성공했을때,  아래 변수를 초기화 해주어야 함.
           CretaAccountManager.experienceWithoutLogin = false; //skpark add
-          await EnterpriseManager.initEnterprise(); // skpark add
+          //await EnterpriseManager.initEnterprise(); // skpark add
           onAfterLogin?.call();
           Routemaster.of(getBuildContext.call()).push(_nextPageAfterLoginSuccess);
         } else {

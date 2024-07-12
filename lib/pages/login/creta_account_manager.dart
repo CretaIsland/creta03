@@ -73,6 +73,9 @@ class CretaAccountManager {
   static set setEnterprise(EnterpriseModel? model) => _loginEnterprise = model;
   static EnterpriseModel? get getEnterprise => _loginEnterprise;
 
+  static EnterpriseModel? _cretaEnterprise;
+  static EnterpriseModel? get getCretaEnterprise => _cretaEnterprise;
+
   static List<FrameModel> _loginFrameList = [];
   static set setFrameList(List<FrameModel> frameList) => _loginFrameList = [...frameList];
   static List<FrameModel> get getFrameList => _loginFrameList;
@@ -419,18 +422,27 @@ class CretaAccountManager {
     return null;
   }
 
-  static Future<bool> _initEnterprise({int limit = 99}) async {
-    Map<String, QueryValue> query = {};
-    query['name'] = QueryValue(
-        value: getUserProperty!.enterprise.isEmpty
-            ? UserPropertyModel.defaultEnterprise
-            : getUserProperty!.enterprise);
-    query['isRemoved'] = QueryValue(value: false);
-    Map<String, OrderDirection> orderBy = {};
-    orderBy['order'] = OrderDirection.ascending;
-    await enterpriseManagerHolder.queryFromDB(query, orderBy: orderBy, limit: limit);
+  static Future<bool> _initEnterprise() async {
+    String enterprise = getUserProperty!.enterprise;
+    if (getUserProperty!.enterprise.isEmpty) {
+      enterprise = UserPropertyModel.defaultEnterprise;
+    }
+    await enterpriseManagerHolder.myDataOnly(enterprise);
     _loginEnterprise = enterpriseManagerHolder.onlyOne() as EnterpriseModel?;
+
+    if (enterprise == UserPropertyModel.defaultEnterprise) {
+      _cretaEnterprise = enterpriseManagerHolder.onlyOne() as EnterpriseModel?;
+    } else {
+      _initCretaEnterprise();
+    }
+
     return (_loginEnterprise != null);
+  }
+
+  static Future<void> _initCretaEnterprise() async {
+    EnterpriseManager dummy = EnterpriseManager();
+    await dummy.myDataOnly(UserPropertyModel.defaultEnterprise);
+    _cretaEnterprise = dummy.onlyOne() as EnterpriseModel?;
   }
 
   static Future<void> _initChannel() async {

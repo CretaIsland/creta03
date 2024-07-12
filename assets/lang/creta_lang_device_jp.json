@@ -101,6 +101,12 @@
 
     "userManage"  : "ユーザー管理",
 
+    "onlyTeamMemberCanbeAdmin" : "チームメンバーだけが管理者になれます。  ユーザーをチームに追加してからもう一度お試しください。",
+    "alreadyExistEmail":    "同じemail IDがすでに存在します",
+    "alreadyExistTeam":    "同じチームIDがすでに存在します",
+
+    "teamsAlsoBeDeleted" : "次のチームも削除されます。",
+
 
    "end"  : "End"
 

@@ -6,9 +6,9 @@ import 'package:creta_user_model/model/user_property_model.dart';
 //import 'package:creta03/pages/login_page.dart';
 import 'package:hycop/hycop.dart';
 
-class EnterpriseManager extends CretaManager {
-  //EnterpriseModel? enterpriseModel;
+import '../pages/login/creta_account_manager.dart';
 
+class EnterpriseManager extends CretaManager {
   EnterpriseManager() : super('creta_enterprise', null);
 
   static EnterpriseManager? _enterpriseManagerHolder;
@@ -21,18 +21,40 @@ class EnterpriseManager extends CretaManager {
     return _enterpriseManagerHolder!;
   }
 
-  static EnterpriseModel? currentEnterpriseModel;
-
-  static Future<void> initEnterprise() async {
-    if (AccountManager.currentLoginUser.isSuperUser == false && hasValidEnterprise()) {
-      List<AbsExModel> enterprises = await EnterpriseManager.instance
-          .myDataOnly(UserPropertyManager.getUserProperty!.enterprise);
-
-      if (enterprises.isNotEmpty) {
-        currentEnterpriseModel = enterprises.first as EnterpriseModel;
-      }
-    }
+  static bool isAdmin(String userEmail) {
+    if (CretaAccountManager.getEnterprise == null) return false;
+    return CretaAccountManager.getEnterprise!.admins.contains(userEmail);
   }
+
+  //static EnterpriseModel? CretaAccountManager.getEnterprise;
+  //static EnterpriseModel? cretaEnterpriseModel;
+
+  // static Future<void> initEnterprise() async {
+  //   if (AccountManager.currentLoginUser.isSuperUser == false &&
+  //       hasValidEnterprise() &&
+  //       CretaAccountManager.getEnterprise == null) {
+  //     List<AbsExModel> enterprises = await EnterpriseManager.instance
+  //         .myDataOnly(UserPropertyManager.getUserProperty!.enterprise);
+
+  //     if (enterprises.isNotEmpty) {
+  //       CretaAccountManager.setEnterprise = enterprises.first as EnterpriseModel;
+  //     }
+  //   }
+  //   await _initCretaEnterprise();
+  // }
+
+  // static Future<void> _initCretaEnterprise() async {
+  //   print('-----------------1');
+  //   EnterpriseManager dummnyManager = EnterpriseManager();
+  //   List<AbsExModel> enterprises =
+  //       await dummnyManager.myDataOnly(UserPropertyModel.defaultEnterprise);
+
+  //   if (enterprises.isNotEmpty) {
+  //     cretaEnterpriseModel = enterprises.first as EnterpriseModel;
+  //     print(
+  //         '-----------------cretaEnterpriseModel: ${cretaEnterpriseModel!.mid}, ${cretaEnterpriseModel!.mediaApiUrl}');
+  //   }
+  // }
 
   static bool isEnterpriseUser(String enterprise) {
     if (AccountManager.currentLoginUser.isSuperUser) {
@@ -41,7 +63,7 @@ class EnterpriseManager extends CretaManager {
     return enterprise.isNotEmpty && enterprise != UserPropertyModel.defaultEnterprise;
   }
 
-  static hasValidEnterprise() {
+  static bool hasValidEnterprise() {
     return (UserPropertyManager.getUserProperty != null &&
         UserPropertyManager.getUserProperty!.enterprise.isNotEmpty &&
         UserPropertyManager.getUserProperty!.enterprise != UserPropertyModel.defaultEnterprise);
@@ -84,8 +106,23 @@ class EnterpriseManager extends CretaManager {
   //   return model.mid;
   // }
 
+  void addModel(EnterpriseModel model) {
+    modelList.add(model);
+  }
+
   @override
   Future<List<AbsExModel>> myDataOnly(String userId, {int? limit}) async {
+    logger.finest('myDataOnly');
+    Map<String, QueryValue> query = {};
+    if (userId.isNotEmpty) {
+      query['name'] = QueryValue(value: userId);
+    }
+    query['isRemoved'] = QueryValue(value: false);
+    final retval = await queryFromDB(query, limit: limit);
+    return retval;
+  }
+
+  Future<List<AbsExModel>> getAll({int? limit}) async {
     logger.finest('myDataOnly');
     Map<String, QueryValue> query = {};
     query['isRemoved'] = QueryValue(value: false);
@@ -189,5 +226,18 @@ class EnterpriseManager extends CretaManager {
   @override
   void onSearch(String value, Function afterSearch) {
     search(['name', 'description'], value, afterSearch);
+  }
+
+  Future<void> deleteEnterprise(EnterpriseModel model, {List<AbsExModel>? teamList}) async {
+    if (teamList != null) {
+      for (var team in teamList) {
+        team.isRemoved.set(true, save: false, noUndo: true);
+        await setToDB(team);
+      }
+    }
+
+    model.isRemoved.set(true, save: false, noUndo: true);
+    await setToDB(model);
+    remove(model);
   }
 }

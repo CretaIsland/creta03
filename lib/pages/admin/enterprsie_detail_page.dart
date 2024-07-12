@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 import 'package:creta_common/common/creta_font.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/hycop_factory.dart';
@@ -224,9 +225,15 @@ class _EnterpriseDetailPageState extends State<EnterpriseDetailPage> {
                 if (CretaCommonUtils.isValidEmail(value)) {
                   if (!widget.enterpriseModel.admins.contains(value)) {
                     // 여기서 value 가  현재 user table  에 존재하는 email  인지 체크해야함.
-                    bool isExist = await CretaAccountManager.isUserExist(value);
-                    if (isExist) {
-                      widget.enterpriseModel.admins.add(value);
+                    UserPropertyModel? userModel =
+                        await CretaAccountManager.getUserPropertyModel(value);
+                    if (userModel != null) {
+                      if (userModel.enterprise != widget.enterpriseModel.name) {
+                        _message = CretaDeviceLang['onlyTeamMemberCanbeAdmin'] ??
+                            "오직 현재 소속 팀의 팀원만 어드민이 될 수 있습니다.  먼저 팀관리 화면에서 팀원으로 등록후 어드민으로 등록해주세요";
+                      } else {
+                        widget.enterpriseModel.admins.add(value);
+                      }
                     } else {
                       _message = CretaDeviceLang['noUserExist'];
                     }

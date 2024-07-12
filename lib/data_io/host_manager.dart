@@ -75,7 +75,7 @@ class HostManager extends CretaManager {
   }
 
   @override
-  Future<bool> isNameExist(String value) async {
+  Future<bool> isNameExist(String value, {String name = 'name'}) async {
     logger.finest('myDataOnly');
     Map<String, QueryValue> query = {};
     query['hostName'] = QueryValue(value: value);

@@ -15,7 +15,6 @@ import 'package:provider/provider.dart';
 //import '../../common/window_resize_lisnter.dart';
 import 'package:hycop/common/util/logger.dart';
 
-import '../../data_io/enterprise_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/dataTable/my_data_mixin.dart';
 import '../../design_system/dataTable/my_data_table.dart';
@@ -208,7 +207,7 @@ class _TeamListWidgetState extends State<TeamListWidget> with MyDataMixin {
             ]),
           ),
           if (AccountManager.currentLoginUser.isSuperUser)
-            EnterpriseManager.currentEnterpriseModel == null
+            CretaAccountManager.getEnterprise == null
                 ? Text(
                     'Please Select your Enterprise First !!!',
                     style: CretaFont.titleMedium.copyWith(color: Colors.red),
@@ -225,7 +224,7 @@ class _TeamListWidgetState extends State<TeamListWidget> with MyDataMixin {
                             style: TextStyle(color: Colors.black),
                           ),
                           TextSpan(
-                            text: EnterpriseManager.currentEnterpriseModel!.name,
+                            text: CretaAccountManager.getEnterprise!.name,
                             style: CretaFont.titleMedium
                                 .copyWith(color: Colors.red), // This part will be in red
                           ),
@@ -376,7 +375,7 @@ class _TeamListWidgetState extends State<TeamListWidget> with MyDataMixin {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _toolbar(),
-            if (EnterpriseManager.currentEnterpriseModel != null)
+            if (CretaAccountManager.getEnterprise != null)
               SizedBox(
                 //color: Colors.amberAccent,
                 height: widget.height,

@@ -3,6 +3,9 @@
 import 'dart:math';
 
 //import 'package:creta03/lang/creta_studio_lang.dart';
+import 'package:creta_common/lang/creta_lang.dart';
+import 'package:creta_user_io/data_io/team_manager.dart';
+import 'package:creta_user_model/model/team_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 // ignore: depend_on_referenced_packages
@@ -12,6 +15,7 @@ import '../../data_io/enterprise_manager.dart';
 //import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_elibated_button.dart';
+import '../../design_system/component/creta_popup.dart';
 import '../../design_system/component/custom_image.dart';
 import '../../design_system/component/snippet.dart';
 import 'package:creta_common/common/creta_color.dart';
@@ -23,6 +27,7 @@ import '../../lang/creta_device_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../model/enterprise_model.dart';
 import '../../vertical_app_bar.dart';
+import '../login/creta_account_manager.dart';
 import '../studio/studio_constant.dart';
 import '../studio/studio_getx_controller.dart';
 
@@ -37,6 +42,7 @@ class EnterpriseGridItem extends StatefulWidget {
   final void Function(EnterpriseModel? enterpriseModel) onTap;
   final void Function(EnterpriseModel? enterpriseModel) onCheck;
   final void Function() onInsert;
+  final void Function() onDelete;
   final bool isSelected;
 
   const EnterpriseGridItem({
@@ -51,6 +57,7 @@ class EnterpriseGridItem extends StatefulWidget {
     required this.onTap,
     required this.onCheck,
     required this.onInsert,
+    required this.onDelete,
     required this.isSelected,
   });
 
@@ -141,8 +148,8 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
                 ? Border.all(
                     color: widget.isSelected ||
                             (widget.enterpriseModel != null &&
-                                EnterpriseManager.currentEnterpriseModel != null &&
-                                EnterpriseManager.currentEnterpriseModel!.name ==
+                                CretaAccountManager.getEnterprise != null &&
+                                CretaAccountManager.getEnterprise!.name ==
                                     widget.enterpriseModel!.name)
                         ? Colors.yellow
                         : Colors.grey.withOpacity(0.1),
@@ -184,14 +191,14 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
       // onDoubleTap: () {
       //   widget.onEdit.call(widget.enterpriseModel);
       // },
-      onTap: () {
-        EnterpriseManager.currentEnterpriseModel = widget.enterpriseModel;
-        _foldSendEvent?.sendEvent(VerticalAppBar.fold);
-        widget.onTap.call(widget.enterpriseModel);
-        // setState(() {
-        //   _isSelected = true;
-        // });
-      },
+      // onTap: () {
+      //   CretaAccountManager.setEnterprise = widget.enterpriseModel;
+      //   _foldSendEvent?.sendEvent(VerticalAppBar.fold);
+      //   widget.onTap.call(widget.enterpriseModel);
+      //   // setState(() {
+      //   //   _isSelected = true;
+      //   // });
+      // },
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -222,13 +229,13 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
                               value: _isSuperEnterprise(),
                               onChanged: (bool? newValue) {
                                 if (newValue! == true) {
-                                  EnterpriseManager.currentEnterpriseModel = widget.enterpriseModel;
+                                  CretaAccountManager.setEnterprise = widget.enterpriseModel;
                                 } else {
-                                  EnterpriseManager.currentEnterpriseModel = null;
+                                  CretaAccountManager.setEnterprise = null;
                                 }
 
                                 _foldSendEvent?.sendEvent(VerticalAppBar.fold);
-                                widget.onTap.call(EnterpriseManager.currentEnterpriseModel);
+                                widget.onTap.call(CretaAccountManager.getEnterprise);
                               },
                               checkColor: Colors.red, // color of tick Mark
                               fillColor: WidgetStateProperty.all(Colors.white),
@@ -257,8 +264,8 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
 
   bool _isSuperEnterprise() {
     return widget.enterpriseModel != null &&
-        EnterpriseManager.currentEnterpriseModel != null &&
-        EnterpriseManager.currentEnterpriseModel!.name == widget.enterpriseModel!.name;
+        CretaAccountManager.getEnterprise != null &&
+        CretaAccountManager.getEnterprise!.name == widget.enterpriseModel!.name;
   }
 
   // Widget _controllArea() {
@@ -439,32 +446,62 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                // Delete Enterprise 는 일단 지금은 허용하지 않는다.
-                // Padding(
-                //   padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                //   child: BTN.opacity_gray_i_s(
-                //     icon: Icons.delete_outline,
-                //     onPressed: () {
-                //       logger.finest('delete pressed');
-                //       CretaPopup.yesNoDialog(
-                //         context: context,
-                //         title: CretaLang['deleteConfirmTitle']!,
-                //         icon: Icons.warning_amber_outlined,
-                //         question: CretaLang['deleteConfirm']!,
-                //         noBtText: CretaStudioLang['noBtDnText']!,
-                //         yesBtText: CretaStudioLang['yesBtDnText']!,
-                //         yesIsDefault: true,
-                //         onNo: () {
-                //           //Navigator.of(context).pop();
-                //         },
-                //         onYes: () {
-                //           //Navigator.of(context).pop();
-                //         },
-                //       );
-                //     },
-                //     tooltip: CretaStudioLang['tooltipDelete']!,
-                //   ),
-                // ),
+                if (AccountManager.currentLoginUser.isSuperUser &&
+                    widget.enterpriseModel != null &&
+                    widget.enterpriseModel!.name != CretaAccountManager.getEnterprise!.name &&
+                    widget.enterpriseModel!.isDefaultEnterprise == false)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: BTN.opacity_gray_i_s(
+                      icon: Icons.delete_outline,
+                      onPressed: () async {
+                        logger.finest('delete pressed');
+                        //Navigator.of(context).pop();
+                        //widget.enterpriseManager.deleteEnterprise(widget.enterpriseModel!);
+                        // 1) Enterprise 에 소속된 Team 목록을 보여준다.  이 팀들이 모두 삭제된다는 사실을 보여준다.
+                        // User 는 삭제되지 않으며, USer 가 삭제되기 전에는 CretaBook 도 삭제되지 않는다는 것을 알려준다.
+
+                        // 소속팀을 가져온다.
+                        TeamManager dummyTeamManager = TeamManager();
+                        List<AbsExModel> teamList =
+                            await dummyTeamManager.myDataOnly(widget.enterpriseModel!.name);
+
+                        //  소속팀을 화면에 나열한다.
+                        String teamListString = '';
+                        for (AbsExModel team in teamList) {
+                          teamListString += '${(team as TeamModel).name}\n';
+                        }
+
+                        // 2) 소속된 팀이 있다면, 삭제할 때, 소속된 팀도 모두 삭제된다는 메시지를 보여준다.
+                        String msg =
+                            CretaDeviceLang['teamsAlsoBeDeleted'] ?? '다음과 같은 소속팀이 함께 삭제됩니다.';
+                        msg += "\n";
+                        msg += teamListString;
+                        msg += "\n";
+                        msg += CretaDeviceLang['deleteConfirm'] ?? '정말 삭제하시겠습니까?';
+
+                        CretaPopup.yesNoDialog(
+                          // ignore: use_build_context_synchronously
+                          context: context,
+                          title: CretaLang['deleteConfirmTitle']!,
+                          icon: Icons.warning_amber_outlined,
+                          question: msg,
+                          noBtText: CretaStudioLang['noBtDnText']!,
+                          yesBtText: CretaStudioLang['yesBtDnText']!,
+                          yesIsDefault: true,
+                          onNo: () {
+                            //Navigator.of(context).pop();
+                          },
+                          onYes: () async {
+                            await widget.enterpriseManager
+                                .deleteEnterprise(widget.enterpriseModel!, teamList: teamList);
+                            widget.onDelete();
+                          },
+                        );
+                      },
+                      tooltip: CretaStudioLang['tooltipDelete']!,
+                    ),
+                  ),
                 Padding(
                   padding: const EdgeInsets.only(left: 4.0),
                   child: BTN.opacity_gray_i_s(

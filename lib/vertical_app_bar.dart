@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 import 'package:routemaster/routemaster.dart';
 
+import 'data_io/enterprise_manager.dart';
 import 'design_system/buttons/creta_button_wrapper.dart';
 import 'design_system/component/snippet.dart';
 //import 'design_system/menu/creta_popup_menu.dart';
@@ -195,7 +196,9 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
                       if (displaySize.height > 350) const SizedBox(height: 12),
                       if (displaySize.height > 350) myPageLogo(context),
                       if (displaySize.height > 400) const SizedBox(height: 12),
-                      if (displaySize.height > 450 && AccountManager.currentLoginUser.isSuperUser)
+                      if (displaySize.height > 450 &&
+                          (AccountManager.currentLoginUser.isSuperUser ||
+                              EnterpriseManager.isAdmin(AccountManager.currentLoginUser.email)))
                         adminLogo(context),
                     ],
                   ),

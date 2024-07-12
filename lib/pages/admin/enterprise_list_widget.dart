@@ -50,11 +50,32 @@ class _EnterpriseListWidgetState extends State<EnterpriseListWidget> with MyData
   double _maxWidth = 200;
 
   void _initData() {
-    EnterpriseManager.instance.myDataOnly('').then((value) {
-      if (value.isNotEmpty) {
-        EnterpriseManager.instance.addRealTimeListen(value.first.mid);
+    if (AccountManager.currentLoginUser.isSuperUser) {
+      EnterpriseManager.instance.myDataOnly('').then((value) {
+        // if (value.isNotEmpty) {
+        //   EnterpriseManager.instance.addRealTimeListen(value.first.mid);
+        // }
+      });
+    } else {
+      if (CretaAccountManager.getEnterprise != null) {
+        EnterpriseManager.instance.clearAll();
+        EnterpriseManager.instance.addModel(CretaAccountManager.getEnterprise!);
+        _onceDBGetComplete = true;
+      } else {
+        if (CretaAccountManager.userPropertyManagerHolder.userPropertyModel != null) {
+          String enterprise =
+              CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.enterprise;
+          if (enterprise.isNotEmpty) {
+            EnterpriseManager.instance.myDataOnly(enterprise).then((value) {
+              // if (value.isNotEmpty) {
+              //   EnterpriseManager.instance.addRealTimeListen(value.first.mid);
+              // }
+              CretaAccountManager.setEnterprise = value.first as EnterpriseModel;
+            });
+          }
+        }
       }
-    });
+    }
   }
 
   @override
@@ -196,7 +217,7 @@ class _EnterpriseListWidgetState extends State<EnterpriseListWidget> with MyData
             ]),
           ),
           if (AccountManager.currentLoginUser.isSuperUser)
-            EnterpriseManager.currentEnterpriseModel == null
+            CretaAccountManager.getEnterprise == null
                 ? Text(
                     'Please Select your Enterprise !!!',
                     style: CretaFont.titleMedium.copyWith(color: Colors.red),
@@ -213,7 +234,7 @@ class _EnterpriseListWidgetState extends State<EnterpriseListWidget> with MyData
                             style: TextStyle(color: Colors.black),
                           ),
                           TextSpan(
-                            text: EnterpriseManager.currentEnterpriseModel!.name,
+                            text: CretaAccountManager.getEnterprise!.name,
                             style: CretaFont.titleMedium
                                 .copyWith(color: Colors.red), // This part will be in red
                           ),
@@ -424,31 +445,39 @@ class _EnterpriseListWidgetState extends State<EnterpriseListWidget> with MyData
         //fit: StackFit.expand,
         //children: [
         EnterpriseGridItem(
-            key: GlobalObjectKey(itemModel != null
-                ? 'EnterpriseGridItem_${itemModel.mid}_${selectedEnterprise != null && selectedEnterprise!.mid == itemModel.mid}'
-                : 'EnterpriseGridItem_insert'),
-            enterpriseManager: enterpriseManager,
-            index: index - 1,
-            enterpriseModel: itemModel,
-            width: itemWidth,
-            height: itemHeight,
-            isSelected: (selectedEnterprise != null &&
-                itemModel != null &&
-                selectedEnterprise!.mid == itemModel.mid),
-            onTap: (enterpriseModel) async {
-              setState(() {
-                selectedEnterprise = enterpriseModel;
-              });
-            },
-            onCheck: (enterpriseModel) => setState(() {}),
-            onEdit: (enterpriseModel) async {
-              //setState(() {
-              //_openDetail = true;
-              selectedEnterprise = enterpriseModel;
-              //});
-              await _showDetailView();
-            },
-            onInsert: insertItem);
+      key: GlobalObjectKey(itemModel != null
+          ? 'EnterpriseGridItem_${itemModel.mid}_${selectedEnterprise != null && selectedEnterprise!.mid == itemModel.mid}'
+          : 'EnterpriseGridItem_insert'),
+      enterpriseManager: enterpriseManager,
+      index: index - 1,
+      enterpriseModel: itemModel,
+      width: itemWidth,
+      height: itemHeight,
+      isSelected: (selectedEnterprise != null &&
+          itemModel != null &&
+          selectedEnterprise!.mid == itemModel.mid),
+      onTap: (enterpriseModel) async {
+        setState(() {
+          selectedEnterprise = enterpriseModel;
+        });
+      },
+      onCheck: (enterpriseModel) => setState(() {}),
+      onEdit: (enterpriseModel) async {
+        //setState(() {
+        //_openDetail = true;
+        selectedEnterprise = enterpriseModel;
+        //});
+        await _showDetailView();
+      },
+      onInsert: insertItem,
+      onDelete: () {
+        //print('onDelete');
+        setState(() {
+          _onceDBGetComplete = false;
+          _initData();
+        });
+      },
+    );
     //],
     //);
     //);
@@ -571,11 +600,15 @@ class _EnterpriseListWidgetState extends State<EnterpriseListWidget> with MyData
 
     UserModel userAccount =
         await AccountManager.createDefaultAccount(input.name); //EnterpriseModel model =
+
+    // enterprise 생성
     EnterpriseModel enterprise = await EnterpriseManager.instance.createEnterprise(
-        name: input.name,
-        description: input.description,
-        enterpriseUrl: input.enterpriseUrl,
-        adminEmail: userAccount.email);
+      name: input.name,
+      description: input.description,
+      enterpriseUrl: input.enterpriseUrl,
+      adminEmail: userAccount.email,
+      mediaApiUrl: CretaAccountManager.getCretaEnterprise?.mediaApiUrl ?? '',
+    );
 
     // Team 도 만들어줘야 함 !!!
 
