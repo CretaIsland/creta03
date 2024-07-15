@@ -432,11 +432,28 @@ class CretaAccountManager {
 
     if (enterprise == UserPropertyModel.defaultEnterprise) {
       _cretaEnterprise = enterpriseManagerHolder.onlyOne() as EnterpriseModel?;
+      createOrphanEnterprise();
     } else {
-      _initCretaEnterprise();
+      _initCretaEnterprise().then((_) {
+        createOrphanEnterprise();
+      });
     }
-
     return (_loginEnterprise != null);
+  }
+
+  static Future<void> createOrphanEnterprise() async {
+    print('createOrphanEnterprise--------------------------');
+    EnterpriseManager dummy = EnterpriseManager();
+    await dummy.myDataOnly(UserPropertyModel.orphanEnterprise);
+    if (dummy.onlyOne() == null) {
+      await EnterpriseManager.instance.createEnterprise(
+        name: UserPropertyModel.orphanEnterprise,
+        description: "Orphan Enterprise",
+        enterpriseUrl: '',
+        adminEmail: CretaAccountManager.getCretaEnterprise!.admins.first,
+        mediaApiUrl: CretaAccountManager.getCretaEnterprise?.mediaApiUrl ?? '',
+      );
+    }
   }
 
   static Future<void> _initCretaEnterprise() async {

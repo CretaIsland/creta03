@@ -56,7 +56,12 @@ class _TeamListWidgetState extends State<TeamListWidget> with MyDataMixin {
 
   void _initData() {
     if (widget.enterprise != null) {
-      teamManagerHolder!.myDataOnly(widget.enterprise!.name).then((value) {
+      teamManagerHolder!
+          .myDataOnly(
+        widget.enterprise!.name,
+        limit: 1000,
+      )
+          .then((value) {
         if (value.isNotEmpty) {
           teamManagerHolder!.addRealTimeListen(value.first.mid);
         }

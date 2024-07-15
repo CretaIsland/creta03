@@ -236,6 +236,15 @@ class EnterpriseManager extends CretaManager {
       }
     }
 
+    UserPropertyManager dummyManager = UserPropertyManager();
+    // user 의 enterprise 를 모두 orphan 처리한다.
+    List<AbsExModel> members = await dummyManager.myDataOnly(model.name);
+    for (var ele in members) {
+      UserPropertyModel member = ele as UserPropertyModel;
+      member.enterprise = UserPropertyModel.orphanEnterprise;
+      CretaAccountManager.userPropertyManagerHolder.setToDB(member);
+    }
+
     model.isRemoved.set(true, save: false, noUndo: true);
     await setToDB(model);
     remove(model);

@@ -21,6 +21,7 @@ import '../../routes.dart';
 import '../login/creta_account_manager.dart';
 import 'enterprise_list_widget.dart';
 import 'team_list_widget.dart';
+import 'user_list_widget.dart';
 //import '../login_page.dart';
 
 // EnterpriseSelectNotifier selectNotifierHolder = EnterpriseSelectNotifier();
@@ -118,6 +119,8 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   GlobalKey dropDownButtonKey = GlobalKey();
 
   LanguageType oldLanguage = LanguageType.none;
+
+  List<String> filterTexts = [];
 
   static Future<bool>? isLangInit;
 
@@ -296,16 +299,16 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
                         // _dropDownMenuItemList3,
                         // _dropDownMenuItemList4
                       ],
-                      // onSearch: (value) {
-                      //   //   if (_isGridView) {
-                      //   //     EnterpriseManager.instance.onSearch(value, () => setState(() {}));
-                      //   //   } else {
-                      //   //     //print('onSearch : value = $value');
-                      //   //     setState(() {
-                      //   //       filterTexts = value.trim().split(' ');
-                      //   //     });
-                      //   //   }
-                      // },
+                      onSearch: (value) {
+                        //   if (_isGridView) {
+                        //     EnterpriseManager.instance.onSearch(value, () => setState(() {}));
+                        //   } else {
+                        //     //print('onSearch : value = $value');
+                        setState(() {
+                          filterTexts = value.trim().split(' ');
+                        });
+                        //   }
+                      },
                       mainWidget: (_) {
                         switch (selectedPage) {
                           case AdminSelectedPage.enterprise:
@@ -319,7 +322,12 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
                               enterprise: CretaAccountManager.getEnterprise,
                             );
                           case AdminSelectedPage.user:
-                            return Text('User Manage Page not yet implemented');
+                            return UserListWidget(
+                              width: rightPaneRect.childWidth,
+                              height: rightPaneRect.childHeight - 46,
+                              enterprise: CretaAccountManager.getEnterprise,
+                              filterTexts: filterTexts,
+                            );
                           default:
                             return EnterpriseListWidget(
                                 width: rightPaneRect.childWidth,

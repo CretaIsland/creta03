@@ -228,11 +228,11 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
                           ? Checkbox(
                               value: _isSuperEnterprise(),
                               onChanged: (bool? newValue) {
-                                if (newValue! == true) {
-                                  CretaAccountManager.setEnterprise = widget.enterpriseModel;
-                                } else {
-                                  CretaAccountManager.setEnterprise = null;
-                                }
+                                //if (newValue! == true) {
+                                CretaAccountManager.setEnterprise = widget.enterpriseModel;
+                                //} else {
+                                //  CretaAccountManager.setEnterprise = null;
+                                // }
 
                                 _foldSendEvent?.sendEvent(VerticalAppBar.fold);
                                 widget.onTap.call(CretaAccountManager.getEnterprise);
@@ -449,6 +449,7 @@ class EnterpriseGridItemState extends State<EnterpriseGridItem> {
                 if (AccountManager.currentLoginUser.isSuperUser &&
                     widget.enterpriseModel != null &&
                     widget.enterpriseModel!.name != CretaAccountManager.getEnterprise!.name &&
+                    widget.enterpriseModel!.isOrphanEnterprise == false &&
                     widget.enterpriseModel!.isDefaultEnterprise == false)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),

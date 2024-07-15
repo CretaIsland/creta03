@@ -125,4 +125,5 @@ class EnterpriseModel extends CretaModel {
 
   bool isAdmin(String email) => admins.contains(email);
   bool get isDefaultEnterprise => name == UserPropertyModel.defaultEnterprise;
+  bool get isOrphanEnterprise => name == UserPropertyModel.orphanEnterprise;
 }

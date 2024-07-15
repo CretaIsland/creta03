@@ -82,6 +82,11 @@ class UserHeaderInfo extends AbsHeaderInfo {
     defaultListStr = '''{
           "columnInfoList": [
               {
+                  "name": "verified",
+                  "label": "verified",
+                  "width": 30
+              },
+              {
                   "name": "email",
                   "label": "email",
                   "width": 200
@@ -91,6 +96,16 @@ class UserHeaderInfo extends AbsHeaderInfo {
                   "label": "nickname",
                   "width": 200
               },
+              {
+                  "name": "enterprise",
+                  "label": "enterprise",
+                  "width": 200
+              },
+              {
+                  "name": "teams",
+                  "label": "teams",
+                  "width": 400
+              }
           ]
       }''';
   }

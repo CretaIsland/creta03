@@ -108,6 +108,9 @@
 
     "teamsAlsoBeDeleted" : "다음과 같은 소속팀이 함께 삭제됩니다.",
 
+    "userDetail" : "유저 상세화면",
+    "newUser" : "신규 유저 등록",
+
 
     "END" : ""
 }

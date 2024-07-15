@@ -106,6 +106,10 @@
 
     "teamsAlsoBeDeleted" : "The following teams will also be deleted.",
 
+    "userDetail" : "User Detail",
+    "newUser" : "Register new user",
+
+
     "end"  : "End"
 
 }
