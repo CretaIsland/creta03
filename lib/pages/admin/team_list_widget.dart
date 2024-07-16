@@ -62,9 +62,9 @@ class _TeamListWidgetState extends State<TeamListWidget> with MyDataMixin {
         limit: 1000,
       )
           .then((value) {
-        if (value.isNotEmpty) {
-          teamManagerHolder!.addRealTimeListen(value.first.mid);
-        }
+        // if (value.isNotEmpty) {
+        //   teamManagerHolder!.addRealTimeListen(value.first.mid);
+        // }
       });
     } else {
       _onceDBGetComplete = true;
@@ -113,7 +113,7 @@ class _TeamListWidgetState extends State<TeamListWidget> with MyDataMixin {
   void dispose() {
     logger.finest('_TeamListWidgetState dispose');
     super.dispose();
-    teamManagerHolder?.removeRealTimeListen();
+    //teamManagerHolder?.removeRealTimeListen();
     disposeMixin();
   }
 
@@ -570,11 +570,13 @@ class _TeamListWidgetState extends State<TeamListWidget> with MyDataMixin {
   void insertItem() async {
     TeamData input = TeamData();
 
-    await _showAddNewDialog(input, 'firstTry');
+    int index = 0;
+    await _showAddNewDialog(input, 'NewTeamInput_$index');
 
-    if (input.message != CretaDeviceLang['availiableID']!) {
+    while (input.message != CretaDeviceLang['availiableID']!) {
+      index++;
       input.message = CretaDeviceLang['needToDupCheck']!;
-      await _showAddNewDialog(input, 'secondTry');
+      await _showAddNewDialog(input, 'NewTeamInput_$index');
     }
 
     if (input.name.isEmpty || input.name.isEmpty) {

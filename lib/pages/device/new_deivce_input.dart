@@ -56,7 +56,9 @@ class NewDeviceInputState extends State<NewDeviceInput> {
                   child: AccountManager.currentLoginUser.isSuperUser
                       ? TextFormField(
                           initialValue: widget.data.enterprise,
-                          onChanged: (value) => widget.data.enterprise = value,
+                          onChanged: (value) {
+                            widget.data.enterprise = value;
+                          },
                           decoration: InputDecoration(hintText: CretaDeviceLang['enterpriseName']!),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -77,7 +79,10 @@ class NewDeviceInputState extends State<NewDeviceInput> {
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
                     initialValue: widget.data.hostId,
-                    onChanged: (value) => widget.data.hostId = value,
+                    onChanged: (value) {
+                      widget.data.hostId = value;
+                      widget.data.message = '';
+                    },
                     decoration: InputDecoration(hintText: CretaDeviceLang['deviceId']!),
                     validator: (value) {
                       if (value == null || value.isEmpty) {

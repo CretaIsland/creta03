@@ -53,7 +53,10 @@ class NewEnterpriseInputState extends State<NewEnterpriseInput> {
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
                       initialValue: widget.data.name,
-                      onChanged: (value) => widget.data.name = value,
+                      onChanged: (value) {
+                        widget.data.name = value;
+                        widget.data.message = '';
+                      },
                       decoration: InputDecoration(hintText: CretaDeviceLang['enterpriseName']!),
                       validator: (value) {
                         if (value == null || value.isEmpty) {

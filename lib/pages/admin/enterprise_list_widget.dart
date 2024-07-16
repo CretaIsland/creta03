@@ -585,11 +585,13 @@ class _EnterpriseListWidgetState extends State<EnterpriseListWidget> with MyData
   void insertItem() async {
     EnterpriseData input = EnterpriseData();
 
-    await _showAddNewDialog(input, 'firstTry');
+    int index = 0;
+    await _showAddNewDialog(input, 'NewEnterpriseInput_$index');
 
-    if (input.message != CretaDeviceLang['availiableID']!) {
+    while (input.message != CretaDeviceLang['availiableID']!) {
+      index++;
       input.message = CretaDeviceLang['needToDupCheck']!;
-      await _showAddNewDialog(input, 'secondTry');
+      await _showAddNewDialog(input, 'NewEnterpriseInput_$index');
     }
 
     if (input.name.isEmpty || input.name.isEmpty) {

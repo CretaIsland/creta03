@@ -442,7 +442,7 @@ class CretaAccountManager {
   }
 
   static Future<void> createOrphanEnterprise() async {
-    print('createOrphanEnterprise--------------------------');
+    //print('createOrphanEnterprise--------------------------');
     EnterpriseManager dummy = EnterpriseManager();
     await dummy.myDataOnly(UserPropertyModel.orphanEnterprise);
     if (dummy.onlyOne() == null) {

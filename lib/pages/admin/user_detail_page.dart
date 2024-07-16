@@ -4,11 +4,17 @@ import 'dart:typed_data';
 
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_font.dart';
+import 'package:creta_user_io/data_io/creta_manager.dart';
+import 'package:creta_user_io/data_io/team_manager.dart';
+import 'package:creta_user_model/model/team_model.dart';
 import 'package:creta_user_model/model/user_property_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
+// ignore: depend_on_referenced_packages
+import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
+import '../../lang/creta_device_lang.dart';
 import '../mypage/mypage_common_widget.dart';
 //import 'book_select_filter.dart';
 
@@ -31,26 +37,87 @@ class UserDetailPage extends StatefulWidget {
 class _UserDetailPageState extends State<UserDetailPage> {
   TextStyle titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);
   TextStyle dataStyle = CretaFont.bodySmall;
-  TextEditingController managerTextController = TextEditingController();
-  TextEditingController memberTextController = TextEditingController();
+  TextEditingController teamTextController = TextEditingController();
+  String _message = '';
 
   XFile? _selectedProfileImg;
   Uint8List? _selectedProfileImgBytes;
 
+  TeamManager? teamManagerHolder;
+  bool _onceDBGetComplete = false;
+
+  void _initData() {
+    if (widget.userModel.enterprise.isNotEmpty) {
+      teamManagerHolder!
+          .myDataOnly(
+        widget.userModel.enterprise,
+        limit: 1000,
+      )
+          .then((value) {
+        // if (value.isNotEmpty) {
+        //   teamManagerHolder!.addRealTimeListen(value.first.mid);
+        // }
+        // print(
+        //     'Team length of Enterprise(${widget.userModel.enterprise} = ${value.length}) -----------------------');
+      });
+    } else {
+      _onceDBGetComplete = true;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+
+    teamManagerHolder = TeamManager();
+    teamManagerHolder!.configEvent(notifyModify: false);
+    teamManagerHolder!.clearAll();
+
+    _initData();
   }
 
   @override
   void dispose() {
     super.dispose();
-    managerTextController.dispose();
-    memberTextController.dispose();
+    teamTextController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    //double windowWidth = MediaQuery.of(context).size.width;
+    //logger.fine('`````````````````````````window width = $windowWidth');
+    return MultiProvider(providers: [
+      ChangeNotifierProvider<TeamManager>.value(
+        value: teamManagerHolder!,
+      ),
+    ], child: _mainWidget(context));
+  }
+
+  Widget _mainWidget(BuildContext context) {
+    if (_onceDBGetComplete) {
+      return consumerFunc();
+    }
+    var retval = CretaManager.waitData(
+      manager: teamManagerHolder!,
+      consumerFunc: consumerFunc,
+      completeFunc: () {
+        _onceDBGetComplete = true;
+      },
+    );
+
+    return retval;
+  }
+
+  Widget consumerFunc() {
+    logger.finest('consumerFunc');
+    _onceDBGetComplete = true;
+
+    return Consumer<TeamManager>(builder: (context, teamManager, child) {
+      return _details();
+    });
+  }
+
+  Widget _details() {
     // var screenSize = MediaQuery.of(context).size;
     // double width = screenSize.width * 0.5;
     // double height = screenSize.height * 0.5;
@@ -150,6 +217,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                   decoration: InputDecoration(labelText: 'phoneNumber', labelStyle: titleStyle),
                   onSaved: (value) => widget.userModel.phoneNumber = value ?? '',
                 ),
+                ..._teams(),
               ],
             ),
           ),
@@ -169,5 +237,79 @@ class _UserDetailPageState extends State<UserDetailPage> {
         ],
       ),
     );
+  }
+
+  List<Widget> _teams() {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: TextFormField(
+              controller: teamTextController,
+              //initialValue: '',
+              decoration: InputDecoration(labelText: 'Add Team name', labelStyle: titleStyle),
+              onSaved: (value) {
+                // if (value != null && value.isNotEmpty) {
+                //   if (!widget.userModel.teams.contains(value)) {
+                //     widget.userModel.teams.add(value);
+                //   }
+                // }
+              },
+            ),
+          ),
+          IconButton(
+            iconSize: 18,
+            onPressed: () async {
+              String value = teamTextController.text;
+              _message = '';
+              if (value.isNotEmpty) {
+                TeamModel? teamModel = teamManagerHolder!.findTeamModelByName(value);
+                if (teamModel != null) {
+                  widget.userModel.teams.add(teamModel.mid);
+                } else {
+                  _message = CretaDeviceLang['noTeamExist'] ?? '존재하지 않는 팀 이름입니다.';
+                }
+                setState(() {});
+              }
+            },
+            icon: const Icon(Icons.add),
+          ),
+        ],
+      ),
+      if (_message.isNotEmpty) Text(_message, style: const TextStyle(color: Colors.red)),
+      if (widget.userModel.teams.isNotEmpty)
+        Container(
+          color: Colors.grey[200],
+          height: 200,
+          width: widget.width * 0.45,
+          child: ListView.builder(
+            itemCount: widget.userModel.teams.length,
+            itemBuilder: (context, index) {
+              TeamModel? teamModel =
+                  teamManagerHolder!.findTeamModelByMid(widget.userModel.teams[index]);
+              if (teamModel == null) {
+                //print('${widget.userModel.teams[index]} not founded -------------------');
+                return const SizedBox.shrink();
+              }
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(teamModel.name),
+                  const SizedBox(width: 15),
+                  BTN.fill_gray_100_i_s(
+                    onPressed: () {
+                      setState(() {
+                        widget.userModel.teams.removeAt(index);
+                      });
+                    },
+                    icon: Icons.close,
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+    ];
   }
 }

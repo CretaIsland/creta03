@@ -1,4 +1,5 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors, prefer_final_fields
+import 'package:creta03/data_io/book_manager.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 import 'package:creta_common/common/creta_font.dart';
@@ -7,6 +8,7 @@ import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'package:creta_user_io/data_io/user_property_manager.dart';
 import 'package:creta_user_model/model/user_property_model.dart';
 import 'package:flutter/material.dart';
+import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:hycop/hycop/model/user_model.dart';
 import 'package:provider/provider.dart';
@@ -149,7 +151,7 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
           Text(
             '$value',
             style: TextStyle(
-              decoration: TextDecoration.underline,
+              //decoration: TextDecoration.underline,
               color: CretaColor.primary,
             ),
           ),
@@ -262,7 +264,22 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
           width: 106 + 31,
           text: CretaDeviceLang['delete'] ?? "삭제",
           icon: Icons.delete_outline,
-          onPressed: () {
+          onPressed: () async {
+            BookManager dummyBookManager = BookManager();
+            for (var key in selectNotifierHolder._selectedItems.keys) {
+              if (selectNotifierHolder.isSelected(key) == true) {
+                UserPropertyModel? model = userManagerHolder!.getModel(key) as UserPropertyModel?;
+                if (model != null) {
+                  List<AbsExModel> myBookList =
+                      await dummyBookManager.findDB(model.email, name: "creator");
+
+                  if (myBookList.isNotEmpty) {
+                    await _showBookListDialog(myBookList);
+                  }
+                }
+              }
+            }
+
             showConfirmDialog(
                 title: "${CretaDeviceLang['delete']!}      ",
                 question: CretaDeviceLang['deleteConfirm']!,
@@ -370,6 +387,37 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
         ],
       ),
     );
+  }
+
+  Future<void> _showBookListDialog(List<AbsExModel> bookList) async {
+    await showDialog(
+        // ignore: use_build_context_synchronously
+        context: context,
+        builder: (BuildContext context) {
+          return CretaAlertDialog(
+            hasCancelButton: false,
+            height: 400,
+            title: "Books will lose its owner.",
+
+            padding: EdgeInsets.only(left: 20, right: 20),
+            //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+            //child: Container(
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                    CretaDeviceLang['BooksWillLoseTtsOwner'] ??
+                        "이 유저는 다음과 같은 Book 의 소유자 입니다. 유저를 삭제하면 Book 의 접근권한이 사라질 수도 있습니다. 삭제하기 전에 Book의 소유권을 다른 사람에게 이전하시기 바랍니다.",
+                    style: CretaFont.titleLarge.copyWith(height: 1.5)),
+                SizedBox(height: 20),
+                SizedBox(height: 20),
+              ],
+            ),
+            onPressedOK: () {
+              Navigator.of(context).pop();
+            },
+          );
+        });
   }
 
   Widget userList(UserPropertyManager userManager) {
@@ -673,7 +721,7 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(CretaDeviceLang['inputUserInfo']!),
+          title: Text(CretaDeviceLang['newUser'] ?? '신규 유저 등록'),
           content: NewUserInput(
             data: input,
             formKeyStr: formKeyStr,
@@ -719,9 +767,14 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
     // publish 된 book 은  owner 만 바꾸어 준다.
 
     // UserAccount 도 지워주어야 하고,
-
-    AccountManager.deleteAccount();
-
+    try {
+      AccountManager.deleteAccountByUser(model.parentMid.value);
+      //print('${model.parentMid.value} deleted ------------------');
+    } catch (e) {
+      logger.severe('delete Account failed $e');
+      return;
+    }
+    //print('${model.mid} deleted ------------------');
     model.isRemoved.set(true, save: false, noUndo: true);
     userManagerHolder?.remove(model);
     await userManagerHolder?.setToDB(model);
@@ -733,17 +786,22 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
 
   void insertItem() async {
     UserData input = UserData();
+    input.enterprise = widget.enterprise!.name;
 
-    await showAddNewDialog(input, 'firstTry');
+    int index = 0;
+    await showAddNewDialog(input, 'NewUserInput_$index');
 
-    if (input.message != CretaDeviceLang['availiableID']!) {
+    while (input.message != CretaDeviceLang['availiableID']!) {
+      index++;
       input.message = CretaDeviceLang['needToDupCheck']!;
-      await showAddNewDialog(input, 'secondTry');
+      await showAddNewDialog(input, 'NewUserInput_$index');
     }
 
     if (input.email.isEmpty || input.nickname.isEmpty) {
       return;
     }
+
+    //print('input.email= ${input.email}');
 
     UserModel userAccount =
         await AccountManager.createDefaultAccount(input.email); //UserPropertyModel model =
@@ -751,10 +809,9 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
     UserPropertyModel userPropertyModel =
         CretaAccountManager.userPropertyManagerHolder.makeNewUserProperty(
       parentMid: userAccount.userId,
-      email: userAccount.email,
-      nickname: userAccount.name,
-      enterprise: widget.enterprise!.name,
-      teamMid: input.teamMid,
+      email: input.email,
+      nickname: input.nickname,
+      enterprise: input.enterprise,
       verified: true,
     );
     await CretaAccountManager.userPropertyManagerHolder
@@ -779,11 +836,11 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
                     style: CretaFont.titleLarge.copyWith(height: 1.5)),
                 SizedBox(height: 20),
                 Text('User name = ${input.nickname}'),
-                Text('Admin id        = ${userAccount.email}'),
-                Text('Admin password  = ${input.password}'),
-                SizedBox(height: 20),
-                Text(CretaDeviceLang['changePassword'] ?? "위 사용자로 다시 로그인 하여 비밀번호를 변경한 후 사용해 주세요",
-                    style: CretaFont.titleLarge.copyWith(height: 1.5)),
+                Text('User id        = ${input.email}'),
+                Text('User password  = ${input.password}'),
+                //SizedBox(height: 20),
+                // Text(CretaDeviceLang['changePassword'] ?? "위 사용자로 다시 로그인 하여 비밀번호를 변경한 후 사용해 주세요",
+                //     style: CretaFont.titleLarge.copyWith(height: 1.5)),
               ],
             ),
             onPressedOK: () {

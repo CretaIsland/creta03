@@ -108,6 +108,15 @@
 
     "userDetail" : "User Detail",
     "newUser" : "Register new user",
+    "userName" : "User name",
+    "shouldInputUserName": "Please enter the user name",
+
+    "alreadyExistName":    "The same name already exists.",
+    "availiableName":    "The name is available.",
+
+    "noTeamExist" : "There is no such team.",
+    "BooksWillLoseTtsOwner" : "This user is the owner of the following Book. If you delete a user, your Book access rights may be lost. Please transfer ownership of the Book to someone else before deleting it.",
+
 
 
     "end"  : "End"

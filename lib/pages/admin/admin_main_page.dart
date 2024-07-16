@@ -183,7 +183,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
           AdminMainPage.showSelectEnterpriseWarnning(context);
         },
         selected: selectedPage == AdminSelectedPage.team,
-        iconData: Icons.business_outlined,
+        iconData: Icons.groups_2_outlined,
         iconSize: 20,
         isIconText: true,
       ),
@@ -196,7 +196,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
           AdminMainPage.showSelectEnterpriseWarnning(context);
         },
         selected: selectedPage == AdminSelectedPage.user,
-        iconData: Icons.business_outlined,
+        iconData: Icons.person_2_outlined,
         iconSize: 20,
         isIconText: true,
       ),

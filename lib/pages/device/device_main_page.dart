@@ -1535,11 +1535,13 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
     DeviceData input = DeviceData();
     input.enterprise = CretaAccountManager.userPropertyManagerHolder.userPropertyModel!.enterprise;
 
-    await _showAddNewDialog(input, 'firstTry');
+    int index = 0;
+    await _showAddNewDialog(input, 'NewDeviceInput_$index');
 
-    if (input.message != CretaDeviceLang['availiableID']!) {
+    while (input.message != CretaDeviceLang['availiableID']!) {
+      index++;
       input.message = CretaDeviceLang['needToDupCheck']!;
-      await _showAddNewDialog(input, 'secondTry');
+      await _showAddNewDialog(input, 'NewDeviceInput_$index');
     }
 
     if (input.hostId.isEmpty || input.hostName.isEmpty) {

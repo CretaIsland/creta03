@@ -110,7 +110,16 @@
 
     "userDetail" : "유저 상세화면",
     "newUser" : "신규 유저 등록",
+    "userName" : "유저 이름",
+    "shouldInputUserName": "유저 이름을 입력하세요.",
+    "userEmail" : "유저 ID(Email)",
+    "shouldInputUserEmail": "유저 ID(Email)을 입력해주세요.",
 
+    "alreadyExistName":    "같은 이름이 이미 존재합니다",
+    "availiableName":    "사용할 수 있는 이름 입니다.",
+
+    "noTeamExist" : "존재하지 않는 팀 이름입니다.",
+    "BooksWillLoseTtsOwner" : "이 유저는 다음과 같은 Book 의 소유자 입니다. 유저를 삭제하면 Book 의 접근권한이 사라질 수도 있습니다. 삭제하기 전에 Book의 소유권을 다른 사람에게 이전하시기 바랍니다.",
 
     "END" : ""
 }

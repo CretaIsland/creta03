@@ -49,7 +49,10 @@ class NewTeamInputState extends State<NewTeamInput> {
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
                       initialValue: widget.data.name,
-                      onChanged: (value) => widget.data.name = value,
+                      onChanged: (value) {
+                        widget.data.name = value;
+                        widget.data.message = '';
+                      },
                       decoration: InputDecoration(hintText: CretaDeviceLang['teamName']!),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -80,7 +83,7 @@ class NewTeamInputState extends State<NewTeamInput> {
             if (widget.data.message.isNotEmpty)
               Text(
                 widget.data.message,
-                style:  TextStyle(
+                style: TextStyle(
                     color: (widget.data.message == CretaDeviceLang['availiableID']!)
                         ? Colors.blue
                         : Colors.red),
