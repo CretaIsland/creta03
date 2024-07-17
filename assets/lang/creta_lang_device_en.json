@@ -48,8 +48,8 @@
     "rebootRequested":    "The device is being rebooted.",
 
     "delete" : "Delete",
-    "deleteConfirm" : "Are you sure you want to delete the device?",
-    "deleteRequested" : "The device is being deleted.",
+    "deleteConfirm" : "Are you sure you want to delete the items?",
+    "deleteRequested" : "items have been deleted.",
 
     "dupCheck":    "Duplicate Check",
     "alreadyExist":    "The ID already exists.",

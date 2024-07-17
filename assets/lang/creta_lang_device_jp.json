@@ -49,7 +49,7 @@
 
     "delete" : "削除",
     "deleteConfirm" : "削除しますか？",
-    "deleteRequested" : "削除要求が完了しました。",
+    "deleteRequested" : "個が削除されました。",
 
     "dupCheck":    "ID重複チェック",
     "alreadyExist":    "既に存在するIDです。",

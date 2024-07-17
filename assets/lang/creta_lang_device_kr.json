@@ -49,7 +49,7 @@
 
     "delete" : "삭제",
     "deleteConfirm" : "정말로 삭제하시겠습니까 ?",
-    "deleteRequested" : "삭제되었습니다.",
+    "deleteRequested" : "개가 삭제되었습니다.",
 
     "dupCheck":    "중복체크",
     "alreadyExist":    "같은 ID 가 이미 존재합니다",

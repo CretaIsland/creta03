@@ -4,6 +4,7 @@ import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 import 'package:creta_common/common/creta_font.dart';
 import 'package:creta_common/common/creta_vars.dart';
+import 'package:creta_studio_model/model/book_model.dart';
 import 'package:creta_user_io/data_io/creta_manager.dart';
 import 'package:creta_user_io/data_io/user_property_manager.dart';
 import 'package:creta_user_model/model/user_property_model.dart';
@@ -189,7 +190,10 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
     columnInfoList = headerInfo.initColumnInfo();
 
     for (var ele in columnInfoList) {
-      if (ele.name == 'teams') {
+      if (ele.name == 'createTime') {
+        ele.dataCell = _dateToDataCell;
+        ele.filterText = _dynamicDateToString;
+      } else if (ele.name == 'teams') {
         ele.dataCell = listCell;
       } else if (ele.name == 'verified') {
         ele.dataCell = verifiedCell;
@@ -390,14 +394,16 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
   }
 
   Future<void> _showBookListDialog(List<AbsExModel> bookList) async {
+    //String names = bookList.map((book) => (book as BookModel).name).join(',\n');
+
     await showDialog(
         // ignore: use_build_context_synchronously
         context: context,
         builder: (BuildContext context) {
           return CretaAlertDialog(
             hasCancelButton: false,
-            height: 400,
-            title: "Books will lose its owner.",
+            height: 500,
+            title: "Warning : Books will lose its owner !!!",
 
             padding: EdgeInsets.only(left: 20, right: 20),
             //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
@@ -407,9 +413,21 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
               children: [
                 Text(
                     CretaDeviceLang['BooksWillLoseTtsOwner'] ??
-                        "이 유저는 다음과 같은 Book 의 소유자 입니다. 유저를 삭제하면 Book 의 접근권한이 사라질 수도 있습니다. 삭제하기 전에 Book의 소유권을 다른 사람에게 이전하시기 바랍니다.",
-                    style: CretaFont.titleLarge.copyWith(height: 1.5)),
+                        '이 유저는 다음과 같은 Book 의 소유자 입니다. 유저를 삭제하면 Book 의 접근권한이 사라질 수도 있습니다. 삭제하기 전에 Book의 소유권을 다른 사람에게 이전하시기 바랍니다.\n',
+                    style: CretaFont.titleMedium.copyWith(height: 1.5)),
                 SizedBox(height: 20),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: bookList.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        color: CretaColor.primary.withOpacity(0.1),
+                        child: Text((bookList[index] as BookModel).name.value,
+                            style: CretaFont.titleMedium.copyWith(height: 1.5)),
+                      );
+                    },
+                  ),
+                ),
                 SizedBox(height: 20),
               ],
             ),
@@ -759,20 +777,25 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
     );
   }
 
-  void deleteItem(UserPropertyModel? model) async {
-    if (model == null) return;
+  Future<bool> deleteItem(UserPropertyModel? model) async {
+    if (model == null) return false;
+
+    if (model.email == AccountManager.currentLoginUser.email) {
+      showSnackBar(context, 'You can not delete yourself', duration: StudioConst.snackBarDuration);
+      return false;
+    }
 
     // 작업중인 Book 들을 보여주고, 그 북을 어떻게 할지 물어본다.
     // 만약  onwer 를 바꿀지, 아니면 지울지, 그대로 둘지 물어본다.
     // publish 된 book 은  owner 만 바꾸어 준다.
-
     // UserAccount 도 지워주어야 하고,
+
     try {
       AccountManager.deleteAccountByUser(model.parentMid.value);
       //print('${model.parentMid.value} deleted ------------------');
     } catch (e) {
       logger.severe('delete Account failed $e');
-      return;
+      return false;
     }
     //print('${model.mid} deleted ------------------');
     model.isRemoved.set(true, save: false, noUndo: true);
@@ -781,6 +804,8 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
     selectNotifierHolder.delete(model.mid);
     //if (_isGridView == false) {
     setState(() {});
+
+    return true;
     //}
   }
 
@@ -859,7 +884,7 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
   void showConfirmDialog({
     required String title,
     required String question,
-    required void Function(UserPropertyModel model) onYes,
+    required Future<bool> Function(UserPropertyModel model) onYes,
     String? snackBarMessage,
   }) {
     CretaPopup.yesNoDialog(
@@ -873,23 +898,47 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
       yesBtText: CretaStudioLang['yesBtDnText']!,
       yesIsDefault: true,
       onNo: () {},
-      onYes: () {
+      onYes: () async {
+        int count = 0;
         for (var key in selectNotifierHolder._selectedItems.keys) {
           if (selectNotifierHolder.isSelected(key) == true) {
             UserPropertyModel? model = userManagerHolder!.getModel(key) as UserPropertyModel?;
             if (model != null) {
-              onYes(model);
+              if (await onYes(model)) {
+                count++;
+              }
             }
           }
         }
         if (snackBarMessage != null) {
           showSnackBar(
+            // ignore: use_build_context_synchronously
             context,
-            snackBarMessage,
+            '$count $snackBarMessage',
             duration: StudioConst.snackBarDuration,
           );
         }
       },
     );
+  }
+
+  String _dateToString(DateTime value) {
+    DateTime local = value.toLocal();
+    return "${local.year}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}:${local.second.toString().padLeft(2, '0')}";
+  }
+
+  String _dynamicDateToString(dynamic value) {
+    if (value is DateTime) {
+      return _dateToString(value);
+    }
+    return value.toString();
+  }
+
+  MyDataCell _dateToDataCell(dynamic value, String key) {
+    if (value is DateTime) {
+      return MyDataCell(Text(_dateToString(value)));
+    }
+    DateTime dateType = DateTime.parse(value.toString());
+    return MyDataCell(Text(_dateToString(dateType)));
   }
 }

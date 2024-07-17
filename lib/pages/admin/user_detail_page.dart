@@ -13,6 +13,7 @@ import 'package:hycop/hycop.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../design_system/buttons/creta_toggle_button.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../lang/creta_device_lang.dart';
 import '../mypage/mypage_common_widget.dart';
@@ -140,8 +141,8 @@ class _UserDetailPageState extends State<UserDetailPage> {
               children: <Widget>[
                 _nvRow('User ID', widget.userModel.email),
                 _nvRow('NickName', widget.userModel.nickname),
-                _nvRow('Verified', widget.userModel.verified.toString()),
                 _nvRow('Enterprise', widget.userModel.enterprise),
+                _nvRow('createTime', widget.userModel.createTime.toString()),
                 _nvRow('Grade', widget.userModel.cretaGrade.name),
                 _nvRow('Rate Plan', widget.userModel.ratePlan.name),
                 _nvRow('Country', widget.userModel.country.name),
@@ -176,6 +177,9 @@ class _UserDetailPageState extends State<UserDetailPage> {
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: Text('User Logo image', style: titleStyle),
                 ),
+                _boolRow('Verified', widget.userModel.verified, true, onChanged: (v) {
+                  widget.userModel.verified = v;
+                }),
                 MyPageCommonWidget.profileImgComponent(
                   width: 200,
                   height: 200,
@@ -311,5 +315,26 @@ class _UserDetailPageState extends State<UserDetailPage> {
           ),
         ),
     ];
+  }
+
+  Widget _boolRow(String name, bool value, bool isActive, {void Function(bool)? onChanged}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(name, style: titleStyle),
+          CretaToggleButton(
+            width: 54 * (onChanged == null ? 0.9 : 1.0),
+            height: 28 * (onChanged == null ? 0.66 : 1.0),
+            defaultValue: value,
+            onSelected: (v) {
+              onChanged?.call(v);
+            },
+            isActive: isActive,
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -102,6 +102,11 @@ class UserHeaderInfo extends AbsHeaderInfo {
                   "width": 200
               },
               {
+                  "name": "createTime",
+                  "label": "created",
+                  "width": 200
+              },
+              {
                   "name": "teams",
                   "label": "teams",
                   "width": 400
