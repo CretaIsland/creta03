@@ -461,20 +461,20 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                       },
                     ),
                   ),
-                if (widget.isChangeBook == false)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 4, bottom: 8.0, right: 2),
-                    child: _boolRow(
-                      CretaDeviceLang["licenseSetting"] ?? '라이센스 설정',
-                      widget.hostModel.isValidLicense,
-                      true,
-                      onChanged: (bool value) {
-                        setState(() {
-                          widget.hostModel.isValidLicense = value;
-                        });
-                      },
-                    ),
-                  ),
+                // if (widget.isChangeBook == false)
+                //   Padding(
+                //     padding: const EdgeInsets.only(left: 4, bottom: 8.0, right: 2),
+                //     child: _boolRow(
+                //       CretaDeviceLang["licenseSetting"] ?? '라이센스 설정',
+                //       widget.hostModel.isValidLicense,
+                //       true,
+                //       onChanged: (bool value) {
+                //         setState(() {
+                //           widget.hostModel.isValidLicense = value;
+                //         });
+                //       },
+                //     ),
+                //   ),
                 if (widget.isChangeBook == false)
                   Padding(
                     padding: const EdgeInsets.only(left: 4, bottom: 8.0, right: 2),
