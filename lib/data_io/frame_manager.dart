@@ -439,7 +439,7 @@ class FrameManager extends BaseFrameManager {
       FrameType? type,
       int? subType,
       ShapeType? shape}) async {
-    size ??= CretaVars.defaultSize();
+    size ??= CretaVars.instance.defaultSize();
     pos ??= Offset.zero;
 
     logger.fine('createNextFrame()');

@@ -106,16 +106,16 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
     }
     if (BookMainPage.topMenuNotifier!.isFrameCreate()) {
       Offset center = Offset(
-        (CretaVars.defaultFrameSize().width / 2) * StudioVariables.applyScale,
-        (CretaVars.defaultFrameSize().height / 2) * StudioVariables.applyScale,
+        (CretaVars.instance.defaultFrameSize().width / 2) * StudioVariables.applyScale,
+        (CretaVars.instance.defaultFrameSize().height / 2) * StudioVariables.applyScale,
       );
       Offset pos = _hoverPos! - center;
       return Positioned(
         left: pos.dx,
         top: pos.dy,
         child: Container(
-          width: CretaVars.defaultFrameSize().width * StudioVariables.applyScale,
-          height: CretaVars.defaultFrameSize().height * StudioVariables.applyScale,
+          width: CretaVars.instance.defaultFrameSize().width * StudioVariables.applyScale,
+          height: CretaVars.instance.defaultFrameSize().height * StudioVariables.applyScale,
           color: Colors.grey.withOpacity(0.2),
         ),
       );
@@ -132,8 +132,8 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
     _isBusy = true;
 
     Offset center = Offset(
-      (CretaVars.defaultFrameSize().width / 2) * StudioVariables.applyScale,
-      (CretaVars.defaultFrameSize().height / 2) * StudioVariables.applyScale,
+      (CretaVars.instance.defaultFrameSize().width / 2) * StudioVariables.applyScale,
+      (CretaVars.instance.defaultFrameSize().height / 2) * StudioVariables.applyScale,
     );
     Offset pos = BookMainPage.bookManagerHolder!.positionInPage(
       details.localPosition - center,
@@ -150,8 +150,8 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
     } else if (BookMainPage.topMenuNotifier!.isFrameCreate()) {
       StudioVariables.isHandToolMode = false;
 
-      FrameModel frameModel =
-          await frameManager!.createNextFrame(pos: pos, size: CretaVars.defaultFrameSize());
+      FrameModel frameModel = await frameManager!
+          .createNextFrame(pos: pos, size: CretaVars.instance.defaultFrameSize());
       frameManager!.afterCreateFrame(frameModel, sendEvent: _sendEvent);
 
       BookMainPage.topMenuNotifier?.clear();

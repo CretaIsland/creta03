@@ -56,11 +56,20 @@ class EnterpriseManager extends CretaManager {
   //   }
   // }
 
-  static bool isEnterpriseUser(String enterprise) {
+  static bool isEnterpriseUser({String? enterprise}) {
     if (AccountManager.currentLoginUser.isSuperUser) {
       return true;
     }
-    return enterprise.isNotEmpty && enterprise != UserPropertyModel.defaultEnterprise;
+    String? enterpriseName;
+    if (UserPropertyManager.getUserProperty != null) {
+      enterpriseName = enterprise ?? UserPropertyManager.getUserProperty!.enterprise;
+    } else if (CretaAccountManager.getEnterprise != null) {
+      enterpriseName = enterprise ?? CretaAccountManager.getEnterprise!.name;
+    }
+
+    return enterpriseName != null &&
+        enterpriseName.isNotEmpty &&
+        enterpriseName != UserPropertyModel.defaultEnterprise;
   }
 
   static bool hasValidEnterprise() {

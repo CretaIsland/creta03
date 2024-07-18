@@ -80,7 +80,7 @@ class BookPublishedManager extends CretaManager {
   //         caption: CretaLang['basicBookFilter']![1],
   //         onPressed: () {
   //           toFiltered(
-  //               'bookType', BookType.presentaion.index, AccountManager.currentLoginUser.email,
+  //               'bookType', BookType.presentation.index, AccountManager.currentLoginUser.email,
   //               onModelFiltered: onModelFiltered);
   //         },
   //         selected: false),
@@ -117,8 +117,8 @@ class BookPublishedManager extends CretaManager {
     double? width,
     double? height,
   }) {
-    width ??= CretaVars.defaultSize().width;
-    height ??= CretaVars.defaultSize().height;
+    width ??= CretaVars.instance.defaultSize().width;
+    height ??= CretaVars.instance.defaultSize().height;
 
     final Random random = Random();
     int randomNumber = random.nextInt(100);
@@ -281,7 +281,7 @@ class BookPublishedManager extends CretaManager {
       queryVal.add('<${PermissionType.owner.name}>${ele.email}');
     }
 
-    BookType bookType = CretaVars.defaultBookType();
+    BookType bookType = CretaVars.instance.defaultBookType();
     if (bookType != BookType.none) {
       query['bookType'] = QueryValue(value: bookType.index);
     }

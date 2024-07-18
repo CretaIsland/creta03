@@ -859,10 +859,10 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Snippet.CretaScaffold(
-      //title: Snippet.logo(CretaVars.serviceTypeString()),
-              onFoldButtonPressed: () {
-          setState(() {});
-        },
+      //title: Snippet.logo(CretaVars.instance.serviceTypeString()),
+      onFoldButtonPressed: () {
+        setState(() {});
+      },
 
       context: context,
       //child: _selectPage(),

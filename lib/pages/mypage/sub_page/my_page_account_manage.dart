@@ -84,7 +84,7 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                         //               .unset(BookType.board);
                         //         }
                         //         userPropertyManager.userPropertyModel!.purpose
-                        //             .set(BookType.presentaion);
+                        //             .set(BookType.presentation);
                         //         userPropertyManager.setToDB(userPropertyManager.userPropertyModel!);
                         //       },
                         //     ),

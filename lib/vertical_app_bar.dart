@@ -225,7 +225,7 @@ class _VerticalAppBarState extends State<VerticalAppBar> {
             height: 20,
           ),
           Text(
-            CretaVars.serviceTypeString(),
+            CretaVars.instance.serviceTypeString(),
             style: CretaFont.logoStyle.copyWith(color: Colors.white),
           ),
         ],

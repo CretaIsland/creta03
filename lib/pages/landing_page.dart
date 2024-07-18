@@ -52,7 +52,7 @@ class _LandingPageState extends State<LandingPage> {
   List<DropdownMenuItem> sortItems = [];
   // selected value of dropdown menu
   //late String selectedLanguage;
-  BookType selectedPurpose = BookType.presentaion;
+  BookType selectedPurpose = BookType.presentation;
   BookSort selectedSort = BookSort.updateTime;
 
   List<String> topBannerImgPaths = [];
@@ -163,7 +163,7 @@ class _LandingPageState extends State<LandingPage> {
 
     purposeItems = [
       DropdownMenuItem(
-          value: BookType.presentaion,
+          value: BookType.presentation,
           child: Text(CretaCommuLang['presentation']!, // "프레젠테이션",
               style: searchFilterStyle)),
       DropdownMenuItem(

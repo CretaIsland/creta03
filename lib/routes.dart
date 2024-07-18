@@ -105,7 +105,6 @@ abstract class AppRoutes {
   static const String studioBookMainPage = '/studio/bookMainPage';
   static const String deviceMainPage = '/device/deviceMainPage';
   static const String deviceSharedPage = '/device/deviceSharedPage';
-  static const String adminMainPage = '/admin/adminMainPage';
   //static const String deviceDetailPage = '/device/deviceDetailPage';
   static const String studioBookPreviewPage = '/studio/studioBookMainPreviewPage';
   static const String studioBookGridPage = '/studio/bookGridPage';
@@ -134,6 +133,10 @@ abstract class AppRoutes {
 
   static const String privacyPolicy = '/policy/privacy';
   static const String serviceTerms = '/terms/service';
+
+  static const String adminMainPage = '/admin/adminMainPage';
+  static const String adminTeamPage = '/admin/adminTeamPage';
+  static const String adminUserPage = '/admin/adminUserPage';
 }
 
 //final menuKey = GlobalKey<DrawerMenuPageState>();
@@ -185,7 +188,11 @@ final routesLoggedOut = RouteMap(
         child: DeviceMainPage(
             key: GlobalObjectKey('deviceSharedPage'), selectedPage: DeviceSelectedPage.sharedPage)),
     AppRoutes.adminMainPage: (_) =>
-        TransitionPage(child: AdminMainPage(/*selectedPage: AdminSelectedPage.enterprise*/)),
+        TransitionPage(child: AdminMainPage(selectedPage: AdminSelectedPage.enterprise)),
+    AppRoutes.adminTeamPage: (_) =>
+        TransitionPage(child: AdminMainPage(selectedPage: AdminSelectedPage.team)),
+    AppRoutes.adminUserPage: (_) =>
+        TransitionPage(child: AdminMainPage(selectedPage: AdminSelectedPage.user)),
 
     //AppRoutes.deviceDetailPage: (_) => TransitionPage(child: DeviceDetailPage()),
     AppRoutes.studioBookMainPage: (routeData) {

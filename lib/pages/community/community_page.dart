@@ -123,7 +123,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   void initState() {
     super.initState();
 
-    _filterBookType = CretaVars.defaultBookType();
+    _filterBookType = CretaVars.instance.defaultBookType();
 
     favoritesManagerHolder = FavoritesManager();
     StudioVariables.isFullscreen = false;
@@ -223,20 +223,20 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             setScrollOffset(0);
           });
         },
-        selected: CretaVars.serviceType == ServiceType.none,
-        disabled: CretaVars.serviceType != ServiceType.none,
+        selected: CretaVars.instance.serviceType == ServiceType.none,
+        disabled: CretaVars.instance.serviceType != ServiceType.none,
       ),
       CretaMenuItem(
         caption: CretaLang['basicBookFilter']![1], // 프리젠테이션용
         iconData: Icons.local_library_outlined,
         onPressed: () {
           setState(() {
-            _filterBookType = BookType.presentaion;
+            _filterBookType = BookType.presentation;
             setScrollOffset(0);
           });
         },
-        selected: CretaVars.serviceType == ServiceType.presentaion,
-        disabled: CretaVars.serviceType != ServiceType.presentaion,
+        selected: CretaVars.instance.serviceType == ServiceType.presentation,
+        disabled: CretaVars.instance.serviceType != ServiceType.presentation,
       ),
       CretaMenuItem(
         caption: CretaLang['basicBookFilter']![2], // 전자칠판용
@@ -247,8 +247,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             setScrollOffset(0);
           });
         },
-        selected: CretaVars.serviceType == ServiceType.board,
-        disabled: CretaVars.serviceType != ServiceType.board,
+        selected: CretaVars.instance.serviceType == ServiceType.board,
+        disabled: CretaVars.instance.serviceType != ServiceType.board,
       ),
       CretaMenuItem(
         caption: CretaLang['basicBookFilter']![3], // 디지털사이니지용 전차칠판용
@@ -259,8 +259,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             setScrollOffset(0);
           });
         },
-        selected: CretaVars.serviceType == ServiceType.signage,
-        disabled: CretaVars.serviceType != ServiceType.signage,
+        selected: CretaVars.instance.serviceType == ServiceType.signage,
+        disabled: CretaVars.instance.serviceType != ServiceType.signage,
       ),
       CretaMenuItem(
         caption: CretaLang['basicBookFilter']![4], // 디지털바리케이드용
@@ -271,8 +271,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             setScrollOffset(0);
           });
         },
-        selected: CretaVars.serviceType == ServiceType.barricade,
-        disabled: CretaVars.serviceType != ServiceType.barricade,
+        selected: CretaVars.instance.serviceType == ServiceType.barricade,
+        disabled: CretaVars.instance.serviceType != ServiceType.barricade,
       ),
       CretaMenuItem(
         caption: CretaLang['basicBookFilter']![5], // 기타
@@ -283,8 +283,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             setScrollOffset(0);
           });
         },
-        selected: CretaVars.serviceType == ServiceType.etc,
-        disabled: CretaVars.serviceType != ServiceType.etc,
+        selected: CretaVars.instance.serviceType == ServiceType.etc,
+        disabled: CretaVars.instance.serviceType != ServiceType.etc,
       ),
     ];
     //
@@ -2118,8 +2118,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
 
   @override
   Widget build(BuildContext context) {
-
-   return MultiProvider(
+    return MultiProvider(
       providers: [
         ChangeNotifierProvider<UserPropertyManager>.value(
             value: CretaAccountManager.userPropertyManagerHolder),
@@ -2189,7 +2188,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                   //     SizedBox(
                   //       width: 5,
                   //     ),
-                  //     Text(CretaVars.serviceTypeString(),
+                  //     Text(CretaVars.instance.serviceTypeString(),
                   //         style: CretaFont.logoStyle.copyWith(color: CretaColor.primary)),
                   //   ],
                   // ),
@@ -2216,7 +2215,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                         gotoButtonPressed2: () {
                           Routemaster.of(context).push(AppRoutes.deviceMainPage);
                         },
-                        gotoButtonTitle2: (CretaVars.serviceType == ServiceType.barricade)
+                        gotoButtonTitle2: (CretaVars.instance.serviceType == ServiceType.barricade)
                             ? CretaCommuLang['myDeviceMenu']!
                             : null,
 

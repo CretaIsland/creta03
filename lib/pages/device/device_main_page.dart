@@ -462,7 +462,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
                 }
 
                 return Snippet.CretaScaffold(
-                    //title: Snippet.logo(CretaVars.serviceTypeString()),
+                    //title: Snippet.logo(CretaVars.instance.serviceTypeString()),
                     onFoldButtonPressed: () {
                       setState(() {});
                     },
@@ -1047,8 +1047,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
           hostManagerHolder?.toFiltered(null, null, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
-        selected: CretaVars.serviceType == ServiceType.none,
-        disabled: CretaVars.serviceType != ServiceType.none,
+        selected: CretaVars.instance.serviceType == ServiceType.none,
+        disabled: CretaVars.instance.serviceType != ServiceType.none,
       ),
       CretaMenuItem(
         caption: CretaDeviceLang['basicHostFilter']![1], //
@@ -1057,8 +1057,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
               'hostType', ServiceType.signage.index, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
-        selected: CretaVars.serviceType == ServiceType.signage,
-        disabled: CretaVars.serviceType != ServiceType.signage,
+        selected: CretaVars.instance.serviceType == ServiceType.signage,
+        disabled: CretaVars.instance.serviceType != ServiceType.signage,
       ),
       CretaMenuItem(
         caption: CretaDeviceLang['basicHostFilter']![2], //
@@ -1067,8 +1067,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
               'hostType', ServiceType.barricade.index, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
-        selected: CretaVars.serviceType == ServiceType.barricade,
-        disabled: CretaVars.serviceType != ServiceType.barricade,
+        selected: CretaVars.instance.serviceType == ServiceType.barricade,
+        disabled: CretaVars.instance.serviceType != ServiceType.barricade,
       ),
       CretaMenuItem(
         caption: CretaDeviceLang['basicHostFilter']![3], //
@@ -1077,8 +1077,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
               'hostType', ServiceType.escalator.index, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
-        selected: CretaVars.serviceType == ServiceType.escalator,
-        disabled: CretaVars.serviceType != ServiceType.escalator,
+        selected: CretaVars.instance.serviceType == ServiceType.escalator,
+        disabled: CretaVars.instance.serviceType != ServiceType.escalator,
       ),
       CretaMenuItem(
         caption: CretaDeviceLang['basicHostFilter']![4], //
@@ -1087,8 +1087,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
               'hostType', ServiceType.board.index, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
-        selected: CretaVars.serviceType == ServiceType.board,
-        disabled: CretaVars.serviceType != ServiceType.board,
+        selected: CretaVars.instance.serviceType == ServiceType.board,
+        disabled: CretaVars.instance.serviceType != ServiceType.board,
       ),
       CretaMenuItem(
         caption: CretaDeviceLang['basicHostFilter']![5],
@@ -1097,8 +1097,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
               'hostType', ServiceType.cdu.index, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
-        selected: CretaVars.serviceType == ServiceType.cdu,
-        disabled: CretaVars.serviceType != ServiceType.cdu,
+        selected: CretaVars.instance.serviceType == ServiceType.cdu,
+        disabled: CretaVars.instance.serviceType != ServiceType.cdu,
       ),
       CretaMenuItem(
         caption: CretaDeviceLang['basicHostFilter']![6],
@@ -1107,8 +1107,8 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
               'hostType', ServiceType.etc.index, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
-        selected: CretaVars.serviceType == ServiceType.etc,
-        disabled: CretaVars.serviceType != ServiceType.etc,
+        selected: CretaVars.instance.serviceType == ServiceType.etc,
+        disabled: CretaVars.instance.serviceType != ServiceType.etc,
       ),
     ];
   }
@@ -1207,7 +1207,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
               //   title: "${CretaDeviceLang['powerOff']!}      ",
               //   icon: Icons.file_download_outlined,
               //   question: CretaDeviceLang['powerOffConfirm']!,
-              //   noBtText: CretaVars.isDeveloper
+              //   noBtText: CretaVars.instance.isDeveloper
               //       ? CretaStudioLang['noBtDnTextDeloper']!
               //       : CretaStudioLang['noBtDnText']!,
               //   yesBtText: CretaStudioLang['yesBtDnText']!,
@@ -1470,7 +1470,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
       title: title,
       icon: Icons.file_download_outlined,
       question: question,
-      noBtText: CretaVars.isDeveloper
+      noBtText: CretaVars.instance.isDeveloper
           ? CretaStudioLang['noBtDnTextDeloper']!
           : CretaStudioLang['noBtDnText']!,
       yesBtText: CretaStudioLang['yesBtDnText']!,

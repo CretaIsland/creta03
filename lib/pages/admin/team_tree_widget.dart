@@ -361,7 +361,7 @@ class _TeamTreeWidgetState extends State<TeamTreeWidget> with CretaBasicLayoutMi
       title: title,
       icon: Icons.warning_amber_outlined,
       question: question,
-      noBtText: CretaVars.isDeveloper
+      noBtText: CretaVars.instance.isDeveloper
           ? CretaStudioLang['noBtDnTextDeloper']!
           : CretaStudioLang['noBtDnText']!,
       yesBtText: CretaStudioLang['yesBtDnText']!,

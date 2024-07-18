@@ -268,7 +268,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
                   _initMenu();
                 }
                 return Snippet.CretaScaffold(
-                    //title: Snippet.logo(CretaVars.serviceTypeString()),
+                    //title: Snippet.logo(CretaVars.instance.serviceTypeString()),
                     onFoldButtonPressed: () {
                       setState(() {});
                     },
@@ -532,18 +532,18 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
           bookManagerHolder?.toFiltered(null, null, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
-        selected: CretaVars.serviceType == ServiceType.none,
-        disabled: CretaVars.serviceType != ServiceType.none,
+        selected: CretaVars.instance.serviceType == ServiceType.none,
+        disabled: CretaVars.instance.serviceType != ServiceType.none,
       ),
       CretaMenuItem(
         caption: CretaLang['basicBookFilter']![1], // 프리젠테이션
         onPressed: () {
           bookManagerHolder?.toFiltered(
-              'bookType', BookType.presentaion.index, AccountManager.currentLoginUser.email,
+              'bookType', BookType.presentation.index, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
-        selected: CretaVars.serviceType == ServiceType.presentaion,
-        disabled: CretaVars.serviceType != ServiceType.presentaion,
+        selected: CretaVars.instance.serviceType == ServiceType.presentation,
+        disabled: CretaVars.instance.serviceType != ServiceType.presentation,
       ),
       CretaMenuItem(
         caption: CretaLang['basicBookFilter']![2], // 전자칠판
@@ -552,8 +552,8 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
               'bookType', BookType.board.index, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
-        selected: CretaVars.serviceType == ServiceType.board,
-        disabled: CretaVars.serviceType != ServiceType.board,
+        selected: CretaVars.instance.serviceType == ServiceType.board,
+        disabled: CretaVars.instance.serviceType != ServiceType.board,
       ),
       CretaMenuItem(
         caption: CretaLang['basicBookFilter']![3], // 사이니지
@@ -562,8 +562,8 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
               'bookType', BookType.signage.index, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
-        selected: CretaVars.serviceType == ServiceType.signage,
-        disabled: CretaVars.serviceType != ServiceType.signage,
+        selected: CretaVars.instance.serviceType == ServiceType.signage,
+        disabled: CretaVars.instance.serviceType != ServiceType.signage,
       ),
       CretaMenuItem(
         caption: CretaLang['basicBookFilter']![4], // 디지털 바리케이드
@@ -572,8 +572,8 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
               'bookType', BookType.barricade.index, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
-        selected: CretaVars.serviceType == ServiceType.barricade,
-        disabled: CretaVars.serviceType != ServiceType.barricade,
+        selected: CretaVars.instance.serviceType == ServiceType.barricade,
+        disabled: CretaVars.instance.serviceType != ServiceType.barricade,
       ),
       CretaMenuItem(
         caption: CretaLang['basicBookFilter']![5],
@@ -582,8 +582,8 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
               'bookType', BookType.etc.index, AccountManager.currentLoginUser.email,
               onModelFiltered: onModelFiltered);
         },
-        selected: CretaVars.serviceType == ServiceType.etc,
-        disabled: CretaVars.serviceType != ServiceType.etc,
+        selected: CretaVars.instance.serviceType == ServiceType.etc,
+        disabled: CretaVars.instance.serviceType != ServiceType.etc,
       ),
     ];
   }

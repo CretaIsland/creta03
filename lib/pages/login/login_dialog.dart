@@ -119,7 +119,7 @@ class _ExtraInfoDialogState extends State<ExtraInfoDialog> {
   };
   late final List<CretaMenuItem> _purposeDropdownMenuList;
   final List<CretaMenuItem> _birthDropdownMenuList = [];
-  BookType _usingPurpose = BookType.presentaion;
+  BookType _usingPurpose = BookType.presentation;
   int _birthYear = 1950;
   GenderType _genderType = GenderType.none;
 
@@ -132,7 +132,7 @@ class _ExtraInfoDialogState extends State<ExtraInfoDialog> {
         caption: CretaLang['basicBookFilter']![1], //'프리젠테이션',
         //iconData: Icons.home_outlined,
         onPressed: () {
-          _usingPurpose = BookType.presentaion;
+          _usingPurpose = BookType.presentation;
         },
         //linkUrl: AppRoutes.communityHome,
         //isIconText: true,

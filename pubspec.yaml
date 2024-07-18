@@ -341,6 +341,13 @@ flutter:
     - assets/landing_page/image/banner/banner_bottom11.png
     - assets/landing_page/image/banner/banner_bottom12.png
     
+    - assets/icons/signage.png
+    - assets/icons/barricade.png
+    - assets/icons/presentation.png
+    - assets/icons/escalator.png
+    - assets/icons/board.png
+    - assets/icons/cdu.png
+    - assets/icons/etc.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

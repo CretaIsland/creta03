@@ -66,8 +66,8 @@ class BookManager extends BaseBookManager {
     double? width,
     double? height,
   }) {
-    width ??= CretaVars.defaultSize().width;
-    height ??= CretaVars.defaultSize().height;
+    width ??= CretaVars.instance.defaultSize().width;
+    height ??= CretaVars.instance.defaultSize().height;
 
     final Random random = Random();
     int randomNumber = random.nextInt(100);
@@ -111,7 +111,7 @@ class BookManager extends BaseBookManager {
       users.add('<${PermissionType.owner.name}>$myTeamId');
     }
 
-    BookType bookType = CretaVars.defaultBookType();
+    BookType bookType = CretaVars.instance.defaultBookType();
     if (bookType != BookType.none) {
       query['bookType'] = QueryValue(value: bookType.index);
     }
@@ -159,7 +159,7 @@ class BookManager extends BaseBookManager {
       queryVal.add('<${PermissionType.owner.name}>${ele.email}');
     }
 
-    BookType bookType = CretaVars.defaultBookType();
+    BookType bookType = CretaVars.instance.defaultBookType();
     if (bookType != BookType.none) {
       query['bookType'] = QueryValue(value: bookType.index);
     }
@@ -282,7 +282,6 @@ class BookManager extends BaseBookManager {
   }
 
   bool uploadCompleteTest(PageManager? pageManager, BookModel book) {
-   
     book.toJson();
     if (pageManager != null) {
       pageManager.toJson();

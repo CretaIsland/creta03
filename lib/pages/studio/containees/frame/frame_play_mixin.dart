@@ -478,8 +478,8 @@ mixin FramePlayMixin {
     double height = 0;
     double x = 0;
     double y = 0;
-    if (CretaVars.serviceType == ServiceType.barricade) {
-      Size size = CretaVars.defaultFrameSize();
+    if (CretaVars.instance.serviceType == ServiceType.barricade) {
+      Size size = CretaVars.instance.defaultFrameSize();
       width = size.width;
       height = size.height;
     } else {

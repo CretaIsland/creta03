@@ -892,7 +892,7 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
       title: title,
       icon: Icons.file_download_outlined,
       question: question,
-      noBtText: CretaVars.isDeveloper
+      noBtText: CretaVars.instance.isDeveloper
           ? CretaStudioLang['noBtDnTextDeloper']!
           : CretaStudioLang['noBtDnText']!,
       yesBtText: CretaStudioLang['yesBtDnText']!,

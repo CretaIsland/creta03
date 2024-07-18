@@ -197,7 +197,7 @@ class FrameMainState extends State<FrameMain> with FramePlayMixin {
               icon: Icons.file_download_outlined,
               question:
                   '${CretaStudioLang['isOverlayFrame']!} ${CretaStudioLang['deleteConfirm']!}',
-              noBtText: CretaVars.isDeveloper
+              noBtText: CretaVars.instance.isDeveloper
                   ? CretaStudioLang['noBtDnTextDeloper']!
                   : CretaStudioLang['noBtDnText']!,
               yesBtText: CretaStudioLang['yesBtDnText']!,

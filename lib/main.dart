@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors, depend_on_referenced_packages
 
 // ignore: avoid_web_libraries_in_flutter
-import 'dart:html';
+//import 'dart:html';
 
 import 'package:creta_common/common/creta_color.dart'; //import 'package:creta03/pages/studio/sample_data.dart';
 import 'package:creta_common/common/creta_snippet.dart';
@@ -39,30 +39,6 @@ void main() async {
   //myConfig!.serverConfig!.storageConnInfo.bucketId =
   //    "${HycopUtils.genBucketId(AccountManager.currentLoginUser.email, AccountManager.currentLoginUser.userId)}/";
 
-  var url = window.location.href;
-  var uri = Uri.parse(url);
-  var firstPartOfHost = uri.host.split('.').first;
-  switch (firstPartOfHost) {
-    case 'presentaion':
-      CretaVars.serviceType = ServiceType.presentaion;
-      break;
-    case 'barricade':
-      CretaVars.serviceType = ServiceType.barricade;
-      break;
-    case 'signage':
-      CretaVars.serviceType = ServiceType.signage;
-      break;
-    case 'escalator':
-      CretaVars.serviceType = ServiceType.escalator;
-      break;
-    case 'board':
-      CretaVars.serviceType = ServiceType.board;
-      break;
-    default:
-      CretaVars.serviceType = ServiceType.barricade;
-      break;
-  }
-
   runApp(const ProviderScope(child: MainRouteApp()));
   //runApp(MyApp());
 }
@@ -92,7 +68,7 @@ class _MainRouteAppState extends ConsumerState<MainRouteApp> {
   void initState() {
     super.initState();
     CrossCommonJob ccj = CrossCommonJob();
-    CretaVars.isCanvaskit = ccj.isInUsingCanvaskit();
+    CretaVars.instance.isCanvaskit = ccj.isInUsingCanvaskit();
 
     saveManagerHolder = SaveManager();
 

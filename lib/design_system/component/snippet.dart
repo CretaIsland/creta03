@@ -26,6 +26,8 @@ import 'package:url_launcher/link.dart';
 import '../../data_io/frame_manager.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 //import '../../lang/creta_mypage_lang.dart';
+import '../../drawer_handle.dart';
+import '../../drawer_main.dart';
 import '../../lang/creta_commu_lang.dart';
 import '../../lang/creta_device_lang.dart';
 import '../../lang/creta_mypage_lang.dart';
@@ -160,7 +162,8 @@ class Snippet {
       // no appBar any more
       //appBar: Snippet.CretaAppBarOfStudio(context, title, additionals, invalidate: invalidate),
       //appBar: Snippet.CretaAppBarOfMyPage(context, Text('title')),
-      floatingActionButton: CretaVars.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
+      floatingActionButton:
+          CretaVars.instance.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       //body: child,
       //drawer: drawer(context),
@@ -180,6 +183,8 @@ class Snippet {
     );
   }
 
+  static final communityScaffoldKey = GlobalKey<ScaffoldState>();
+
   static Widget CretaScaffoldOfCommunity({
     //required Widget title,
     required BuildContext context,
@@ -191,6 +196,7 @@ class Snippet {
     required Function onFoldButtonPressed,
   }) {
     return Scaffold(
+      key: communityScaffoldKey,
       // no appbar anymore
       // appBar: Snippet.CretaAppBarOfCommunity(
       //   context: context,
@@ -201,8 +207,10 @@ class Snippet {
       //   getBuildContext: getBuildContext,
       // ),
       //appBar: Snippet.CretaAppBarOfMyPage(context, Text('title')),
-      //drawer: drawer(context),
-      floatingActionButton: CretaVars.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
+      //drawer: drawer(context, communityScaffoldKey),
+      drawer: DrawerMain(scaffoldKey: communityScaffoldKey),
+      floatingActionButton:
+          CretaVars.instance.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
       body:
           // GestureDetector(
           //   behavior: HitTestBehavior.opaque,
@@ -211,14 +219,19 @@ class Snippet {
           //     LastClicked.clickedOutSide(details.globalPosition);
           //   }),
           //   child:
-          Row(
-        mainAxisSize: MainAxisSize.min,
+          Stack(
         children: [
-          VerticalAppBar(
-              key: GlobalObjectKey('VerticalAppBar'), onFoldButtonPressed: onFoldButtonPressed),
-          Container(
-            child: child,
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              VerticalAppBar(
+                  key: GlobalObjectKey('VerticalAppBar'), onFoldButtonPressed: onFoldButtonPressed),
+              Container(
+                child: child,
+              ),
+            ],
           ),
+          DrawerHandle(scaffoldKey: communityScaffoldKey),
         ],
       ),
       //),
@@ -417,7 +430,7 @@ class Snippet {
         //appBar: Snippet.CretaAppBarOfMyPage(context, title),
         //appBar: Snippet.CretaAppBarOfMyPage(context, title),
         floatingActionButton:
-            CretaVars.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
+            CretaVars.instance.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
         body: Row(
           children: [
             VerticalAppBar(
@@ -552,7 +565,7 @@ class Snippet {
         ),
         if (!kReleaseMode)
           CretaMenuItem(
-            caption: CretaVars.isDeveloper
+            caption: CretaVars.instance.isDeveloper
                 ? CretaLang['accountMenu']![6]
                 : CretaLang['accountMenu']![5], //개발자모드
             onPressed: () {
@@ -561,7 +574,7 @@ class Snippet {
                   builder: (context) {
                     return BassDemoPopUp();
                   });
-              // CretaVars.isDeveloper = !CretaVars.isDeveloper;
+              // CretaVars.instance.isDeveloper = !CretaVars.instance.isDeveloper;
               // invalidate?.call();
             },
           ),
@@ -1132,7 +1145,7 @@ class Snippet {
           width: 4,
         ),
         Text(
-          CretaVars.serviceTypeString(),
+          CretaVars.instance.serviceTypeString(),
           style: CretaFont.logoStyle.copyWith(color: CretaColor.secondary),
         ),
       ],
@@ -1210,54 +1223,102 @@ class Snippet {
     return Image.asset('no_image_available.png', fit: BoxFit.fill);
   }
 
-  static Widget drawer(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
-            ),
-            child: Text(
-              'Drawer Header',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-              ),
-            ),
-          ),
-          ExpansionTile(
-            leading: Icon(Icons.dashboard),
-            title: Text('Dashboard'),
-            children: <Widget>[
-              ListTile(
-                leading: Icon(Icons.horizontal_rule),
-                title: Text('Submenu 1'),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.horizontal_rule),
-                title: Text('Submenu 2'),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-          ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('Settings'),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      ),
-    );
-  }
+  // static Widget drawer(BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) {
+  //   print('drawer: CretaVars.instance.serviceType=${CretaVars.instance.serviceType}');
+
+  //   return Drawer(
+  //     //backgroundColor: CretaColor.primary,
+  //     child: MouseRegion(
+  //       onExit: (event) {
+  //         if (scaffoldKey.currentState!.isDrawerOpen) {
+  //           scaffoldKey.currentState?.closeDrawer();
+  //         }
+  //       },
+  //       child: ListView(
+  //         padding: EdgeInsets.zero,
+  //         children: <Widget>[
+  //           DrawerHeader(
+  //             decoration: BoxDecoration(
+  //               color: CretaColor.primary,
+  //               image: CretaAccountManager.getEnterprise != null
+  //                   ? DecorationImage(
+  //                       image: CretaAccountManager.getEnterprise!.imageUrl.isNotEmpty
+  //                           ? NetworkImage(CretaAccountManager.getEnterprise!.imageUrl)
+  //                           : NetworkImage(
+  //                               'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+  //                       fit: BoxFit.fill, // 이미지가 DrawerHeader 영역을 꽉 채우도록 설정
+  //                     )
+  //                   : null,
+  //             ),
+  //             child: Stack(
+  //               children: [
+  //                 Positioned(
+  //                   top: 0,
+  //                   left: 0,
+  //                   child: Snippet.outlineText(
+  //                     CretaAccountManager.getEnterprise != null
+  //                         ? CretaAccountManager.getEnterprise!.name
+  //                         : UserPropertyModel.defaultEnterprise,
+  //                     style: TextStyle(
+  //                       color: Colors.white,
+  //                       fontSize: 24,
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 Positioned(
+  //                   bottom: 0,
+  //                   right: 0,
+  //                   child: Snippet.serviceTypeLogo(),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //           ExpansionTile(
+  //             onExpansionChanged: (value) {},
+  //             leading: Icon(Icons.language),
+  //             title: Text('Community',
+  //                 style: CretaFont.logoStyle.copyWith(fontSize: 32, color: CretaColor.text[400]!)),
+  //             children: <Widget>[
+  //               ListTile(
+  //                 leading: Icon(Icons.home_outlined, color: CretaColor.text[400]!),
+  //                 title: Text(
+  //                   CretaCommuLang['commuHome'] ?? '커뮤니티 홈',
+  //                   style: CretaFont.buttonMedium,
+  //                 ),
+  //                 onTap: () {
+  //                   Routemaster.of(context).push(AppRoutes.communityHome);
+  //                   scaffoldKey.currentState?.closeDrawer();
+  //                 },
+  //               ),
+  //               ListTile(
+  //                 leading: Icon(Icons.horizontal_rule),
+  //                 title: Text(
+  //                   CretaCommuLang['subsList'] ?? '구독목록',
+  //                   style: CretaFont.buttonMedium,
+  //                 ),
+  //                 onTap: () {
+  //                   if (AccountManager.currentLoginUser.isLoginedUser) {
+  //                     Routemaster.of(context).push(AppRoutes.subscriptionList);
+  //                   } else {
+  //                     LoginDialog.popupDialog(context: context, getBuildContext: () => context);
+  //                   }
+  //                   scaffoldKey.currentState?.closeDrawer();
+  //                 },
+  //               ),
+  //             ],
+  //           ),
+  //           ListTile(
+  //             leading: Icon(Icons.settings),
+  //             title: Text('Settings'),
+  //             onTap: () {
+  //               Navigator.pop(context);
+  //             },
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
   // static bool langChanged(LanguageType language) {
   //   if (oldLanguage != language) {
   //     oldLanguage = language;
@@ -1271,6 +1332,57 @@ class Snippet {
       "Version ${IntroPage.cretaVersionList.first} (hycop ${IntroPage.hycopVersion}) \nbuild ${IntroPage.buildNumber}",
       style: CretaFont.bodySmall
           .copyWith(fontWeight: FontWeight.w500, color: CretaColor.text.shade700),
+    );
+  }
+
+  static Widget serviceTypeLogo() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image(
+          image: AssetImage("assets/icons/${CretaVars.instance.serviceTypeString()}.png"),
+          //width: 120,
+          height: 20,
+        ),
+        outlineText(
+          CretaVars.instance.serviceTypeString(),
+          style: CretaFont.logoStyle.copyWith(color: Colors.white),
+        ),
+      ],
+    );
+  }
+
+  static Widget outlineText(String text, {required TextStyle style}) {
+    return Text(
+      text,
+      style: style.copyWith(
+        shadows: [
+          Shadow(
+            // 하단 외곽선
+            offset: Offset(1.0, 1.0),
+            blurRadius: 3.0,
+            color: Colors.black,
+          ),
+          Shadow(
+            // 상단 외곽선
+            offset: Offset(-1.0, -1.0),
+            blurRadius: 3.0,
+            color: Colors.black,
+          ),
+          Shadow(
+            // 우측 외곽선
+            offset: Offset(1.0, -1.0),
+            blurRadius: 3.0,
+            color: Colors.black,
+          ),
+          Shadow(
+            // 좌측 외곽선
+            offset: Offset(-1.0, 1.0),
+            blurRadius: 3.0,
+            color: Colors.black,
+          ),
+        ],
+      ),
     );
   }
 }

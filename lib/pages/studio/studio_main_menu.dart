@@ -29,13 +29,13 @@ class StudioMainMenu extends StatefulWidget {
       title: "${CretaStudioLang['export']!}      ",
       icon: Icons.file_download_outlined,
       question: CretaStudioLang['downloadConfirm']!,
-      noBtText: CretaVars.isDeveloper
+      noBtText: CretaVars.instance.isDeveloper
           ? CretaStudioLang['noBtDnTextDeloper']!
           : CretaStudioLang['noBtDnText']!,
       yesBtText: CretaStudioLang['yesBtDnText']!,
       yesIsDefault: true,
       onNo: () {
-        if (CretaVars.isDeveloper) {
+        if (CretaVars.instance.isDeveloper) {
           BookMainPage.bookManagerHolder?.download(context, BookMainPage.pageManagerHolder, false);
         }
       },

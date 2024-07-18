@@ -227,7 +227,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
                     hintList: getPageSizeListHint(),
                   ),
 
-                  widget.model.bookType.value != BookType.presentaion
+                  widget.model.bookType.value != BookType.presentation
                       ? CretaDropDownButton(
                           padding: EdgeInsets.only(left: 8, right: 4),
                           height: 28,
@@ -403,7 +403,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
   // }
 
   List<String> choicePageSizeName(BookType bookType) {
-    if (bookType == BookType.presentaion) {
+    if (bookType == BookType.presentation) {
       return CretaStudioLang['pageSizeMapPresentation']!.keys.toList();
     }
     if (bookType == BookType.barricade) {
@@ -413,7 +413,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
   }
 
   List<Size> choiceResolution(BookType bookType, int idx) {
-    if (bookType == BookType.presentaion) {
+    if (bookType == BookType.presentation) {
       int len = StudioConst.presentationResolution.length;
       if (0 > idx || len <= idx) {
         return StudioConst.presentationResolution[0];
@@ -459,7 +459,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
   }
 
   List<String>? getPageSizeListHint() {
-    if (widget.model.bookType.value == BookType.presentaion) {
+    if (widget.model.bookType.value == BookType.presentation) {
       return [...CretaStudioLang['pageSizeMapPresentation']!.values.toList()];
     }
     return null;

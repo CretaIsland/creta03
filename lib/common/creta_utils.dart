@@ -47,8 +47,9 @@ class CretaUtils {
   static Size getDisplaySize(BuildContext context) {
     StudioVariables.displayWidth = MediaQuery.of(context).size.width;
     StudioVariables.displayHeight = MediaQuery.of(context).size.height;
-    CretaVars.displaySize = Size(StudioVariables.displayWidth, StudioVariables.displayHeight);
-    return CretaVars.displaySize;
+    CretaVars.instance.displaySize =
+        Size(StudioVariables.displayWidth, StudioVariables.displayHeight);
+    return CretaVars.instance.displaySize;
   }
 
   static StrokeCap borderCap(BorderCapType aType) {

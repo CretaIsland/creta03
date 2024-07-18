@@ -11,10 +11,10 @@ class SampleData {
   static initSample() {
     sampleBook.name
         .set(CretaLang['sampleBookName']!, save: false, noUndo: true, dontChangeBookTime: true);
-    sampleBook.width
-        .set(CretaVars.defaultSize().width, save: false, noUndo: true, dontChangeBookTime: true);
-    sampleBook.height
-        .set(CretaVars.defaultSize().height, save: false, noUndo: true, dontChangeBookTime: true);
+    sampleBook.width.set(CretaVars.instance.defaultSize().width,
+        save: false, noUndo: true, dontChangeBookTime: true);
+    sampleBook.height.set(CretaVars.instance.defaultSize().height,
+        save: false, noUndo: true, dontChangeBookTime: true);
 
     // AccountManager.currentLoginUser.setValue('email', 'skpark@sqisoft.com');
     // AccountManager.currentLoginUser.setValue('name', 'Turtle Rabbit');

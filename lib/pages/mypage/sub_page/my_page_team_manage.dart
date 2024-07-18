@@ -82,7 +82,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
       //   selectedChannelMid = TeamManager.getCurrentTeam!.channelId;
     }
     enterprise = CretaAccountManager.getUserProperty?.enterprise ?? '';
-    isEnterprise = EnterpriseManager.isEnterpriseUser(enterprise);
+    isEnterprise = EnterpriseManager.isEnterpriseUser();
   }
 
   @override

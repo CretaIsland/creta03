@@ -88,7 +88,8 @@ enum AdminSelectedPage {
 
 // ignore: must_be_immutable
 class AdminMainPage extends StatefulWidget {
-  const AdminMainPage({Key? key}) : super(key: key);
+  final AdminSelectedPage selectedPage;
+  const AdminMainPage({Key? key, required this.selectedPage}) : super(key: key);
 
   @override
   State<AdminMainPage> createState() => _AdminMainPageState();
@@ -113,7 +114,7 @@ class AdminMainPage extends StatefulWidget {
 
 class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixin {
   late List<CretaMenuItem> _leftMenuItemList;
-  AdminSelectedPage selectedPage = AdminSelectedPage.enterprise;
+  AdminSelectedPage _selectedPage = AdminSelectedPage.enterprise;
 
   bool dropDownButtonOpened = false;
   GlobalKey dropDownButtonKey = GlobalKey();
@@ -129,6 +130,8 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
     logger.fine('initState start');
 
     super.initState();
+
+    _selectedPage = widget.selectedPage;
     setUsingBannerScrollBar(
       scrollChangedCallback: _scrollListener,
       // bannerMaxHeight: 196 + 200,
@@ -155,7 +158,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
       //     //Routemaster.of(context).push(AppRoutes.studioAdminMainPage);
       //     //AdminMainPage.lastGridMenu = AppRoutes.studioBookSharedPage;
       //   },
-      //   selected: widget.selectedPage == AdminSelectedPage.license,
+      //   selected: widget._selectedPage == AdminSelectedPage.license,
       //   iconData: Icons.admin_panel_settings_outlined,
       //   iconSize: 20,
       //   isIconText: true,
@@ -165,11 +168,11 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
         onPressed: () {
           //Routemaster.of(context).push(AppRoutes.adminMainPage);
           setState(() {
-            selectedPage = AdminSelectedPage.enterprise;
+            _selectedPage = AdminSelectedPage.enterprise;
           });
           AdminMainPage.showSelectEnterpriseWarnning(context);
         },
-        selected: selectedPage == AdminSelectedPage.enterprise,
+        selected: _selectedPage == AdminSelectedPage.enterprise,
         iconData: Icons.business_outlined,
         iconSize: 20,
         isIconText: true,
@@ -178,11 +181,11 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
         caption: CretaDeviceLang['teamManage'] ?? 'Team Management',
         onPressed: () {
           setState(() {
-            selectedPage = AdminSelectedPage.team;
+            _selectedPage = AdminSelectedPage.team;
           });
           AdminMainPage.showSelectEnterpriseWarnning(context);
         },
-        selected: selectedPage == AdminSelectedPage.team,
+        selected: _selectedPage == AdminSelectedPage.team,
         iconData: Icons.groups_2_outlined,
         iconSize: 20,
         isIconText: true,
@@ -191,11 +194,11 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
         caption: CretaDeviceLang['userManage'] ?? 'User Management',
         onPressed: () {
           setState(() {
-            selectedPage = AdminSelectedPage.user;
+            _selectedPage = AdminSelectedPage.user;
           });
           AdminMainPage.showSelectEnterpriseWarnning(context);
         },
-        selected: selectedPage == AdminSelectedPage.user,
+        selected: _selectedPage == AdminSelectedPage.user,
         iconData: Icons.person_2_outlined,
         iconSize: 20,
         isIconText: true,
@@ -264,7 +267,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
                   _initMenu();
                 }
                 return Snippet.CretaScaffold(
-                    //title: Snippet.logo(CretaVars.serviceTypeString()),
+                    //title: Snippet.logo(CretaVars.instance.serviceTypeString()),
                     onFoldButtonPressed: () {
                       setState(() {});
                     },
@@ -284,7 +287,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
                     context: context,
                     child: mainPage(
                       context,
-                      key: GlobalObjectKey('adminMainPage_$selectedPage'),
+                      key: GlobalObjectKey('adminMainPage_$_selectedPage'),
                       scrollbarOnRight: false,
                       gotoButtonPressed: () {
                         Routemaster.of(context).push(AppRoutes.communityHome);
@@ -310,7 +313,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
                         //   }
                       },
                       mainWidget: (_) {
-                        switch (selectedPage) {
+                        switch (_selectedPage) {
                           case AdminSelectedPage.enterprise:
                             return EnterpriseListWidget(
                                 width: rightPaneRect.childWidth,
@@ -346,7 +349,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   }
 
   String getAdminTitle() {
-    switch (selectedPage) {
+    switch (_selectedPage) {
       // case AdminSelectedPage.license:
       //   return CretaDeviceLang['license']!;
       case AdminSelectedPage.enterprise:
@@ -359,7 +362,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
   }
 
   String getAdminDesc() {
-    switch (selectedPage) {
+    switch (_selectedPage) {
       // case AdminSelectedPage.license:
       //   return CretaDeviceLang['myCretaAdminDesc']!;
       case AdminSelectedPage.enterprise:

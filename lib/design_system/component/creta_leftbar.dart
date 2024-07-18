@@ -211,7 +211,7 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
                               return BTN.fill_gray_l_profile(
                                 width: 195,
                                 text: AccountManager.currentLoginUser.name,
-                                subText: EnterpriseManager.isEnterpriseUser(enterprise)
+                                subText: EnterpriseManager.isEnterpriseUser(enterprise : enterprise)
                                     ? CretaAccountManager.getEnterprise == null
                                         ? enterprise
                                         : CretaAccountManager.getEnterprise!.name

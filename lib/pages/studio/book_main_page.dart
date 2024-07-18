@@ -775,7 +775,7 @@ class _BookMainPageState extends State<BookMainPage> {
           )
         : Snippet.CretaScaffold(
             noVerticalVar: true,
-            // title: Snippet.logo(CretaVars.serviceTypeString(), route: () {
+            // title: Snippet.logo(CretaVars.instance.serviceTypeString(), route: () {
             //   Routemaster.of(context).push(AppRoutes.studioBookGridPage);
             // }),
             onFoldButtonPressed: () {
@@ -1359,12 +1359,12 @@ class _BookMainPageState extends State<BookMainPage> {
       onTextCreate: () {
         setState(() {
           // Create Text Box
-          if (CretaVars.serviceType == ServiceType.barricade) {
+          if (CretaVars.instance.serviceType == ServiceType.barricade) {
             // 바리케이트 타입의 경우, TextBox 을 막바로 생성한다.
             FrameManager? frameManager = BookMainPage.pageManagerHolder?.getSelectedFrameManager();
             if (frameManager == null) return;
             frameManager.createTextAndFrame(context,
-                pos: Offset.zero, size: CretaVars.defaultFrameSize());
+                pos: Offset.zero, size: CretaVars.instance.defaultFrameSize());
           } else {
             BookMainPage.topMenuNotifier?.set(ClickToCreateEnum.textCreate);
           }
@@ -1373,14 +1373,14 @@ class _BookMainPageState extends State<BookMainPage> {
       onFrameCreate: () {
         setState(() {
           // Create Frame Box
-          if (CretaVars.serviceType == ServiceType.barricade) {
+          if (CretaVars.instance.serviceType == ServiceType.barricade) {
             // 바리케이트 타입의 경우, frame 을 막바로 생성한다.
             FrameManager? frameManager = BookMainPage.pageManagerHolder?.getSelectedFrameManager();
             if (frameManager != null) {
               frameManager
                   .createNextFrame(
                 pos: Offset.zero,
-                size: CretaVars.defaultFrameSize(),
+                size: CretaVars.instance.defaultFrameSize(),
                 bgColor1: Colors.amberAccent,
               )
                   .then((value) {
@@ -1615,13 +1615,13 @@ class _BookMainPageState extends State<BookMainPage> {
               //   title: "${CretaStudioLang['export']!}      ",
               //   icon: Icons.file_download_outlined,
               //   question: CretaStudioLang['downloadConfirm']!,
-              //   noBtText: CretaVars.isDeveloper
+              //   noBtText: CretaVars.instance.isDeveloper
               //       ? CretaStudioLang['noBtDnTextDeloper']!
               //       : CretaStudioLang['noBtDnText']!,
               //   yesBtText: CretaStudioLang['yesBtDnText']!,
               //   yesIsDefault: true,
               //   onNo: () {
-              //     if (CretaVars.isDeveloper) {
+              //     if (CretaVars.instance.isDeveloper) {
               //       BookMainPage.bookManagerHolder
               //           ?.download(context, BookMainPage.pageManagerHolder, false);
               //     }

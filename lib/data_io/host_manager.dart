@@ -105,7 +105,7 @@ class HostManager extends CretaManager {
         hostName: hostName,
         enterprise: enterprise,
         parent: TeamManager.getCurrentTeam!.name,
-        hostType: ServiceType.fromInt(CretaVars.serviceType.index),
+        hostType: ServiceType.fromInt(CretaVars.instance.serviceType.index),
         creator: AccountManager.currentLoginUser.email,
         thumbnailUrl: url);
 
