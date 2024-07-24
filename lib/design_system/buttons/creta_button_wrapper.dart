@@ -708,6 +708,73 @@ class BTN {
     );
   }
 
+  static CretaButton fill_gray_l_profile_sub_widget({
+    required String text,
+    required Widget subWidget,
+    //required Widget sideWidget,
+    required ImageProvider image,
+    required Function onPressed,
+    double width = 219,
+    double height = 76,
+    CretaButtonSidePadding? sidePadding,
+  }) {
+    Size textSize = CretaCommonUtils.calculateTextSize(
+      text,
+      CretaFont.titleELarge,
+      width - 24 - 52 - 20,
+    );
+
+    return CretaButton(
+      width: width,
+      height: height,
+      buttonType: CretaButtonType.child,
+      buttonColor: CretaButtonColor.white300,
+      onPressed: onPressed,
+      sidePadding: sidePadding,
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: CircleAvatar(
+              radius: 30,
+              backgroundImage: image,
+            ),
+          ),
+          SizedBox(
+            width: width - 60 - 8,
+            height: height,
+            //color: Colors.amberAccent,
+            //padding: const EdgeInsets.fromLTRB(4.0, 12.0, 4.0, 4.0),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: width - 60 - 8 - 4,
+                    height: textSize.height + 8,
+                    child: Center(
+                      child: Tooltip(
+                        message: text,
+                        child: Text(
+                          text,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]!),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  subWidget,
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   static CretaButton fill_gray_iti_l({
     Key? key,
     required String text,

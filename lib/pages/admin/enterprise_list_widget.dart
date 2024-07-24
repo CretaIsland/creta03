@@ -514,16 +514,22 @@ class _EnterpriseListWidgetState extends State<EnterpriseListWidget> with MyData
           actions: <Widget>[
             TextButton(
                 child: Text('OK'),
-                onPressed: () {
+                onPressed: () async {
                   if (formKey.currentState!.validate()) {
                     //print('formKey.currentState!.validate()====================');
                     formKey.currentState?.save();
                     newOne.setUpdateTime();
-                    EnterpriseManager.instance.setToDB(newOne);
+                    await EnterpriseManager.instance.setToDB(newOne);
                     //admins 에 등록된 user 들에 대해서, user_property model 의 enterprise 정보를 갱신해야 한다.
                     CretaAccountManager.userPropertyManagerHolder
                         .updateEnterprise(newOne.admins, newOne.name);
+                    if (CretaAccountManager.getEnterprise != null &&
+                        CretaAccountManager.getEnterprise!.mid == newOne.mid) {
+                      CretaAccountManager.setEnterprise = newOne;
+                      print('loginEnterprise updated !!!');
+                    }
                   }
+                  // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 }),
             TextButton(

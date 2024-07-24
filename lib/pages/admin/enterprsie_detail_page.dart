@@ -6,10 +6,9 @@ import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_common_utils.dart';
 import 'package:creta_common/common/creta_font.dart';
 import 'package:creta_user_model/model/user_property_model.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:hycop/common/util/logger.dart';
-import 'package:hycop/hycop/hycop_factory.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:hycop/hycop.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../lang/creta_device_lang.dart';
 import '../../model/enterprise_model.dart';
@@ -40,7 +39,6 @@ class _EnterpriseDetailPageState extends State<EnterpriseDetailPage> {
 
   String _message = '';
 
-  XFile? _selectedImg;
   Uint8List? _selectedImgBytes;
 
   @override
@@ -136,26 +134,44 @@ class _EnterpriseDetailPageState extends State<EnterpriseDetailPage> {
                           icon: const Icon(Icons.camera_alt_outlined, color: Colors.white).icon!,
                           onPressed: () async {
                             try {
-                              _selectedImg =
-                                  await ImagePicker().pickImage(source: ImageSource.gallery);
-                              if (_selectedImg != null) {
-                                _selectedImg!.readAsBytes().then((value) {
-                                  setState(() {
-                                    _selectedImgBytes = value;
-                                  });
-                                  HycopFactory.storage!
-                                      .uploadFile(_selectedImg!.name, _selectedImg!.mimeType!,
-                                          _selectedImgBytes!)
-                                      .then((value) {
-                                    if (value != null) {
-                                      widget.enterpriseModel.imageUrl = value.url;
-                                    }
-                                  });
-                                });
+                              FilePickerResult? result = await FilePicker.platform.pickFiles(
+                                type: FileType.image,
+                              );
+
+                              if (result != null) {
+                                PlatformFile selectedFile = result.files.first;
+                                Uint8List? fileBytes = selectedFile.bytes;
+                                String fileName = selectedFile.name;
+                                String? mimeType = selectedFile.extension;
+
+                                FileModel? value = await HycopFactory.storage!
+                                    .uploadFile(fileName, mimeType!, fileBytes!);
+                                if (value != null) {
+                                  widget.enterpriseModel.imageUrl = value.url;
+                                  print('upload complete !!!  ${widget.enterpriseModel.imageUrl}');
+                                }
+                                setState(() {});
                               }
                             } catch (error) {
                               logger.severe("error at enterprise image >> $error");
                             }
+
+                            // try {
+                            //   XFile? selectedImg =
+                            //       await ImagePicker().pickImage(source: ImageSource.gallery);
+                            //   if (selectedImg != null) {
+                            //     _selectedImgBytes = await selectedImg.readAsBytes();
+                            //     FileModel? value = await HycopFactory.storage!.uploadFile(
+                            //         selectedImg.name, selectedImg.mimeType!, _selectedImgBytes!);
+                            //     if (value != null) {
+                            //       widget.enterpriseModel.imageUrl = value.url;
+                            //       print('uplodad complete !!!  ${widget.enterpriseModel.imageUrl}');
+                            //     }
+                            //     setState(() {});
+                            //   }
+                            // } catch (error) {
+                            //   logger.severe("error at enterprise image >> $error");
+                            // }
                           }),
                     )),
 

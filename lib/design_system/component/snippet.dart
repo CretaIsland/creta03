@@ -67,6 +67,10 @@ extension GlobalKeyExtension on GlobalKey {
 class Snippet {
   static List<LogicalKeyboardKey> keys = [];
 
+  static final communityScaffoldKey = GlobalKey<ScaffoldState>();
+  static final scaffoldKey = GlobalKey<ScaffoldState>();
+  static final mypageScaffoldKey = GlobalKey<ScaffoldState>();
+
   //static LanguageType oldLanguage = LanguageType.none;
 
   static Widget errMsgWidget(AsyncSnapshot<Object> snapshot) {
@@ -159,6 +163,10 @@ class Snippet {
     );
 
     return Scaffold(
+      key: scaffoldKey,
+      drawer: DrawerMain(
+        scaffoldKey: scaffoldKey, /*  key: DrawerMain.drawerMainKey */
+      ),
       // no appBar any more
       //appBar: Snippet.CretaAppBarOfStudio(context, title, additionals, invalidate: invalidate),
       //appBar: Snippet.CretaAppBarOfMyPage(context, Text('title')),
@@ -168,22 +176,23 @@ class Snippet {
       //body: child,
       //drawer: drawer(context),
 
-      body: noVerticalVar
-          ? StudioVariables.isHandToolMode == false
-              ? handToolMode
-              : child
-          : Row(
-              children: [
-                VerticalAppBar(
-                    key: GlobalObjectKey('VerticalAppBar'),
-                    onFoldButtonPressed: onFoldButtonPressed),
-                StudioVariables.isHandToolMode == false ? handToolMode : child,
-              ],
-            ),
+      body: Stack(children: [
+        noVerticalVar
+            ? StudioVariables.isHandToolMode == false
+                ? handToolMode
+                : child
+            : Row(
+                children: [
+                  VerticalAppBar(
+                      key: GlobalObjectKey('VerticalAppBar'),
+                      onFoldButtonPressed: onFoldButtonPressed),
+                  StudioVariables.isHandToolMode == false ? handToolMode : child,
+                ],
+              ),
+        DrawerHandle(scaffoldKey: scaffoldKey),
+      ]),
     );
   }
-
-  static final communityScaffoldKey = GlobalKey<ScaffoldState>();
 
   static Widget CretaScaffoldOfCommunity({
     //required Widget title,
@@ -197,6 +206,9 @@ class Snippet {
   }) {
     return Scaffold(
       key: communityScaffoldKey,
+      drawer: DrawerMain(
+        scaffoldKey: communityScaffoldKey, /*  key: DrawerMain.drawerMainKey */
+      ),
       // no appbar anymore
       // appBar: Snippet.CretaAppBarOfCommunity(
       //   context: context,
@@ -208,7 +220,6 @@ class Snippet {
       // ),
       //appBar: Snippet.CretaAppBarOfMyPage(context, Text('title')),
       //drawer: drawer(context, communityScaffoldKey),
-      drawer: DrawerMain(scaffoldKey: communityScaffoldKey),
       floatingActionButton:
           CretaVars.instance.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
       body:
@@ -219,21 +230,24 @@ class Snippet {
           //     LastClicked.clickedOutSide(details.globalPosition);
           //   }),
           //   child:
-          Stack(
-        children: [
+          //Stack(
+          //children: [
           Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              VerticalAppBar(
-                  key: GlobalObjectKey('VerticalAppBar'), onFoldButtonPressed: onFoldButtonPressed),
-              Container(
-                child: child,
-              ),
-            ],
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          DrawerHandle(
+            scaffoldKey: communityScaffoldKey, /*  key: DrawerMain.drawerMainKey */
           ),
-          DrawerHandle(scaffoldKey: communityScaffoldKey),
+          // VerticalAppBar(
+          //     key: GlobalObjectKey('VerticalAppBar'), onFoldButtonPressed: onFoldButtonPressed),
+          Container(
+            child: child,
+          ),
         ],
       ),
+      //DrawerHandle(scaffoldKey: communityScaffoldKey),
+      //],
+      //),
       //),
     );
   }
@@ -345,6 +359,23 @@ class Snippet {
     );
   }
 
+  static Widget notiBellSmall({
+    required BuildContext context,
+  }) {
+    return Center(
+      child: SizedBox(
+        height: 36,
+        child: BTN.fill_i_s(
+          //tooltip: CretaStudioLang['tooltipNoti']!,
+          icon: Icons.notifications_outlined,
+          // buttonColor: CretaButtonColor.white,
+          // iconColor: CretaColor.text[700],
+          onPressed: () {},
+        ),
+      ),
+    );
+  }
+
   static Widget userInfo({
     required BuildContext context,
   }) {
@@ -427,18 +458,28 @@ class Snippet {
     required Widget child,
   }) {
     return Scaffold(
+        key: mypageScaffoldKey,
+        drawer: DrawerMain(
+          scaffoldKey: mypageScaffoldKey, /*  key: DrawerMain.drawerMainKey */
+        ),
         //appBar: Snippet.CretaAppBarOfMyPage(context, title),
         //appBar: Snippet.CretaAppBarOfMyPage(context, title),
         floatingActionButton:
             CretaVars.instance.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
-        body: Row(
+        body: Stack(
           children: [
-            VerticalAppBar(
-                key: GlobalObjectKey('VerticalAppBar'), onFoldButtonPressed: onFoldButtonPressed),
-            Container(
-              color: Colors.white,
-              child: child,
+            Row(
+              children: [
+                VerticalAppBar(
+                    key: GlobalObjectKey('VerticalAppBar'),
+                    onFoldButtonPressed: onFoldButtonPressed),
+                Container(
+                  color: Colors.white,
+                  child: child,
+                ),
+              ],
             ),
+            DrawerHandle(scaffoldKey: mypageScaffoldKey),
           ],
         ));
   }
@@ -1335,7 +1376,7 @@ class Snippet {
     );
   }
 
-  static Widget serviceTypeLogo() {
+  static Widget serviceTypeLogo(bool isExpanded) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -1344,10 +1385,11 @@ class Snippet {
           //width: 120,
           height: 20,
         ),
-        outlineText(
-          CretaVars.instance.serviceTypeString(),
-          style: CretaFont.logoStyle.copyWith(color: Colors.white),
-        ),
+        if (isExpanded)
+          outlineText(
+            CretaVars.instance.serviceTypeString(),
+            style: CretaFont.logoStyle.copyWith(color: Colors.white),
+          ),
       ],
     );
   }
