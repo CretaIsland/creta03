@@ -203,6 +203,8 @@ class Snippet {
     // Function(String)? onErrorReport,
     required Function getBuildContext,
     required Function onFoldButtonPressed,
+    bool showVerticalAppBar = true,
+    bool showDrawer = true,
   }) {
     return Scaffold(
       key: communityScaffoldKey,
