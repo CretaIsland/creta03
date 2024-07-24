@@ -46,8 +46,8 @@ class DrawerMainState extends State<DrawerMain> with DrawerMixin {
 
   @override
   Widget build(BuildContext context) {
-    print(
-        '--------------------------${CretaAccountManager.getEnterprise!.imageUrl}-----------------------');
+    // print(
+    //     '--------------------------${CretaAccountManager.getEnterprise!.imageUrl}-----------------------');
     return Drawer(
       //backgroundColor: CretaColor.primary,
       elevation: 5,
@@ -88,7 +88,7 @@ class DrawerMainState extends State<DrawerMain> with DrawerMixin {
             ),
             ...List.generate(topMenuItems.length, (index) {
               var topItem = topMenuItems[index];
-              print('DrawerExpansionTile$index${_expandedMenuItemIndex ?? ""}');
+              //print('DrawerExpansionTile$index${_expandedMenuItemIndex ?? ""}');
               return ExpansionTile(
                 key: GlobalObjectKey('DrawerExpansionTile$index${_expandedMenuItemIndex ?? ""}'),
                 initiallyExpanded: _expandedMenuItemIndex == index, // 초기 확장 상태 설정

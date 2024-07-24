@@ -62,14 +62,18 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
         return;
       }
       // secretKey is match ==> change 'verified' to 'true'
-      CretaAccountManager.userPropertyManagerHolder.addWhereClause('parentMid', QueryValue(value: widget.userId));
-      CretaAccountManager.userPropertyManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-      CretaAccountManager.userPropertyManagerHolder.queryByAddedContitions().catchError((error, stackTrace) {
+      CretaAccountManager.userPropertyManagerHolder
+          .addWhereClause('parentMid', QueryValue(value: widget.userId));
+      CretaAccountManager.userPropertyManagerHolder
+          .addWhereClause('isRemoved', QueryValue(value: false));
+      CretaAccountManager.userPropertyManagerHolder
+          .queryByAddedContitions()
+          .catchError((error, stackTrace) {
         setState(() {
           _isJobProcessing = false;
           _error = true;
         });
-        //throw HycopUtils.getHycopException(defaultMessage: 'verify email error !!!');
+        throw HycopUtils.getHycopException(defaultMessage: 'verify email error !!!');
       }).then((modelList) {
         if (modelList.isEmpty) {
           setState(() {
@@ -79,7 +83,9 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
         } else {
           UserPropertyModel model = modelList[0] as UserPropertyModel;
           model.verified = true;
-          CretaAccountManager.userPropertyManagerHolder.setToDB(model).catchError((error, stackTrace) {
+          CretaAccountManager.userPropertyManagerHolder
+              .setToDB(model)
+              .catchError((error, stackTrace) {
             setState(() {
               _isJobProcessing = false;
               _error = true;

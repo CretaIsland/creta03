@@ -148,7 +148,7 @@ class _EnterpriseDetailPageState extends State<EnterpriseDetailPage> {
                                     .uploadFile(fileName, mimeType!, fileBytes!);
                                 if (value != null) {
                                   widget.enterpriseModel.imageUrl = value.url;
-                                  print('upload complete !!!  ${widget.enterpriseModel.imageUrl}');
+                                  //print('upload complete !!!  ${widget.enterpriseModel.imageUrl}');
                                 }
                                 setState(() {});
                               }

@@ -526,7 +526,7 @@ class _EnterpriseListWidgetState extends State<EnterpriseListWidget> with MyData
                     if (CretaAccountManager.getEnterprise != null &&
                         CretaAccountManager.getEnterprise!.mid == newOne.mid) {
                       CretaAccountManager.setEnterprise = newOne;
-                      print('loginEnterprise updated !!!');
+                      //print('loginEnterprise updated !!!');
                     }
                   }
                   // ignore: use_build_context_synchronously

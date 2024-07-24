@@ -189,7 +189,7 @@ class Snippet {
                   StudioVariables.isHandToolMode == false ? handToolMode : child,
                 ],
               ),
-        DrawerHandle(scaffoldKey: scaffoldKey),
+        //DrawerHandle(scaffoldKey: scaffoldKey),
       ]),
     );
   }
@@ -237,11 +237,11 @@ class Snippet {
           Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          DrawerHandle(
-            scaffoldKey: communityScaffoldKey, /*  key: DrawerMain.drawerMainKey */
-          ),
-          // VerticalAppBar(
-          //     key: GlobalObjectKey('VerticalAppBar'), onFoldButtonPressed: onFoldButtonPressed),
+          // DrawerHandle(
+          //   scaffoldKey: communityScaffoldKey, /*  key: DrawerMain.drawerMainKey */
+          // ),
+          VerticalAppBar(
+              key: GlobalObjectKey('VerticalAppBar'), onFoldButtonPressed: onFoldButtonPressed),
           Container(
             child: child,
           ),
@@ -481,7 +481,7 @@ class Snippet {
                 ),
               ],
             ),
-            DrawerHandle(scaffoldKey: mypageScaffoldKey),
+            //DrawerHandle(scaffoldKey: mypageScaffoldKey),
           ],
         ));
   }

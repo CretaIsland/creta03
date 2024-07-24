@@ -32,8 +32,8 @@ class DrawerHandleState extends State<DrawerHandle> with DrawerMixin {
 
   @override
   Widget build(BuildContext context) {
-    print(
-        '--------------------------${CretaAccountManager.getEnterprise!.imageUrl}-----------------------');
+    // print(
+    //     '--------------------------${CretaAccountManager.getEnterprise!.imageUrl}-----------------------');
     return Drawer(
       //backgroundColor: CretaColor.primary,
       elevation: 5,
