@@ -194,6 +194,8 @@ class Snippet {
     // Function(String)? onErrorReport,
     required Function getBuildContext,
     required Function onFoldButtonPressed,
+    bool showVerticalAppBar = true,
+    bool showDrawer = true,
   }) {
     return Scaffold(
       key: communityScaffoldKey,
@@ -208,7 +210,7 @@ class Snippet {
       // ),
       //appBar: Snippet.CretaAppBarOfMyPage(context, Text('title')),
       //drawer: drawer(context, communityScaffoldKey),
-      drawer: DrawerMain(scaffoldKey: communityScaffoldKey),
+      drawer: showDrawer ? DrawerMain(scaffoldKey: communityScaffoldKey) : null,
       floatingActionButton:
           CretaVars.instance.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
       body:
@@ -224,8 +226,11 @@ class Snippet {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              VerticalAppBar(
-                  key: GlobalObjectKey('VerticalAppBar'), onFoldButtonPressed: onFoldButtonPressed),
+              if (showVerticalAppBar)
+                VerticalAppBar(
+                  key: GlobalObjectKey('VerticalAppBar'),
+                  onFoldButtonPressed: onFoldButtonPressed,
+                ),
               Container(
                 child: child,
               ),

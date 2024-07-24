@@ -159,6 +159,7 @@ class _ResetPasswordConfirmPageState extends State<ResetPasswordConfirmPage> {
       // ),
       context: context,
       getBuildContext: getBuildContext,
+      showVerticalAppBar: false,
       child: Center(
         child: FittedBox(
           fit: BoxFit.fitWidth,

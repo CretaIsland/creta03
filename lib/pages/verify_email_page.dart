@@ -46,42 +46,53 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
       _isJobProcessing = true;
     });
 
-    CretaAccountManager.userPropertyManagerHolder
-        .addWhereClause('parentMid', QueryValue(value: widget.userId));
-    CretaAccountManager.userPropertyManagerHolder
-        .addWhereClause('isRemoved', QueryValue(value: false));
-    CretaAccountManager.userPropertyManagerHolder
-        .queryByAddedContitions()
-        .catchError((error, stackTrace) {
+    Map<String, dynamic> userData = {};
+    HycopFactory.account!.getAccountInfo(widget.userId, userData).catchError((error) {
       setState(() {
         _isJobProcessing = false;
         _error = true;
       });
-      throw HycopUtils.getHycopException(defaultMessage: 'verify email error !!!');
-    }).then((modelList) {
-      if (modelList.isEmpty) {
+    }).then((value) {
+      String secretKey = userData['secret'] ?? '';
+      if (secretKey != widget.secretKey) {
         setState(() {
           _isJobProcessing = false;
           _error = true;
         });
-      } else {
-        UserPropertyModel model = modelList[0] as UserPropertyModel;
-        model.verified = true;
-        CretaAccountManager.userPropertyManagerHolder
-            .setToDB(model)
-            .catchError((error, stackTrace) {
+        return;
+      }
+      // secretKey is match ==> change 'verified' to 'true'
+      CretaAccountManager.userPropertyManagerHolder.addWhereClause('parentMid', QueryValue(value: widget.userId));
+      CretaAccountManager.userPropertyManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
+      CretaAccountManager.userPropertyManagerHolder.queryByAddedContitions().catchError((error, stackTrace) {
+        setState(() {
+          _isJobProcessing = false;
+          _error = true;
+        });
+        //throw HycopUtils.getHycopException(defaultMessage: 'verify email error !!!');
+      }).then((modelList) {
+        if (modelList.isEmpty) {
           setState(() {
             _isJobProcessing = false;
             _error = true;
           });
-        }).then((value) {
-          setState(() {
-            _isJobProcessing = false;
-            _error = false;
-            _isVerified = true;
+        } else {
+          UserPropertyModel model = modelList[0] as UserPropertyModel;
+          model.verified = true;
+          CretaAccountManager.userPropertyManagerHolder.setToDB(model).catchError((error, stackTrace) {
+            setState(() {
+              _isJobProcessing = false;
+              _error = true;
+            });
+          }).then((value) {
+            setState(() {
+              _isJobProcessing = false;
+              _error = false;
+              _isVerified = true;
+            });
           });
-        });
-      }
+        }
+      });
     });
   }
 
@@ -147,6 +158,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
         height: 120,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               CretaCommuLang["completeAuthenticationByClickingButton"], //'아래 버튼을 눌러 인증을 완료하세요.'
@@ -206,6 +218,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
       // ),
       context: context,
       getBuildContext: getBuildContext,
+      showVerticalAppBar: false,
       child: _getBody(),
     );
   }
