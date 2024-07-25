@@ -267,6 +267,20 @@ class CretaAccountManager {
     }
   }
 
+  static String getUserColumnInfo() {
+    if (getUserProperty == null) {
+      return '';
+    }
+    return getUserProperty!.userColumnInfo;
+  }
+
+  static void setUserColumnInfo(String val) {
+    if (getUserProperty != null) {
+      getUserProperty!.userColumnInfo = val;
+      userPropertyManagerHolder.setToDB(getUserProperty!);
+    }
+  }
+
   static void setAutoPlay(bool val) {
     if (getUserProperty != null) {
       getUserProperty!.autoPlay = val;

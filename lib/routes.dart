@@ -188,11 +188,11 @@ final routesLoggedOut = RouteMap(
         child: DeviceMainPage(
             key: GlobalObjectKey('deviceSharedPage'), selectedPage: DeviceSelectedPage.sharedPage)),
     AppRoutes.adminMainPage: (_) =>
-        TransitionPage(child: AdminMainPage(selectedPage: AdminSelectedPage.enterprise)),
+        TransitionPage(child: AdminMainPage(key: GlobalObjectKey('AdminMainPage'), selectedPage: AdminSelectedPage.enterprise)),
     AppRoutes.adminTeamPage: (_) =>
-        TransitionPage(child: AdminMainPage(selectedPage: AdminSelectedPage.team)),
+        TransitionPage(child: AdminMainPage(key: GlobalObjectKey('AdminTeamPage'),selectedPage: AdminSelectedPage.team)),
     AppRoutes.adminUserPage: (_) =>
-        TransitionPage(child: AdminMainPage(selectedPage: AdminSelectedPage.user)),
+        TransitionPage(child: AdminMainPage(key: GlobalObjectKey('AdminUserPage'),selectedPage: AdminSelectedPage.user)),
 
     //AppRoutes.deviceDetailPage: (_) => TransitionPage(child: DeviceDetailPage()),
     AppRoutes.studioBookMainPage: (routeData) {

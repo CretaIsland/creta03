@@ -298,10 +298,10 @@ class _TeamListWidgetState extends State<TeamListWidget> with MyDataMixin {
             ),
             onDragComplete: () {
               setState(() {});
-              CretaAccountManager.setDeviceColumnInfo(columnInfoToJson());
+              //CretaAccountManager.setTeamColumnInfo(columnInfoToJson());
             },
             onPanEnd: () {
-              CretaAccountManager.setDeviceColumnInfo(columnInfoToJson());
+              //CretaAccountManager.setTeamColumnInfo(columnInfoToJson());
             },
             columnInfo: columnInfoList,
             horizontalMargin: 6,

@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 //import '../../common/window_resize_lisnter.dart';
 import 'package:hycop/common/util/logger.dart';
 
+import '../../common/creta_utils.dart';
 import '../../design_system/buttons/creta_button.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/component/creta_popup.dart';
@@ -49,12 +50,12 @@ class UserSelectNotifier extends ChangeNotifier {
 
   void selected(String mid, bool value) {
     _selectedItems[mid] = value;
-    notify(mid);
+    //notify(mid);
   }
 
   void toggleSelect(String mid) {
     _selectedItems[mid] = !(_selectedItems[mid] ?? true);
-    notify(mid);
+    //notify(mid);
   }
 
   bool isSelected(String mid) {
@@ -115,6 +116,8 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
   bool _isGridView = false;
   double _maxWidth = 200;
 
+  int _initialFirstRowIndex = 0;
+
   void _initData() {
     String enterprise = '';
     if (widget.enterprise != null) {
@@ -143,6 +146,7 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
   void initState() {
     logger.fine('initState start');
     super.initState();
+
     initMixin(columName: 'name', ascending: false);
 
     filterTexts = widget.filterTexts;
@@ -487,12 +491,14 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
         itemCount: 1,
         itemBuilder: (BuildContext context, int index) {
           return WebDataTable(
+            //showCheckboxColumn: false,
+            initialFirstRowIndex: _initialFirstRowIndex,
             onDragComplete: () {
               setState(() {});
-              CretaAccountManager.setDeviceColumnInfo(columnInfoToJson());
+              CretaAccountManager.setUserColumnInfo(columnInfoToJson());
             },
             onPanEnd: () {
-              CretaAccountManager.setDeviceColumnInfo(columnInfoToJson());
+              CretaAccountManager.setUserColumnInfo(columnInfoToJson());
             },
             columnInfo: columnInfoList,
             horizontalMargin: 6,
@@ -523,12 +529,14 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
               onTapRow: (rows, index) {
                 Map<String, dynamic> row = rows[index];
                 String mid = row['mid'] ?? '';
-                //print('model=$mid, selectNotifierHolder.length = ${selectNotifierHolder.length}');
+                // print(
+                //     'onTapRows ------model=$mid, selectNotifierHolder.length = ${selectNotifierHolder.length}');
                 selectNotifierHolder.toggleSelect(mid);
                 //print('onTapRows');
               },
               onSelectRows: (keys) {
-                //print('onSelectRows(): count = ${keys.length} keys = $keys}');
+                // print(
+                //     'onSelectRows(): count = ${keys.length} keys = $keys}-----------------------------');
 
                 for (var mid in keys) {
                   selectNotifierHolder.selected(mid, true);
@@ -552,6 +560,7 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
             ),
             onPageChanged: (offset) {
               //print('onPageChanged(): offset = $offset');
+              _initialFirstRowIndex = offset;
             },
             onSort: (columnName, ascending) {
               //print('onSort(): columnName = $columnName, ascending = $ascending');
@@ -801,9 +810,9 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
     model.isRemoved.set(true, save: false, noUndo: true);
     userManagerHolder?.remove(model);
     await userManagerHolder?.setToDB(model);
-    selectNotifierHolder.delete(model.mid);
+
     //if (_isGridView == false) {
-    setState(() {});
+    //setState(() {});
 
     return true;
     //}
@@ -899,17 +908,25 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
       yesIsDefault: true,
       onNo: () {},
       onYes: () async {
+        List<String> deletedMid = [];
         int count = 0;
         for (var key in selectNotifierHolder._selectedItems.keys) {
+          //print('user=$key');
           if (selectNotifierHolder.isSelected(key) == true) {
             UserPropertyModel? model = userManagerHolder!.getModel(key) as UserPropertyModel?;
             if (model != null) {
+              //print('user=${model.email}');
               if (await onYes(model)) {
                 count++;
+                deletedMid.add(model.mid);
               }
             }
           }
         }
+        for (var mid in deletedMid) {
+          selectNotifierHolder.delete(mid);
+        }
+        setState(() {});
         if (snackBarMessage != null) {
           showSnackBar(
             // ignore: use_build_context_synchronously
@@ -922,23 +939,18 @@ class _UserListWidgetState extends State<UserListWidget> with MyDataMixin {
     );
   }
 
-  String _dateToString(DateTime value) {
-    DateTime local = value.toLocal();
-    return "${local.year}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}:${local.second.toString().padLeft(2, '0')}";
-  }
-
   String _dynamicDateToString(dynamic value) {
     if (value is DateTime) {
-      return _dateToString(value);
+      return CretaUtils.dateToString(value);
     }
     return value.toString();
   }
 
   MyDataCell _dateToDataCell(dynamic value, String key) {
     if (value is DateTime) {
-      return MyDataCell(Text(_dateToString(value)));
+      return MyDataCell(Text(CretaUtils.dateToString(value)));
     }
     DateTime dateType = DateTime.parse(value.toString());
-    return MyDataCell(Text(_dateToString(dateType)));
+    return MyDataCell(Text(CretaUtils.dateToString(dateType)));
   }
 }

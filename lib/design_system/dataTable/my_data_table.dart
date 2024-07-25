@@ -922,16 +922,24 @@ class _MyDataTableState extends State<MyDataTable> {
             if (renderBox != null) {
               setState(() {
                 final localPosition = renderBox.globalToLocal(offset);
-                final int targetIndex = _getTargetIndex(localPosition.dx);
+                int targetIndex = _getTargetIndex(localPosition.dx);
+
+                if (targetIndex < index) {
+                  targetIndex++;
+                }
                 //print('onDraggableCanceled src index=$index, targetIndex=$targetIndex');
                 // widget.columnInfo[index] 와 widget.comlumnInfo[targetIndex] 위치를 서로 바꾼다.
-                final MyColumnInfo temp1 = widget.columnInfo[index];
-                widget.columnInfo[index] = widget.columnInfo[targetIndex];
-                widget.columnInfo[targetIndex] = temp1;
+                // final MyColumnInfo temp1 = widget.columnInfo[index];
+                // widget.columnInfo[index] = widget.columnInfo[targetIndex];
+                // widget.columnInfo[targetIndex] = temp1;
 
-                final MyDataColumn temp2 = widget.columns[index];
-                widget.columns[index] = widget.columns[targetIndex];
-                widget.columns[targetIndex] = temp2;
+                widget.columnInfo.insert(targetIndex, widget.columnInfo.removeAt(index));
+
+                // final MyDataColumn temp2 = widget.columns[index];
+                // widget.columns[index] = widget.columns[targetIndex];
+                // widget.columns[targetIndex] = temp2;
+
+                widget.columns.insert(targetIndex, widget.columns.removeAt(index));
               });
               widget.onDragComplete?.call();
             } else {

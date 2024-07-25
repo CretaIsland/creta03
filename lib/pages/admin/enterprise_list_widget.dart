@@ -303,10 +303,10 @@ class _EnterpriseListWidgetState extends State<EnterpriseListWidget> with MyData
             ),
             onDragComplete: () {
               setState(() {});
-              CretaAccountManager.setDeviceColumnInfo(columnInfoToJson());
+              //CretaAccountManager.setEnterpriseColumnInfo(columnInfoToJson());
             },
             onPanEnd: () {
-              CretaAccountManager.setDeviceColumnInfo(columnInfoToJson());
+              //CretaAccountManager.setEnterpriseColumnInfo(columnInfoToJson());
             },
             columnInfo: columnInfoList,
             horizontalMargin: 6,

@@ -114,7 +114,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         try {
           String url = await HycopFactory.storage!.getImageUrl(model.scrshotFile);
           //print('scrshot url: $url, ${model.scrshotTime}');
-          scrshotUrlHistory[model.scrshotTime.toIso8601String()] = (url);
+          scrshotUrlHistory[CretaUtils.dateToString(model.scrshotTime)] = (url);
         } catch (e) {
           logger.severe('Error in getting scrshot url: $e');
         }
