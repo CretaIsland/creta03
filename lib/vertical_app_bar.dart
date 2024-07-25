@@ -76,7 +76,7 @@ enum VerticalAppBarType { community, studio, device, mypage, admin }
 
 class VerticalAppBar extends StatefulWidget {
   static VerticalAppBarType appBarSelected = VerticalAppBarType.community;
-  static bool fold = false;
+  static bool fold = true;
 
   final Function onFoldButtonPressed;
 

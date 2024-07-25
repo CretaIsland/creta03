@@ -78,6 +78,8 @@ class HostModel extends CretaModel {
   DateTime requestedBook2Time = DateTime(1970, 1, 1); // read only
   String playingBook1 = ''; // read only
   String playingBook2 = ''; // read only
+  String playingBook1Id = ''; // read only
+  String playingBook2Id = ''; // read only
   DateTime playingBook1Time = DateTime(1970, 1, 1); // read only
   DateTime playingBook2Time = DateTime(1970, 1, 1); // read only
 
@@ -157,6 +159,8 @@ class HostModel extends CretaModel {
         requestedBook2Time,
         playingBook1,
         playingBook2,
+        playingBook1Id,
+        playingBook2Id,
         playingBook1Time,
         playingBook2Time,
         notice1,
@@ -228,6 +232,8 @@ class HostModel extends CretaModel {
     requestedBook2Time = srcHost.requestedBook2Time;
     playingBook1 = srcHost.playingBook1;
     playingBook2 = srcHost.playingBook2;
+    playingBook1Id = srcHost.playingBook1Id;
+    playingBook2Id = srcHost.playingBook2Id;
     playingBook1Time = srcHost.playingBook1Time;
     playingBook2Time = srcHost.playingBook2Time;
 
@@ -301,6 +307,8 @@ class HostModel extends CretaModel {
     requestedBook2Time = srcHost.requestedBook2Time;
     playingBook1 = srcHost.playingBook1;
     playingBook2 = srcHost.playingBook2;
+    playingBook1Id = srcHost.playingBook1Id;
+    playingBook2Id = srcHost.playingBook2Id;
     playingBook1Time = srcHost.playingBook1Time;
     playingBook2Time = srcHost.playingBook2Time;
 
@@ -444,6 +452,8 @@ class HostModel extends CretaModel {
 
     playingBook1 = map["playingBook1"] ?? '';
     playingBook2 = map["playingBook2"] ?? '';
+    playingBook1Id = map["playingBook1Id"] ?? '';
+    playingBook2Id = map["playingBook2Id"] ?? '';
     playingBook1Time = HycopUtils.dateTimeFromDB(map["playingBook1Time"] ?? '');
     playingBook2Time = HycopUtils.dateTimeFromDB(map["playingBook2Time"] ?? '');
 
@@ -516,6 +526,8 @@ class HostModel extends CretaModel {
         "requestedBook2Time": HycopUtils.dateTimeToDB(requestedBook2Time),
         "playingBook1": playingBook1,
         "playingBook2": playingBook2,
+        "playingBook1Id": playingBook1Id,
+        "playingBook2Id": playingBook2Id,
         "playingBook1Time": HycopUtils.dateTimeToDB(playingBook1Time),
         "playingBook2Time": HycopUtils.dateTimeToDB(playingBook2Time),
         "notice1": notice1,

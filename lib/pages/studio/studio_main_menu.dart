@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
-import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:routemaster/routemaster.dart';
 
 import 'package:creta_common/common/creta_vars.dart';
 import '../../data_io/book_manager.dart';
 import '../../design_system/component/creta_popup.dart';
+import '../../design_system/component/snippet.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 import 'package:creta_common/lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
@@ -18,7 +18,11 @@ import 'left_menu/left_menu_page.dart';
 import 'studio_variables.dart';
 
 class StudioMainMenu extends StatefulWidget {
-  const StudioMainMenu({super.key});
+  //final Function onPressed;
+
+  const StudioMainMenu({
+    super.key, //required this.onPressed,
+  });
 
   @override
   State<StudioMainMenu> createState() => _StudioMainMenuState();
@@ -47,6 +51,7 @@ class StudioMainMenu extends StatefulWidget {
 }
 
 class _StudioMainMenuState extends State<StudioMainMenu> {
+  // ignore: unused_field
   late List<CretaMenuItem> _popupMenuList;
   bool _isHover = false;
 
@@ -213,22 +218,29 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
         setState(() {});
       },
       child: IconButton(
-        icon: Icon(Icons.menu_outlined, size: _isHover ? 24 : 20),
+        icon: Icon(
+          Icons.menu_outlined,
+          //Icons.keyboard_double_arrow_right_outlined,
+          size: _isHover ? 24 : 20,
+        ),
         onPressed: () {
-          if (AccountManager.currentLoginUser.isLoginedUser == false) {
-            BookMainPage.warningNeedToLogin(context);
-            return;
-          }
+          //widget.onPressed();
+          Snippet.studioScaffoldKey.currentState?.openDrawer();
 
-          logger.finest('menu pressed');
-          CretaPopupMenu.showMenu(
-            width: 150,
-            position: const Offset(10, 100),
-            context: context,
-            popupMenu: _popupMenuList,
-            textAlign: Alignment.centerLeft,
-            initFunc: () {},
-          );
+          // if (AccountManager.currentLoginUser.isLoginedUser == false) {
+          //   BookMainPage.warningNeedToLogin(context);
+          //   return;
+          // }
+
+          // logger.finest('menu pressed');
+          // CretaPopupMenu.showMenu(
+          //   width: 150,
+          //   position: const Offset(10, 100),
+          //   context: context,
+          //   popupMenu: _popupMenuList,
+          //   textAlign: Alignment.centerLeft,
+          //   initFunc: () {},
+          // );
         },
       ),
     );

@@ -40,7 +40,6 @@ import '../../pages/studio/studio_variables.dart';
 import '../../routes.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_font.dart';
-import '../../vertical_app_bar.dart';
 import '../buttons/creta_button_wrapper.dart';
 import '../menu/creta_popup_menu.dart';
 import '../../pages/login/login_dialog.dart';
@@ -69,6 +68,7 @@ class Snippet {
 
   static final communityScaffoldKey = GlobalKey<ScaffoldState>();
   static final scaffoldKey = GlobalKey<ScaffoldState>();
+  static final studioScaffoldKey = GlobalKey<ScaffoldState>();
   static final mypageScaffoldKey = GlobalKey<ScaffoldState>();
 
   //static LanguageType oldLanguage = LanguageType.none;
@@ -113,6 +113,7 @@ class Snippet {
     void Function()? invalidate,
     required Function onFoldButtonPressed,
     bool noVerticalVar = false,
+    bool isStudioEditor = false,
   }) {
     double maxWidth = MediaQuery.of(context).size.width;
     //double maxHeight = MediaQuery.of(context).size.width;
@@ -163,10 +164,15 @@ class Snippet {
     );
 
     return Scaffold(
-      key: scaffoldKey,
-      drawer: DrawerMain(
-        scaffoldKey: scaffoldKey, /*  key: DrawerMain.drawerMainKey */
-      ),
+      key: isStudioEditor ? studioScaffoldKey : scaffoldKey,
+      drawer: isStudioEditor
+          ? DrawerHandle(
+              scaffoldKey: isStudioEditor ? studioScaffoldKey : scaffoldKey,
+              isStudioEditor: isStudioEditor,
+            )
+          : DrawerMain(
+              scaffoldKey: scaffoldKey, /*  key: DrawerMain.drawerMainKey */
+            ),
       // no appBar any more
       //appBar: Snippet.CretaAppBarOfStudio(context, title, additionals, invalidate: invalidate),
       //appBar: Snippet.CretaAppBarOfMyPage(context, Text('title')),
@@ -183,9 +189,13 @@ class Snippet {
                 : child
             : Row(
                 children: [
-                  VerticalAppBar(
-                      key: GlobalObjectKey('VerticalAppBar'),
-                      onFoldButtonPressed: onFoldButtonPressed),
+                  DrawerHandle(
+                    scaffoldKey: scaffoldKey, /*  key: DrawerMain.drawerMainKey */
+                  ),
+
+                  // VerticalAppBar(
+                  //     key: GlobalObjectKey('VerticalAppBar'),
+                  //     onFoldButtonPressed: onFoldButtonPressed),
                   StudioVariables.isHandToolMode == false ? handToolMode : child,
                 ],
               ),
@@ -237,11 +247,11 @@ class Snippet {
           Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // DrawerHandle(
-          //   scaffoldKey: communityScaffoldKey, /*  key: DrawerMain.drawerMainKey */
-          // ),
-          VerticalAppBar(
-              key: GlobalObjectKey('VerticalAppBar'), onFoldButtonPressed: onFoldButtonPressed),
+          DrawerHandle(
+            scaffoldKey: communityScaffoldKey, /*  key: DrawerMain.drawerMainKey */
+          ),
+          // VerticalAppBar(
+          //     key: GlobalObjectKey('VerticalAppBar'), onFoldButtonPressed: onFoldButtonPressed),
           Container(
             child: child,
           ),
@@ -460,30 +470,35 @@ class Snippet {
     required Widget child,
   }) {
     return Scaffold(
-        key: mypageScaffoldKey,
-        drawer: DrawerMain(
-          scaffoldKey: mypageScaffoldKey, /*  key: DrawerMain.drawerMainKey */
-        ),
-        //appBar: Snippet.CretaAppBarOfMyPage(context, title),
-        //appBar: Snippet.CretaAppBarOfMyPage(context, title),
-        floatingActionButton:
-            CretaVars.instance.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
-        body: Stack(
-          children: [
-            Row(
-              children: [
-                VerticalAppBar(
-                    key: GlobalObjectKey('VerticalAppBar'),
-                    onFoldButtonPressed: onFoldButtonPressed),
-                Container(
-                  color: Colors.white,
-                  child: child,
-                ),
-              ],
-            ),
-            //DrawerHandle(scaffoldKey: mypageScaffoldKey),
-          ],
-        ));
+      key: mypageScaffoldKey,
+      drawer: DrawerMain(
+        scaffoldKey: mypageScaffoldKey, /*  key: DrawerMain.drawerMainKey */
+      ),
+      //appBar: Snippet.CretaAppBarOfMyPage(context, title),
+      //appBar: Snippet.CretaAppBarOfMyPage(context, title),
+      floatingActionButton:
+          CretaVars.instance.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
+      body:
+          //Stack(
+          //children: [
+          Row(
+        children: [
+          DrawerHandle(
+            scaffoldKey: mypageScaffoldKey, /*  key: DrawerMain.drawerMainKey */
+          ),
+          // VerticalAppBar(
+          //     key: GlobalObjectKey('VerticalAppBar'),
+          //     onFoldButtonPressed: onFoldButtonPressed),
+          Container(
+            color: Colors.white,
+            child: child,
+          ),
+        ],
+      ),
+      //DrawerHandle(scaffoldKey: mypageScaffoldKey),
+      //],
+      //),
+    );
   }
 
   // Creta MyPage AppBar
@@ -1099,6 +1114,7 @@ class Snippet {
     required Color bgColor,
     required Widget child,
     void Function()? onShow,
+    AxisDirection preferredDirection = AxisDirection.down,
     //void Function()? onDismiss,
   }) {
     return JustTheTooltip(
@@ -1112,6 +1128,7 @@ class Snippet {
       tailLength: 8,
       //onDismiss: onDismiss,
       hoverShowDuration: Duration(seconds: 3),
+      preferredDirection: preferredDirection,
       //radius: Radius.circular(24),
       // preferBelow: false,
       // textStyle: CretaFont.bodyESmall.copyWith(color: fgColor),
@@ -1388,9 +1405,12 @@ class Snippet {
           height: 20,
         ),
         if (isExpanded)
-          outlineText(
-            CretaVars.instance.serviceTypeString(),
-            style: CretaFont.logoStyle.copyWith(color: Colors.white),
+          Padding(
+            padding: const EdgeInsets.only(top: 2.0),
+            child: outlineText(
+              CretaVars.instance.serviceTypeString(),
+              style: CretaFont.logoStyle.copyWith(fontSize: 8, color: Colors.white),
+            ),
           ),
       ],
     );

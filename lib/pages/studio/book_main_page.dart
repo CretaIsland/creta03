@@ -245,6 +245,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
   Size? _previousSize; // 현재 사이즈 보관
 
+  bool isMenuOpen = false;
   //Timer? _connectedUserTimer;
 
   //OffsetEventController? _linkSendEvent;
@@ -774,6 +775,7 @@ class _BookMainPageState extends State<BookMainPage> {
             ),
           )
         : Snippet.CretaScaffold(
+            isStudioEditor: true,
             noVerticalVar: true,
             // title: Snippet.logo(CretaVars.instance.serviceTypeString(), route: () {
             //   Routemaster.of(context).push(AppRoutes.studioBookGridPage);
@@ -1542,7 +1544,46 @@ class _BookMainPageState extends State<BookMainPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          //VerticalDivider(),
+          BTN.floating_l(
+            icon: Icons.note_add_outlined,
+            onPressed: () async {
+              BookModel newBook = BookMainPage.bookManagerHolder!.createSample();
+              BookMainPage.bookManagerHolder!.saveSample(newBook).then((value) {
+                String url = '${AppRoutes.studioBookMainPage}?${newBook.mid}';
+                AppRoutes.launchTab(url);
+              });
+            },
+            hasShadow: false,
+            tooltip: CretaStudioLang['newBook'] ?? '새로운 북 만들기기',
+          ),
+          SizedBox(width: padding),
+          BTN.floating_l(
+            icon: Icons.copy_outlined,
+            onPressed: () async {
+              BookModel? model = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
+              if (model == null) {
+                return;
+              }
+              BookManager.newbBackgroundMusicFrame = '';
+              BookMainPage.bookManagerHolder!.makeCopy(model.mid, model, null).then((newOne) {
+                BookMainPage.pageManagerHolder!.copyBook(newOne.mid, newOne.mid).then((value) {
+                  String url = '${AppRoutes.studioBookMainPage}?${newOne.mid}';
+                  if (BookManager.newbBackgroundMusicFrame.isNotEmpty) {
+                    //  백그라운드 뮤직을 복사한다.
+                    (newOne as BookModel)
+                        .backgroundMusicFrame
+                        .set(BookManager.newbBackgroundMusicFrame, save: false);
+                    BookMainPage.bookManagerHolder!.setToDB(newOne);
+                  }
+                  AppRoutes.launchTab(url);
+                  return null;
+                });
+              });
+            },
+            hasShadow: false,
+            tooltip: CretaLang['makeCopy'] ?? '사본 만들기',
+          ),
+          SizedBox(width: padding),
           BTN.floating_l(
             icon: Icons.person_add_outlined,
             onPressed: () {
@@ -1672,7 +1713,34 @@ class _BookMainPageState extends State<BookMainPage> {
             hasShadow: false,
             tooltip: CretaStudioLang['tooltipPlay']!,
           ),
-          //SizedBox(width: padding),
+          SizedBox(width: padding),
+          BTN.floating_l(
+            icon: Icons.delete_outline,
+            onPressed: () async {
+              BookModel? thisOne = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
+              if (thisOne == null) return;
+              CretaPopup.yesNoDialog(
+                context: context,
+                title: CretaLang['deleteConfirmTitle']!,
+                icon: Icons.file_download_outlined,
+                question: CretaLang['deleteConfirm']!,
+                noBtText: CretaStudioLang['noBtDnText']!,
+                yesBtText: CretaStudioLang['yesBtDnText']!,
+                yesIsDefault: true,
+                onNo: () {},
+                onYes: () async {
+                  logger.fine('onPressedOK()');
+                  String name = thisOne.name.value;
+                  await BookMainPage.bookManagerHolder!
+                      .removeBook(thisOne, BookMainPage.pageManagerHolder!);
+                  showSnackBar(context, '$name${CretaLang['bookDeleted']!}');
+                  Routemaster.of(context).push(AppRoutes.studioBookGridPage);
+                },
+              );
+            },
+            hasShadow: false,
+            tooltip: CretaLang['delete'] ?? '휴지통으로 보내기',
+          ),
           Padding(
             padding: EdgeInsets.only(left: padding),
             child: BTN.line_blue_it_m_animation(

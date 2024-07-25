@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_font.dart';
 import 'package:creta_common/common/creta_snippet.dart';
+import 'package:creta_common/common/creta_vars.dart';
 import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_studio_model/model/book_model.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +64,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
 
   List<String> admins = [];
   Future<String>? scrshotUrl;
-  Future<List<String>>? scrshotHistory;
+  Future<Map<String, String>>? scrshotHistory;
 
   @override
   void dispose() {
@@ -99,13 +100,13 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     }
   }
 
-  Future<List<String>> _getScrshotHistory() async {
+  Future<Map<String, String>> _getScrshotHistory() async {
     ScrshotManager scrshotManager = ScrshotManager();
     List<AbsExModel> modelList =
         await scrshotManager.getScrshotHistory(widget.hostModel.hostId, limit: 30);
     //print('scrshot history: ${modelList.length}');
     // 여기서 URL 을 목록으로 가져오는 작업을 한다.
-    List<String> scrshotUrlHistory = [];
+    Map<String, String> scrshotUrlHistory = {};
 
     for (var ele in modelList) {
       ScrshotModel model = ele as ScrshotModel;
@@ -113,7 +114,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         try {
           String url = await HycopFactory.storage!.getImageUrl(model.scrshotFile);
           //print('scrshot url: $url, ${model.scrshotTime}');
-          scrshotUrlHistory.add(url);
+          scrshotUrlHistory[model.scrshotTime.toIso8601String()] = (url);
         } catch (e) {
           logger.severe('Error in getting scrshot url: $e');
         }
@@ -189,7 +190,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     );
 
     if (_isShowScreenShotHistory == true) {
-      return FutureBuilder<List<String>?>(
+      return FutureBuilder<Map<String, String>?>(
           future: scrshotHistory,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
@@ -231,11 +232,18 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                         )
                       ],
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16.0),
-                      child: Image.network(
-                        snapshot.data![index],
-                      ),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16.0),
+                            child: Image.network(
+                              snapshot.data!.values.toList()[index],
+                            ),
+                          ),
+                        ),
+                        Text(snapshot.data!.keys.toList()[index]),
+                      ],
                     ),
                   );
                 },
@@ -481,7 +489,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                     child: _boolRow(
                       CretaDeviceLang["mute"] ?? '뮤트',
                       widget.hostModel.mute,
-                      true,
+                      CretaVars.instance.serviceType != ServiceType.barricade,
                       onChanged: (bool value) {
                         setState(() {
                           widget.hostModel.mute = value;
@@ -494,7 +502,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                   child: _sliderRow(
                     CretaDeviceLang["soundVolume"] ?? '소리 음량',
                     widget.hostModel.soundVolume,
-                    true,
+                    CretaVars.instance.serviceType != ServiceType.barricade,
                     onChanged: (double value) {
                       setState(() {
                         widget.hostModel.soundVolume = value;
@@ -527,15 +535,15 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                                   },
                                 )
                               : _nvRow('Owner', widget.hostModel.creator),
-                          TextFormField(
-                            initialValue: widget.hostModel.hostName,
-                            decoration:
-                                InputDecoration(labelText: 'Host Name', labelStyle: titleStyle),
-                            onSaved: (value) {
-                              widget.hostModel.hostName = value ?? '';
-                              //print('Saved : ${widget.hostModel.hostName}');
-                            },
-                          ),
+                          if (widget.isMultiSelected == false)
+                            TextFormField(
+                              initialValue: widget.hostModel.hostName,
+                              decoration:
+                                  InputDecoration(labelText: 'Host Name', labelStyle: titleStyle),
+                              onSaved: (value) {
+                                widget.hostModel.hostName = value ?? '';
+                              },
+                            ),
                           TextFormField(
                             initialValue: widget.hostModel.resolution,
                             decoration:
@@ -543,7 +551,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                             onSaved: (value) {
                               widget.hostModel.resolution =
                                   value ?? ServiceType.defaultResolution();
-                              //print('Saved : ${widget.hostModel.hostName}');
                             },
                           ),
                           TextFormField(
@@ -564,7 +571,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                                 labelText: 'Collection Period', labelStyle: titleStyle),
                             onSaved: (value) {
                               widget.hostModel.managePeriod = int.parse(value ?? '0');
-                              //print('Saved : ${widget.hostModel.hostName}');
                             },
                           ),
                           TextFormField(
@@ -573,7 +579,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                                 labelText: 'ScreenShot Period', labelStyle: titleStyle),
                             onSaved: (value) {
                               widget.hostModel.scrshotPeriod = int.parse(value ?? '0');
-                              //print('Saved : ${widget.hostModel.hostName}');
                             },
                           ),
                         ],
@@ -766,7 +771,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                           },
                           onCanceled: () {
                             setState(() {
-                              widget.hostModel.requestedBook1 = '';
+                              widget.hostModel.requestedBook1 = 'EMPTY';
                               widget.hostModel.requestedBook1Id = '';
                               widget.hostModel.requestedBook1Time = DateTime.now();
                             });
@@ -788,7 +793,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                           },
                           onCanceled: () {
                             setState(() {
-                              widget.hostModel.requestedBook2 = '';
+                              widget.hostModel.requestedBook2 = 'EMPTY';
                               widget.hostModel.requestedBook2Id = '';
                               widget.hostModel.requestedBook2Time = DateTime.now();
                             });
@@ -1083,6 +1088,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         children: [
           Text(name, style: titleStyle),
           CretaExSlider(
+            isActive: isActive,
             valueType: SliderValueType.normal,
             value: value,
             min: 0,

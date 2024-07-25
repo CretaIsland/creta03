@@ -4,6 +4,7 @@ import 'package:creta03/pages/login/creta_account_manager.dart';
 import 'package:creta03/routes.dart';
 import 'package:creta_common/common/creta_color.dart';
 import 'package:creta_common/common/creta_font.dart';
+import 'package:creta_user_model/model/user_property_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:routemaster/routemaster.dart';
@@ -84,7 +85,21 @@ class DrawerMainState extends State<DrawerMain> with DrawerMixin {
                       )
                     : null,
               ),
-              child: Snippet.serviceTypeLogo(true),
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    child: Snippet.outlineText(
+                      CretaAccountManager.getEnterprise != null
+                          ? CretaAccountManager.getEnterprise!.name
+                          : UserPropertyModel.defaultEnterprise,
+                      style: CretaFont.logoStyle.copyWith(fontSize: 48, color: Colors.white),
+                    ),
+                  ),
+                  Positioned(right: 0, bottom: 0, child: Snippet.serviceTypeLogo(true)),
+                ],
+              ),
             ),
             ...List.generate(topMenuItems.length, (index) {
               var topItem = topMenuItems[index];

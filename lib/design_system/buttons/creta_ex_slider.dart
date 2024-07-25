@@ -23,6 +23,7 @@ class CretaExSlider extends StatefulWidget {
   final double textWidth;
   final int textlimit;
   final CretaTextFieldType textType;
+  final bool isActive;
 
   const CretaExSlider({
     super.key,
@@ -39,6 +40,7 @@ class CretaExSlider extends StatefulWidget {
     this.textWidth = 40,
     this.textlimit = 3,
     this.textType = CretaTextFieldType.number,
+    this.isActive = true,
   });
 
   @override
@@ -71,33 +73,50 @@ class _CretaExSliderState extends State<CretaExSlider> {
 
   @override
   Widget build(BuildContext context) {
+    Widget slider = ExpandableSlider.adaptive(
+      expandsOnLongPress: false,
+      expandsOnScale: false,
+      expandsOnDoubleTap: true,
+      value: _makeValue(_value, widget.valueType),
+      onChangeEnd: (val) {
+        // setState(() {
+        //   logger.finest('CretaSlider value=$val');
+        //   _value = _reverseValue(val, widget.valueType);
+        // });
+        widget.onChanngeComplete?.call(_value);
+      },
+      onChanged: (val) {
+        _value = _reverseValue(val, widget.valueType);
+        setState(() {});
+        widget.onChannged.call(_value);
+      },
+      min: widget.min,
+      max: widget.max,
+      estimatedValueStep: 1,
+    );
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         SizedBox(
           height: widget.height,
           width: widget.sliderWidth,
-          child: ExpandableSlider.adaptive(
-            expandsOnLongPress: false,
-            expandsOnScale: false,
-            expandsOnDoubleTap: true,
-            value: _makeValue(_value, widget.valueType),
-            onChangeEnd: (val) {
-              // setState(() {
-              //   logger.finest('CretaSlider value=$val');
-              //   _value = _reverseValue(val, widget.valueType);
-              // });
-              widget.onChanngeComplete?.call(_value);
-            },
-            onChanged: (val) {
-              _value = _reverseValue(val, widget.valueType);
-              setState(() {});
-              widget.onChannged.call(_value);
-            },
-            min: widget.min,
-            max: widget.max,
-            estimatedValueStep: 1,
-          ),
+          child: (widget.isActive == true)
+              ? slider
+              : Stack(
+                  children: [
+                    slider,
+                    Positioned(
+                      left: 0,
+                      top: 0,
+                      child: Container(
+                          height: widget.height,
+                          width: widget.sliderWidth,
+                          color: CretaColor.text[100]!.withOpacity(0.2)),
+                    ),
+                  ],
+                ),
+
           //  CretaCupertinoSlider(
           //   //CretaSlider(
           //   key: GlobalKey(),

@@ -16,6 +16,8 @@ class BookTopMenu extends StatefulWidget {
   final Function onRedo;
   final Function onFrameCreate;
   final Function onTextCreate;
+  //final Function onLinkCreate;
+  //final Function onMenu;
 
   const BookTopMenu({
     super.key,
@@ -26,6 +28,8 @@ class BookTopMenu extends StatefulWidget {
     required this.onRedo,
     required this.onFrameCreate,
     required this.onTextCreate,
+    //required this.onLinkCreate,
+    //required this.onMenu,
   });
 
   @override
@@ -51,7 +55,9 @@ class BookTopMenuState extends State<BookTopMenu> {
         SizedBox(
           width: widget.padding * 1.75,
         ),
-        const StudioMainMenu(),
+        const StudioMainMenu(
+            //onPressed: widget.onMenu,
+            ),
         SizedBox(width: widget.padding),
         Visibility(
           // Scale, Undo
