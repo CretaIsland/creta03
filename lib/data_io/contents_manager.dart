@@ -1276,19 +1276,28 @@ class ContentsManager extends BaseContentsManager {
 
   Future<void> copyContents(String frameMid, String bookMid, {bool samePage = true}) async {
     double order = 1;
+
+    Set<String> existingMids = {};
+
     for (var ele in modelList) {
       ContentsModel org = ele as ContentsModel;
       if (org.isRemoved.value == true) continue;
       ContentsModel newModel = ContentsModel('', bookMid);
+      if (existingMids.contains(org.mid)) {
+        logger.severe('${newModel.mid} already exists');
+        continue;
+      }
+
       newModel.copyFrom(org, newMid: newModel.mid, pMid: frameMid);
       newModel.order.set(order++, save: false, noUndo: true);
-      logger.fine('create new Contents ${newModel.name},${newModel.mid} ');
+      //print('create new Contents ${newModel.name},${newModel.mid} ${org.mid} ');
       if (samePage) {
         // 링크는 same page 에서만 copy 된다.
         LinkManager? linkManager = linkManagerMap[org.mid];
         await linkManager?.copyLinks(newModel.mid, bookMid);
       }
       await createToDB(newModel);
+      existingMids.add(org.mid);
     }
   }
 

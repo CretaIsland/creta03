@@ -25,6 +25,7 @@ class CretaDropDownButton extends StatefulWidget {
   final Color? allTextColor;
   final int maxVisibleRowCount;
   final IconData pulldownIcon;
+  final bool isActive;
 
   CretaDropDownButton({
     super.key,
@@ -43,6 +44,7 @@ class CretaDropDownButton extends StatefulWidget {
     this.allTextColor,
     this.maxVisibleRowCount = 8,
     this.pulldownIcon = Icons.keyboard_arrow_down,
+    this.isActive = true,
   });
 
   @override
@@ -75,25 +77,27 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
     return ElevatedButton(
       key: dropDownButtonKey,
       style: _buttonStyle(allText != displayString, false),
-      onPressed: () {
-        logger.finest('Main button pressed');
-        setState(() {
-          showMenu(
-              context: context,
-              globalKey: dropDownButtonKey,
-              popupMenu: widget.dropDownMenuItemList,
-              hintList: widget.hintList,
-              initFunc: () {
-                dropDownButtonOpened = true;
-              }).then((value) {
-            logger.finest('팝업메뉴 닫기');
-            setState(() {
-              dropDownButtonOpened = false;
-            });
-          });
-          dropDownButtonOpened = !dropDownButtonOpened;
-        });
-      },
+      onPressed: widget.isActive
+          ? () {
+              logger.finest('Main button pressed');
+              setState(() {
+                showMenu(
+                    context: context,
+                    globalKey: dropDownButtonKey,
+                    popupMenu: widget.dropDownMenuItemList,
+                    hintList: widget.hintList,
+                    initFunc: () {
+                      dropDownButtonOpened = true;
+                    }).then((value) {
+                  logger.finest('팝업메뉴 닫기');
+                  setState(() {
+                    dropDownButtonOpened = false;
+                  });
+                });
+                dropDownButtonOpened = !dropDownButtonOpened;
+              });
+            }
+          : null,
       child: SizedBox(
         //     width: widget.width,
         height: widget.height,

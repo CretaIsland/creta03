@@ -508,9 +508,12 @@ class CretaTextFieldState extends State<CretaTextField> {
   }
 
   void _listener() {
-    if (_focusNode!.hasFocus) {
-      _controller.selection = TextSelection(baseOffset: 0, extentOffset: _controller.text.length);
-    }
+    // if (_focusNode!.hasFocus) {
+    //   _controller.selection = TextSelection(baseOffset: 0, extentOffset: _controller.text.length);
+    // } else {
+    //   // 포커스가 없을 때 선택 해제
+    //   _controller.selection = TextSelection.collapsed(offset: -1);
+    // }
   }
 
   @override

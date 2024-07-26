@@ -566,19 +566,27 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                             onSaved: (value) => widget.hostModel.location = value ?? '',
                           ),
                           TextFormField(
-                            initialValue: widget.hostModel.managePeriod.toString(),
+                            initialValue: widget.isMultiSelected
+                                ? null
+                                : widget.hostModel.managePeriod.toString(),
                             decoration: InputDecoration(
                                 labelText: 'Collection Period', labelStyle: titleStyle),
                             onSaved: (value) {
-                              widget.hostModel.managePeriod = int.parse(value ?? '0');
+                              if (value != null && value.isNotEmpty) {
+                                widget.hostModel.managePeriod = int.parse(value);
+                              }
                             },
                           ),
                           TextFormField(
-                            initialValue: widget.hostModel.scrshotPeriod.toString(),
+                            initialValue: widget.isMultiSelected
+                                ? null
+                                : widget.hostModel.scrshotPeriod.toString(),
                             decoration: InputDecoration(
                                 labelText: 'ScreenShot Period', labelStyle: titleStyle),
                             onSaved: (value) {
-                              widget.hostModel.scrshotPeriod = int.parse(value ?? '0');
+                              if (value != null && value.isNotEmpty) {
+                                widget.hostModel.scrshotPeriod = int.parse(value);
+                              }
                             },
                           ),
                         ],

@@ -99,6 +99,16 @@ class DeviceHeaderInfo {
                   "width": 100
               },
               {
+                  "name": "shutdownTime",
+                  "label": "Auto Off Time",
+                  "width": 100
+              },
+              {
+                  "name": "bootTime",
+                  "label": "Auto On Time",
+                  "width": 100
+              },
+              {
                   "name": "requestedTime",
                   "label": "requestedTime",
                   "width": 200

@@ -306,6 +306,7 @@ class StudioConst {
   static const double bigNumber = 100000000;
 
   static Map<String, List<int>> fontWeightListMap = {
+    'NotoSans': [100, 200, 300, 400, 500, 600, 700, 800, 900],
     'Pretendard': [100, 200, 300, 400, 500, 600, 700, 800, 900],
     'NotoSerifJP': [200, 300, 400, 500, 600, 700, 900],
     'NanumMyeongjo': [400, 700, 800],

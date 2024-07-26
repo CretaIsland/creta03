@@ -212,9 +212,9 @@ class StudioSnippet {
       model.remoteUrl = fileModel.url;
       model.thumbnailUrl = fileModel.thumbnailUrl;
 
-      logger.severe('uploaded url = ${model.url}');
+      logger.info('uploaded url = ${model.url}');
       logger.info('uploaded fileName = ${model.name}');
-      logger.severe('uploaded remoteUrl = ${model.remoteUrl!}');
+      logger.info('uploaded remoteUrl = ${model.remoteUrl!}');
       logger.info('uploaded aspectRatio = ${model.aspectRatio.value}');
       //model.save(); //<-- save 는 지연되므로 setToDB 를 바로 호출하는 것이 바람직하다.
       await contentsManager.setToDB(model);
@@ -316,11 +316,13 @@ class StudioSnippet {
 
   static List<CretaMenuItem> getFontListItem(
       {required String defaultValue, required void Function(String) onChanged}) {
+    print('fontStringList=${CretaLang['fontStringList']!}');
     return [
       ...CretaLang['fontStringList']!.map(
         (fontStr) {
+          print('fontStr=$fontStr');
           String font = CretaCommonUtils.getFontFamily(fontStr);
-          logger.fine('font=$font');
+          print('font=$font');
           return CretaMenuItem(
               caption: fontStr,
               fontFamily: font,

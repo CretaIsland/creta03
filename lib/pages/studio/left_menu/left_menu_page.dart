@@ -835,6 +835,7 @@ class LeftMenuPageState extends State<LeftMenuPage> {
   }
 
   Future<void> _saveAsTemplate(PageModel pageModel) async {
+    bool isCancel = false;
     String? templateName = await showDialog<String>(
       context: context,
       builder: (BuildContext context) {
@@ -873,10 +874,17 @@ class LeftMenuPageState extends State<LeftMenuPage> {
           onPressedOK: () {
             Navigator.of(context).pop(templateNameController.text);
           },
+          onPressedCancel: () {
+            Navigator.of(context).pop(templateNameController.text);
+            isCancel = true;
+          },
         );
       },
     );
 
+    if (isCancel) {
+      return;
+    }
     showDialog(
       // ignore: use_build_context_synchronously
       context: context,
@@ -1157,18 +1165,22 @@ class LeftMenuPageState extends State<LeftMenuPage> {
   }
 
   void _startScreenshotTimer() {
-    _screenshotTimer ??= Timer.periodic(Duration(seconds: 60), (t) {
+    _screenshotTimer ??= Timer.periodic(Duration(seconds: 30), (t) {
       if (widget.isFolded) {
+        //print('widget is folded');
         return;
       }
-      if (saveManagerHolder!.isSomethingSaved() == false) {
-        return;
-      }
+      // if (saveManagerHolder!.isSomethingSaved() == false) {
+      //   print('isSomethingSaved is false');
+      //   return;
+      // }
       if (BookMainPage.thumbnailChanged == false) {
+        //print('thumbnailChanged is false');
         return;
       }
       Rect? pageViewArea = CretaCommonUtils.getArea(_pageViewKey);
       if (pageViewArea == null) {
+        //print('pageViewArea is null');
         return;
       }
 
@@ -1182,7 +1194,11 @@ class LeftMenuPageState extends State<LeftMenuPage> {
           _takeAScreenShot(_thumbArea!);
           //BookMainPage.bookManagerHolder!.notify();
           return;
+        } else {
+          //print('1. isRectContained is false ');
         }
+      } else {
+        //print('1._thumbArea is null');
       }
 
       // 이때는 selecte 된 Page thumbnail 을 찍는 다.
@@ -1195,7 +1211,11 @@ class LeftMenuPageState extends State<LeftMenuPage> {
           _takeAScreenShot(_thumbArea!);
           //BookMainPage.bookManagerHolder!.notify();
           return;
+        } else {
+          //print('2. isRectContained is false ');
         }
+      } else {
+        //print('2._thumbArea is null');
       }
     });
   }
@@ -1205,6 +1225,7 @@ class LeftMenuPageState extends State<LeftMenuPage> {
   }
 
   void _takeAScreenShot(Rect area) {
+    //print('_takeAScreenShot.......');
     BookMainPage.thumbnailChanged = false;
     BookModel? bookModel = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
     if (bookModel == null) {
@@ -1215,11 +1236,13 @@ class LeftMenuPageState extends State<LeftMenuPage> {
       return;
     }
 
+    //print('start uploadScreenshot.......');
     WindowScreenshot.uploadScreenshot(
       bookId: HycopUtils.midToKey(bookModel.mid),
       offset: area.topLeft,
       size: area.size,
     ).then((value) {
+      //print('end uploadScreenshot.......');
       BookModel? bookModel = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
       if (value.isNotEmpty && bookModel != null) {
         // 기존에 있던 썸네일 파일은 제거 (Hycop 0.4.25)
@@ -1229,6 +1252,7 @@ class LeftMenuPageState extends State<LeftMenuPage> {
           logger.info('book Thumbnail saved !!! ${bookModel.mid}, $value');
           // 재귀적으로 계속 변경이 일어난 것으로 보고 계속 호출되는 것을 막기 위해, DB 에 직접 쓴다.
           BookMainPage.bookManagerHolder?.setToDB(bookModel);
+          //print('save thumbnailUrl complete.......');
         });
       }
       return null;

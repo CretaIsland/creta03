@@ -924,8 +924,8 @@ class _MyDataTableState extends State<MyDataTable> {
                 final localPosition = renderBox.globalToLocal(offset);
                 int targetIndex = _getTargetIndex(localPosition.dx);
 
-                if (targetIndex < index) {
-                  targetIndex++;
+                if (targetIndex > index) {
+                  targetIndex--;
                 }
                 //print('onDraggableCanceled src index=$index, targetIndex=$targetIndex');
                 // widget.columnInfo[index] 와 widget.comlumnInfo[targetIndex] 위치를 서로 바꾼다.

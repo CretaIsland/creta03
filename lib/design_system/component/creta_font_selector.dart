@@ -12,6 +12,7 @@ class CretaFontSelector extends StatefulWidget {
   final void Function(int) onFontWeightChanged;
   final TextStyle textStyle;
   final double topPadding;
+  final bool isActive;
   const CretaFontSelector({
     super.key,
     this.title,
@@ -21,6 +22,7 @@ class CretaFontSelector extends StatefulWidget {
     required this.onFontWeightChanged,
     required this.textStyle,
     this.topPadding = 20.0,
+    this.isActive = true,
   });
 
   @override
@@ -41,6 +43,7 @@ class _CretaFontSelectorState extends State<CretaFontSelector> {
   @override
   Widget build(BuildContext context) {
     Widget font = CretaDropDownButton(
+      isActive: widget.isActive,
       borderRadius: 2,
       alwaysShowBorder: true,
       pulldownIcon: Icons.arrow_drop_down_outlined,
@@ -104,7 +107,11 @@ class _CretaFontSelectorState extends State<CretaFontSelector> {
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.start,
-                children: [font, const SizedBox(width: 19), fontWeight],
+                children: [
+                  font,
+                  const SizedBox(width: 19),
+                  fontWeight,
+                ],
               ));
   }
 }

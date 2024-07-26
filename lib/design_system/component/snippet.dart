@@ -1235,7 +1235,7 @@ class Snippet {
         CretaFont.resetFont(family: 'NotoSerifJP');
         break;
       default:
-        CretaFont.resetFont(family: 'Pretendard');
+        CretaFont.resetFont(family: 'NotoSans');
         break;
     }
     return;

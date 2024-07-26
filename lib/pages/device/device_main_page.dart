@@ -88,6 +88,10 @@ class DeviceSelectNotifier extends ChangeNotifier {
     //_selectedItems = List.generate(length, (index) => false);
   }
 
+  void clear() {
+    _selectedItems.clear();
+  }
+
   void add(String mid, bool value) {
     _selectedItems[mid] = value;
   }
@@ -703,6 +707,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
               onSelectRows: (keys) {
                 //print('onSelectRows(): count = ${keys.length} keys = $keys}');
 
+                selectNotifierHolder.clear();
                 for (var mid in keys) {
                   selectNotifierHolder.selected(mid, true);
                 }
@@ -1383,7 +1388,7 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
 
     //print('selectHost.mid=${selectedHost!.mid}');
     HostModel? oldOne;
-    HostModel newOne = selectedHost ?? HostModel.dummy();
+    HostModel newOne = selectedHost == null || isMultiSelected ? HostModel.dummy() : selectedHost!;
 
     if (isMultiSelected == false) {
       oldOne = HostModel(selectedHost!.mid);
@@ -1442,13 +1447,15 @@ class _DeviceMainPageState extends State<DeviceMainPage> with CretaBasicLayoutMi
             TextButton(
               child: Text('Cancel'),
               onPressed: () {
-                //setState(() {
-                //_openDetail = false;
-                if (isMultiSelected == false) {
-                  selectedHost?.copyFrom(oldOne!, newMid: newOne.mid);
-                  //print('selectHost.mid=${newOne.mid}');
-                }
-                //});
+                setState(() {
+                  //_openDetail = false;
+                  if (isMultiSelected == false) {
+                    selectedHost?.copyFrom(oldOne!, newMid: newOne.mid);
+                    //print('selectHost.mid=${newOne.mid}');
+                  } else {
+                    selectedHost = null;
+                  }
+                });
                 Navigator.of(context).pop();
               },
             ),

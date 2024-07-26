@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 import 'package:creta_common/common/creta_const.dart';
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
+import 'package:creta_common/common/creta_vars.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/hycop.dart';
@@ -825,6 +826,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         if (model.isText()) propertyDivider(height: 28),
         CretaFontSelector(
           // 폰트, 폰트 weight
+          isActive: CretaVars.instance.serviceType != ServiceType.barricade,
           topPadding: 10,
           title: Text(CretaStudioLang['fontName']!, style: titleStyle),
           defaultFont: model.font.value,

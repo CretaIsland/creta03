@@ -642,6 +642,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     return CustomImage(
         key: GlobalKey(),
         hasMouseOverEffect: false,
+        boxFit: BoxFit.cover,
         hasAni: false,
         width: width,
         height: height,

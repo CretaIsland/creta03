@@ -38,7 +38,7 @@ class CretaMenuItem {
     this.referencedAttr,
     this.isDescending,
     this.isIconText = false,
-    this.fontFamily = 'Pretendard',
+    this.fontFamily = 'NotoSans',
     this.fontWeight,
     this.disabled = false,
     this.subMenu,
