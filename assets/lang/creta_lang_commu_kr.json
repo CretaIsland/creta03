@@ -130,6 +130,7 @@
     "cantChangePassword" : "비밀번호를 변경할 수 없습니다.",
     "changePassword" : "비밀번호 변경",
     "confirmPasswordAgain" : "비밀번호를 다시 확인해주세요",
+    "invalidPasswordStrength" : "비밀번호는 6자~16자, 영문/숫자 필수입니다.",
 
     "subscriber": "구독자",
     "planInfo": "요금제 정보",

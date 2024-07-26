@@ -130,7 +130,8 @@
     "cantChangePassword": "Unable to change password.",
     "changePassword": "Change Password",
     "confirmPasswordAgain": "Please confirm your password again.",
-  
+    "invalidPasswordStrength" : "Password must be 6-16 characters, and include letters and numbers.",
+
     "subscriber": "Subscriber",
     "planInfo": "Plan Information",
     "modify": "Edit",

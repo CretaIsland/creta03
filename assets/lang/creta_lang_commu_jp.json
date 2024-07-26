@@ -130,6 +130,7 @@
     "cantChangePassword": "パスワードを変更できません。",
     "changePassword": "パスワード変更",
     "confirmPasswordAgain": "パスワードを再度確認してください。",
+    "invalidPasswordStrength" : "パスワードは6文字～16文字、英数字必須です。",
 
     "subscriber": "購読者",
     "planInfo": "料金プラン情報",

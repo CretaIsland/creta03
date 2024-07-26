@@ -1388,6 +1388,8 @@ class _LoginDialogState extends State<LoginDialog> {
                           _setErrorMessage(emailErrorMessage: CretaCommuLang["enterValidEmail"]!);
                         } else if (pwd.isEmpty || pwd != pwdConf) {
                           _setErrorMessage(passwordErrorMessage: CretaCommuLang["checkPassword"]!);
+                        } else if (!CretaCommonUtils.checkPasswordStrength(pwd)) {
+                          _setErrorMessage(passwordErrorMessage: CretaCommuLang["invalidPasswordStrength"]!);
                         } else if (agreeTerms == false) {
                           _setErrorMessage(
                               requirementsErrorMessage: CretaCommuLang["agreeToTerms"]!);
