@@ -2,6 +2,8 @@
 
 import 'package:text_to_speech/text_to_speech.dart';
 
+import '../../pages/studio/studio_variables.dart';
+
 //import '../../common/util/logger.dart';
 
 class MyTTS {
@@ -67,7 +69,7 @@ class MyTTS {
   //bool get supportResume => defaultTargetPlatform != TargetPlatform.android;
 
   void speak(String text) {
-    tts.setVolume(volume);
+    tts.setVolume(StudioVariables.isMute ? 0 : volume);
     tts.setRate(rate);
     //if (languageCode != null) {
     tts.setLanguage(languageCode);

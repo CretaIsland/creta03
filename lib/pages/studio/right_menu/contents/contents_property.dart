@@ -667,6 +667,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
               onValueChnaged: (duration) {
                 logger.fine('save : ${model.mid}');
                 model.playTime.set(duration.inSeconds * 1000.0);
+                _contentsManager?.notify();
               },
             ),
           Column(
@@ -682,12 +683,14 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                   onSelected: (value) {
                     setState(() {
                       if (value) {
-                        model.reservPlayTime();
+                        //model.reservPlayTime();
                         model.playTime.set(-1);
                       } else {
-                        model.resetPlayTime();
+                        model.playTime.set(3000);
+                        //model.resetPlayTime();
                       }
                     });
+                    _contentsManager?.notify();
                   },
                   defaultValue: model.playTime.value < 0),
             ],

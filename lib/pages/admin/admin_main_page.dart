@@ -357,7 +357,7 @@ class _AdminMainPageState extends State<AdminMainPage> with CretaBasicLayoutMixi
       case AdminSelectedPage.team:
         return CretaDeviceLang['teamManage'] ?? 'Team Management';
       default:
-        return CretaDeviceLang['license']!;
+        return CretaDeviceLang['userManage'] ?? 'User Management';
     }
   }
 

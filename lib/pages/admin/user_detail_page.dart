@@ -47,6 +47,8 @@ class _UserDetailPageState extends State<UserDetailPage> {
   TeamManager? teamManagerHolder;
   bool _onceDBGetComplete = false;
 
+  final double textWidth = 210;
+
   void _initData() {
     if (widget.userModel.enterprise.isNotEmpty) {
       teamManagerHolder!
@@ -271,6 +273,8 @@ class _UserDetailPageState extends State<UserDetailPage> {
                 TeamModel? teamModel = teamManagerHolder!.findTeamModelByName(value);
                 if (teamModel != null) {
                   widget.userModel.teams.add(teamModel.mid);
+                  teamModel.addMember(widget.userModel.email);
+                  teamManagerHolder!.setToDB(teamModel);
                 } else {
                   _message = CretaDeviceLang['noTeamExist'] ?? '존재하지 않는 팀 이름입니다.';
                 }
@@ -299,12 +303,23 @@ class _UserDetailPageState extends State<UserDetailPage> {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(teamModel.name),
+                  SizedBox(
+                    width: textWidth,
+                    child: Text(
+                      teamModel.name,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                   const SizedBox(width: 15),
                   BTN.fill_gray_100_i_s(
                     onPressed: () {
                       setState(() {
+                        TeamModel? teamModel =
+                            teamManagerHolder!.findTeamModelByMid(widget.userModel.teams[index]);
                         widget.userModel.teams.removeAt(index);
+                        if (teamModel != null) {
+                          teamModel.removeMember(widget.userModel.email);
+                        }
                       });
                     },
                     icon: Icons.close,

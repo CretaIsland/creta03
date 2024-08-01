@@ -705,7 +705,12 @@
         "needToWaitUplodingTitle" : "まだアップロード中です。",
         "needToWaitUploding" : "まだコンテンツのアップロードが完了していません。アップロードが完了した後に発行できます。しばらくしてからもう一度お試しください。",
     
-          
+        "AllSizeView" : "すべてのサイズを見る",
+        "applyTempateToNewPage" : "新しいページにテンプレートを適用",
+        "applyTempateToCurrentPage" : "現在のページにテンプレートを適用",
+        "modifyTemplate" : "テンプレートを修正",
+
+        
         "end" : "End"
         
     }

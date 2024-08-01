@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:creta03/data_io/frame_manager.dart';
 import 'package:creta_common/model/creta_model.dart';
 import 'package:creta_studio_model/model/book_model.dart';
@@ -29,12 +31,15 @@ class TemplateManager extends CretaManager {
   @override
   AbsExModel newModel(String mid) => TemplateModel(mid);
 
-  Future<List<TemplateModel>>? getTemplateList(String parentMid, {String? queryText}) async {
+  Future<List<TemplateModel>>? getTemplateList(String parentMid,
+      {String? queryText, Size? bookSize, bool showAll = false}) async {
     //print('getTemplateList =====================================');
     List<TemplateModel> retval = [];
 
     await _getTemplateList(
         queryText: queryText,
+        bookSize: bookSize,
+        showAll: showAll,
         isNew: true,
         parentMid: parentMid); // 나의 템플릿
 
@@ -54,10 +59,19 @@ class TemplateManager extends CretaManager {
   }
 
   Future<int> _getTemplateList(
-      {String? queryText, bool isNew = true, String parentMid = 'TEMPLATE'}) async {
+      {String? queryText,
+      Size? bookSize,
+      bool showAll = false,
+      bool isNew = true,
+      String parentMid = 'TEMPLATE'}) async {
     //PageManager pageManager = BookMainPage.pageManagerHolder!;  // Current Selected Page's manager
     try {
       Map<String, QueryValue> query = {};
+      if (showAll == false && bookSize != null) {
+        query['width'] = QueryValue(value: bookSize.width); // parentMid = userId
+        query['height'] = QueryValue(value: bookSize.height); // parentMid = userId
+      }
+
       query['parentMid'] = QueryValue(value: parentMid); // parentMid = userId
       if (queryText != null && queryText.isNotEmpty) {
         query['name'] = QueryValue(value: queryText);

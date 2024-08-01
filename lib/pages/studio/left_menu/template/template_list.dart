@@ -5,6 +5,7 @@ import 'package:creta_common/model/app_enums.dart';
 import 'package:creta_studio_model/model/book_model.dart';
 import 'package:creta_studio_model/model/page_model.dart';
 import 'package:flutter/material.dart';
+import 'package:hycop/hycop.dart';
 //import 'package:get/get.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/component/creta_right_mouse_menu.dart';
@@ -26,11 +27,16 @@ class TemplateList extends StatefulWidget {
   final String selectedTab;
   final bool refreshToggle;
   final double width;
+  final Size? bookSize;
+  final bool showAll;
+
   const TemplateList({
     this.queryText,
     required this.selectedTab,
     required this.width,
     required this.refreshToggle,
+    required this.bookSize,
+    required this.showAll,
     super.key,
   });
 
@@ -80,8 +86,8 @@ class _TemplateListClassState extends State<TemplateList> {
     //   },
     // );
 
-    _templateList = BookMainPage.templateManagerHolder!
-        .getTemplateList(widget.selectedTab, queryText: widget.queryText);
+    _templateList = BookMainPage.templateManagerHolder!.getTemplateList(widget.selectedTab,
+        queryText: widget.queryText, bookSize: widget.bookSize, showAll: widget.showAll);
   }
 
   // Future<List<TemplateModel>> _waitDbJobComplete() async {
@@ -117,18 +123,19 @@ class _TemplateListClassState extends State<TemplateList> {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 10),
               height: StudioVariables.workHeight - 210.0,
-              child: GridView.builder(
+              child: ListView.builder(
                 itemCount: snapshot.data!.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  mainAxisSpacing: spacing,
-                  crossAxisSpacing: CretaVars.instance.serviceType == ServiceType.barricade
-                      ? spacing * 2
-                      : spacing,
-                  crossAxisCount: itemCount,
-                  childAspectRatio: CretaVars.instance.serviceType == ServiceType.barricade
-                      ? (360 + borderWidth * 2) / (28 + 24 + borderWidth * 2 + 20)
-                      : 160 / (95 + 24),
-                ),
+                shrinkWrap: true,
+                // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                //   mainAxisSpacing: spacing,
+                //   crossAxisSpacing: CretaVars.instance.serviceType == ServiceType.barricade
+                //       ? spacing * 2
+                //       : spacing,
+                //   crossAxisCount: itemCount,
+                //   // childAspectRatio: CretaVars.instance.serviceType == ServiceType.barricade
+                //   //     ? (360 + borderWidth * 2) / (28 + 24 + borderWidth * 2 + 20)
+                //   //     : 160 / (95 + 24),
+                // ),
                 scrollDirection: Axis.vertical,
                 itemBuilder: (BuildContext context, int index) {
                   TemplateModel templateModel = snapshot.data![index];
@@ -150,55 +157,59 @@ class _TemplateListClassState extends State<TemplateList> {
                   // }
 
                   return InkWell(
-                    onTapDown: (detail) {
+                    onTapDown: (details) {
                       setState(() {
                         _selectedItemIndex = index;
                       });
+                      onRightMouseButton.call(details, templateModel, context);
                     },
                     onSecondaryTapDown: (details) {
                       if (_selectedItemIndex == index) {
                         onRightMouseButton.call(details, templateModel, context);
                       }
                     },
-                    child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      (thumbnailUrl.isEmpty)
-                          ? SizedBox(
-                              width: imageWidth,
-                              height: imageHeight + 6,
-                              child: Image.asset('assets/no_image.png'), // No Image
-                            )
-                          // ignore: avoid_unnecessary_containers
-                          : Container(
-                              decoration: _selectedItemIndex == index
-                                  ? BoxDecoration(
-                                      border: Border.all(
-                                        color: CretaColor.primary,
-                                        width: borderWidth,
-                                      ),
-                                    )
-                                  : null,
-                              child: CustomImage(
-                                key: GlobalObjectKey('CustomImage${templateModel.mid}$index'),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                        (thumbnailUrl.isEmpty)
+                            ? SizedBox(
                                 width: imageWidth,
-                                height: imageHeight,
-                                image: thumbnailUrl,
-                                hasAni: false,
+                                height: imageHeight + 6,
+                                child: Image.asset('assets/no_image.png'), // No Image
+                              )
+                            // ignore: avoid_unnecessary_containers
+                            : Container(
+                                decoration: _selectedItemIndex == index
+                                    ? BoxDecoration(
+                                        border: Border.all(
+                                          color: CretaColor.primary,
+                                          width: borderWidth,
+                                        ),
+                                      )
+                                    : null,
+                                child: CustomImage(
+                                  key: GlobalObjectKey('CustomImage${templateModel.mid}$index'),
+                                  width: imageWidth,
+                                  height: imageHeight,
+                                  image: thumbnailUrl,
+                                  hasAni: false,
+                                ),
                               ),
-                            ),
-                      Container(
-                        padding: const EdgeInsets.only(top: 4.0),
-                        alignment: Alignment.center,
-                        width: 180.0,
-                        height: 20.0,
-                        child: Text(
-                          templateModel.name.value,
-                          maxLines: 1,
-                          style: CretaFont.bodyESmall,
-                          textAlign: TextAlign.left,
-                          overflow: TextOverflow.ellipsis,
+                        Container(
+                          padding: const EdgeInsets.only(top: 4.0),
+                          alignment: Alignment.center,
+                          width: 180.0,
+                          height: 20.0,
+                          child: Text(
+                            templateModel.name.value,
+                            maxLines: 1,
+                            style: CretaFont.bodyESmall,
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                      ),
-                    ]),
+                      ]),
+                    ),
                   );
                 },
               ),
@@ -238,7 +249,7 @@ class _TemplateListClassState extends State<TemplateList> {
               BookMainPage.templateManagerHolder!.deleteModel(templateModel!);
             }),
         CretaMenuItem(
-            caption: CretaStudioLang['tooltipApply']!,
+            caption: CretaStudioLang['applyTempateToNewPage'] ?? "새로운 페이지에 템플릿 적용",
             onPressed: () async {
               int pageCount = BookMainPage.pageManagerHolder!.getAvailLength();
               BookModel? book = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
@@ -265,12 +276,36 @@ class _TemplateListClassState extends State<TemplateList> {
               BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
               LeftMenu.leftMenuPageKey.currentState?.resetPosition();
             }),
+        CretaMenuItem(
+            caption: CretaStudioLang['applyTempateToCurrentPage'] ?? "현재 페이지에 템플릿 적용",
+            onPressed: () async {
+              // 아직 구현 안했음.
+              showSnackBar(context, 'Not yet implemented');
+
+              // PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+              // if (pageModel != null) {
+              //   FrameManager? targetFrameManager =
+              //       BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+              //   FrameManager srcFrameManager =
+              //       FrameManager(pageModel: templateModel!, bookModel: pageModel.bookModel);
+              //   if (targetFrameManager != null) {
+              //     srcFrameManager.copyFrames(pageModel.mid, pageModel.bookModel.mid);
+              //   }
+              //   //pageModel.copyFrom(templateModel!, newMid: pageModel.mid);
+              // }
+            }),
+        CretaMenuItem(
+            caption: CretaStudioLang['modifyTemplate'] ?? "템플릿 편집",
+            onPressed: () async {
+              // 아직 구현 안했음.
+              showSnackBar(context, 'Not yet implemented');
+            }),
       ],
       itemHeight: 24,
       x: details.globalPosition.dx,
       y: details.globalPosition.dy,
-      width: 150,
-      height: 72,
+      width: 280,
+      height: 110,
       iconSize: 12,
       alwaysShowBorder: true,
       borderRadius: 8,

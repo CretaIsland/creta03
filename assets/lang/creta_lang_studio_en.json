@@ -707,6 +707,10 @@
     "needToWaitUplodingTitle" : "Still uploading.",
     "needToWaitUploding" : "The content has not been uploaded yet. You can publish it after the upload is finished. Please try again later.",
 
+    "AllSizeView" : "View all sizes",
+    "applyTempateToNewPage" : "Apply template to new page",
+    "applyTempateToCurrentPage" : "Apply template to current page",
+    "modifyTemplate" : "Modify template",
 
     "end" : "End"
     }

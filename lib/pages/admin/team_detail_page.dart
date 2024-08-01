@@ -48,6 +48,8 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
   XFile? _selectedBannerImg;
   Uint8List? _selectedBannerImgBytes;
 
+  final double textWidth = 210;
+
   @override
   void initState() {
     super.initState();
@@ -249,7 +251,9 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
             return Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(widget.teamModel.managers[index]),
+                SizedBox(
+                    width: textWidth,
+                    child: Text(widget.teamModel.managers[index], overflow: TextOverflow.ellipsis)),
                 const SizedBox(width: 15),
                 BTN.fill_gray_100_i_s(
                   onPressed: () async {
@@ -331,7 +335,13 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
             return Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(widget.teamModel.generalMembers[index]),
+                SizedBox(
+                  width: textWidth,
+                  child: Text(
+                    widget.teamModel.generalMembers[index],
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
                 const SizedBox(width: 15),
                 BTN.fill_gray_100_i_s(
                   onPressed: () async {
@@ -401,7 +411,7 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
 
     */
 
-    if (EnterpriseManager.isEnterpriseUser(enterprise : widget.teamModel.enterprise)) {
+    if (EnterpriseManager.isEnterpriseUser(enterprise: widget.teamModel.enterprise)) {
       // A.  Enterprise Case
 
       UserPropertyModel? user = await CretaAccountManager.getUserPropertyModel(email);
@@ -464,7 +474,7 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
     UserPropertyModel? user = await CretaAccountManager.getUserPropertyModel(email);
     if (user != null) {
       // case 1
-      if (EnterpriseManager.isEnterpriseUser(enterprise : user.enterprise)) {
+      if (EnterpriseManager.isEnterpriseUser(enterprise: user.enterprise)) {
         // case 1-1
         String msg = CretaDeviceLang["enterpriseCantbePrivateTeamMember"] ??
             '엔터프라이즈의 팀원입니다.  엔터프라이즈의 소속 회원은 개인회원의 팀에 소속될 수 없습니다. 이 사람의 다른 email 로 시도하십시오.';

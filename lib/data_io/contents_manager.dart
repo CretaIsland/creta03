@@ -655,29 +655,30 @@ class ContentsManager extends BaseContentsManager {
   Future<void> pause() async {
     String frameId = frameModel.mid;
     for (var player in _playerMap.values) {
-      if (player.model != null) {
-        if (player.model!.isVideo()) {
-          CretaVideoPlayer video = player as CretaVideoPlayer;
-          if (video.wcontroller != null &&
-              video.isInit() &&
-              playTimer != null &&
-              playTimer!.isCurrentModel(player.model!.mid)) {
-            await video.wcontroller!.pause();
-            logger.fine('contents.pause end');
-          }
+      if (player.model == null) {
+        continue;
+      }
+      if (player.model!.isVideo()) {
+        CretaVideoPlayer video = player as CretaVideoPlayer;
+        if (video.wcontroller != null &&
+            video.isInit() &&
+            playTimer != null &&
+            playTimer!.isCurrentModel(player.model!.mid)) {
+          await video.wcontroller!.pause();
+          logger.fine('contents.pause end');
         }
-        if (player.model!.isImage() || player.model!.aniType.value != TextAniType.none) {
-          //notify();  notify 는 전체에 이벤트가 가므로 지정된 놈만 이벤트가 가기 위해, invalidate 로 바꿈
-          invalidatePlayerWidget(player.model!);
-        }
-        if (player.model != null && player.model!.isMusic()) {
-          logger.info('--------------pauseMusic ${player.model!.name}');
-          GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[frameId];
-          if (musicKey != null) {
-            musicKey.currentState?.pausedMusic(player.model!);
-          } else {
-            logger.severe('musicKey is null');
-          }
+      }
+      if (player.model!.isImage() || player.model!.aniType.value != TextAniType.none) {
+        //notify();  notify 는 전체에 이벤트가 가므로 지정된 놈만 이벤트가 가기 위해, invalidate 로 바꿈
+        invalidatePlayerWidget(player.model!);
+      }
+      if (player.model!.isMusic()) {
+        logger.info('--------------pauseMusic ${player.model!.name}');
+        GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[frameId];
+        if (musicKey != null) {
+          musicKey.currentState?.pausedMusic(player.model!);
+        } else {
+          logger.severe('musicKey is null');
         }
       }
     }
@@ -686,28 +687,32 @@ class ContentsManager extends BaseContentsManager {
   Future<void> resume() async {
     String frameId = frameModel.mid;
     for (var player in _playerMap.values) {
-      if (player.model != null) {
-        if (player.model!.isVideo()) {
-          CretaVideoPlayer video = player as CretaVideoPlayer;
-          if (video.wcontroller != null &&
-              video.isInit() &&
-              playTimer != null &&
-              playTimer!.isCurrentModel(player.model!.mid)) {
-            logger.fine('contents.resume');
-            await video.wcontroller!.play();
-          }
+      if (player.model == null) {
+        continue;
+      }
+      if (player.model!.isVideo()) {
+        CretaVideoPlayer video = player as CretaVideoPlayer;
+        if (video.wcontroller != null &&
+            video.isInit() &&
+            playTimer != null &&
+            playTimer!.isCurrentModel(player.model!.mid)) {
+          logger.fine('contents.resume');
+          await video.wcontroller!.play();
         }
-        if (player.model!.isImage() || player.model!.aniType.value != TextAniType.none) {
-          notify();
+      }
+      if (player.model!.isImage() || player.model!.aniType.value != TextAniType.none) {
+        notify();
+      }
+      if (player.model!.isMusic()) {
+        GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[frameId];
+        if (musicKey != null) {
+          musicKey.currentState?.playedMusic(player.model!);
+        } else {
+          logger.severe('musicKey is null');
         }
-        if (player.model != null && player.model!.isMusic()) {
-          GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[frameId];
-          if (musicKey != null) {
-            musicKey.currentState?.playedMusic(player.model!);
-          } else {
-            logger.severe('musicKey is null');
-          }
-        }
+      }
+      if (player.model!.isText()) {
+        invalidatePlayerWidget(player.model!);
       }
     }
   }

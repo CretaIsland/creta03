@@ -699,6 +699,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                         model.resetPlayTime();
                       }
                     });
+                    //widget.contentsManager.notify();
                   },
                   defaultValue: model.playTime.value < 0),
             ],

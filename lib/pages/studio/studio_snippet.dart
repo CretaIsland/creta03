@@ -316,13 +316,13 @@ class StudioSnippet {
 
   static List<CretaMenuItem> getFontListItem(
       {required String defaultValue, required void Function(String) onChanged}) {
-    print('fontStringList=${CretaLang['fontStringList']!}');
+    //print('fontStringList=${CretaLang['fontStringList']!}');
     return [
       ...CretaLang['fontStringList']!.map(
         (fontStr) {
-          print('fontStr=$fontStr');
+          //print('fontStr=$fontStr');
           String font = CretaCommonUtils.getFontFamily(fontStr);
-          print('font=$font');
+          //print('font=$font');
           return CretaMenuItem(
               caption: fontStr,
               fontFamily: font,

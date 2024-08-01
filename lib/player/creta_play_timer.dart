@@ -111,14 +111,12 @@ class CretaPlayTimer extends ChangeNotifier {
 
   void start() {
     if (_timer == null) {
-      //print("==========================timer start================");
       _timer = Timer.periodic(Duration(milliseconds: _timeGap), _timerExpired);
       _initComplete = true;
     }
   }
 
   void stop() {
-    //logger.fine("==========================timer stop================");
     _timer?.cancel();
     _initComplete = false;
     _timer = null;
@@ -340,12 +338,10 @@ class CretaPlayTimer extends ChangeNotifier {
     final String key = contentsManager.keyMangler(model);
     CretaAbsPlayer? player = contentsManager.getPlayer(key);
     if (player != null) {
-      //print('player already exist ${model.autoSizeType.value}');
       player.model!.updateFrom(model); // 모델이 달라졌을수 있다.
       _currentPlayer = player;
       return player;
     }
-    logger.fine('***************************player newly created ***********');
     player = _createPlayer(key, model);
     _currentPlayer = player;
     contentsManager.setPlayer(key, player);
@@ -523,34 +519,26 @@ class CretaPlayTimer extends ChangeNotifier {
         //BookMainPage.pageManagerHolder!.printSelectedMid(3);
 
         // Studio 에서 선택된 프레임의 경우, 플레이가 정지한다.
-
-        if (StudioVariables.isPreview == false) {
-          if (CretaManager.frameSelectNotifier != null && _currentModel != null) {
-            if (CretaManager.frameSelectNotifier!.selectedAssetId ==
-                    _currentModel!.parentMid.value &&
-                _currentModel!.isRemoved.value == false) {
-              if (_currentModel!.isVideo() || _isPauseTimer == false) {}
-              // _isPausedBySelection = true;
-              // togglePause();
-              return;
-            }
-            // if (_isPauseTimer == true && _isPausedBySelection == true) {
-            //   _isPausedBySelection = false;
-            //   togglePause();
-            //   return;
-            // }
-          }
-        }
+        // skpark 2024.08.01  이 기능을 일단 사용하지 않는다.  헷갈리기 때문이다.
+        // if (StudioVariables.isPreview == false) {
+        //   if (CretaManager.frameSelectNotifier != null && _currentModel != null) {
+        //     if (CretaManager.frameSelectNotifier!.selectedAssetId ==
+        //             _currentModel!.parentMid.value &&
+        //         _currentModel!.isRemoved.value == false) {
+        //       if (_currentModel!.isVideo() || _isPauseTimer == false) {}
+        //       return;
+        //     }
+        //   }
+        // }
 
         if (StudioVariables.isPreview && StudioVariables.stopNextContents) {
           // 사용자가 멈춤 버튼을 눌렀다.
           return;
         }
-
         if (_currentModel != null && _currentModel!.isImage() || _currentModel!.isText()) {
           double playTime = _currentModel!.playTime.value;
           if (0 > playTime) {
-            // playTime 이 영구히로 잡혀있다.
+            // 영구히 케이스
             return;
           }
 
@@ -566,7 +554,7 @@ class CretaPlayTimer extends ChangeNotifier {
             return;
           }
 
-          // 교체시간이 되었다.
+          //print('교체시간이 되었다.');
           _next();
           // await playHandler.setProgressBar(
           //   playTime <= 0 ? 0 : _currentPlaySec / playTime,

@@ -706,5 +706,11 @@
     "needToWaitUplodingTitle" : "아직 업로드 중입니다.",
     "needToWaitUploding" : "아직 콘텐츠의 업로드가 끝나지 않았습니다.  업로드가 끝난 후에 발행할 수 있습니다. 잠시 후 다시 시도 하십시오.",
     
+    "AllSizeView" : "모든 사이즈 보기",
+    "applyTempateToNewPage" : "새로운 페이지에 템플릿 적용",
+    "applyTempateToCurrentPage" : "현재 페이지에 템플릿 적용",
+    "modifyTemplate" : "템플릿 편집",
+
+
     "end" : "End"
 }
