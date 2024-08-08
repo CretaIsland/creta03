@@ -509,8 +509,7 @@ class CretaUtils {
   }
 
   static Future<void> getLineFriendsIds() async {
-    const String channelAccessToken =
-        'yxfuuqFnyyv25YlnBTtMcoOUZ7Xew6aaAVdkgRv09NHiL6amS2SDhcW1wBsO/x9Taff+EUkYFeQHlWnTg6RAymdNeSLvbyJS1gXuCf7WnUWAH07WrrZ/VXNSocH9pEDIFEhzf1VZZDkPRqj/yOAhzgdB04t89/1O/w1cDnyilFU=';
+    const String channelAccessToken = '';
     final Uri url = Uri.parse('https://api.line.me/v2/bot/followers/ids?limit=1000');
 
     //print('getLineFriendsIds----');
@@ -534,45 +533,7 @@ class CretaUtils {
     }
   }
 
-  static Future<bool> sendNaverSMS(
-    String title,
-    String content,
-    String phoneNo, {
-    String serviceUrl = "http://qrcode-dev.ap-northeast-2.elasticbeanstalk.com/smssend",
-    String? imgUrl,
-  }) async {
-    final Map<String, dynamic> dataJson = {
-      'title': title,
-      'content': content,
-      'phone': phoneNo,
-    };
-
-    try {
-      final response = await http.post(
-        Uri.parse(serviceUrl),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(dataJson),
-      );
-
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        if (responseData['success'] == true) {
-          return true;
-        } else {
-          //print('Failed to send SMS: ${responseData['message']}');
-          return false;
-        }
-      } else {
-        //print('Failed to send SMS: ${response.body}');
-        return false;
-      }
-    } catch (e) {
-      //print('Failed to send SMS: $e');
-      return false;
-    }
-  }
+ 
 
   // static Future<void> sendSms(String recipient, String message) async {
   //   const String smsApi =
