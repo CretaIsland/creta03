@@ -710,7 +710,8 @@
         "applyTempateToCurrentPage" : "現在のページにテンプレートを適用",
         "modifyTemplate" : "テンプレートを修正",
 
-        
+        "infoUrl" :  "接続Webアドレス",
+
         "end" : "End"
         
     }

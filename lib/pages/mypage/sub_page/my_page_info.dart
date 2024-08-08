@@ -36,13 +36,21 @@ class _MyPageInfoState extends State<MyPageInfo> {
   Uint8List? _selectedImgBytes;
   // 닉네임 변경
   final TextEditingController _nicknameController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
   // 국가, 언어, 직업 드롭 다운 메뉴
   List<Text> countryItemList = [];
   List<Text> languageItemList = [];
   List<Text> jobItemList = [];
 
   @override
-  initState() {
+  void dispose() {
+    _nicknameController.dispose();
+    _phoneNumberController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
     super.initState();
     // set country dropdown menu item
     _initMenu();
@@ -70,6 +78,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
     return Consumer<UserPropertyManager>(
       builder: (context, userPropertyManager, child) {
         _nicknameController.text = userPropertyManager.userPropertyModel!.nickname;
+        _phoneNumberController.text = userPropertyManager.userPropertyModel!.phoneNumber;
         int countryIndex = userPropertyManager.userPropertyModel!.country.index;
         int langIndex = userPropertyManager.userPropertyModel!.language.index;
         int jobIndex = userPropertyManager.userPropertyModel!.job.index;
@@ -155,57 +164,156 @@ class _MyPageInfoState extends State<MyPageInfo> {
                         MyPageCommonWidget.divideLine(
                             width: widget.width * .6,
                             padding: const EdgeInsets.only(top: 30, bottom: 40)),
-                        Row(
+                        // Row(
+                        //   crossAxisAlignment: CrossAxisAlignment.start,
+                        //   children: [
+                        //     const SizedBox(width: 12.0),
+                        //     Column(
+                        //       crossAxisAlignment: CrossAxisAlignment.start,
+                        //       children: [
+                        //         Text(CretaMyPageLang['nickname']!, style: CretaFont.titleMedium),
+                        //         const SizedBox(height: 30),
+                        //         Text(CretaMyPageLang['email']!, style: CretaFont.titleMedium),
+                        //         const SizedBox(height: 30),
+                        //         Text(CretaMyPageLang['phoneNumber']!, style: CretaFont.titleMedium),
+                        //         const SizedBox(height: 30),
+                        //         Text(CretaMyPageLang['password']!, style: CretaFont.titleMedium),
+                        //       ],
+                        //     ),
+                        //     const SizedBox(width: 67),
+                        //     Column(
+                        //       crossAxisAlignment: CrossAxisAlignment.start,
+                        //       children: [
+                        //         SizedBox(
+                        //             width: 200,
+                        //             height: 20,
+                        //             child: TextField(
+                        //               controller: _nicknameController,
+                        //               style: CretaFont.bodyMedium,
+                        //               textAlignVertical: TextAlignVertical.top,
+                        //               decoration: InputDecoration(
+                        //                 hintText: CretaMyPageLang['nicknameInput']!,
+                        //                 border: InputBorder.none,
+                        //               ),
+                        //               onEditingComplete: () => userPropertyManager
+                        //                   .userPropertyModel!.nickname = _nicknameController.text,
+                        //             )),
+                        //         const SizedBox(height: 30),
+                        //         Text(userPropertyManager.userPropertyModel!.email,
+                        //             style: CretaFont.bodyMedium
+                        //                 .copyWith(color: CretaColor.text.shade400)),
+                        //         const SizedBox(height: 10),
+
+                        //         SizedBox(
+                        //             width: 200,
+                        //             height: 20,
+                        //             child: TextField(
+                        //               controller: _phoneNumberController,
+                        //               style: CretaFont.bodyMedium,
+                        //               decoration: InputDecoration(
+                        //                 hintText: CretaMyPageLang['phoneNumber']!,
+                        //                 border: InputBorder.none,
+                        //               ),
+                        //               onEditingComplete: () => userPropertyManager
+                        //                   .userPropertyModel!
+                        //                   .phoneNumber = _phoneNumberController.text,
+                        //             )),
+                        //         // Text("01012341234",
+                        //         //     style: CretaFont.bodyMedium
+                        //         //         .copyWith(color: CretaColor.text.shade400)),
+                        //         const SizedBox(height: 26),
+                        //         BTN.line_blue_t_m(
+                        //             height: 32,
+                        //             text: CretaMyPageLang['passwordChangeBTN']!,
+                        //             onPressed: () => showDialog(
+                        //                 context: context,
+                        //                 builder: (context) =>
+                        //                     ChangePwdPopUp.changePwdPopUp(context)))
+                        //       ],
+                        //     )
+                        //   ],
+                        // ),
+                        Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const SizedBox(width: 12.0),
-                            Column(
+                            const SizedBox(height: 12.0),
+                            Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(CretaMyPageLang['nickname']!, style: CretaFont.titleMedium),
-                                const SizedBox(height: 30),
-                                Text(CretaMyPageLang['email']!, style: CretaFont.titleMedium),
-                                const SizedBox(height: 30),
-                                Text(CretaMyPageLang['phoneNumber']!, style: CretaFont.titleMedium),
-                                const SizedBox(height: 30),
-                                Text(CretaMyPageLang['password']!, style: CretaFont.titleMedium),
+                                const SizedBox(width: 67),
+                                Container(
+                                  padding: const EdgeInsets.only(bottom: 17),
+                                  //color: Colors.amberAccent,
+                                  width: 200,
+                                  height: 20,
+                                  child: TextField(
+                                    controller: _nicknameController,
+                                    style: CretaFont.bodyMedium,
+                                    textAlignVertical: TextAlignVertical.top,
+                                    decoration: InputDecoration(
+                                      hintText: CretaMyPageLang['nicknameInput']!,
+                                      border: InputBorder.none,
+                                    ),
+                                    onEditingComplete: () => userPropertyManager
+                                        .userPropertyModel!.nickname = _nicknameController.text,
+                                  ),
+                                ),
                               ],
                             ),
-                            const SizedBox(width: 67),
-                            Column(
+                            const SizedBox(height: 30),
+                            Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                SizedBox(
-                                    width: 200,
-                                    height: 20,
-                                    child: TextField(
-                                      controller: _nicknameController,
-                                      style: CretaFont.bodyMedium,
-                                      decoration: InputDecoration(
-                                        hintText: CretaMyPageLang['nicknameInput']!,
-                                        border: InputBorder.none,
-                                      ),
-                                      onEditingComplete: () => userPropertyManager
-                                          .userPropertyModel!.nickname = _nicknameController.text,
-                                    )),
-                                const SizedBox(height: 30),
-                                Text(userPropertyManager.userPropertyModel!.email,
-                                    style: CretaFont.bodyMedium
-                                        .copyWith(color: CretaColor.text.shade400)),
-                                const SizedBox(height: 30),
-                                Text("01012341234",
-                                    style: CretaFont.bodyMedium
-                                        .copyWith(color: CretaColor.text.shade400)),
-                                const SizedBox(height: 26),
-                                BTN.line_blue_t_m(
-                                    height: 32,
-                                    text: CretaMyPageLang['passwordChangeBTN']!,
-                                    onPressed: () => showDialog(
-                                        context: context,
-                                        builder: (context) =>
-                                            ChangePwdPopUp.changePwdPopUp(context)))
+                                Text(CretaMyPageLang['email']!, style: CretaFont.titleMedium),
+                                const SizedBox(width: 67),
+                                Text(
+                                  userPropertyManager.userPropertyModel!.email,
+                                  style: CretaFont.bodyMedium
+                                      .copyWith(color: CretaColor.text.shade400),
+                                ),
                               ],
-                            )
+                            ),
+                            const SizedBox(height: 30),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(CretaMyPageLang['phoneNumber']!, style: CretaFont.titleMedium),
+                                const SizedBox(width: 67),
+                                Container(
+                                  padding: const EdgeInsets.only(bottom: 17),
+                                  //color: Colors.amberAccent,
+                                  width: 200,
+                                  height: 20,
+                                  child: TextField(
+                                    controller: _phoneNumberController,
+                                    style: CretaFont.bodyMedium,
+                                    decoration: InputDecoration(
+                                      hintText: CretaMyPageLang['phoneNumber']!,
+                                      border: InputBorder.none,
+                                    ),
+                                    onEditingComplete: () => userPropertyManager.userPropertyModel!
+                                        .phoneNumber = _phoneNumberController.text,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 30),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(CretaMyPageLang['password']!, style: CretaFont.titleMedium),
+                                const SizedBox(width: 67),
+                                BTN.line_blue_t_m(
+                                  height: 32,
+                                  text: CretaMyPageLang['passwordChangeBTN']!,
+                                  onPressed: () => showDialog(
+                                    context: context,
+                                    builder: (context) => ChangePwdPopUp.changePwdPopUp(context),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                         MyPageCommonWidget.divideLine(

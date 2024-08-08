@@ -38,6 +38,23 @@
             "serverPort" : "443"
         }
     },
+    "SupabaseConfig" : {
+        "dbConnInfo" : {
+            "apiKey" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImphZXVtemhyZGF5dXlxaGVtaHlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjI4NDM3ODMsImV4cCI6MjAzODQxOTc4M30.vxtt7hpxKk303FcT4skRuHwVljocRqDjInFbPJL2nxM",
+            "databaseURL" : "https://jaeumzhrdayuyqhemhyk.supabase.co",
+            "projectId" : "hycop_example",
+            "appId" : "hycopTestDB" 
+        },
+        "storageConnInfo" : {
+            "storageURL" : "https://jaeumzhrdayuyqhemhyk.supabase.co",
+            "projectId" : "hycop_example",
+            "apiKey" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImphZXVtemhyZGF5dXlxaGVtaHlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjI4NDM3ODMsImV4cCI6MjAzODQxOTc4M30.vxtt7hpxKk303FcT4skRuHwVljocRqDjInFbPJL2nxM"
+        },
+        "socketConnInfo" : {
+            "serverUrl" : "https://hycop-socket.tk",
+            "serverPort" : "443"
+        }
+    },
     "AssetConfig" : {
         "savePeriod" : 1000
     }

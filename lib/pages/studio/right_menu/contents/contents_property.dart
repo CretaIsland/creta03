@@ -158,6 +158,8 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         if (isNormalText) propertyDivider(height: 28),
         if (widget.model.isMusic()) _musicAudioControl(),
         if (widget.model.isMusic() || widget.model.isImage()) propertyDivider(height: 28),
+        _infoUrl(),
+        propertyDivider(height: 28),
         _hashTag(),
       ]),
     );
@@ -1129,6 +1131,52 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   //     },
   //   );
   // }
+  Widget _infoUrl() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: propertyCard(
+        isOpen: PropertyMixin.isInfoUrlOpen,
+        onPressed: () {
+          setState(() {
+            PropertyMixin.isInfoUrlOpen = !PropertyMixin.isInfoUrlOpen;
+          });
+        },
+        titleWidget: Text(CretaStudioLang['infoUrl'] ?? '연결 웹 주소', style: CretaFont.titleSmall),
+        //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
+        trailWidget: widget.model.infoUrl.value.length < 3
+            ? SizedBox.shrink()
+            : SizedBox(
+                width: 160,
+                child: Text(
+                  widget.model.infoUrl.value,
+                  style: CretaFont.bodySmall,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+        hasRemoveButton: widget.model.infoUrl.value.isNotEmpty,
+        onDelete: () {
+          widget.model.infoUrl.set('');
+          BookMainPage.bookManagerHolder!.notify();
+        },
+        bodyWidget: Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: CretaTextField(
+            limit: 5000,
+            height: 60,
+            textFieldKey: GlobalKey(),
+            value: widget.model.infoUrl.value,
+            hintText: '',
+            //controller: textController,
+            onEditComplete: (String value) {
+              widget.model.infoUrl.set(value);
+              _contentsManager?.notify();
+              //BookMainPage.bookManagerHolder!.notify();
+            },
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget _hashTag() {
     return Padding(

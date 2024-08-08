@@ -711,6 +711,7 @@
     "applyTempateToCurrentPage" : "현재 페이지에 템플릿 적용",
     "modifyTemplate" : "템플릿 편집",
 
+    "infoUrl" :  "연결 웹 주소",
 
     "end" : "End"
 }

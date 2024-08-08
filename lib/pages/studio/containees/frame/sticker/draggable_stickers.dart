@@ -8,6 +8,7 @@ import 'package:hycop/common/undo/undo.dart';
 import 'package:provider/provider.dart';
 
 import 'package:hycop/common/util/logger.dart';
+import '../../../../../common/creta_utils.dart';
 import '../../../../../data_io/contents_manager.dart';
 import '../../../../../data_io/depot_manager.dart';
 import '../../../../../data_io/frame_manager.dart';
@@ -29,6 +30,7 @@ import 'package:creta_studio_model/model/frame_model.dart';
 import '../../../../../model/frame_model_util.dart';
 import 'package:creta_studio_model/model/page_model.dart';
 
+import '../../../../login/creta_account_manager.dart';
 import '../../../book_main_page.dart';
 import '../../../left_menu/depot/depot_display.dart';
 import '../../../left_menu/left_menu_page.dart';
@@ -473,23 +475,55 @@ class _DraggableStickersState extends State<DraggableStickers> {
                 _showRightMouseMenu(details, frameModel, sticker);
               },
               onTap: () {
-                //print('DraggableSticker');
+                //print('DraggableSticker : onTap');
                 if (CretaManager.frameSelectNotifier != null &&
                     CretaManager.frameSelectNotifier!.selectedAssetId == sticker.id) {
-                  if (frameModel.isTextType()) {
-                    ContentsManager? contentsManager =
-                        widget.frameManager!.getContentsManager(frameModel.mid);
-                    if (contentsManager != null) {
+                  ContentsManager? contentsManager =
+                      widget.frameManager!.getContentsManager(frameModel.mid);
+                  //print('DraggableSticker : onTap 2');
+                  if (contentsManager != null) {
+                    if (frameModel.isTextType()) {
                       ContentsModel? selected = contentsManager.getSelected() as ContentsModel?;
                       if (selected != null && (selected.isText() || selected.isDocument())) {
                         // Frame이 이미 선택되어 있고, 텍스트일때는 또 click 이 일어나면 더블클릭으로 간주된다.
                         //print('text edit');
                         if (frameModel.isEditMode == false) {
+                          //print('DraggableSticker : onTap 3');
+
                           _gotoEditMode(contentsManager, selected, frameModel, sticker);
                         }
                         //return;
                       }
                     }
+                  }
+                } else {
+                  if (StudioVariables.isPreview == true) {
+                    //print('DraggableSticker : preveiw onTap 2');
+                    ContentsManager? contentsManager =
+                        widget.frameManager!.getContentsManager(frameModel.mid);
+                    if (contentsManager != null) {
+                      //print('DraggableSticker : preveiw onTap 3');
+                      ContentsModel? current = contentsManager.getCurrentModel();
+                      if (current != null) {
+                        //print(
+                        //    'DraggableSticker : preveiw onTap 4  selcted=${current.infoUrl.value}');
+                        if (current.infoUrl.value.isNotEmpty) {
+                          //print('DraggableSticker : preveiw onTap 5');
+                          // 여기서 naver line 을 호출한다.
+                          // 현재는 user 정보가 없으므로 임시로 하드코딩함.
+                          if (CretaAccountManager.getUserProperty != null &&
+                              CretaAccountManager.getUserProperty!.phoneNumber.isNotEmpty) {
+                            CretaUtils.sendSms(CretaAccountManager.getUserProperty!.phoneNumber,
+                                current.infoUrl.value);
+                          } else {
+                            CretaUtils.sendSms('default', current.infoUrl.value);
+                          }
+                          //CretaUtils.getLineFriendsIds();
+                          //CretaUtils.sendLineMessage("skpark33", current.infoUrl.value);
+                        }
+                      }
+                    }
+                    return;
                   }
                 }
                 // single click action !!!

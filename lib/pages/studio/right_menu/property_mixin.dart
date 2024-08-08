@@ -49,6 +49,7 @@ mixin PropertyMixin {
 
   HashTagWrapper hashTagWrapper = HashTagWrapper();
   static bool isHashTagOpen = false;
+  static bool isInfoUrlOpen = false;
 
   void initMixin() {
     titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);

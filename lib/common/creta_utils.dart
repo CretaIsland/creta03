@@ -5,6 +5,8 @@
 //import 'dart:ui' as ui;
 //import 'dart:html' as html;
 
+import 'dart:convert';
+
 import 'package:creta_common/common/creta_common_utils.dart';
 import 'package:creta_common/common/creta_vars.dart';
 import 'package:http/http.dart' as http;
@@ -472,5 +474,162 @@ class CretaUtils {
   static String dateToString(DateTime value) {
     DateTime local = value.toLocal();
     return "${local.year}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}:${local.second.toString().padLeft(2, '0')}";
+  }
+
+  static Future<void> sendLineMessage(String userId, String message) async {
+    const String channelAccessToken =
+        'yxfuuqFnyyv25YlnBTtMcoOUZ7Xew6aaAVdkgRv09NHiL6amS2SDhcW1wBsO/x9Taff+EUkYFeQHlWnTg6RAymdNeSLvbyJS1gXuCf7WnUWAH07WrrZ/VXNSocH9pEDIFEhzf1VZZDkPRqj/yOAhzgdB04t89/1O/w1cDnyilFU=';
+    final Uri url = Uri.parse('https://api.line.me/v2/bot/message/push');
+
+    //print('Sending message to $userId: $message');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $channelAccessToken'
+        },
+        body: jsonEncode({
+          'to': userId,
+          'messages': [
+            {'type': 'text', 'text': message},
+          ],
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        //print('Message sent successfully');
+      } else {
+        //print('Failed to send message: ${response.body}');
+      }
+    } catch (e) {
+      //print('Failed to send message: $e');
+    }
+  }
+
+  static Future<void> getLineFriendsIds() async {
+    const String channelAccessToken =
+        'yxfuuqFnyyv25YlnBTtMcoOUZ7Xew6aaAVdkgRv09NHiL6amS2SDhcW1wBsO/x9Taff+EUkYFeQHlWnTg6RAymdNeSLvbyJS1gXuCf7WnUWAH07WrrZ/VXNSocH9pEDIFEhzf1VZZDkPRqj/yOAhzgdB04t89/1O/w1cDnyilFU=';
+    final Uri url = Uri.parse('https://api.line.me/v2/bot/followers/ids?limit=1000');
+
+    //print('getLineFriendsIds----');
+
+    try {
+      final response = await http.get(url, headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $channelAccessToken",
+      });
+      //print('getLineFriendsIds----2');
+      if (response.statusCode == 200) {
+        //print('Message sent successfully');
+        final data = jsonDecode(response.body);
+        final List<String> userIds = List<String>.from(data['userIds']);
+        logger.info('User IDs: $userIds');
+      } else {
+        logger.severe('Failed to message: ${response.body}');
+      }
+    } catch (e) {
+      logger.severe('Error : Failed to send message: $e');
+    }
+  }
+
+  static Future<bool> sendNaverSMS(
+    String title,
+    String content,
+    String phoneNo, {
+    String serviceUrl = "http://qrcode-dev.ap-northeast-2.elasticbeanstalk.com/smssend",
+    String? imgUrl,
+  }) async {
+    final Map<String, dynamic> dataJson = {
+      'title': title,
+      'content': content,
+      'phone': phoneNo,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(serviceUrl),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(dataJson),
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        if (responseData['success'] == true) {
+          return true;
+        } else {
+          //print('Failed to send SMS: ${responseData['message']}');
+          return false;
+        }
+      } else {
+        //print('Failed to send SMS: ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      //print('Failed to send SMS: $e');
+      return false;
+    }
+  }
+
+  // static Future<void> sendSms(String recipient, String message) async {
+  //   const String smsApi =
+  //       "https://api-sms.cloud.toast.com/sms/v2.3/appKeys/YlPCoRliW0hEYpOr/sender/sms";
+
+  //   final url = Uri.parse(smsApi);
+  //   final headers = {
+  //     'Content-Type': 'application/json;charset=UTF-8',
+  //     //'X-Secret-Key': 'YOUR_SECRET_KEY', // Replace with your actual secret key
+  //   };
+  //   final body = jsonEncode({
+  //     'recipientList': [
+  //       {'recipientNo': recipient}
+  //     ],
+  //     'body': message,
+  //     'sendNo': '0222843333', // Replace with your actual sender number
+  //   });
+
+  //   //print('Sending SMS : $body');
+
+  //   try {
+  //     final response = await http.post(url, headers: headers, body: body);
+
+  //     if (response.statusCode == 200) {
+  //       print('SMS sent successfully');
+  //     } else {
+  //       print('Failed to send SMS: ${response.statusCode}');
+  //       print('Response: ${response.body}');
+  //     }
+  //   } catch (e) {
+  //     print('ERROR Failed to send SMS: $e');
+  //   }
+  // }
+
+  static Future<void> sendSms(String recipient, String message) async {
+    final url = Uri.parse('https://us-central1-hycop-example.cloudfunctions.net/sendSms');
+    final headers = {
+      'Content-Type': 'application/json;charset=UTF-8',
+    };
+    final body = jsonEncode({
+      'recipient': recipient,
+      'message': message,
+    });
+
+    logger.info('Sending SMS : $body');
+
+    try {
+      final response = await http.post(url, headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+        logger.info('SMS sent successfully');
+      } else {
+        logger.severe('Failed to send SMS: ${response.statusCode}');
+        logger.severe('Response: ${response.body}');
+      }
+    } catch (error) {
+      logger.severe('ERROR Failed to send SMS: $error');
+    }
   }
 }

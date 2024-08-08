@@ -712,6 +712,9 @@
     "applyTempateToCurrentPage" : "Apply template to current page",
     "modifyTemplate" : "Modify template",
 
+    "infoUrl" :  "Web page URL",
+
+
     "end" : "End"
     }
      
