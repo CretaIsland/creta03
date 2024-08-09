@@ -477,8 +477,7 @@ class CretaUtils {
   }
 
   static Future<void> sendLineMessage(String userId, String message) async {
-    const String channelAccessToken =
-        'yxfuuqFnyyv25YlnBTtMcoOUZ7Xew6aaAVdkgRv09NHiL6amS2SDhcW1wBsO/x9Taff+EUkYFeQHlWnTg6RAymdNeSLvbyJS1gXuCf7WnUWAH07WrrZ/VXNSocH9pEDIFEhzf1VZZDkPRqj/yOAhzgdB04t89/1O/w1cDnyilFU=';
+    const String channelAccessToken = '';
     final Uri url = Uri.parse('https://api.line.me/v2/bot/message/push');
 
     //print('Sending message to $userId: $message');
@@ -532,8 +531,6 @@ class CretaUtils {
       logger.severe('Error : Failed to send message: $e');
     }
   }
-
- 
 
   // static Future<void> sendSms(String recipient, String message) async {
   //   const String smsApi =
