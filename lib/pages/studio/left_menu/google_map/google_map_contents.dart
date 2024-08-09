@@ -16,9 +16,8 @@ class GoogleMapContents extends StatefulWidget {
 
 class _GoogleMapContentsState extends State<GoogleMapContents> {
   List<String> searchResults = [];
-  // final String apiKey = 'AIzaSyDSeug7mmQCQ3zSeo9rgkYognnV5B_A86g';
-  // final String apiKey = 'AIzaSyA_xU26875gqM-muwZ5H7KYyLhoNgySAW0';
-  final String apiKey = 'AIzaSyBiPFiDRpywm06KftPPDu0T7d1eowrHYEE';
+  // 구글 맵  API 키는 노출되면 안되므로, DB 로 옮겨야 한다.
+  final String apiKey = '';
 
   Future<void> _handleSearchResultTap(String selectedResult) async {
     try {

@@ -28,7 +28,8 @@ class _GoogleMapClassState extends State<GoogleMapClass> {
   Set<Marker> markers = <Marker>{};
   bool disableCameraMove = false;
 
-  String apiKey = 'AIzaSyA9jxLX4JxcOFd49MQOKddujQPyhjHrdI0';
+  // API Key 는 DB 에서 갖고 와야 한다.
+  String apiKey = '';
   AddressManager addressProvider = AddressManager();
 
   void _onMapCreated(GoogleMapController controller) {
